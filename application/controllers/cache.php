@@ -1,81 +1,78 @@
 <?php
 
 class Cache_Controller extends Base_Controller {
-	public $restful = true;
 
-	public function get_index( ) {
-		$yaml = file_get_contents(path('public').'checksum.yml');
-		$checksum = Spyc::YAMLLoad($yaml);
-
-		// DEBUG
-		echo "<pre>";
-		print_r($checksum);
+	public function action_index()
+	{
+		//
 	}
 
-	public function get_update( ) {
-		$checksum = file_get_contents(Config::get('solder.repo_url').'CHECKSUM.md5');
-		$md5Array = explode("\n",$checksum);
-		$finalized = array();
-		foreach ($md5Array as $entry)
+	public function action_update()
+	{
+		DB::query('DELETE FROM `modpacks`');
+		DB::query('DELETE FROM `builds`');
+
+		$modpacks_yml = file_get_contents(Config::get('solder.repo_url').'modpacks.yml');
+		$modpacks = Spyc::YAMLLoad($modpacks_yml);
+
+		$modpacks = $modpacks['modpacks'];
+
+		$blocked_packs = array('technicssp','custom1','custom2','custom3');
+		foreach ($modpacks as $key => $name)
 		{
-			$split = explode('|',$entry);
-			$md5 = $split[0];
-			if (isset($split[1]))
+			if (!in_array($key, $blocked_packs))
 			{
-			if (preg_match("/\\\/",$split[1])) {
-				$directory = explode("\\",$split[1]);
-			} else {
-				$directory = explode("/",$split[1]);
-			}
-			
-				if ($directory[0] == "mods")
-				{
-					if (!array_key_exists($directory[1],$finalized)) {
-						$finalized[$directory[1]] = array();
-					}
-
-					// Check if basemods and change up regex
-					if ($directory[1] == "basemods") {
-						$regex = "/-([\w\d.-]+).zip/";
-						preg_match($regex,$directory[2],$versionSplit);
-						$finalized[$directory[1]][$versionSplit[1]] = $md5;
-					} else {
-						$regex = "/" . $directory[1] . "\-(.+).zip/";
-						preg_match( $regex, $directory[2], $modversion );
-						$finalized[$directory[1]][$modversion[1]] = $md5;
-					}
-				}
+				$modpack = new Modpack();
+				$modpack->name = $name;
+				$modpack->slug = $key;
+				$modpack->save();
+				if (!$this->getModpack($modpack))
+					return Response::json(
+						array("error" => "Error grabbing data for " . $modpack->name)
+						);
 			}
 		}
-		$yaml = Spyc::YAMLDump($finalized);
 
-		$ymlFileName = path('public')."checksum.yml";
-		$fstream = fopen($ymlFileName,'w');
-		fwrite($fstream,$yaml);
-		fclose($fstream);
+		print_r($modpacks);
+		//$checksum = file_get_contents(Config::get('solder.repo_url').'CHECKSUM.md5');
 	}
 
-	public function get_mod( $name = NULL, $version = NULL, $md5 = NULL ) {
-		$yaml = file_get_contents(path('public').'checksum.yml');
-		$checksum = Spyc::YAMLLoad($yaml);
+	private function getModpack($modpack)
+	{
+		try {
+			$modpack_yml = file_get_contents(Config::get('solder.repo_url').$modpack->slug.'/'.'modpack.yml');
+			$details = Spyc::YAMLLoad($modpack_yml);
+			$modpack->url = $details['url'];
+			$modpack->recommended = $details['recommended'];
+			$modpack->latest = $details['latest'];
+			$modpack->icon_md5 = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/icon.png");
+			$modpack->logo_md5 = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/logo_180.png");
+			$modpack->background_md5 = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/background.jpg");
+			$modpack->save();
 
-		$success = 0;
+			if (!$this->getModpackBuilds($modpack,$details))
+				return false;
 
-		if( isset( $name ) && isset( $version ) ) {
-			if( array_key_exists( $name, $checksum ) && array_key_exists( $version, $checksum[$name] ) ) {
-				$success = 1;
-				if( isset( $md5 ) && $md5 == "MD5" ) {
-					return Response::json( array( "MD5" => $checksum[$name][$version] ) );
-				} else {
-					return Response::json( array( $name => Config::get('solder.repo_url')."mods/".$name."/".$name."-".$version.".zip" ) );
-				}
-			}
+			return true;
+		} catch (Exception $e) {
+			Log::Exception($e);
 		}
-
-		if ($success == 0) {
-			return Response::json( array("error" => "There was an error in your request"), 404 );
-		}
+		return false;
 	}
+
+	private function getModpackBuilds($modpack,$details)
+	{
+		foreach ($details['builds'] as $version => $data)
+		{
+			$build = new Build();
+			$build->modpack_id = $modpack->id;
+			$build->version = $version;
+			$build->save();
+		}
+
+		return true;
+	}
+
 }
 
 ?>
