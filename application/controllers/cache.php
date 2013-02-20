@@ -15,7 +15,7 @@ class Cache_Controller extends Base_Controller {
 
 		$this->getModpacks();
 
-		return Response::json(array("success" => "Repoistory was successfully updated"));
+		return Response::json(array("success" => "Database was successfully updated"));
 	}
 
 	private function clearDatabase()

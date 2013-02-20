@@ -2,6 +2,12 @@
 
 class Base_Controller extends Controller {
 
+	public function __construct()
+	{
+		parent::__construct();
+		define('SOLDER_VERSION', '0.1');
+	}
+
 	/**
 	 * Catch-all method for requests that can't be matched.
 	 *

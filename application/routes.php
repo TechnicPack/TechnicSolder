@@ -38,6 +38,7 @@ Route::get('/', function()
 });
 
 Route::controller( 'cache' );
+Route::controller('api');
 Route::get( 'modpack/(:all)', 'modpack@details' );
 Route::controller( 'modpack' );
 
