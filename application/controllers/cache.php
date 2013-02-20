@@ -82,9 +82,11 @@ class Cache_Controller extends Base_Controller {
 
 				if (empty($ver))
 				{
+					set_time_limit(0);
 					$ver = new ModVersion();
-					$ver->mod_id = $mod->id;
+					$ver->mod_id  = $mod->id;
 					$ver->version = $version;
+					$ver->md5     = $this->mod_md5($mod, $version);
 					$ver->save();
 				}
 				
@@ -188,6 +190,21 @@ class Cache_Controller extends Base_Controller {
 		$build->modversions()->sync($version_ids);
 
 		return true;
+	}
+
+	private function mod_md5($mod, $version)
+	{
+		$url = Config::get('solder.repo_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+		$ch = curl_init($url);
+
+		curl_setopt($ch, CURLOPT_NOBODY, true);
+		curl_exec($ch);
+		$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		if ($retcode == 200)
+			return md5_file($url);
+		else 
+			return "";
 	}
 
 }
