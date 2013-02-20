@@ -7,6 +7,11 @@ class Build extends Eloquent {
 	{
 		return $this->belongs_to('Modpack');
 	}
+
+	public function modversions()
+	{
+		return $this->has_many_and_belongs_to('ModVersion');
+	}
 }
 
 ?>
