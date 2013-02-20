@@ -9,7 +9,7 @@ class Cache_Controller extends Base_Controller {
 
 	public function action_update()
 	{
-		$this->clearDatabase();
+		//$this->clearDatabase();
 
 		$this->getMods();
 
@@ -35,15 +35,36 @@ class Cache_Controller extends Base_Controller {
 		foreach ($library['mods'] as $name => $data)
 		{
 			try {
-				$mod = new Mod();
-				$mod->name = $name;
-				if (isset($data['description']))
-					$mod->description = $data['description'];
-				if (isset($data['link']))
-					$mod->link = $data['link'];
-				if (isset($data['author']))
-					$mod->author = $data['author'];
-				$mod->save();
+				$mod = Mod::where('name', '=', $name)->first();
+				if (empty($mod))
+				{
+					$mod = new Mod();
+					$mod->name = $name;
+					if (isset($data['description']))
+						$mod->description = $data['description'];
+					if (isset($data['link']))
+						$mod->link = $data['link'];
+					if (isset($data['author']))
+						$mod->author = $data['author'];
+					$mod->save();
+				} else {
+					if (isset($data['description']))
+						$mod->description = $data['description'];
+					else
+						$mod->description = "";
+
+					if (isset($data['link']))
+						$mod->link = $data['link'];
+					else
+						$mod->link = "";
+
+					if (isset($data['author']))
+						$mod->author = $data['author'];
+					else
+						$mod->author = "";
+
+					$mod->save();
+				}
 
 				$this->getModVersions($mod,$data['versions']);
 			} catch (Exception $e) {
@@ -57,10 +78,16 @@ class Cache_Controller extends Base_Controller {
 		foreach ($versions as $version => $data)
 		{
 			try {
-				$ver = new ModVersion();
-				$ver->mod_id = $mod->id;
-				$ver->version = $version;
-				$ver->save();
+				$ver = ModVersion::where('mod_id', '=', $mod->id)->where('version', '=', $version)->first();
+
+				if (empty($ver))
+				{
+					$ver = new ModVersion();
+					$ver->mod_id = $mod->id;
+					$ver->version = $version;
+					$ver->save();
+				}
+				
 			} catch (Exception $e) {
 				Log::exception($e);
 			}
@@ -79,14 +106,18 @@ class Cache_Controller extends Base_Controller {
 		{
 			if (!in_array($key, $blocked_packs))
 			{
-				$modpack = new Modpack();
-				$modpack->name = $name;
-				$modpack->slug = $key;
-				$modpack->save();
+				$modpack = Modpack::where('slug','=',$key)->first();
+				if (empty($modpack))
+				{
+					$modpack = new Modpack();
+					$modpack->name = $name;
+					$modpack->slug = $key;
+					$modpack->save();
+				}
 				if (!$this->getModpack($modpack))
-					return Response::json(
-						array("error" => "Error grabbing data for " . $modpack->name)
-						);
+						return Response::json(
+							array("error" => "Error grabbing data for " . $modpack->name)
+							);
 			}
 		}
 	}
@@ -119,13 +150,22 @@ class Cache_Controller extends Base_Controller {
 	{
 		foreach ($details['builds'] as $version => $data)
 		{
-			$build = new Build();
-			$build->modpack_id = $modpack->id;
-			$build->version = $version;
-			$build->minecraft = $data['minecraft'];
-			if (isset($data['forge']))
-				$build->forge = $data['forge'];
-			$build->save();
+			$build = Build::where('version', '=', $version)->first();
+			if (empty($build))
+			{
+				$build = new Build();
+				$build->modpack_id = $modpack->id;
+				$build->version = $version;
+				$build->minecraft = $data['minecraft'];
+				if (isset($data['forge']))
+					$build->forge = $data['forge'];
+				$build->save();
+			} else {
+				$build->minecraft = $data['minecraft'];
+				if (isset($data['forge']))
+					$build->forge = $data['forge'];
+				$build->save();
+			}
 
 			if (!$this->getBuildMods($build, $data['mods']))
 				return false;
@@ -143,10 +183,8 @@ class Cache_Controller extends Base_Controller {
 			$version = ModVersion::where('mod_id', '=', $mod->id)->where('version', '=', $version)->first();
 			if (!empty($version))
 				array_push($version_ids, $version->id);
-			else {
-				echo $build->modpack->name . " - Failed on mod " . $name . " Version: ". $version ."<br />";
-			}
 		}
+
 		$build->modversions()->sync($version_ids);
 
 		return true;
