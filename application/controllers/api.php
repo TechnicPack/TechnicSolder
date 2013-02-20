@@ -6,7 +6,7 @@ class API_Controller extends Base_Controller {
 	public function get_index()
 	{
 		return Response::json(array(
-				'api'     => 'TechnicSolder API', 
+				'api'     => 'TechnicSolder', 
 				'version' => SOLDER_VERSION
 				));
 	}
@@ -23,8 +23,57 @@ class API_Controller extends Base_Controller {
 		}
 	}
 
+	public function get_mod($mod = null, $version = null)
+	{
+		if (empty($mod))
+			return Response::json(array("error" => "No mod requested"));
+
+		$mod = Mod::where('name', '=', $mod)->first();
+
+		if (empty($mod))
+			return Response::json(array('error' => 'Mod does not exist'));
+
+		if (empty($version))
+			return Response::json($this->fetch_mod($mod));
+
+		return Response::json($this->fetch_modversion($mod,$version));
+	}
+
 
 	/* Private Functions */
+
+	private function fetch_mod($mod)
+	{
+		$response = array();
+
+		$response['name'] = $mod->name;
+		$response['author'] = $mod->author;
+		$response['description'] = $mod->description;
+		$response['link'] = $mod->link;
+		$response['versions'] = array();
+
+		foreach ($mod->versions as $version)
+		{
+			array_push($response['versions'], $version->version);
+		}
+
+		return $response;
+	}
+
+	private function fetch_modversion($mod, $version)
+	{
+		$response = array();
+
+		$version = ModVersion::where("mod_id", "=", $mod->id)
+								->where("version", "=", $version)->first();
+
+		if (empty($version))
+			return array("error" => "Mod version does not exist");
+
+		$response['md5'] = $version->md5;
+
+		return $response;
+	}
 
 	private function fetch_modpacks()
 	{
