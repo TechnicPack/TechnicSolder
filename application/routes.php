@@ -32,10 +32,7 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('home.index');
-});
+Route::get('/', 'api@index');
 
 Route::controller( 'cache' );
 Route::controller('api');
