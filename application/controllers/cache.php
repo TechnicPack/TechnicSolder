@@ -130,7 +130,8 @@ class Cache_Controller extends Base_Controller {
 			$modpack_yml = file_get_contents(Config::get('solder.repo_url').$modpack->slug.'/'.'modpack.yml');
 			$details     = Spyc::YAMLLoad($modpack_yml);
 
-			$modpack->url            = $details['url'];
+			if (isset($details['url']))
+				$modpack->url            = $details['url'];
 			$modpack->recommended    = $details['recommended'];
 			$modpack->latest         = $details['latest'];
 			$modpack->icon_md5       = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/icon.png");
