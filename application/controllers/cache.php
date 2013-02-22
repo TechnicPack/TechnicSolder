@@ -183,9 +183,14 @@ class Cache_Controller extends Base_Controller {
 		foreach ($mods as $name => $version)
 		{
 			$mod = Mod::where('name', '=', $name)->first();
-			$version = ModVersion::where('mod_id', '=', $mod->id)->where('version', '=', $version)->first();
-			if (!empty($version))
-				array_push($version_ids, $version->id);
+			if (!empty($mod))
+			{
+				$version = ModVersion::where('mod_id', '=', $mod->id)->where('version', '=', $version)->first();
+				if (!empty($version))
+					array_push($version_ids, $version->id);
+			} else {
+				Log::write("Notice", "Mod with name " . $name . " does not exist in ModLibrary.");
+			}
 		}
 
 		$build->modversions()->sync($version_ids);
