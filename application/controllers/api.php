@@ -39,6 +39,17 @@ class API_Controller extends Base_Controller {
 		return Response::json($this->fetch_modversion($mod,$version));
 	}
 
+	public function get_verify($key = null)
+	{
+		if (empty($key))
+			return Response::json(array("error" => "No API key provided."));
+
+		if ($key == Config::get('solder.platform_key'))
+			return Response::json(array("valid" => "Key validated."));
+		else
+			return Response::json(array("error" => "Invalid key provided."));
+	}
+
 
 	/* Private Functions */
 
