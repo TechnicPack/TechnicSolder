@@ -150,7 +150,41 @@ class API_Controller extends Base_Controller {
 
 		foreach ($build->modversions as $modversion)
 		{
-			$response['mods'][$modversion->mod->name] = $modversion->version;
+			if (!Input::has('include'))
+			{
+				$response['mods'][] = array(
+											"name" => $modversion->mod->name,
+											"version" => $modversion->version,
+											"md5" => $modversion->md5,
+											);
+			} else if (Input::get('include') == "mods") {
+				$response['mods'][] = array(
+											"name" => $modversion->mod->name,
+											"version" => $modversion->version,
+											"md5" => $modversion->md5,
+											"pretty_name" => $modversion->mod->pretty_name,
+											"author" => $modversion->mod->author,
+											"description" => $modversion->mod->description,
+											"link" => $modversion->mod->link
+											);
+			} else {
+				$data = array(
+											"name" => $modversion->mod->name,
+											"version" => $modversion->version,
+											"md5" => $modversion->md5,
+											);
+				$request = explode(",", Input::get('include'));
+				$mod = (array)$modversion->mod;
+				$mod = $mod['attributes'];
+				foreach ($request as $type)
+				{
+					if (isset($mod[$type]))
+						$data[$type] = $mod[$type];
+				}
+
+				$response['mods'][] = $data;
+			}
+			
 		}
 
 		return $response;
