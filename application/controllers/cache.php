@@ -40,6 +40,8 @@ class Cache_Controller extends Base_Controller {
 				{
 					$mod = new Mod();
 					$mod->name = $name;
+					if (isset($data['name']))
+						$mod->pretty_name = $data['name'];
 					if (isset($data['description']))
 						$mod->description = $data['description'];
 					if (isset($data['link']))
@@ -48,6 +50,8 @@ class Cache_Controller extends Base_Controller {
 						$mod->author = $data['author'];
 					$mod->save();
 				} else {
+					if (isset($data['name']))
+						$mod->pretty_name = $data['name'];
 					if (isset($data['description']))
 						$mod->description = $data['description'];
 					else

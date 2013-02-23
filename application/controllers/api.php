@@ -58,6 +58,7 @@ class API_Controller extends Base_Controller {
 		$response = array();
 
 		$response['name'] = $mod->name;
+		$response['pretty_name'] = $mod->pretty_name;
 		$response['author'] = $mod->author;
 		$response['description'] = $mod->description;
 		$response['link'] = $mod->link;
