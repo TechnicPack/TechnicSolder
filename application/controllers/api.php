@@ -83,6 +83,7 @@ class API_Controller extends Base_Controller {
 			return array("error" => "Mod version does not exist");
 
 		$response['md5'] = $version->md5;
+		$response['url'] = Config::get('solder.repo_url').'mods/'.$version->mod->name.'/'.$version->mod->name.'-'.$version->version.'.zip';
 
 		return $response;
 	}
@@ -156,6 +157,7 @@ class API_Controller extends Base_Controller {
 											"name" => $modversion->mod->name,
 											"version" => $modversion->version,
 											"md5" => $modversion->md5,
+											"url" => Config::get('solder.repo_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
 											);
 			} else if (Input::get('include') == "mods") {
 				$response['mods'][] = array(
