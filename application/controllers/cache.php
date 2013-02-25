@@ -29,7 +29,7 @@ class Cache_Controller extends Base_Controller {
 
 	private function getMods()
 	{
-		$library_yml = file_get_contents(Config::get('solder.repo_url').'modlibrary.yml');
+		$library_yml = file_get_contents(Config::get('solder.repo_location').'modlibrary.yml');
 		$library = Spyc::YAMLLoad($library_yml);
 
 		foreach ($library['mods'] as $name => $data)
@@ -102,7 +102,7 @@ class Cache_Controller extends Base_Controller {
 
 	private function getModpacks()
 	{
-		$modpacks_yml = file_get_contents(Config::get('solder.repo_url').'modpacks.yml');
+		$modpacks_yml = file_get_contents(Config::get('solder.repo_location').'modpacks.yml');
 		$modpacks = Spyc::YAMLLoad($modpacks_yml);
 
 		$modpacks = $modpacks['modpacks'];
@@ -131,16 +131,16 @@ class Cache_Controller extends Base_Controller {
 	private function getModpack($modpack)
 	{
 		try {
-			$modpack_yml = file_get_contents(Config::get('solder.repo_url').$modpack->slug.'/'.'modpack.yml');
+			$modpack_yml = file_get_contents(Config::get('solder.repo_location').$modpack->slug.'/'.'modpack.yml');
 			$details     = Spyc::YAMLLoad($modpack_yml);
 
 			if (isset($details['url']))
 				$modpack->url            = $details['url'];
 			$modpack->recommended    = $details['recommended'];
 			$modpack->latest         = $details['latest'];
-			$modpack->icon_md5       = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/icon.png");
-			$modpack->logo_md5       = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/logo_180.png");
-			$modpack->background_md5 = md5_file(Config::get('solder.repo_url').$modpack->slug."/resources/background.jpg");
+			$modpack->icon_md5       = md5_file(Config::get('solder.repo_location').$modpack->slug."/resources/icon.png");
+			$modpack->logo_md5       = md5_file(Config::get('solder.repo_location').$modpack->slug."/resources/logo_180.png");
+			$modpack->background_md5 = md5_file(Config::get('solder.repo_location').$modpack->slug."/resources/background.jpg");
 			$modpack->save();
 
 			if (!$this->getModpackBuilds($modpack,$details))
