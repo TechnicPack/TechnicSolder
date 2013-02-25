@@ -204,7 +204,7 @@ class Cache_Controller extends Base_Controller {
 
 	private function mod_md5($mod, $version)
 	{
-		$url = Config::get('solder.repo_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+		$url = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 		$ch = curl_init($url);
 
 		curl_setopt($ch, CURLOPT_NOBODY, true);
