@@ -91,12 +91,11 @@ class Cache_Controller extends Base_Controller {
 					$ver->mod_id  = $mod->id;
 					$ver->version = $version;
 					$ver->md5     = $this->mod_md5($mod, $version);
+					$ver->save();
 				} else if (empty($ver->md5)) {
 					$ver->md5     = $this->mod_md5($mod, $version);
+					$ver->save();
 				}
-
-				$ver->save();
-				
 			} catch (Exception $e) {
 				Log::exception($e);
 			}
