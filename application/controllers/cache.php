@@ -213,8 +213,10 @@ class Cache_Controller extends Base_Controller {
 		curl_close($ch);
 		if ($retcode == 200)
 			return md5_file($url);
-		else 
+		else {
+			Log::write("ERROR", "Attempted to MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
 			return "";
+		}
 	}
 
 }
