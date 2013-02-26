@@ -48,7 +48,6 @@ class Cache_Controller extends Base_Controller {
 						$mod->link = $data['link'];
 					if (isset($data['author']))
 						$mod->author = $data['author'];
-					$mod->save();
 				} else {
 					if (isset($data['name']))
 						$mod->pretty_name = $data['name'];
@@ -67,8 +66,9 @@ class Cache_Controller extends Base_Controller {
 					else
 						$mod->author = "";
 
-					$mod->save();
+					
 				}
+				$mod->save();
 
 				$this->getModVersions($mod,$data['versions']);
 			} catch (Exception $e) {
@@ -91,8 +91,11 @@ class Cache_Controller extends Base_Controller {
 					$ver->mod_id  = $mod->id;
 					$ver->version = $version;
 					$ver->md5     = $this->mod_md5($mod, $version);
-					$ver->save();
+				} else if (empty($ver->md5)) {
+					$ver->md5     = $this->mod_md5($mod, $version);
 				}
+
+				$ver->save();
 				
 			} catch (Exception $e) {
 				Log::exception($e);
