@@ -17,7 +17,7 @@ Installation
 
 First thing is first, clone Solder into a directory on your web box. You will want to setup Apache, Nginx, or whatever you are using to use the "public" folder as the document root. This way the main Solder operating files are not publically available through the web.
 
-Next, copy **application/config-sample** to **application/config** and **public/.htaccess-sample** to **public/.htaccess**. Edit the files in the config directory to your liking. The only two files that currently *require* editing are **database.php** and **solder.php**
+Next, copy **application/config-sample** to **application/config** and **public/.htaccess-sample** to **public/.htaccess**. Edit the files in the config directory to your liking. The only two files that currently *require* editing are **database.php** and **solder.php**. You will also want to give your box permissions to write to the **storage** folder. You can do this with a chmod or whatever you prefer.
 
 Solder.php has 3 values that need to be filled in:
 
@@ -37,3 +37,27 @@ Finally, you will need to just run your cache update script. This can take awhil
 > http://yoursolderinstall/cache/update
 
 That's it! Your Solder is configured and ready to rock. Whenever you make changes to your mod repository make sure to run the cache update or your players won't see it.
+
+Updating Solder
+---------------
+
+Solder waits for no one! If you use Solder you need to make sure it's up to date. Issues you may be having may have already been resolved in a recent commit. Who knows! Updating is simple.
+
+1. Pull in changes from your origin (git pull origin)
+2. Check if any config files were changes (usually not the case) and make adjustments if necessary
+3. Run your migrations again (You don't need to do migrate:install, only migrate)
+
+That's it. Your API is now on the latest version.
+
+Troubleshooting
+---------------
+If you are having an issue, chances are it's wrong with your YAML files in your repository. The easiest way to check is by looking in your log files found in **storage/logs/**.
+
+If you are *still* having issues and can't seem to figure out what's going on, come ask in irc @ **irc.synirc.net #technic** or open an issue here on Github.
+
+Future of Solder
+----------------
+
+Right now as it stands, Solder is very error-prone because it relies heavily on user input into YAML files. If users make simple mistakes with version numbers and such, Solder may not insert data properly.
+
+The goal of Solder is to eliminate the need for YAMLs completely. As time progresses a user interface is planned to manage and control your modpacks. This will elminate user errors and make sure a modpack is always configured properly.
