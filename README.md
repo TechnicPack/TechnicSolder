@@ -8,7 +8,7 @@ TechnicSolder is an API that sits between a modpack repository and the launcher.
 
 Using Solder also means your packs will download each mod individually. This means the launcher can check MD5's against each version of a mod and if it hasn't changed, use the cached version of the mod instead. What does this mean? Small incremental updates to your modpack doesn't mean redownloading the whole thing every time!
 
-Solder also interfaces with the Technic Platform using an API key you can generate on this page. When Solder has this key it can directly interact with your Platform account. When creating new modpacks you will be able to import any packs you have registered in your Solder install. It will also create detailed mod lists on your Platform page! (assuming you have the respective data filled out in Solder) Neat huh?
+Solder also interfaces with the Technic Platform using an API key you can generate through your account there. When Solder has this key it can directly interact with your Platform account. When creating new modpacks you will be able to import any packs you have registered in your Solder install. It will also create detailed mod lists on your Platform page! (assuming you have the respective data filled out in Solder) Neat huh?
 
 Right now Solder is in its very early stages. We will not be offering any help setting up Solder and we recommend you stick to normal custom zips until it becomes more user-friendly. If you want to brave the waters though, be our guest!
 
@@ -25,14 +25,14 @@ Solder.php has 3 values that need to be filled in:
 * **mirror_url:** The mirror url is the web accessible url to your mod repository. If you are using a URL for repo_location you can just fill in the same value here.
 * **platform_key:** This is the API key given to you through the "Configure Solder API" option on the Platform. When this key is validated by the Platform, it will allow you to directly import your Solder packs to the Platform.
 
-Once you have everything filled in for configurataion, you will need to migrate your database. Doing this is *really* easy, just run the following two commands in order from the root Solder folder.
+Once you have everything filled in for your configuration, you will need to migrate your database. Doing this is *really* easy, just run the following two commands in order from the root Solder folder.
 
 1. php artisan migrate:install
 2. php artisan migrate
 
 This will configure your database and get it ready to handle your first import.
 
-Finally, you will need to just run your cache update script. This can take awhile on its first run depending on the size of your mod repository. Adjust the URL below to reflect your own install and enter it into your browse. Let it do its thing!
+Finally, you will need to just run your cache update script. This can take awhile on its first run depending on the size of your mod repository. Adjust the URL below to reflect your own install and enter it into your browser. Let it do its thing!
 
 > http://yoursolderinstall/cache/update
 
@@ -44,14 +44,14 @@ Updating Solder
 Solder waits for no one! If you use Solder you need to make sure it's up to date. Issues you may be having may have already been resolved in a recent commit. Who knows! Updating is simple.
 
 1. Pull in changes from your origin (git pull origin)
-2. Check if any config files were changes (usually not the case) and make adjustments if necessary
+2. Check if any config files were changed (usually not the case) and make adjustments if necessary
 3. Run your migrations again (You don't need to do migrate:install, only migrate)
 
 That's it. Your API is now on the latest version.
 
 Troubleshooting
 ---------------
-If you are having an issue, chances are it's wrong with your YAML files in your repository. The easiest way to check is by looking in your log files found in **storage/logs/**.
+If you are having an issue, chances are it's something wrong with your YAML files in your repository. The easiest way to check is by looking in your log files found in **storage/logs/**.
 
 If you are *still* having issues and can't seem to figure out what's going on, come ask in irc @ **irc.synirc.net #technic** or open an issue here on Github.
 
