@@ -65,7 +65,7 @@
               <li><a href="#">Statistics</a></li>
               <li class="nav-header">Manage Solder Settings</li>
               <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}">Configuration</a></li>
-              <li><a href="#">Manage Users</a></li>
+              <li{{ $active = (URI::is('user/*') ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}">Manage Users</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

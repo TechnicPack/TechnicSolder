@@ -39,6 +39,7 @@ Route::controller('cache');
 Route::controller('api');
 Route::controller('dashboard');
 Route::controller('solder');
+Route::controller('user');
 
 /**
  * Authentication Routes
