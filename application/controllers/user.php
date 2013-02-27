@@ -30,6 +30,9 @@ class User_Controller extends Base_Controller {
 					"username" => "required|max:20"
 					);
 
+			if (Input::get('password1'))
+				$rules['password1'] = "same:password2";
+
 			$validation = Validator::make(Input::all(), $rules);
 
 			if ($validation->fails())
@@ -38,6 +41,10 @@ class User_Controller extends Base_Controller {
 			try {
 				$user->email = Input::get('email');
 				$user->username = Input::get('username');
+				if (Input::get('password1'))
+				{
+					$user->password = Hash::make(Input::get('password1'));
+				}
 				$user->save();
 
 				return Redirect::back()->with('success','User edited successfully!');

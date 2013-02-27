@@ -44,7 +44,7 @@
           <a class="brand" href="/">TechnicSolder</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">{{ Auth::user()->email }}. ({{ HTML::link('logout','Logout') }})</a>
+              Logged in as <a href="#" class="navbar-link">{{ Auth::user()->email }}</a>. ({{ HTML::link('logout','Logout') }})
             </p>
             <ul class="nav">
               <li class="active"><a href="/">Dashboard</a></li>
@@ -62,10 +62,11 @@
             <ul class="nav nav-list">
               <li class="nav-header">Solder</li>
               <li{{ $active = (URI::is('dashboard') ? ' class="active"' : null) }}><a href="{{ URL::to('dashboard') }}">Dashboard</a></li>
+              <li{{ $active = (URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}">Edit My Account</a></li>
               <li><a href="#">Statistics</a></li>
               <li class="nav-header">Manage Solder Settings</li>
               <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}">Configuration</a></li>
-              <li{{ $active = (URI::is('user/*') ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}">Manage Users</a></li>
+              <li{{ $active = (URI::is('user/*') && !URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}">Manage Users</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
