@@ -1,31 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>@yield('page-title')Technic Platform</title>
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-        {{ Asset::container('bootstrapper')->styles() }}
-        {{ Asset::container('bootstrapper')->scripts() }}
-        {{ Asset::styles() }}
-        {{ Asset::scripts() }}
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-    </head>
-    <body>
-        
-    </body>
-</html>
-
-<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap, from Twitter</title>
+    <title>TechnicSolder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
     {{ Asset::container('bootstrapper')->styles() }}
-        {{ Asset::container('bootstrapper')->scripts() }}
-        {{ Asset::styles() }}
-        {{ Asset::scripts() }}
+    {{ Asset::container('bootstrapper')->scripts() }}
+    {{ Asset::styles() }}
+    {{ Asset::scripts() }}
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -57,74 +41,47 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Project name</a>
+          <a class="brand" href="/">TechnicSolder</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">Username</a>
+              Logged in as <a href="#" class="navbar-link">{{ Auth::user()->email }}. ({{ HTML::link('logout','Logout') }})</a>
             </p>
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li class="active"><a href="/">Dashboard</a></li>
+              <li><a href="#modpacks">Modpacks</a></li>
+              <li><a href="#library">Mod Library</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
-
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+              <li class="nav-header">Solder</li>
+              <li{{ $active = (URI::is('dashboard') ? ' class="active"' : null) }}><a href="{{ URL::to('dashboard') }}">Dashboard</a></li>
+              <li><a href="#">Statistics</a></li>
+              <li class="nav-header">Manage Solder Settings</li>
+              <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}">Configuration</a></li>
+              <li><a href="#">Manage Users</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
-          test
+          @yield('content')
         </div><!--/span-->
       </div><!--/row-->
 
       <hr>
 
       <footer>
-        <p>&copy; Company 2013</p>
+        <p>Technic Solder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
+        <p style="font-size: smaller">TechnicSolder is an open source project. It is under the MIT license. Feel free to do whatever you want!</p>
       </footer>
 
     </div><!--/.fluid-container-->
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../assets/js/jquery.js"></script>
-    <script src="../assets/js/bootstrap-transition.js"></script>
-    <script src="../assets/js/bootstrap-alert.js"></script>
-    <script src="../assets/js/bootstrap-modal.js"></script>
-    <script src="../assets/js/bootstrap-dropdown.js"></script>
-    <script src="../assets/js/bootstrap-scrollspy.js"></script>
-    <script src="../assets/js/bootstrap-tab.js"></script>
-    <script src="../assets/js/bootstrap-tooltip.js"></script>
-    <script src="../assets/js/bootstrap-popover.js"></script>
-    <script src="../assets/js/bootstrap-button.js"></script>
-    <script src="../assets/js/bootstrap-collapse.js"></script>
-    <script src="../assets/js/bootstrap-carousel.js"></script>
-    <script src="../assets/js/bootstrap-typeahead.js"></script>
 
   </body>
 </html>

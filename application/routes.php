@@ -32,9 +32,23 @@
 |
 */
 
-Route::get('/', 'dashboard@index');
-Route::controller( 'cache' );
+Route::get('/', function() {
+	return Redirect::to('dashboard');
+});
+Route::controller('cache');
 Route::controller('api');
+Route::controller('dashboard');
+Route::controller('solder');
+
+/**
+ * Authentication Routes
+ **/
+Route::get('/login', 'base@login');
+Route::post('/login', 'base@do_login');
+Route::get('/logout', function() {
+	Auth::logout();
+	return Redirect::to('login')->with('logout','You have been logged out.');
+});
 
 /*
 |--------------------------------------------------------------------------

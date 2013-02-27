@@ -1,6 +1,5 @@
 @layout('layouts/main')
 @section('content')
 <h1>Dashboard</h1>
-<hr>
-test
+<p>Welcome to the Technic Solder</p>
 @endsection

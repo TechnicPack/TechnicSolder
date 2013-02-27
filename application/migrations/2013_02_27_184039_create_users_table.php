@@ -24,6 +24,7 @@ class Create_Users_Table {
 		 **/
 		$user = new User();
 		$user->username = 'admin';
+		$user->email = 'admin@admin.com';
 		$user->password = Hash::make('admin');
 		$user->save();
 	}
