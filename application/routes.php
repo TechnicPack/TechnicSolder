@@ -32,7 +32,7 @@
 |
 */
 
-Route::get('/', 'api@index');
+Route::get('/', 'dashboard@index');
 Route::controller( 'cache' );
 Route::controller('api');
 
