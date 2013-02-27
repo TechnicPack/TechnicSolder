@@ -206,7 +206,22 @@ class Cache_Controller extends Base_Controller {
 
 	private function mod_md5($mod, $version)
 	{
+		$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+
+		if (file_exists($location))
+			return md5_file($location);
+		else
+			return $this->remote_mod_md5($mod, $version);
+	}
+
+	private function remote_mod_md5($mod, $version, $attempts = 0)
+	{
 		$url = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+		if ($attempts >= 3)
+		{
+			Log::write("ERROR", "Exceeded maximum number of attempts for remote MD5 on mod ". $mod->name ." version ".$version." located at ". $url);
+			return "";
+		}
 		$ch = curl_init($url);
 
 		curl_setopt($ch, CURLOPT_NOBODY, true);
@@ -216,8 +231,8 @@ class Cache_Controller extends Base_Controller {
 		if ($retcode == 200)
 			return md5_file($url);
 		else {
-			Log::write("ERROR", "Attempted to MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
-			return "";
+			Log::write("ERROR", "Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
+			return $this->remote_mod_md5($mod, $version, $attempts + 1);
 		}
 	}
 
