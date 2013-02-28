@@ -61,7 +61,11 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Mod Library</li>
-              <li{{ $active = (URI::is('mod/list') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/list') }}">Mod List</a></li>
+              @section('navigation')
+              <li{{ $active = (URI::is('mod/list') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/list') }}"><i class="icon-book"></i> Mod List</a></li>
+              <li{{ $active = (URI::is('mod/search') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/search') }}"><i class="icon-search"></i> Search Mods</a></li>
+              <li{{ $active = (URI::is('mod/create') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/create') }}"><i class="icon-plus"></i> Add a Mod</a></li>
+              @yield_section
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

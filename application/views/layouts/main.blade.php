@@ -61,12 +61,12 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Solder</li>
-              <li{{ $active = (URI::is('dashboard') ? ' class="active"' : null) }}><a href="{{ URL::to('dashboard') }}">Dashboard</a></li>
-              <li{{ $active = (URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}">Edit My Account</a></li>
-              <li><a href="#">Statistics</a></li>
+              <li{{ $active = (URI::is('dashboard') ? ' class="active"' : null) }}><a href="{{ URL::to('dashboard') }}"><i class="icon-home"></i> Dashboard</a></li>
+              <li{{ $active = (URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}"><i class="icon-edit"></i> Edit My Account</a></li>
+              <li><a href="#"><i class="icon-info-sign"></i> Statistics</a></li>
               <li class="nav-header">Manage Solder Settings</li>
-              <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}">Configuration</a></li>
-              <li{{ $active = (URI::is('user/*') && !URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}">Manage Users</a></li>
+              <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}"><i class="icon-cog"></i> Configuration</a></li>
+              <li{{ $active = (URI::is('user/*') && !URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}"><i class="icon-user"></i> Manage Users</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
