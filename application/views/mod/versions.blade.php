@@ -2,8 +2,8 @@
 @section('navigation')
 @parent
 <li class="nav-header">Mod: {{ $mod->name }}</li>
-<li><a href="{{ URL::to('mod/view/'.$mod->id) }}">Mod Details</a>
-<li class="active"><a href="{{ URL::to('mod/versions/'.$mod->id) }}">Mod Versions</a></li>
+<li><a href="{{ URL::to('mod/view/'.$mod->id) }}"><i class="icon-align-left"></i> Mod Details</a>
+<li class="active"><a href="{{ URL::to('mod/versions/'.$mod->id) }}"><i class="icon-tag"></i> Mod Versions</a></li>
 @endsection
 @section('content')
 <h1>Mod Library</h1>
