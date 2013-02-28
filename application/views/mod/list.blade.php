@@ -1,4 +1,4 @@
-@layout('layouts\mod')
+@layout('layouts/mod')
 @section('navigation')
 @parent
 <li class="nav-header">Mod: None Selected</li>
