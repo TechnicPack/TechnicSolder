@@ -40,6 +40,7 @@ Route::controller('api');
 Route::controller('dashboard');
 Route::controller('solder');
 Route::controller('user');
+Route::controller('modpack');
 
 /**
  * Authentication Routes

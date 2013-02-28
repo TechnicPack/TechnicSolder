@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>TechnicSolder</title>
+    <title>TechnicSolder v{{ SOLDER_VERSION }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -47,8 +47,8 @@
               Logged in as <a href="#" class="navbar-link">{{ Auth::user()->email }}</a>. ({{ HTML::link('logout','Logout') }})
             </p>
             <ul class="nav">
-              <li class="active"><a href="/">Dashboard</a></li>
-              <li><a href="{{ URL::to('modpack') }}">Modpacks</a></li>
+              <li><a href="/">Dashboard</a></li>
+              <li class="active"><a href="#modpacks">Modpacks</a></li>
               <li><a href="#library">Mod Library</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -60,13 +60,11 @@
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Solder</li>
-              <li{{ $active = (URI::is('dashboard') ? ' class="active"' : null) }}><a href="{{ URL::to('dashboard') }}">Dashboard</a></li>
-              <li{{ $active = (URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}">Edit My Account</a></li>
-              <li><a href="#">Statistics</a></li>
-              <li class="nav-header">Manage Solder Settings</li>
-              <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}">Configuration</a></li>
-              <li{{ $active = (URI::is('user/*') && !URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}">Manage Users</a></li>
+              <li class="nav-header">Current Modpacks</li>
+              @foreach (Modpack::all() as $modpack)
+                <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><i class="icon-folder-open"></i> {{ $modpack->name }}</a></li>
+              @endforeach
+              <li><a href="#"><i class="icon-plus"></i> Create New Modpack</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
