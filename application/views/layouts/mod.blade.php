@@ -48,8 +48,8 @@
             </p>
             <ul class="nav">
               <li><a href="/">Dashboard</a></li>
-              <li class="active"><a href="{{ URL::to('modpack') }}">Modpacks</a></li>
-              <li><a href="{{ URL::to('mod/list') }}">Mod Library</a></li>
+              <li><a href="{{ URL::to('modpack') }}">Modpacks</a></li>
+              <li class="active"><a href="{{ URL::to('mod/list') }}">Mod Library</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -60,11 +60,8 @@
         <div class="span3">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Current Modpacks</li>
-              @foreach (Modpack::all() as $modpack)
-                <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><i class="icon-folder-open"></i> {{ $modpack->name }}</a></li>
-              @endforeach
-              <li><a href="#"><i class="icon-plus"></i> Create New Modpack</a></li>
+              <li class="nav-header">Mod Library</li>
+              <li{{ $active = (URI::is('mod/list') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/list') }}">Mod List</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

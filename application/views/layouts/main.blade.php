@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>TechnicSolder</title>
+    <title>TechnicSolder v{{ SOLDER_VERSION }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -49,7 +49,7 @@
             <ul class="nav">
               <li class="active"><a href="/">Dashboard</a></li>
               <li><a href="{{ URL::to('modpack') }}">Modpacks</a></li>
-              <li><a href="#library">Mod Library</a></li>
+              <li><a href="{{ URL::to('mod/list') }}">Mod Library</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
