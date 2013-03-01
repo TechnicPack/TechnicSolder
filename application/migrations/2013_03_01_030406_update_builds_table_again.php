@@ -1,6 +1,6 @@
 <?php
 
-class Update_Builds_Table {
+class Update_Builds_Table_Again {
 
 	/**
 	 * Make changes to the database.
