@@ -50,9 +50,12 @@ $("input[name=latest]").change(function() {
 });
 
 $(".published").change(function() {
+	var checked = 0;
+	if (this.checked)
+		checked = 1;
 	$.ajax({
 		type: "GET",
-		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + $(this).val(),
+		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + checked,
 		success: function (data) {
 			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}
