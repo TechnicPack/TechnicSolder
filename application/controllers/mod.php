@@ -10,8 +10,17 @@ class Mod_Controller extends Base_Controller {
 
 	public function action_list()
 	{
-		$mods = DB::table('mods')->paginate(20);
-		return View::make('mod.list')->with(array('mods' => $mods));
+		$search = Input::get('search');
+		if (!empty($search))
+		{
+			$mods = DB::table('mods')
+					->where('name','LIKE','%'.$search.'%')
+					->or_where('pretty_name', 'LIKE', '%'.$search.'%')
+					->paginate(20);
+		} else {
+			$mods = DB::table('mods')->paginate(20);
+		}
+		return View::make('mod.list')->with(array('mods' => $mods,'search' => $search));
 	}
 
 	public function action_view($mod_id = null)

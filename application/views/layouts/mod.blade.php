@@ -63,7 +63,6 @@
               <li class="nav-header">Mod Library</li>
               @section('navigation')
               <li{{ $active = (URI::is('mod/list') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/list') }}"><i class="icon-book"></i> Mod List</a></li>
-              <li{{ $active = (URI::is('mod/search') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/search') }}"><i class="icon-search"></i> Search Mods</a></li>
               <li{{ $active = (URI::is('mod/create') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/create') }}"><i class="icon-plus"></i> Add a Mod</a></li>
               @yield_section
             </ul>
@@ -77,7 +76,7 @@
       <hr>
 
       <footer>
-        <p>Technic Solder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
+        <p>TechnicSolder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
         <p style="font-size: smaller">TechnicSolder is an open source project. It is under the MIT license. Feel free to do whatever you want!</p>
       </footer>
 

@@ -78,7 +78,7 @@
       <hr>
 
       <footer>
-        <p>Technic Solder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
+        <p>TechnicSolder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
         <p style="font-size: smaller">TechnicSolder is an open source project. It is under the MIT license. Feel free to do whatever you want!</p>
       </footer>
 

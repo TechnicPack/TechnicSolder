@@ -27,6 +27,6 @@
 	<textarea name="description" id="description" class="input-xxlarge" rows="5">{{ $mod->description }}</textarea>
 	<label for="link">Mod Website</label>
 	<input type="text" name="link" id="link" class="input-xxlarge" value="{{ $mod->link }}">
-	{{ Form::actions(array(Button::primary_submit('Save changes'))) }}
+	{{ Form::actions(array(Button::primary_submit('Save changes'),Button::danger_link('mod/delete/'.$mod->id,'Delete Mod'))) }}
 </form>
 @endsection

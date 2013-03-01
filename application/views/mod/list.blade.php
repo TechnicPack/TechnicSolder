@@ -6,8 +6,12 @@
 @section('content')
 <h1>Mod Library</h1>
 <hr>
-<div style="text-align:center">
-	{{ $mods->links() }}
+<div>
+	<form class="form-search" method="get" action="{{ URL::current() }}">
+	  <input type="text" name="search" value="{{ $search }}" class="input-medium search-query">
+	  <button type="submit" class="btn">Search</button>
+	</form>
+	{{ $mods->appends(array('search' => $search))->links(3,null, Paginator::SIZE_SMALL) }}
 </div>
 {{ Table::open() }}
 {{ Table::headers('#','Mod Name', 'Author', '') }}
@@ -24,7 +28,5 @@
 	</tr>
 @endforeach
 {{ Table::close() }}
-<div style="text-align:center">
-	{{ $mods->links() }}
-</div>
+{{ $mods->appends(array('search' => $search))->links(3,null, Paginator::SIZE_SMALL) }}
 @endsection
