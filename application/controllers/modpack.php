@@ -30,14 +30,62 @@ class Modpack_Controller extends Base_Controller {
 		if (empty($build_id))
 			return Redirect::to('modpack');
 
-		if ($build_id == "create")
-			return View::make('modpack.build.create');
-
 		$build = Build::find($build_id);
 		if (empty($build))
 			return Redirect::to('modpack');
 
 		return View::make('modpack.build.view')->with('build', $build);
+	}
+
+	public function action_addbuild($modpack_id)
+	{
+		if (empty($modpack_id))
+			return Redirect::to('modpack');
+
+		$modpack = Modpack::find($modpack_id);
+		if (empty($modpack))
+			return Redirect::to('modpack');
+
+		return View::make('modpack.build.create')->with(array('modpack' => $modpack));
+	}
+
+	public function action_do_addbuild($modpack_id)
+	{
+		if (empty($modpack_id))
+			return Redirect::to('modpack');
+
+		$modpack = Modpack::find($modpack_id);
+		if (empty($modpack))
+			return Redirect::to('modpack');
+
+		$rules = array(
+			"version" => "required",
+			);
+
+		$messages = array('version_required' => "You must enter in the build number.");
+
+		$validation = Validator::make(Input::all(), $rules, $messages);
+		if ($validation->fails())
+			return Redirect::back()->with_errors($validation->errors);
+
+		$clone = Input::get('clone');
+		$build = new Build();
+		$build->modpack_id = $modpack->id;
+		$build->version = Input::get('version');
+		$build->save();
+		if (!empty($clone))
+		{
+			$clone_build = Build::find($clone);
+			$version_ids = array();
+			foreach ($clone_build->modversions as $cver)
+			{
+				if (!empty($cver))
+					array_push($version_ids, $cver->id);
+			}
+			$build->modversions()->sync($version_ids);
+		}
+
+		return Redirect::to('modpack/build/'.$build->id);
 	}
 
 	public function action_create()

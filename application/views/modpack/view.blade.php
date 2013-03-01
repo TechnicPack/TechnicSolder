@@ -4,7 +4,7 @@
 <hr>
 <h2>{{ $modpack->name }}</h2>
 <hr>
-<button class="btn btn-primary pull-right" href="{{ URL::to('modpack/build/create') }}">Create New Build</button>
+<a class="btn btn-primary pull-right" href="{{ URL::to('modpack/addbuild/'.$modpack->id) }}">Create New Build</a>
 {{ Table::open() }}
 {{ Table::headers('#', 'Build Number', 'Mod Count', 'Created', '') }}
 @foreach ($modpack->builds as $build)

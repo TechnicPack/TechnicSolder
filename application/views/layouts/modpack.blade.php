@@ -62,7 +62,7 @@
             <ul class="nav nav-list">
               <li class="nav-header">Current Modpacks</li>
               @foreach (Modpack::all() as $modpack)
-                <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.repo_location').$modpack->slug.'/resources/icon.png' }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}</a></li>
+                <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.mirror_url').$modpack->slug.'/resources/icon.png' }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}</a></li>
               @endforeach
               <li{{ $active = (URI::is('modpack/create') ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/create') }}"><i class="icon-plus"></i> Create New Modpack</a></li>
             </ul>
