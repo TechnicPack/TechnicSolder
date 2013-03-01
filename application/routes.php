@@ -41,6 +41,7 @@ Route::controller('dashboard');
 Route::controller('solder');
 Route::controller('user');
 Route::post('/modpack/create', 'modpack@do_create');
+Route::post('/modpack/addbuild/(:num)', 'modpack@do_addbuild');
 Route::controller('modpack');
 Route::controller('mod');
 

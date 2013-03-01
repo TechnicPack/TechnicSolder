@@ -20,7 +20,7 @@
 {{ Form::horizontal_open() }}
 {{ Form::control_group(Form::label('name', 'Modpack Name'), Form::xxlarge_text('name')) }}
 {{ Form::control_group(Form::label('slug', 'Modpack Slug'), Form::xxlarge_text('slug')) }}
-{{ Form::actions(array(Button::primary_submit('Save changes'))) }}
+{{ Form::actions(array(Button::primary_submit('Create Modpack'))) }}
 {{ Form::close() }}
 <script type="text/javascript">
 $("#slug").slugify('#name');
