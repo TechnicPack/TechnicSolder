@@ -7,6 +7,11 @@
 <a class="btn btn-primary pull-right" href="{{ URL::to('modpack/addbuild/'.$modpack->id) }}">Create New Build</a>
 <div class="alert alert-success" id="success-ajax" style="width: 500px;display: none">
 </div>
+@if (Session::has('deleted'))
+<div class="alert alert-error">
+	{{ Session::get('deleted') }}
+</div>
+@endif
 {{ Table::open() }}
 {{ Table::headers('#', 'Build Number', 'Mod Count', 'Rec', 'Latest', 'Published', 'Created', '') }}
 @foreach ($modpack->builds as $build)
@@ -29,7 +34,7 @@ $("input[name=recommended]").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/recommended?modpack='.$modpack->id) }}&recommended=" + $(this).val(),
 		success: function (data) {
-			$("#success-ajax").html(data.success).fadeIn().delay(2000).fadeOut();
+			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}
 	});
 });
@@ -39,7 +44,7 @@ $("input[name=latest]").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/latest?modpack='.$modpack->id) }}&latest=" + $(this).val(),
 		success: function (data) {
-			$("#success-ajax").html(data.success).fadeIn().delay(2000).fadeOut();
+			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}
 	});
 });
@@ -49,7 +54,7 @@ $(".published").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + $(this).val(),
 		success: function (data) {
-			$("#success-ajax").html(data.success).fadeIn().delay(2000).fadeOut();
+			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}
 	})
 });

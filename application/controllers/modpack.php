@@ -34,7 +34,18 @@ class Modpack_Controller extends Base_Controller {
 		if (empty($build))
 			return Redirect::to('modpack');
 
-		return View::make('modpack.build.view')->with('build', $build);
+		if (Input::get('action') == "delete")
+		{
+			if (Input::get('confirm-delete'))
+			{
+				$build->modversions()->delete();
+				$build->delete();
+				return Redirect::to('modpack/view/'.$build->modpack->id)->with('deleted','Build deleted.');
+			}
+
+			return View::make('modpack.build.delete')->with('build', $build);
+		} else
+			return View::make('modpack.build.view')->with('build', $build);
 	}
 
 	public function action_addbuild($modpack_id)
