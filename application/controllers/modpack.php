@@ -137,7 +137,7 @@ class Modpack_Controller extends Base_Controller {
 	}
 
 	/**
-	 * AJAX Methods for Modpack Build Manager
+	 * AJAX Methods for Modpack Manager
 	 **/
 	public function action_modify($action = null)
 	{
@@ -167,6 +167,29 @@ class Modpack_Controller extends Base_Controller {
 								'pretty_name' => $mod->pretty_name,
 								'version' => $ver->version,
 								));
+				break;
+			case "recommended":
+				$modpack = Modpack::find(Input::get('modpack'));
+				$new_version = Input::get('recommended');
+				$modpack->recommended = $new_version;
+				$modpack->save();
+
+				return Response::json(array(
+						"success" => "Updated ".$modpack->name."'s recommended  build to ".$new_version,
+						"version" => $new_version
+					));
+				break;
+			case "latest":
+				$modpack = Modpack::find(Input::get('modpack'));
+				$new_version = Input::get('latest');
+				$modpack->latest = $new_version;
+				$modpack->save();
+
+				return Response::json(array(
+						"success" => "Updated ".$modpack->name."'s latest  build to ".$new_version,
+						"version" => $new_version
+					));
+				break;
 		}
 	}
 
