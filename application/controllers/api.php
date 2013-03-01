@@ -7,7 +7,8 @@ class API_Controller extends Base_Controller {
 	{
 		return Response::json(array(
 				'api'     => 'TechnicSolder', 
-				'version' => SOLDER_VERSION
+				'version' => SOLDER_VERSION,
+				'stream' => SOLDER_STREAM
 				));
 	}
 
@@ -124,7 +125,8 @@ class API_Controller extends Base_Controller {
 
 		foreach ($modpack->builds as $build)
 		{
-			array_push($response['builds'], $build->version);
+			if ($build->is_published)
+				array_push($response['builds'], $build->version);
 		}
 
 		return $response;

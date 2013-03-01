@@ -190,6 +190,16 @@ class Modpack_Controller extends Base_Controller {
 						"version" => $new_version
 					));
 				break;
+			case "published":
+				$build = Build::find(Input::get('build'));
+				$published = Input::get('published');
+				
+				$build->is_published = ($published ? true : false);
+				$build->save();
+
+				return Response::json(array(
+						"success" => "Updated build ".$build->version."'s published status.",
+					));
 		}
 	}
 

@@ -8,7 +8,7 @@
 <div class="alert alert-success" id="success-ajax" style="width: 500px;display: none">
 </div>
 {{ Table::open() }}
-{{ Table::headers('#', 'Build Number', 'Mod Count', 'Rec', 'Latest', 'Created', '') }}
+{{ Table::headers('#', 'Build Number', 'Mod Count', 'Rec', 'Latest', 'Published', 'Created', '') }}
 @foreach ($modpack->builds as $build)
 	<tr>
 		<td>{{ $build->id }}</td>
@@ -16,8 +16,9 @@
 		<td>{{ count($build->modversions) }}</td>
 		<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
 		<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>
+		<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ $checked = ($build->is_published ? " checked" : "") }}></td>
 		<td>{{ $build->created_at }}</td>
-		<td>{{ HTML::link('modpack/build/'.$build->id, "Manage") }}</td>
+		<td>{{ HTML::link('modpack/build/'.$build->id, "Manage",'class="btn btn-small btn-primary"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-small btn-danger"') }}</td>
 	</tr>
 @endforeach
 {{ Table::close() }}
@@ -41,6 +42,16 @@ $("input[name=latest]").change(function() {
 			$("#success-ajax").html(data.success).fadeIn().delay(2000).fadeOut();
 		}
 	});
+});
+
+$(".published").change(function() {
+	$.ajax({
+		type: "GET",
+		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + $(this).val(),
+		success: function (data) {
+			$("#success-ajax").html(data.success).fadeIn().delay(2000).fadeOut();
+		}
+	})
 });
 
 </script>
