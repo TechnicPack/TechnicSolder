@@ -16,6 +16,18 @@
 	@endif
 </h2>
 <hr>
+@if ($errors->all())
+	<div class="alert alert-error">
+	@foreach ($errors->all() as $error)
+		{{ $error }}<br />
+	@endforeach
+	</div>
+@endif
+@if (Session::has('success'))
+	<div class="alert alert-success">
+		{{ Session::get('success') }}
+	</div>
+@endif
 <form method="post" action="{{ URL::to('mod/view/'.$mod->id) }}">
 	<label for="pretty_name">Mod Name</label>
 	<input type="text" name="pretty_name" id="pretty_name" class="input-xxlarge" value="{{ $mod->pretty_name }}">

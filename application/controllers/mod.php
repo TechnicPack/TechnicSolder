@@ -35,6 +35,75 @@ class Mod_Controller extends Base_Controller {
 		return View::make('mod.view')->with(array('mod' => $mod));
 	}
 
+	public function action_delete($mod_id = null)
+	{
+		if (empty($mod_id))
+			return Redirect::to('mod/list');
+
+		$mod = Mod::find($mod_id);
+		if (empty($mod))
+			return Redirect::to('mod/list');
+
+		return View::make('mod.delete')->with(array('mod' => $mod));
+	}
+
+	public function action_do_modify($mod_id = null)
+	{
+		if (empty($mod_id))
+			return Redirect::to('mod/list');
+
+		$mod = Mod::find($mod_id);
+		if (empty($mod))
+			return Redirect::to('mod/list');
+
+		$rules = array(
+			'pretty_name' => 'required',
+			'name' => 'required|unique:mods,name,'.$mod->id,
+			);
+
+		$messages = array(
+			'pretty_name_required' => 'You must enter in a Mod Name',
+			'name_required' => 'You must enter a Mod Slug',
+			'name_unique' => 'The slug you entered is already in use by another mod',
+			);
+
+		$validation = Validator::make(Input::all(), $rules, $messages);
+		if ($validation->fails())
+			return Redirect::back()->with_errors($validation->errors);
+
+		try {
+			$mod->pretty_name = Input::get('pretty_name');
+			$mod->name = Input::get('name');
+			$mod->author = Input::get('author');
+			$mod->description = Input::get('description');
+			$mod->link = Input::get('link');
+			$mod->save();
+
+			return Redirect::back()->with('success','Mod successfully edited.');
+		} catch (Exception $e) {
+			Log::exception($e);
+		}
+	}
+
+	public function action_do_delete($mod_id = null)
+	{
+		if (empty($mod_id))
+			return Redirect::to('mod/list');
+
+		$mod = Mod::find($mod_id);
+		if (empty($mod))
+			return Redirect::to('mod/list');
+
+		foreach ($mod->versions as $ver)
+		{
+			$ver->builds()->delete();
+			$ver->delete();
+		}
+		$mod->delete();
+
+		return Redirect::to('mod/list')->with('deleted','Mod deleted!');
+	}
+
 	public function action_versions($mod_id = null)
 	{
 		if (empty($mod_id))

@@ -6,6 +6,11 @@
 @section('content')
 <h1>Mod Library</h1>
 <hr>
+@if (Session::has('deleted'))
+<div class="alert alert-error">
+	{{ Session::get('deleted') }}
+</div>
+@endif
 <div>
 	<form class="form-search" method="get" action="{{ URL::current() }}">
 	  <input type="text" name="search" value="{{ $search }}" class="input-medium search-query">
