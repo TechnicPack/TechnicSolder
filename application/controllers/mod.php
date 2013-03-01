@@ -35,6 +35,42 @@ class Mod_Controller extends Base_Controller {
 		return View::make('mod.view')->with(array('mod' => $mod));
 	}
 
+	public function action_create()
+	{
+		Asset::add('jquery', 'js/jquery.slugify.js');
+		return View::make('mod.create');
+	}
+
+	public function action_do_create()
+	{
+		$rules = array(
+			'name' => 'required|unique:mods',
+			'pretty_name' => 'required'
+			);
+		$messages = array(
+			'name_required' => 'You must fill in a mod slug name.',
+			'name_unique' => 'The slug you entered is already taken',
+			'pretty_name_required' => 'You must enter in a mod name'
+			);
+
+		$validation = Validator::make(Input::all(), $rules, $messages);
+		if ($validation->fails())
+			return Redirect::back()->with_errors($validation->errors);
+
+		try {
+			$mod = new Mod();
+			$mod->name = Str::slug(Input::get('name'));
+			$mod->pretty_name = Input::get('pretty_name');
+			$mod->author = Input::get('author');
+			$mod->description = Input::get('description');
+			$mod->link = Input::get('link');
+			$mod->save();
+			return Redirect::to('mod/view/'.$mod->id);
+		} catch (Exception $e) {
+			Log::exception($e);
+		}
+	}
+
 	public function action_delete($mod_id = null)
 	{
 		if (empty($mod_id))

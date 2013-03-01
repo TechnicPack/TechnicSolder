@@ -38,8 +38,29 @@ class Modpack_Controller extends Base_Controller {
 		{
 			if (Input::get('confirm-delete'))
 			{
+				$switchrec = 0;
+				$switchlat = 0;
+				$modpack = $build->modpack;
+				if ($build->version == $modpack->recommended)
+					$switchrec = 1;
+				if ($build->version == $modpack->latest)
+					$switchlat = 1;
 				$build->modversions()->delete();
 				$build->delete();
+				if ($switchrec)
+				{
+					$recbuild = Build::where('modpack_id','=',$modpack->id)
+										->order_by('id','desc')->first();
+					$modpack->recommended = $recbuild->version;
+				}
+
+				if ($switchlat)
+				{
+					$latbuild = Build::where('modpack_id','=',$modpack->id)
+										->order_by('id','desc')->first();
+					$modpack->latest = $latbuild->version;
+				}
+				$modpack->save();
 				return Redirect::to('modpack/view/'.$build->modpack->id)->with('deleted','Build deleted.');
 			}
 
