@@ -13,11 +13,12 @@
 </div>
 @endif
 {{ Table::open() }}
-{{ Table::headers('#', 'Build Number', 'Mod Count', 'Rec', 'Latest', 'Published', 'Created', '') }}
+{{ Table::headers('#', 'Build Number', 'MC Version', 'Mod Count', 'Rec', 'Latest', 'Created','Published', '') }}
 @foreach ($modpack->builds as $build)
 	<tr>
 		<td>{{ $build->id }}</td>
 		<td>{{ $build->version }}</td>
+		<td>{{ $build->minecraft }}</td>
 		<td>{{ count($build->modversions) }}</td>
 		<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
 		<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>

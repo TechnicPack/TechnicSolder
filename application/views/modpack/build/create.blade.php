@@ -19,6 +19,16 @@
 	</div>
 </div>
 <div class="control-group">
+	<label class="control-label" for="minecraft">Minecraft Version</label>
+	<div class="controls">
+		<select name="minecraft">
+			<option value="1.4.7">1.4.7</option>
+			<option value="1.4.6">1.4.6</option>
+			<option value="1.2.5">1.2.5</option>
+		</select>
+	</div>
+</div>
+<div class="control-group">
 	<label class="control-label" for="slug">Clone Build</label>
 	<div class="controls">
 		<select name="clone">

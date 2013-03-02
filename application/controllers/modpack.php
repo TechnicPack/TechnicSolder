@@ -104,6 +104,7 @@ class Modpack_Controller extends Base_Controller {
 		$build = new Build();
 		$build->modpack_id = $modpack->id;
 		$build->version = Input::get('version');
+		$build->minecraft = Input::get('minecraft');
 		$build->save();
 		if (!empty($clone))
 		{
@@ -130,9 +131,9 @@ class Modpack_Controller extends Base_Controller {
 	{
 		Validator::register('checkresources', function($attribute, $value, $parameters)
 		{
-			if ($this->check_resource($value,"logo_180.png") && 
-				$this->check_resource($value,"icon.png") && 
-				$this->check_resource($value,"background.jpg"))
+			if (FileUtils::check_resource($value,"logo_180.png") && 
+				FileUtils::check_resource($value,"icon.png") && 
+				FileUtils::check_resource($value,"background.jpg"))
 				return true;
 			else
 				return false;
@@ -233,27 +234,5 @@ class Modpack_Controller extends Base_Controller {
 						"success" => "Updated build ".$build->version."'s published status.",
 					));
 		}
-	}
-
-	private function check_resource($slug,$resource)
-	{
-		$url = Config::get('solder.repo_location').$slug.'/resources/'.$resource;
-		if (file_exists($url))
-			return true;
-		else
-		{
-			$ch = curl_init($url);
-
-			curl_setopt($ch, CURLOPT_NOBODY, true);
-			curl_exec($ch);
-			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			curl_close($ch);
-			if ($retcode == 200)
-				return true;
-			else {
-				return false;
-			}
-		}
-
 	}
 }
