@@ -154,7 +154,8 @@ class Modpack_Controller extends Base_Controller {
 
 		if ($validation->fails())
 			return Redirect::back()->with_errors($validation->errors);
-		$url = Config::get('solder.repo_location').$slug.'/resources/';
+
+		$url = Config::get('solder.repo_location').Input::get('slug').'/resources/';
 		try {
 			$modpack = new Modpack();
 			$modpack->name = Input::get('name');
