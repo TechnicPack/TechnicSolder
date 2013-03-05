@@ -181,13 +181,15 @@ class Modpack_Controller extends Base_Controller {
 		switch ($action)
 		{
 			case "version":
-				$sql = 'UPDATE `build_modversion` SET modversion_id=? WHERE id=?';
-				$affected = DB::query($sql,array(Input::get('version'), Input::get('pivot_id')));
+				$affected = DB::table('build_modversion')
+							->where('id','=', Input::get('pivot_id'))
+							->update(array('modversion_id' => Input::get('version')));
 				return Response::json(array('success' => 'Rows Affected: '.$affected));
 				break;
 			case "delete":
-				$sql = 'DELETE FROM `build_modversion` WHERE id=?';
-				$affected = DB::query($sql,array(Input::get('pivot_id')));
+				$affected = DB::table('build_modversion')
+							->where('id','=', Input::get('pivot_id'))
+							->delete();
 				return Response::json(array('success' => 'Rows Affected: '.$affected));
 				break;
 			case "add":
