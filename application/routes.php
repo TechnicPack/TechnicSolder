@@ -35,7 +35,6 @@
 Route::get('/', function() {
 	return Redirect::to('dashboard');
 });
-Route::controller('cache');
 Route::controller('api');
 Route::controller('dashboard');
 Route::controller('solder');

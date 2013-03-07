@@ -25,6 +25,7 @@
 			<option value="1.4.7">1.4.7</option>
 			<option value="1.4.6">1.4.6</option>
 			<option value="1.2.5">1.2.5</option>
+			<option value="1.2.3">1.2.3</option>
 		</select>
 	</div>
 </div>

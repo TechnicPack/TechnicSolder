@@ -13,7 +13,7 @@
 </div>
 @endif
 {{ Table::open() }}
-{{ Table::headers('#', 'Build Number', 'MC Version', 'Mod Count', 'Rec', 'Latest', 'Created','Published', '') }}
+{{ Table::headers('#', 'Build Number', 'MC Version', 'Mod Count', 'Rec', 'Latest', 'Published','Created', '') }}
 @foreach ($modpack->builds as $build)
 	<tr>
 		<td>{{ $build->id }}</td>
