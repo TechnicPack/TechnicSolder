@@ -32,14 +32,22 @@ Once you have everything filled in for your configuration, you will need to migr
 
 This will configure your database and get it ready to handle your first import.
 
-Finally, you will need to just run your cache update script. This can take awhile on its first run depending on the size of your mod repository. Adjust the URL below to reflect your own install and enter it into your browser. Let it do its thing!
+**Solder is now fully interfaced!** You no longer need to use the cache/update method. In fact, it's been completely removed. Once you have Solder configured, just access it at the url you set it up on and log in.
 
-> http://yoursolderinstall/cache/update
+The default user information is:
+
+> Email: admin@admin.com
+> Password: admin
+
+Change this information as soon as you log in!
 
 That's it! Your Solder is configured and ready to rock. Whenever you make changes to your mod repository make sure to run the cache update or your players won't see it.
 
 Updating Solder
 ---------------
+
+**Are you updating from an old version of Solder before we had the UI?**
+You will need to make sure to move over all of the configuration files again. There have been several changes to the configuration that you *must* bring over. This shouldn't happen again.
 
 Solder waits for no one! If you use Solder you need to make sure it's up to date. Issues you may be having may have already been resolved in a recent commit. Who knows! Updating is simple.
 
