@@ -153,3 +153,19 @@ Route::filter('modpack', function($modpack)
 			->with('permission','You do not have permission to access this area.');
 	}
 });
+
+Route::filter('build', function($build)
+{
+	$perm = Auth::user()->permission;
+	$build = Build::find($build);
+	if (empty($build))
+		return Redirect::to('dashboard');
+
+	$modpack = $build->modpack;
+
+	if (!$perm->solder_full && !in_array($modpack->id, $perm->modpacks))
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});

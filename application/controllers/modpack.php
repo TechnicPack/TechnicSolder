@@ -10,7 +10,9 @@ class Modpack_Controller extends Base_Controller {
 		$this->filter('before', 'perm', array('solder_create'))
 			->only(array('create'));
 		$this->filter('before', 'modpack', array(URI::segment(3)))
-			->except(array('index'));
+			->only(array('view','create'));
+		$this->filter('before', 'build', array(URI::segment(3)))
+			->only(array('build'));
 	}
 
 	public function action_index()
