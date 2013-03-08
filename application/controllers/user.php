@@ -95,7 +95,7 @@ class User_Controller extends Base_Controller {
 
     public function action_create()
     {
-    	if (!Auth::user()->permission->solder_users)
+    	if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users)
     		return Redirect::to('dashboard')
     			->with('permission','You do not have permission to access this area.');
         return View::make('user.create');
