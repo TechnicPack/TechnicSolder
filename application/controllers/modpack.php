@@ -5,7 +5,12 @@ class Modpack_Controller extends Base_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->fi1lter('before','auth');
+		$this->filter('before','auth');
+		$this->filter('before', 'perm', array('solder_modpacks'));
+		$this->filter('before', 'perm', array('solder_create'))
+			->only(array('create'));
+		$this->filter('before', 'modpack', array(URI::segment(3)))
+			->except(array('index'));
 	}
 
 	public function action_index()

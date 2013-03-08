@@ -6,6 +6,13 @@ class Mod_Controller extends Base_Controller {
 	{
 		parent::__construct();
 		$this->filter('before','auth');
+		$this->filter('before', 'perm', array('solder_mods'));
+		$this->filter('before', 'perm', array('mods_manage'))
+			->only(array('view','versions'));
+		$this->filter('before', 'perm', array('mods_create'))
+			->only(array('create'));
+		$this->filter('before', 'perm', array('mods_delete'))
+			->only(array('delete'));
 	}
 
 	public function action_list()

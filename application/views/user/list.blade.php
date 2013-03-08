@@ -2,6 +2,9 @@
 @section('content')
 <h1>User Management</h1>
 <hr>
+<div class="pull-right">
+    <a href="{{ URL::to('user/create') }}" class="btn btn-success">Create User</a>
+</div>
 <h2>User List</h2>
 {{ Table::open() }}
 {{ Table::headers('#', 'Email', 'Username', 'Created', '') }}

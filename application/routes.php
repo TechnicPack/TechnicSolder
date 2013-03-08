@@ -129,3 +129,25 @@ Route::filter('auth', function()
 {
 	if (Auth::guest()) return Redirect::to('login');
 });
+
+Route::filter('perm', function($check)
+{
+	$perm = (array) Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm[$check])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('modpack', function($modpack)
+{
+	$perm = Auth::user()->permission;
+
+	if (!$perm->solder_full && !in_array($modpack, $perm->modpacks))
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});

@@ -6,6 +6,7 @@ class User_Controller extends Base_Controller {
 	{
 		parent::__construct();
 		$this->filter('before', 'auth');
+		$this->filter('before', 'perm', array('solder_users'))->except('list');
 	}
 
 	public function action_list()
@@ -45,6 +46,35 @@ class User_Controller extends Base_Controller {
 				{
 					$user->password = Hash::make(Input::get('password1'));
 				}
+
+				/* Update User Permissions */
+				$perm = $user->permission;
+
+				/* If user is original admin, always give full access. */
+				if ($user->id == 1)
+				{
+					$perm->solder_full = true;
+				} else {
+					$perm->solder_full = Input::get('solder-full') ? true : false;
+				}
+				$perm->solder_users = Input::get('manage-users') ? true : false;
+				$perm->solder_modpacks = Input::get('manage-packs') ? true : false;
+				$perm->solder_mods = Input::get('manage-mods') ? true : false;
+				$perm->solder_create = Input::get('solder-create') ? true: false;
+
+				$perm->mods_create = Input::get('mod-create') ? true : false;
+				$perm->mods_manage = Input::get('mod-manage') ? true : false;
+				$perm->mods_delete = Input::get('mod-delete') ? true : false;
+
+				$modpack = Input::get('modpack');
+
+				if (!empty($modpack))
+					$perm->modpacks = $modpack;
+				else
+					$perm->modpacks = null;
+
+				$perm->save();
+
 				$user->save();
 
 				return Redirect::back()->with('success','User edited successfully!');
@@ -55,4 +85,9 @@ class User_Controller extends Base_Controller {
 
 		return View::make('user.edit')->with('user', $user);
 	}
+
+    public function action_create()
+    {
+        return View::make('user.create');
+    }
 }
