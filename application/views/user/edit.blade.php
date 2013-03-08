@@ -25,6 +25,7 @@
 {{ Form::control_group(Form::label('password1', 'Password'), Form::xxlarge_password('password1')) }}
 {{ Form::control_group(Form::label('password2', 'Password Again'), Form::xxlarge_password('password2')) }}
 <hr>
+@if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users)
 <h3>Permissions</h3>
 <p>
     Please select the level of access this user will be given. The "Solderwide" permission is required to access a specific section. (Ex. Manage Modpacks is required for anyone to access even the list of modpacks. They will also need the respective permission for each modpack they should have access to.)
@@ -55,6 +56,7 @@
         @endforeach
     </div>
 </div>
+@endif
 <?php echo Form::actions(array(
 			Button::primary_submit('Save changes'),
 			Button::link(URL::to('user/list'),'Go Back')

@@ -38,6 +38,8 @@ Route::get('/', function() {
 Route::controller('api');
 Route::controller('dashboard');
 Route::controller('solder');
+Route::post('/user/create', 'user@do_create');
+Route::post('/user/delete/(:num)', 'user@do_delete');
 Route::controller('user');
 Route::post('/modpack/create', 'modpack@do_create');
 Route::post('/modpack/addbuild/(:num)', 'modpack@do_addbuild');
