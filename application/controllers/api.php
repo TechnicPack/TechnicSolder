@@ -29,7 +29,14 @@ class API_Controller extends Base_Controller {
 		if (empty($mod))
 			return Response::json(array("error" => "No mod requested"));
 
-		$mod = Mod::where('name', '=', $mod)->first();
+		if (Cache::has('mod.'.$mod))
+		{
+			$mod = Cache::get('mod.'.$mod);
+		} else {
+			$modname = $mod;
+			$mod = Mod::where('name', '=', $mod)->first();
+			Cache::put('mod.'.$modname,$mod,5);
+		}
 
 		if (empty($mod))
 			return Response::json(array('error' => 'Mod does not exist'));
@@ -91,7 +98,13 @@ class API_Controller extends Base_Controller {
 
 	private function fetch_modpacks()
 	{
-		$modpacks = Modpack::all();
+		if (Cache::has('modpacks'))
+		{
+			$modpacks = Cache::get('modpacks');
+		} else {
+			$modpacks = Modpack::all();
+			Cache::put('modpacks', $modpacks, 5);
+		}
 
 		$response = array();
 		$response['modpacks'] = array();
@@ -109,7 +122,14 @@ class API_Controller extends Base_Controller {
 	{
 		$response = array();
 
-		$modpack = Modpack::where("slug","=",$slug)->first();
+		if (Cache::has('modpack.'.$slug))
+		{
+			$modpack = Cache::Get('modpack.'.$slug);
+		} else {
+			$modpack = Modpack::where("slug","=",$slug)->first();
+			Cache::put('modpack.'.$slug,$modpack,5);
+		}
+		
 
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
@@ -136,13 +156,27 @@ class API_Controller extends Base_Controller {
 	{
 		$response = array();
 
-		$modpack = Modpack::where("slug","=",$slug)->first();
+		if (Cache::has('modpack.'.$slug))
+		{
+			$modpack = Cache::Get('modpack.'.$slug);
+		} else {
+			$modpack = Modpack::where("slug","=",$slug)->first();
+			Cache::put('modpack.'.$slug,$modpack,5);
+		}
 
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
-
-		$build = Build::where("modpack_id", "=", $modpack->id)
+			
+		$buildpass = $build;
+		if (Cache::has('modpack.'.$slug.'.build.'.$build))
+		{
+			$build = Cache::get('modpack.'.$slug.'.build.'.$build);
+		} else {
+			$build = Build::with('ModVersions')
+						->where("modpack_id", "=", $modpack->id)
 						->where("version", "=", $build)->first();
+			Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
+		}
 
 		if (empty($build))
 			return array("error" => "Build does not exist");
