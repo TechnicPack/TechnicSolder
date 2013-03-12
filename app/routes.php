@@ -13,5 +13,7 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+	return Redirect::to('dashboard');
 });
+
+Route::controller('api', 'ApiController');
