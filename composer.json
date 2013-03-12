@@ -1,0 +1,16 @@
+{
+	"name": "solder/solder",
+	"type": "application",
+	"description": "Technic Solder API using Laravel Framework",
+	"homepage": "https://github.com/TechnicPack/TechnicSolder",
+	"license": "MIT",
+	"authors": [{
+		"name": "Ryan Cohen",
+		"email": "sctsnipe@gmail.com",
+		"homepage": "http://www.sctgaming.com",
+		"role": "Developer"
+		}],
+	"require": {
+		"php": ">=5.3.0"
+	}
+}
