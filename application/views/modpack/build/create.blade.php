@@ -22,10 +22,9 @@
 	<label class="control-label" for="minecraft">Minecraft Version</label>
 	<div class="controls">
 		<select name="minecraft">
-			<option value="1.4.7">1.4.7</option>
-			<option value="1.4.6">1.4.6</option>
-			<option value="1.2.5">1.2.5</option>
-			<option value="1.2.3">1.2.3</option>
+			@foreach ($minecraft as $version)
+			<option value="{{ $version->version }}:{{ $version->md5 }}">{{ $version->version }}</option>
+			@endforeach
 		</select>
 	</div>
 </div>

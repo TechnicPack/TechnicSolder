@@ -28,6 +28,15 @@ return array(
 	 **/
 	'platform_key' => '',
 
+	/**
+	 * Minecraft Version API
+	 * 
+	 * Do not touch this field unless you have an API that returns exactly the same
+	 * response as the default Technic one. This URL is used to checked what Minecraft
+	 * versions are currently compatible with the launcher.
+	 */
+	'minecraft_api' => 'http://www.technicpack.net/api/minecraft',
+
 );
 
 ?>

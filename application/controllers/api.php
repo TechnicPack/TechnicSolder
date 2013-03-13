@@ -182,6 +182,7 @@ class API_Controller extends Base_Controller {
 			return array("error" => "Build does not exist");
 
 		$response['minecraft'] = $build->minecraft;
+		$response['minecraft_md5'] = $build->minecraft_md5;
 		$response['forge'] = $build->forge;
 		$response['mods'] = array();
 

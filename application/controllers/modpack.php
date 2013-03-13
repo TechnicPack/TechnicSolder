@@ -2,6 +2,8 @@
 
 class Modpack_Controller extends Base_Controller {
 
+	const MINECRAFT_API = 'http://www.technicpack.net/api/minecraft';
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -85,7 +87,13 @@ class Modpack_Controller extends Base_Controller {
 		if (empty($modpack))
 			return Redirect::to('modpack');
 
-		return View::make('modpack.build.create')->with(array('modpack' => $modpack));
+		$minecraft = $this->getMinecraft();
+
+		return View::make('modpack.build.create')
+			->with(array(
+				'modpack' => $modpack,
+				'minecraft' => $minecraft
+				));
 	}
 
 	public function action_do_addbuild($modpack_id)
@@ -111,7 +119,11 @@ class Modpack_Controller extends Base_Controller {
 		$build = new Build();
 		$build->modpack_id = $modpack->id;
 		$build->version = Input::get('version');
-		$build->minecraft = Input::get('minecraft');
+
+		$minecraft = explode(':', Input::get('minecraft'));
+
+		$build->minecraft = $minecraft[0];
+		$build->minecraft_md5 = $minecraft[1];
 		$build->save();
 		if (!empty($clone))
 		{
@@ -244,5 +256,19 @@ class Modpack_Controller extends Base_Controller {
 						"success" => "Updated build ".$build->version."'s published status.",
 					));
 		}
+	}
+
+	public function getMinecraft()
+	{
+		if (Config::has('solder.minecraft_api'))
+		{
+			$url = Config::get('solder.minecraft_api');
+		} else {
+			$url = self::MINECRAFT_API;
+		}
+
+		$response = file_get_contents($url);
+
+		return json_decode($response);
 	}
 }

@@ -1,5 +1,8 @@
 application/config
 .htaccess
+/app
+/vendor
+/composer.lock
 
 # Sublime Text 2
 sftp-config.json
