@@ -27,7 +27,6 @@ class API_Controller extends Base_Controller {
 						foreach ($modpacks['modpacks'] as $slug => $name)
 						{
 							$modpack = $this->fetch_modpack($slug);
-							$modpack['display_name'] = $name;
 							$m_array[$slug] = $modpack;
 						}
 						$response = array();
@@ -159,6 +158,7 @@ class API_Controller extends Base_Controller {
 			return array("error" => "Modpack does not exist");
 
 		$response['name']           = $modpack->slug;
+		$response['display_name']	= $modpack->name;
 		$response['url']            = $modpack->url;
 		$response['icon_md5']       = $modpack->icon_md5;
 		$response['logo_md5']       = $modpack->logo_md5;
