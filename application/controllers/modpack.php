@@ -267,7 +267,7 @@ class Modpack_Controller extends Base_Controller {
 			$url = self::MINECRAFT_API;
 		}
 
-		$response = file_get_contents($url);
+		$response = UrlUtils::get_url_contents($url);
 
 		return json_decode($response);
 	}

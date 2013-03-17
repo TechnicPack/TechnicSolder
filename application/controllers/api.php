@@ -15,7 +15,31 @@ class API_Controller extends Base_Controller {
 	public function get_modpack($modpack = null, $build = null)
 	{
 		if (empty($modpack))
-			return Response::json($this->fetch_modpacks());
+		{
+			if (Input::has('include'))
+			{
+				$include = Input::get('include');
+				switch ($include)
+				{
+					case "full":
+						$modpacks = $this->fetch_modpacks();
+						$m_array = array();
+						foreach ($modpacks['modpacks'] as $slug => $name)
+						{
+							$modpack = $this->fetch_modpack($slug);
+							$modpack['display_name'] = $name;
+							$m_array[$slug] = $modpack;
+						}
+						$response = array();
+						$response['modpacks'] = $m_array;
+						$response['mirror_url'] = $modpacks['mirror_url'];
+						return Response::json($response);
+						break;
+				}
+			} else {
+				return Response::json($this->fetch_modpacks());
+			}
+		}
 		else {
 			if (empty($build))
 				return Response::json($this->fetch_modpack($modpack));
