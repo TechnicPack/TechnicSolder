@@ -12,6 +12,13 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 
 Right now Solder is in its very early stages. We will not be offering any help setting up Solder and we recommend you stick to normal custom zips until it becomes more user-friendly. If you want to brave the waters though, be our guest!
 
+Requirements
+-------------
+
+* PHP >=5.3.0 (Although this may work on older versions it's not recommended)
+* PHP MCrypt Extension
+* PHP Curl Extension
+
 Installation
 -------------
 
