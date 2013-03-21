@@ -256,6 +256,45 @@ class Modpack_Controller extends Base_Controller {
 		return Redirect::to('modpack/view/'.$modpack->id)->with('success','Modpack edited');
 	}
 
+	public function action_delete($modpack_id)
+	{
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		$modpack = Modpack::find($modpack_id);
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		return View::make('modpack.delete')->with(array('modpack' => $modpack));
+	}
+
+	public function action_do_delete($modpack_id)
+	{
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		$modpack = Modpack::find($modpack_id);
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		foreach ($modpack->builds as $build)
+		{
+			$build->modversions()->delete();
+			$build->delete();
+		}
+		$modpack->delete();
+
+		return Redirect::to('modpack')->with('deleted','Modpack Deleted');
+	}
+
 
 	/**
 	 * AJAX Methods for Modpack Manager

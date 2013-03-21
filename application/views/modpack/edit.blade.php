@@ -20,4 +20,3 @@
 $("#slug").slugify('#name');
 </script>
 @endsection
-@endsection
