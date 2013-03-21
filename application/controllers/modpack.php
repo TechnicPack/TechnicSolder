@@ -190,6 +190,74 @@ class Modpack_Controller extends Base_Controller {
 	}
 
 	/**
+	 * Modpack Edit Interface
+	 * @param  Integer $modpack_id Modpack ID
+	 * @return View
+	 */
+	public function action_edit($modpack_id)
+	{
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		$modpack = Modpack::find($modpack_id);
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		Asset::add('jquery', 'js/jquery.slugify.js');
+		return View::make('modpack.edit')->with(array('modpack' => $modpack));
+	}
+
+	public function action_do_edit($modpack_id)
+	{
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		$modpack = Modpack::find($modpack_id);
+		if (empty($modpack_id))
+		{
+			return Redirect::to('dashboard');
+		}
+
+		Validator::register('checkresources', function($attribute, $value, $parameters)
+		{
+			if (FileUtils::check_resource($value,"logo_180.png") && 
+				FileUtils::check_resource($value,"icon.png") && 
+				FileUtils::check_resource($value,"background.jpg"))
+				return true;
+			else
+				return false;
+		});
+
+		$rules = array(
+			'name' => 'required|unique:modpacks,name,'.$modpack->id,
+			'slug' => 'required|checkresources|unique:modpacks,slug,'.$modpack->id
+			);
+
+		$messages = array(
+			'name_required' => 'You must enter a modpack name.',
+			'slug_required' => 'You must enter a modpack slug',
+			'slug_checkresources' => 'Make sure to move your resources to the new location! (Based on your slug name)'
+			);
+
+		$validation = Validator::make(Input::all(), $rules, $messages);
+		if ($validation->fails())
+			return Redirect::back()->with_errors($validation->errors);
+
+		$modpack->name = Input::get('name');
+		$modpack->slug = Input::get('slug');
+		$modpack->save();
+
+		return Redirect::to('modpack/view/'.$modpack->id)->with('success','Modpack edited');
+	}
+
+
+	/**
 	 * AJAX Methods for Modpack Manager
 	 **/
 	public function action_modify($action = null)

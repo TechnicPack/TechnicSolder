@@ -4,9 +4,17 @@
 <hr>
 <h2>{{ $modpack->name }}</h2>
 <hr>
-<a class="btn btn-primary pull-right" href="{{ URL::to('modpack/addbuild/'.$modpack->id) }}">Create New Build</a>
+<div class="pull-right">
+	<a class="btn btn-primary" href="{{ URL::to('modpack/addbuild/'.$modpack->id) }}">Create New Build</a> 
+	<a class="btn" href="{{ URL::to('modpack/edit/'.$modpack->id) }}">Edit Modpack</a>
+</div>
 <div class="alert alert-success" id="success-ajax" style="width: 500px;display: none">
 </div>
+@if (Session::has('success'))
+<div class="alert alert-success">
+	{{ Session::get('success') }}
+</div>
+@endif
 @if (Session::has('deleted'))
 <div class="alert alert-error">
 	{{ Session::get('deleted') }}

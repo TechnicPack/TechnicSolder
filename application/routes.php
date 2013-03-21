@@ -42,6 +42,7 @@ Route::post('/user/create', 'user@do_create');
 Route::post('/user/delete/(:num)', 'user@do_delete');
 Route::controller('user');
 Route::post('/modpack/create', 'modpack@do_create');
+Route::post('/modpack/edit/(:num)', 'modpack@do_edit');
 Route::post('/modpack/addbuild/(:num)', 'modpack@do_addbuild');
 Route::controller('modpack');
 Route::post('mod/view/(:num)', 'mod@do_modify');
