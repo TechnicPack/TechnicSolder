@@ -12,7 +12,7 @@ class Modpack_Controller extends Base_Controller {
 		$this->filter('before', 'perm', array('solder_create'))
 			->only(array('create'));
 		$this->filter('before', 'modpack', array(URI::segment(3)))
-			->only(array('view','create'));
+			->only(array('view','create','delete','edit'));
 		$this->filter('before', 'build', array(URI::segment(3)))
 			->only(array('build'));
 	}
