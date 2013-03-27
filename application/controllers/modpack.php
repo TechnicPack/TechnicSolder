@@ -179,9 +179,9 @@ class Modpack_Controller extends Base_Controller {
 			$modpack = new Modpack();
 			$modpack->name = Input::get('name');
 			$modpack->slug = Str::slug(Input::get('slug'));
-			$modpack->icon_md5 = md5_file($url.'icon.png');
-			$modpack->logo_md5 = md5_file($url.'logo_180.png');
-			$modpack->background_md5 = md5_file($url.'background.jpg');
+			$modpack->icon_md5 = UrlUtils::get_remote_md5($url.'icon.png');
+			$modpack->logo_md5 = UrlUtils::get_remote_md5($url.'logo_180.png');
+			$modpack->background_md5 = UrlUtils::get_remote_md5($url.'background.jpg');
 			$modpack->save();
 			return Redirect::to('modpack/view/'.$modpack->id);
 		} catch (Exception $e) {
