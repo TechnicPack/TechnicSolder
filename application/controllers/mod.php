@@ -250,14 +250,10 @@ class Mod_Controller extends Base_Controller {
 			Log::write("ERROR", "Exceeded maximum number of attempts for remote MD5 on mod ". $mod->name ." version ".$version." located at ". $url);
 			return "";
 		}
-		$ch = curl_init($url);
 
-		curl_setopt($ch, CURLOPT_NOBODY, true);
-		curl_exec($ch);
-		$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		if ($retcode == 200)
-			return md5_file($url);
+		$hash = UrlUtils::get_remote_md5($url);
+		if (!empty($hash))
+			return $hash;
 		else {
 			Log::write("ERROR", "Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
 			return $this->remote_mod_md5($mod, $version, $attempts + 1);
