@@ -27,7 +27,7 @@ class Response {
 	 * @param  array  $headers
 	 * @return void
 	 */
-	public function __construct($content, $status = 200, $headers = array())
+	public function response($content, $status = 200, $headers = array())
 	{
 		$this->content = $content;
 
