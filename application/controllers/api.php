@@ -125,7 +125,7 @@ class API_Controller extends Base_Controller {
 		{
 			$modpacks = Cache::get('modpacks');
 		} else {
-			$modpacks = Modpack::all();
+			$modpacks = Modpack::order_by('order')->get();
 			Cache::put('modpacks', $modpacks, 5);
 		}
 
