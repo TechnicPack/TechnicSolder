@@ -13,7 +13,7 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP >=5.3.0 (Although this may work on older versions it's not recommended)
+* PHP >=5.3.0 (Will not work on older versions due to usage of new features in PHP 5.3.0)
 * PHP MCrypt Extension
 * PHP Curl Extension
 
