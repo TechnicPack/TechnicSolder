@@ -13,7 +13,7 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP >=5.3.0 (Although this may work on older versions it's not recommended)
+* PHP >=5.3.0 (Will not work on older versions due to usage of new features in PHP 5.3.0)
 * PHP MCrypt Extension
 * PHP Curl Extension
 
@@ -45,8 +45,6 @@ The default user information is:
 > Password: admin
 
 Change this information as soon as you log in!
-
-That's it! Your Solder is configured and ready to rock. Whenever you make changes to your mod repository make sure to run the cache update or your players won't see it.
 
 Updating Solder
 ---------------
