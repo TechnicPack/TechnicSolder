@@ -251,6 +251,7 @@ class Modpack_Controller extends Base_Controller {
 
 		$modpack->name = Input::get('name');
 		$modpack->slug = Input::get('slug');
+		$modpack->hidden = Input::get('hidden') ? true : false;
 		$modpack->save();
 
 		return Redirect::to('modpack/view/'.$modpack->id)->with('success','Modpack edited');
