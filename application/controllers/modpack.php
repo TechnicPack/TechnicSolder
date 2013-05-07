@@ -249,8 +249,12 @@ class Modpack_Controller extends Base_Controller {
 		if ($validation->fails())
 			return Redirect::back()->with_errors($validation->errors);
 
+		$url = Config::get('solder.repo_location').Input::get('slug').'/resources/';
 		$modpack->name = Input::get('name');
 		$modpack->slug = Input::get('slug');
+		$modpack->icon_md5 = UrlUtils::get_remote_md5($url.'icon.png');
+		$modpack->logo_md5 = UrlUtils::get_remote_md5($url.'logo_180.png');
+		$modpack->background_md5 = UrlUtils::get_remote_md5($url.'background.jpg');
 		$modpack->hidden = Input::get('hidden') ? true : false;
 		$modpack->save();
 
