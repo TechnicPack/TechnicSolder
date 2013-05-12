@@ -12,7 +12,7 @@ class Solder_Controller extends Base_Controller {
 	{
 		if (Input::get('edit-solder'))
 		{
-			Config::set('solder.mirror_url',Input::get('mirror_url'));
+			Config::set('solder.mirror_url','http://' . Input::get('mirror_url'));
 			Config::set('solder.repo_location',Input::get('repo_location'));
 			Config::set('solder.platform_key',Input::get('platform_key'));
 			return Redirect::to('solder/configure')
