@@ -14,6 +14,12 @@
 {{ Form::horizontal_open() }}
 {{ Form::control_group(Form::label('name', 'Modpack Name'), Form::xxlarge_text('name', $modpack->name)) }}
 {{ Form::control_group(Form::label('slug', 'Modpack Slug'), Form::xxlarge_text('slug', $modpack->slug)) }}
+<div class="control-group">
+	<label class="control-label" for="hidden">Hide Modpack</label>
+	<div class="controls">
+		<input type="checkbox" name="hidden" id="hidden"{{ $checked = ($modpack->hidden ? ' checked' : '') }}>
+	</div>
+</div>
 {{ Form::actions(array(Button::primary_submit('Edit Modpack'),Button::danger_link(URL::to('modpack/delete/'.$modpack->id),'Delete Modpack'))) }}
 {{ Form::close() }}
 <script type="text/javascript">

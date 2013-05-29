@@ -125,7 +125,7 @@ class API_Controller extends Base_Controller {
 		{
 			$modpacks = Cache::get('modpacks');
 		} else {
-			$modpacks = Modpack::all();
+			$modpacks = Modpack::where('hidden','=','0')->order_by('order')->get();
 			Cache::put('modpacks', $modpacks, 5);
 		}
 
@@ -149,7 +149,8 @@ class API_Controller extends Base_Controller {
 		{
 			$modpack = Cache::Get('modpack.'.$slug);
 		} else {
-			$modpack = Modpack::where("slug","=",$slug)->first();
+			$modpack = Modpack::with('Builds')
+							->where("slug","=",$slug)->first();
 			Cache::put('modpack.'.$slug,$modpack,5);
 		}
 		

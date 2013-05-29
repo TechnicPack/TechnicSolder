@@ -10,12 +10,10 @@ Using Solder also means your packs will download each mod individually. This mea
 
 Solder also interfaces with the Technic Platform using an API key you can generate through your account there. When Solder has this key it can directly interact with your Platform account. When creating new modpacks you will be able to import any packs you have registered in your Solder install. It will also create detailed mod lists on your Platform page! (assuming you have the respective data filled out in Solder) Neat huh?
 
-Right now Solder is in its very early stages. We will not be offering any help setting up Solder and we recommend you stick to normal custom zips until it becomes more user-friendly. If you want to brave the waters though, be our guest!
-
 Requirements
 -------------
 
-* PHP >=5.3.0 (Although this may work on older versions it's not recommended)
+* PHP >=5.3.0 (Will not work on older versions due to usage of new features in PHP 5.3.0)
 * PHP MCrypt Extension
 * PHP Curl Extension
 
@@ -48,8 +46,6 @@ The default user information is:
 
 Change this information as soon as you log in!
 
-That's it! Your Solder is configured and ready to rock. Whenever you make changes to your mod repository make sure to run the cache update or your players won't see it.
-
 Updating Solder
 ---------------
 
@@ -73,6 +69,4 @@ If you are *still* having issues and can't seem to figure out what's going on, c
 Future of Solder
 ----------------
 
-Right now as it stands, Solder is very error-prone because it relies heavily on user input into YAML files. If users make simple mistakes with version numbers and such, Solder may not insert data properly.
-
-The goal of Solder is to eliminate the need for YAMLs completely. As time progresses a user interface is planned to manage and control your modpacks. This will elminate user errors and make sure a modpack is always configured properly.
+Now that Solder no longer requires YAML files or any sort, the next major goal is having Solder handle all file interaction on its own. This will reduce user error even more. (Hopefully eliminating it almost entirely)
