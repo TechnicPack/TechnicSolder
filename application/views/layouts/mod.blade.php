@@ -41,13 +41,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="/">TechnicSolder</a>
+          <a class="brand" href="{{ URL::to('dashboard') }}">TechnicSolder</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
               Logged in as <a href="#" class="navbar-link">{{ Auth::user()->email }}</a>. ({{ HTML::link('logout','Logout') }})
             </p>
             <ul class="nav">
-              <li><a href="/">Dashboard</a></li>
+              <li><a href="{{ URL::to('dashboard') }}">Dashboard</a></li>
               <li><a href="{{ URL::to('modpack') }}">Modpacks</a></li>
               <li class="active"><a href="{{ URL::to('mod/list') }}">Mod Library</a></li>
             </ul>
