@@ -22,7 +22,7 @@ class Table
      * The current Table instance
      * @var Table
      */
-    private static $table = null;
+    private static $table_ = null;
 
     /**
      * The availables classes for a Table
@@ -97,9 +97,9 @@ class Table
             $attributes = Helpers::set_multi_class_attributes($method, $classes, $parameters, 0, 'table-');
             $attributes = array_get($attributes, 0);
 
-            static::$table = new static($attributes);
+            static::$table_ = new static($attributes);
 
-            return static::$table->open();
+            return static::$table_->open();
         }
 
         // Set default function
@@ -109,7 +109,7 @@ class Table
         switch ($method) {
             case 'close':
                 $close = static::table()->close();
-                static::$table = null;
+                static::$table_ = null;
 
                 return $close;
                 break;
@@ -129,14 +129,14 @@ class Table
     public function __call($method, $parameters)
     {
         // If trying to set a column
-        if (!method_exists(static::$table, $method)) {
+        if (!method_exists(static::$table_, $method)) {
             $this->$method = $parameters[0];
 
             return $this;
         }
 
         // Else, call the available method
-        return call_user_func_array(array(static::$table, $method), $parameters);
+        return call_user_func_array(array(static::$table_, $method), $parameters);
     }
 
     /**
@@ -160,9 +160,9 @@ class Table
         $this->columns[$column] = $content;
     }
 
-    public static function table()
+    public static function table_()
     {
-        return static::$table ?: new static;
+        return static::$table_ ?: new static;
     }
 
     //////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ class Table
      *
      * @param array $attributes An array of attributes to create for the table
      */
-    private function __construct($attributes = array())
+    private function Table($attributes = array())
     {
         $this->attributes = Helpers::add_class($attributes, 'table');
     }
