@@ -52,7 +52,7 @@ class User_Controller extends Base_Controller {
 				}
 
 				/* Update User Permissions */
-				if (!Auth::user()->permission->solder_full && Auth::user()->permission->solder_users)
+				if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users)
 				{
 					$perm = $user->permission;
 
