@@ -69,7 +69,7 @@
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
-          @yield('content')
+          @__yield('content')
         </div><!--/span-->
       </div><!--/row-->
 
