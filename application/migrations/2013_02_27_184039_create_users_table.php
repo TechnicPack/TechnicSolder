@@ -26,6 +26,7 @@ class Create_Users_Table {
 		$user->username = 'admin';
 		$user->email = 'admin@admin.com';
 		$user->password = Hash::make('admin');
+		$user->created_ip = '127.0.0.1';
 		$user->save();
 	}
 
