@@ -32,15 +32,34 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('home.index');
+Route::get('/', function() {
+	return Redirect::to('dashboard');
 });
+Route::controller('api');
+Route::controller('dashboard');
+Route::controller('solder');
+Route::post('/user/create', 'user@do_create');
+Route::post('/user/delete/(:num)', 'user@do_delete');
+Route::controller('user');
+Route::post('/modpack/create', 'modpack@do_create');
+Route::post('/modpack/delete/(:num)', 'modpack@do_delete');
+Route::post('/modpack/edit/(:num)', 'modpack@do_edit');
+Route::post('/modpack/addbuild/(:num)', 'modpack@do_addbuild');
+Route::controller('modpack');
+Route::post('mod/view/(:num)', 'mod@do_modify');
+Route::post('mod/delete/(:num)', 'mod@do_delete');
+Route::post('mod/create', 'mod@do_create');
+Route::controller('mod');
 
-Route::controller( 'cache' );
-Route::get( 'modpack/(:all)', 'modpack@details' );
-Route::controller( 'modpack' );
-
+/**
+ * Authentication Routes
+ **/
+Route::get('/login', 'base@login');
+Route::post('/login', 'base@do_login');
+Route::get('/logout', function() {
+	Auth::logout();
+	return Redirect::to('login')->with('logout','You have been logged out.');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -113,4 +132,42 @@ Route::filter('csrf', function()
 Route::filter('auth', function()
 {
 	if (Auth::guest()) return Redirect::to('login');
+});
+
+Route::filter('perm', function($check)
+{
+	$perm = (array) Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm[$check])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('modpack', function($modpack)
+{
+	$perm = Auth::user()->permission;
+
+	if (!$perm->solder_full && !in_array($modpack, $perm->modpacks))
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('build', function($build)
+{
+	$perm = Auth::user()->permission;
+	$build = Build::find($build);
+	if (empty($build))
+		return Redirect::to('dashboard');
+
+	$modpack = $build->modpack;
+
+	if (!$perm->solder_full && !in_array($modpack->id, $perm->modpacks))
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
 });
