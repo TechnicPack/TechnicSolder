@@ -70,6 +70,7 @@ class Modpack_Controller extends Base_Controller {
 					$modpack->latest = $latbuild->version;
 				}
 				$modpack->save();
+				Cache::forget('modpack.' . $modpack->slug);
 				return Redirect::to('modpack/view/'.$build->modpack->id)->with('deleted','Build deleted.');
 			}
 
@@ -125,6 +126,7 @@ class Modpack_Controller extends Base_Controller {
 		$build->minecraft = $minecraft[0];
 		$build->minecraft_md5 = $minecraft[1];
 		$build->save();
+		Cache::forget('modpack.' . $modpack->slug);
 		if (!empty($clone))
 		{
 			$clone_build = Build::find($clone);
@@ -263,6 +265,8 @@ class Modpack_Controller extends Base_Controller {
 		$modpack->hidden = Input::get('hidden') ? true : false;
 		$modpack->private = Input::get('private') ? true : false;
 		$modpack->save();
+		Cache::forget('modpack.' . $modpack->slug);
+		Cache::forget('modpacks');
 
 		/* Client Syncing */
 		$clients = Input::get('clients');
@@ -308,6 +312,7 @@ class Modpack_Controller extends Base_Controller {
 
 		$modpack->clients()->delete();
 		$modpack->delete();
+		Cache::forget('modpacks');
 
 		return Redirect::to('modpack')->with('deleted','Modpack Deleted');
 	}
@@ -320,7 +325,7 @@ class Modpack_Controller extends Base_Controller {
 	{
 		if (empty($action))
 			return Response::error('500');
-
+			
 		switch ($action)
 		{
 			case "version":

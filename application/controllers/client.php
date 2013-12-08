@@ -36,6 +36,9 @@ class Client_Controller extends Base_Controller {
     	$client->uuid = Input::get('uuid');
     	$client->save();
 
+    	/* Immediately clear the cache */
+    	Cache::forget('clients');
+
     	return Redirect::to('client/list')->with('success','Client added!');
 	}
 
@@ -58,6 +61,8 @@ class Client_Controller extends Base_Controller {
 
 		$client->modpacks()->delete();
 		$client->delete();
+
+		Cache::forget('clients');
 
 		return Redirect::to('client/list')->with('success', 'Client deleted!');
 	}
