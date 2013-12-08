@@ -50,6 +50,9 @@ Route::post('mod/view/(:num)', 'mod@do_modify');
 Route::post('mod/delete/(:num)', 'mod@do_delete');
 Route::post('mod/create', 'mod@do_create');
 Route::controller('mod');
+Route::post('/client/create', 'client@do_create');
+Route::post('/client/delete/(:num)', 'client@do_delete');
+Route::controller('client');
 
 /**
  * Authentication Routes
