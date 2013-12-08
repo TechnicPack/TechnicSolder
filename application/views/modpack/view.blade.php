@@ -21,8 +21,8 @@
 </div>
 @endif
 {{ Table::open() }}
-{{ Table::headers('#', 'Build Number', 'MC Version', 'Mod Count', 'Rec', 'Latest', 'Published','Created', '') }}
-@foreach ($modpack->builds as $build)
+{{ Table::headers('#', 'Build Number', 'MC Version', 'Mod Count', 'Rec', 'Latest', 'Published', 'Private', 'Created', '') }}
+@foreach ($modpack->builds()->order_by('id', 'desc')->get() as $build)
 	<tr>
 		<td>{{ $build->id }}</td>
 		<td>{{ $build->version }}</td>
@@ -30,7 +30,8 @@
 		<td>{{ count($build->modversions) }}</td>
 		<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
 		<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>
-		<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ $checked = ($build->is_published ? " checked" : "") }}></td>
+		<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ ($build->is_published ? " checked" : "") }}></td>
+		<td><input type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ ($build->private ? " checked" : "") }}></td>
 		<td>{{ $build->created_at }}</td>
 		<td>{{ HTML::link('modpack/build/'.$build->id, "Manage",'class="btn btn-small btn-primary"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-small btn-danger"') }}</td>
 	</tr>
@@ -65,6 +66,19 @@ $(".published").change(function() {
 	$.ajax({
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + checked,
+		success: function (data) {
+			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
+		}
+	})
+});
+
+$(".private").change(function() {
+	var checked = 0;
+	if (this.checked)
+		checked = 1;
+	$.ajax({
+		type: "GET",
+		url: "{{ URL::to('modpack/modify/private') }}?build=" + $(this).attr("rel") + "&private=" + checked,
 		success: function (data) {
 			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}

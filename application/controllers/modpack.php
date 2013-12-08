@@ -70,6 +70,7 @@ class Modpack_Controller extends Base_Controller {
 					$modpack->latest = $latbuild->version;
 				}
 				$modpack->save();
+				Cache::forget('modpack.' . $modpack->slug);
 				return Redirect::to('modpack/view/'.$build->modpack->id)->with('deleted','Build deleted.');
 			}
 
@@ -125,6 +126,7 @@ class Modpack_Controller extends Base_Controller {
 		$build->minecraft = $minecraft[0];
 		$build->minecraft_md5 = $minecraft[1];
 		$build->save();
+		Cache::forget('modpack.' . $modpack->slug);
 		if (!empty($clone))
 		{
 			$clone_build = Build::find($clone);
@@ -207,8 +209,13 @@ class Modpack_Controller extends Base_Controller {
 			return Redirect::to('dashboard');
 		}
 
+		$clients = array();
+		foreach ($modpack->clients as $client) {
+			array_push($clients, $client->id);
+		}
+
 		Asset::add('jquery', 'js/jquery.slugify.js');
-		return View::make('modpack.edit')->with(array('modpack' => $modpack));
+		return View::make('modpack.edit')->with(array('modpack' => $modpack, 'clients' => $clients));
 	}
 
 	public function action_do_edit($modpack_id)
@@ -256,7 +263,14 @@ class Modpack_Controller extends Base_Controller {
 		$modpack->logo_md5 = UrlUtils::get_remote_md5($url.'logo_180.png');
 		$modpack->background_md5 = UrlUtils::get_remote_md5($url.'background.jpg');
 		$modpack->hidden = Input::get('hidden') ? true : false;
+		$modpack->private = Input::get('private') ? true : false;
 		$modpack->save();
+		Cache::forget('modpack.' . $modpack->slug);
+		Cache::forget('modpacks');
+
+		/* Client Syncing */
+		$clients = Input::get('clients');
+		$modpack->clients()->sync($clients);
 
 		return Redirect::to('modpack/view/'.$modpack->id)->with('success','Modpack edited');
 	}
@@ -295,7 +309,10 @@ class Modpack_Controller extends Base_Controller {
 			$build->modversions()->delete();
 			$build->delete();
 		}
+
+		$modpack->clients()->delete();
 		$modpack->delete();
+		Cache::forget('modpacks');
 
 		return Redirect::to('modpack')->with('deleted','Modpack Deleted');
 	}
@@ -308,7 +325,7 @@ class Modpack_Controller extends Base_Controller {
 	{
 		if (empty($action))
 			return Response::error('500');
-
+			
 		switch ($action)
 		{
 			case "version":
@@ -366,6 +383,16 @@ class Modpack_Controller extends Base_Controller {
 
 				return Response::json(array(
 						"success" => "Updated build ".$build->version."'s published status.",
+					));
+			case "private":
+				$build = Build::find(Input::get('build'));
+				$private = Input::get('private');
+				
+				$build->private = ($private ? true : false);
+				$build->save();
+
+				return Response::json(array(
+						"success" => "Updated build ".$build->version."'s private status.",
 					));
 		}
 	}
