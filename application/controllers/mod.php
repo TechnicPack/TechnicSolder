@@ -238,8 +238,9 @@ class Mod_Controller extends Base_Controller {
 
 		if (file_exists($location))
 			return md5_file($location);
-		else
+		else {
 			return $this->remote_mod_md5($mod, $version);
+		}
 	}
 
 	private function remote_mod_md5($mod, $version, $attempts = 0)
@@ -252,7 +253,7 @@ class Mod_Controller extends Base_Controller {
 		}
 
 		$hash = UrlUtils::get_remote_md5($url);
-		if (!empty($hash))
+		if ($hash != "")
 			return $hash;
 		else {
 			Log::write("ERROR", "Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");

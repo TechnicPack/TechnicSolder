@@ -63,10 +63,10 @@
               <li class="nav-header">Solder</li>
               <li{{ $active = (URI::is('dashboard') ? ' class="active"' : null) }}><a href="{{ URL::to('dashboard') }}"><i class="icon-home"></i> Dashboard</a></li>
               <li{{ $active = (URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}"><i class="icon-edit"></i> Edit My Account</a></li>
-              <li><a href="#"><i class="icon-info-sign"></i> Statistics</a></li>
               <li class="nav-header">Manage Solder</li>
               <li{{ $active = (URI::is('solder/configure') ? ' class="active"' : null) }}><a href="{{ URL::to('solder/configure') }}"><i class="icon-cog"></i> Configuration</a></li>
               <li{{ $active = (URI::is('user/*') && !URI::is('user/edit/'.Auth::user()->id) ? ' class="active"' : null) }}><a href="{{ URL::to('user/list') }}"><i class="icon-user"></i> Manage Users</a></li>
+              <li{{ $active = (URI::is('client/*') ? ' class="active"' : null) }}><a href="{{ URL::to('client/list') }}"><i class="icon-hdd"></i> Manage Clients</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->

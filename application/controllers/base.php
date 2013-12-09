@@ -6,7 +6,7 @@ class Base_Controller extends Controller {
 	{
 		parent::__construct();
 		define('SOLDER_STREAM', 'DEV');
-		define('SOLDER_VERSION', '0.3');
+		define('SOLDER_VERSION', '0.4');
 	}
 
 	public function action_login()
