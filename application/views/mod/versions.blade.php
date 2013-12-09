@@ -31,7 +31,7 @@
 		<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
 	</form>
 </tr>
-@foreach ($mod->versions as $ver)
+@foreach ($mod->versions()->order_by('id', 'desc')->get() as $ver)
 	<tr class="version" rel="{{ $ver->id }}">
 		<td><i class="version-icon icon-plus" rel="{{ $ver->id }}"></i></td>
 		<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>

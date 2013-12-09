@@ -9,6 +9,9 @@ class UrlUtils {
 	 */
 	public static function get_url_contents($url)
 	{
+		if (!self::check_remote_file($url)) {
+			return "";
+		}
 		$ch = curl_init();
 		$timeout = 5;
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -27,6 +30,31 @@ class UrlUtils {
 	public static function get_remote_md5($url)
 	{
 		$content = self::get_url_contents($url);
-		return md5($content);
+		if ($content == "") {
+			return "";
+		} else {
+			return md5($content);
+		}
+	}
+
+	/**
+	 * Checks if a remote file exists
+	 * @param  String $url Location of file
+	 * @return  Boolean Returns true if file exists
+	 */
+	public static function check_remote_file($url)
+	{
+		$ch = curl_init($url);
+
+		curl_setopt($ch, CURLOPT_NOBODY, true);
+		curl_exec($ch);
+		$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if ($retcode == 200) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
