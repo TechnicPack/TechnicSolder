@@ -19,17 +19,16 @@
 	{{ $mods->appends(array('search' => $search))->links(3,null, Paginator::SIZE_SMALL) }}
 </div>
 {{ Table::open() }}
-{{ Table::headers('#','Mod Name', 'Author', '') }}
+{{ Table::headers('#','Mod Name', 'Author') }}
 @foreach ($mods->results as $mod)
 	<tr>
-		<td>{{ $mod->id }}</td>
+		<td>{{ HTML::link('mod/view/'.$mod->id,'$mod->id') }}</td>
 		@if (!empty($mod->pretty_name))
 			<td>{{ $mod->pretty_name }} ({{ $mod->name }})</td>
 		@else
 			<td>{{ $mod->name }}</td>
 		@endif
-		<td>{{ $mod->author }}
-		<td>{{ HTML::link('mod/view/'.$mod->id,'Manage') }}</td>
+		<td>{{ $mod->author }}</td>
 	</tr>
 @endforeach
 {{ Table::close() }}
