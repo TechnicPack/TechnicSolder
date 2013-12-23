@@ -15,7 +15,7 @@ class API_Controller extends Base_Controller {
 			$clients = Cache::get('clients');
 		else {
 			$clients = Client::all();
-			Cache::forever('clients', $clients);
+			Cache::put('clients', $clients, 1);
 		}
 
 		foreach ($clients as $client) {
