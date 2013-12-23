@@ -150,25 +150,15 @@ class Modpack_Controller extends Base_Controller {
 
 	public function action_do_create()
 	{
-		Validator::register('checkresources', function($attribute, $value, $parameters)
-		{
-			if (FileUtils::check_resource($value,"logo_180.png") && 
-				FileUtils::check_resource($value,"icon.png") && 
-				FileUtils::check_resource($value,"background.jpg"))
-				return true;
-			else
-				return false;
-		});
 
 		$rules = array(
 			'name' => 'required|unique:modpacks',
-			'slug' => 'required|checkresources|unique:modpacks'
+			'slug' => 'required|unique:modpacks'
 			);
 
 		$messages = array(
 			'name_required' => 'You must enter a modpack name.',
-			'slug_required' => 'You must enter a modpack slug',
-			'slug_checkresources' => 'Make sure all the resources required exist before submitting a pack!'
+			'slug_required' => 'You must enter a modpack slug'
 			);
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
@@ -176,14 +166,15 @@ class Modpack_Controller extends Base_Controller {
 		if ($validation->fails())
 			return Redirect::back()->with_errors($validation->errors);
 
-		$url = Config::get('solder.repo_location').Input::get('slug').'/resources/';
 		try {
 			$modpack = new Modpack();
 			$modpack->name = Input::get('name');
 			$modpack->slug = Str::slug(Input::get('slug'));
-			$modpack->icon_md5 = UrlUtils::get_remote_md5($url.'icon.png');
-			$modpack->logo_md5 = UrlUtils::get_remote_md5($url.'logo_180.png');
-			$modpack->background_md5 = UrlUtils::get_remote_md5($url.'background.jpg');
+
+			$defaultResourcePath = path('public') . 'resources/default/';
+			$modpack->icon_md5 = md5_file($defaultResourcePath.'icon.png');
+			$modpack->logo_md5 = md5_file($defaultResourcePath.'logo.png');
+			$modpack->background_md5 = md5_file($defaultResourcePath.'background.png');
 			$modpack->save();
 			return Redirect::to('modpack/view/'.$modpack->id);
 		} catch (Exception $e) {
