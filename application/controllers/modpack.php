@@ -231,25 +231,14 @@ class Modpack_Controller extends Base_Controller {
 			return Redirect::to('dashboard');
 		}
 
-		Validator::register('checkresources', function($attribute, $value, $parameters)
-		{
-			if (FileUtils::check_resource($value,"logo_180.png") && 
-				FileUtils::check_resource($value,"icon.png") && 
-				FileUtils::check_resource($value,"background.jpg"))
-				return true;
-			else
-				return false;
-		});
-
 		$rules = array(
 			'name' => 'required|unique:modpacks,name,'.$modpack->id,
-			'slug' => 'required|checkresources|unique:modpacks,slug,'.$modpack->id
+			'slug' => 'required|unique:modpacks,slug,'.$modpack->id
 			);
 
 		$messages = array(
 			'name_required' => 'You must enter a modpack name.',
-			'slug_required' => 'You must enter a modpack slug',
-			'slug_checkresources' => 'Make sure to move your resources to the new location! (Based on your slug name)'
+			'slug_required' => 'You must enter a modpack slug'
 			);
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
@@ -258,6 +247,7 @@ class Modpack_Controller extends Base_Controller {
 
 		$url = Config::get('solder.repo_location').Input::get('slug').'/resources/';
 		$modpack->name = Input::get('name');
+		$oldSlug = $modpack->slug;
 		$modpack->slug = Input::get('slug');
 		$modpack->icon_md5 = UrlUtils::get_remote_md5($url.'icon.png');
 		$modpack->logo_md5 = UrlUtils::get_remote_md5($url.'logo_180.png');
@@ -265,6 +255,73 @@ class Modpack_Controller extends Base_Controller {
 		$modpack->hidden = Input::get('hidden') ? true : false;
 		$modpack->private = Input::get('private') ? true : false;
 		$modpack->save();
+
+		$resourcePath = path('public') . 'resources/' . $modpack->slug;
+
+		/* Create new resources directory for modpack */
+		if (!file_exists($resourcePath)) {
+			mkdir($resourcePath);
+		}
+
+		/* If slug changed, move resources and delete old slug directory */
+		if ($oldSlug != $modpack->slug) {
+			$oldPath = path('public') . 'resources/' . $oldSlug;
+
+			if (file_exists($oldPath . "/logo.png")) {
+				copy($oldPath . "/logo.png", $resourcePath . "/logo.png");
+				unlink($oldPath . "/logo.png");
+			}
+
+			if (file_exists($oldPath . "/background.png")) {
+				copy($oldPath . "/background.png", $resourcePath . "/background.png");
+				unlink($oldPath . "/background.png");
+			}
+
+			if (file_exists($oldPath . "/icon.png")) {
+				copy($oldPath . "/icon.png", $resourcePath . "/icon.png");
+				unlink($oldPath . "/icon.png");
+			}
+			
+			rmdir(path('public') . 'resources/' . $oldSlug);
+		}
+
+		/* Image dohickery */
+
+		$logo = Input::file('logo');
+		if (!empty($logo['name'])) {
+			$success = Resizer::open(Input::file('logo'))
+		        ->resize( 180 , 110 , 'exact' )
+		        ->save( $resourcePath . "/logo.png" , 90 );
+		    if ($success) {
+		        $modpack->logo = true;
+		        $modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
+		    }
+		}
+
+		$background = Input::file('background');
+		if (!empty($background['name'])) {
+			$success = Resizer::open(Input::file('background'))
+		        ->resize( 880 , 520 , 'exact' )
+		        ->save( $resourcePath . "/background.png" , 90 );
+		    if ($success) {
+		        $modpack->background = true;
+		        $modpack->background_md5 = md5_file($resourcePath . "/background.png");
+		    }
+		}
+
+		$icon = Input::file('icon');
+		if (!empty($icon['name'])) {
+			$success = Resizer::open(Input::file('icon'))
+		        ->resize( 50 , 50 , 'exact' )
+		        ->save( $resourcePath . "/icon.png" , 90 );
+		    if ($success) {
+		        $modpack->icon = true;
+		        $modpack->icon_md5 = md5_file($resourcePath . "/icon.png");
+		    }
+		}
+
+		$modpack->save();
+
 		Cache::forget('modpack.' . $modpack->slug);
 		Cache::forget('modpacks');
 

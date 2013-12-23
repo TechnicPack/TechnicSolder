@@ -198,8 +198,37 @@ class API_Controller extends Base_Controller {
 		$response['name']           = $modpack->slug;
 		$response['display_name']	= $modpack->name;
 		$response['url']            = $modpack->url;
+
+		$resourcePath = URL::to('resources/' . $modpack->slug);
+
+		if ($modpack->icon == 0 && !empty($modpack->icon_md5)) {
+			$response['icon'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/icon.png";
+		} else if ($modpack->icon == 0 && empty($modpack->icon_md5)) {
+			$response['icon'] = URL::to('resources/default/icon.png');
+		} else {
+			$response['icon'] = $resourcePath . "/icon.png";
+		}
+
 		$response['icon_md5']       = $modpack->icon_md5;
+
+		if ($modpack->logo == 0 && !empty($modpack->logo_md5)) {
+			$response['logo'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/logo.png";
+		} else if ($modpack->logo == 0 && empty($modpack->logo_md5)) {
+			$response['logo'] = URL::to('resources/default/logo.png');
+		} else {
+			$response['logo'] = $resourcePath . "/logo.png";
+		}
+
 		$response['logo_md5']       = $modpack->logo_md5;
+
+		if ($modpack->background == 0 && !empty($modpack->background_md5)) {
+			$response['background'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/background.png";
+		} else if ($modpack->background == 0 && empty($modpack->background_md5)) {
+			$response['background'] = URL::to('resources/default/background.png');
+		} else {
+			$response['background'] = $resourcePath . "/background.png";
+		}
+
 		$response['background_md5'] = $modpack->background_md5;
 		$response['recommended']    = $modpack->recommended;
 		$response['latest']         = $modpack->latest;

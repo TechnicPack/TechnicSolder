@@ -28,6 +28,44 @@
 		<span class="help-block">Private modpacks will only be available to clients that are linked to this modpack. You can link clients below. You can also individually mark builds as private.</span>
 	</div>
 </div>
+<h3>Image Management</h3>
+<p>Upload your modpacks resources here. These images are what will be served to the launcher. If your modpack already has images on your mirror, they will remain working until the first time you upload them here.</p>
+<div class="control-group">
+	<label class="control-label" for="logo">Modpack Logo</label>
+	<div class="controls">
+		@if ($modpack->logo)
+		<div class="modpack-logo">
+			<img src="{{ URL::to('resources/' . $modpack->slug . '/logo.png') }}">
+		</div>
+		@endif
+		<input type="file" name="logo" id="logo">
+		<span class="help-block">Required Size: 180x110</span>
+	</div>
+</div>
+<div class="control-group">
+	<label class="control-label" for="background">Modpack Background</label>
+	<div class="controls">
+		@if ($modpack->background)
+		<div class="modpack-background">
+			<img src="{{ URL::to('resources/' . $modpack->slug . '/background.png') }}" style="width: 300px">
+		</div>
+		@endif
+		<input type="file" name="background" id="background">
+		<span class="help-block">Required Size: 880x520</span>
+	</div>
+</div>
+<div class="control-group">
+	<label class="control-label" for="icon">Modpack Icon</label>
+	<div class="controls">
+		@if ($modpack->icon)
+		<div class="modpack-icon">
+			<img src="{{ URL::to('resources/' . $modpack->slug . '/icon.png') }}">
+		</div>
+		@endif
+		<input type="file" name="icon" id="icon">
+		<span class="help-block">Recommended Size: 50x50</span>
+	</div>
+</div>
 <h3>Client Access</h3>
 <p>Check the clients below you want to have access to this modpack if anything is set to private.</p>
 @foreach (Client::all() as $client)
