@@ -170,11 +170,6 @@ class Modpack_Controller extends Base_Controller {
 			$modpack = new Modpack();
 			$modpack->name = Input::get('name');
 			$modpack->slug = Str::slug(Input::get('slug'));
-
-			$defaultResourcePath = path('public') . 'resources/default/';
-			$modpack->icon_md5 = md5_file($defaultResourcePath.'icon.png');
-			$modpack->logo_md5 = md5_file($defaultResourcePath.'logo.png');
-			$modpack->background_md5 = md5_file($defaultResourcePath.'background.png');
 			$modpack->save();
 			return Redirect::to('modpack/view/'.$modpack->id);
 		} catch (Exception $e) {
