@@ -10,7 +10,7 @@
  * I only turned it into a Laravel bundle.
  *
  * @package Resizer
- * @version 1.21
+ * @version 1.1
  * @author Maikel D (original author Jarrod Oberto)
  * @link
  * @example
@@ -52,12 +52,9 @@ class Resizer {
 	 * @var Resource
 	 */
 	private $image_resized;
-	
-	/**
-	 * Loads config from the main application, falls back to the bundle config.
-	 * @var array
-	 */
-	private $config = array();
+
+	const FINAL_IMAGE_TYPE = "png";
+	const PNG = "png";
 	
 	/**
 	 * Instantiates the Resizer and receives the path to an image we're working with.
@@ -65,10 +62,6 @@ class Resizer {
 	 */
 	function __construct( $file )
 	{
-		// Load the config from the main application first, if it's not available
-		// load the one from the bundle's config directory.
-		$this->config = Config::get('resizer', Config::get('resizer::defaults'));
-		
 		// Open up the file.
 		$this->image = $this->open_image( $file );
 		
@@ -109,14 +102,34 @@ class Resizer {
 		
 		// Resample - create image canvas of x, y size.
 		$this->image_resized = imagecreatetruecolor( $optimal_width , $optimal_height );
+
+		if (self::FINAL_IMAGE_TYPE == self::PNG)
+		{
+		    // Retain transparency for PNG and GIF files.
+		    imagecolortransparent( $this->image_resized , imagecolorallocatealpha( $this->image_resized , 255 , 255 , 255 , 127 ) );
+		    imagealphablending( $this->image_resized , false );
+		    imagesavealpha( $this->image_resized , true );
+		    imagecopyresampled( $this->image_resized , $this->image , 0 , 0 , 0 , 0 , $optimal_width ,$optimal_height , $this->width , $this->height );
+		} else {
+		    // Resample - create image canvas of x, y size.
+		    $this->image_background = imagecreatetruecolor( $this->width , $this->height );
+		    // Retain transparency for PNG and GIF files.
+		    $white = imagecolorallocate($this->image_background,  255, 255, 255);
+		    imagefilledrectangle($this->image_background, 0, 0,  $this->width , $this->height, $white);
+		    imagecopy($this->image_background, $this->image, 0, 0, 0, 0,  $this->width , $this->height);
+		    // Create the new image.
+		    imagecopyresampled( $this->image_resized , $this->image_background , 0 , 0 , 0 , 0 , $optimal_width ,$optimal_height , $this->width , $this->height );
+		}
+
+		/*
 		$image_background = imagecreatetruecolor( $this->width , $this->height );
 		
 		// Retain transparency for PNG and GIF files.
 		$background_colour = imagecolorallocate(
 			$image_background,
-			array_get( $this->config , 'background_color.r' ),
-			array_get( $this->config , 'background_color.g' ),
-			array_get( $this->config , 'background_color.b' )
+			Config::get('resizer::defaults.background_color.r'),
+			Config::get('resizer::defaults.background_color.g'),
+			Config::get('resizer::defaults.background_color.b')
 		);
 		
 		imagefilledrectangle( $image_background , 0 , 0 , $this->width , $this->height , $background_colour );
@@ -131,7 +144,8 @@ class Resizer {
 		
 		// Create the new image.
 		imagecopyresampled( $this->image_resized , $image_background , 0 , 0 , 0 , 0 , $optimal_width , $optimal_height , $this->width , $this->height );
-		
+		*/
+
 		// if option is 'crop' or 'fit', then crop too.
 		if ( $option == 'crop' || $option == 'fit' ) {
 			$this->crop( $optimal_width , $optimal_height , $new_width , $new_height );
@@ -203,23 +217,16 @@ class Resizer {
 	 */
 	private function open_image( $file )
 	{
-		
 		// If $file isn't an array, we'll turn it into one.
 		if ( !is_array($file) ) {
-			$file_dimensions = getimagesize($file);
 			$file = array(
-				'type'		=> strtolower( $file_dimensions['mime'] ),
+				'type'		=> File::mime( strtolower(File::extension($file)) ),
 				'tmp_name'	=> $file
 			);
 		}
 		
 		$mime = $file['type'];
 		$file_path = $file['tmp_name'];
-		
-		// Confirm that the file actually exists.
-		if ( !file_exists($file_path) ) {
-			throw new Exception( 'Could not find file: ' . $file_path . '. It doesn\'t seem to exist.' );
-		}
 
 		switch ( $mime )
 		{
@@ -234,7 +241,7 @@ class Resizer {
 	}
 	
 	/**
-	 * Return the image dimensions based on the option that was chosen.
+	 * Return the image dimentions based on the option that was chosen.
 	 * @param  int    $new_width  The width of the image
 	 * @param  int    $new_height The height of the image
 	 * @param  string $option     Either exact, portrait, landscape, auto or crop.
@@ -452,11 +459,8 @@ class Resizer {
 	private function get_crop_points( $optimal_width , $optimal_height , $new_width , $new_height ) {
 		$crop_points = array();
 		
-		$vertical_start = array_get( $this->config , 'crop_vertical_start_point' );
-		$horizontal_start = array_get( $this->config , 'crop_horizontal_start_point' );
-		
 		// Where is our vertical starting crop point?
-		switch ( $vertical_start ) {
+		switch ( Config::get('resizer::defaults.crop_vertical_start_point') ) {
 			case 'top':
 				$crop_points['y'] = 0;
 				break;
@@ -468,12 +472,12 @@ class Resizer {
 				break;
 			
 			default:
-				throw new Exception('Unknown value for crop_vertical_start_point: '. $vertical_start .'. Please check config file in the Resizer bundle.');
+				throw new Exception('Unknown value for crop_vertical_start_point: '. Config::get('resizer::defaults.crop_vertical_start_point') .'. Please check config file in the Resizer bundle.');
 				break;
 		}
 		
 		// Where is our horizontal starting crop point?
-		switch ( $horizontal_start ) {
+		switch ( Config::get('resizer::defaults.crop_horizontal_start_point') ) {
 			case 'left':
 				$crop_points['x'] = 0;
 				break;
@@ -485,7 +489,7 @@ class Resizer {
 				break;
 			
 			default:
-				throw new Exception('Unknown value for crop_horizontal_start_point: '. $horizontal_start .'. Please check config file in the Resizer bundle.');
+				throw new Exception('Unknown value for crop_horizontal_start_point: '. Config::get('resizer::defaults.crop_horizontal_start_point') .'. Please check config file in the Resizer bundle.');
 				break;
 		}
 		
