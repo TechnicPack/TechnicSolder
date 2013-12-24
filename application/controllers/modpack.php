@@ -242,7 +242,14 @@ class Modpack_Controller extends Base_Controller {
 		$modpack->private = Input::get('private') ? true : false;
 		$modpack->save();
 
-		$resourcePath = path('public') . 'resources/' . $modpack->slug;
+		$useS3 = Config::get('solder.use_s3');
+
+		if ($useS3) {
+			$resourcePath = path('storage') . 'resources/' . $modpack->slug;
+		} else {
+			$resourcePath = path('public') . 'resources/' . $modpack->slug;
+		}
+		
 
 		/* Create new resources directory for modpack */
 		if (!file_exists($resourcePath)) {
@@ -251,7 +258,21 @@ class Modpack_Controller extends Base_Controller {
 
 		/* If slug changed, move resources and delete old slug directory */
 		if ($oldSlug != $modpack->slug) {
+
 			$oldPath = path('public') . 'resources/' . $oldSlug;
+
+			if (Config::get('solder.use_s3')) {
+				try {
+					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
+					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
+					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
+					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png');
+					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png');
+					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png');
+				} catch (Exception $e) {
+				}
+				$oldPath = path('storage') . 'resources/' . $oldSlug;
+			}
 
 			if (file_exists($oldPath . "/logo.png")) {
 				copy($oldPath . "/logo.png", $resourcePath . "/logo.png");
@@ -268,7 +289,7 @@ class Modpack_Controller extends Base_Controller {
 				unlink($oldPath . "/icon.png");
 			}
 			
-			rmdir(path('public') . 'resources/' . $oldSlug);
+			rmdir($oldPath);
 		}
 
 		/* Image dohickery */
@@ -278,6 +299,11 @@ class Modpack_Controller extends Base_Controller {
 			$success = Resizer::open(Input::file('logo'))
 		        ->resize( 180 , 110 , 'exact' )
 		        ->save( $resourcePath . "/logo.png" , 90 );
+
+		    if ($useS3) {
+		    	S3::putObject(S3::inputFile($resourcePath . '/logo.png', false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
+		    }
+
 		    if ($success) {
 		        $modpack->logo = true;
 		        $modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
@@ -289,6 +315,11 @@ class Modpack_Controller extends Base_Controller {
 			$success = Resizer::open(Input::file('background'))
 		        ->resize( 880 , 520 , 'exact' )
 		        ->save( $resourcePath . "/background.png" , 90 );
+
+		    if ($useS3) {
+		    	S3::putObject(S3::inputFile($resourcePath . '/background.png', false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
+		    }
+
 		    if ($success) {
 		        $modpack->background = true;
 		        $modpack->background_md5 = md5_file($resourcePath . "/background.png");
@@ -300,6 +331,11 @@ class Modpack_Controller extends Base_Controller {
 			$success = Resizer::open(Input::file('icon'))
 		        ->resize( 50 , 50 , 'exact' )
 		        ->save( $resourcePath . "/icon.png" , 90 );
+
+		    if ($useS3) {
+		    	S3::putObject(S3::inputFile($resourcePath . '/icon.png', false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
+		    }
+
 		    if ($success) {
 		        $modpack->icon = true;
 		        $modpack->icon_md5 = md5_file($resourcePath . "/icon.png");

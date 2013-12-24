@@ -207,7 +207,11 @@ class API_Controller extends Base_Controller {
 			$response['icon'] = URL::to('resources/default/icon.png');
 			$modpack->icon_md5 = md5_file(path('public') . 'resources/default/icon.png');
 		} else {
-			$response['icon'] = $resourcePath . "/icon.png";
+			if (Config::get('solder.use_s3')) {
+				$response['icon'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/icon.png';
+			} else {
+				$response['icon'] = $resourcePath . "/icon.png";
+			}
 		}
 
 		$response['icon_md5']       = $modpack->icon_md5;
@@ -218,7 +222,11 @@ class API_Controller extends Base_Controller {
 			$response['logo'] = URL::to('resources/default/logo.png');
 			$modpack->logo_md5 = md5_file(path('public') . 'resources/default/logo.png');
 		} else {
-			$response['logo'] = $resourcePath . "/logo.png";
+			if (Config::get('solder.use_s3')) {
+				$response['logo'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/logo.png';
+			} else {
+				$response['logo'] = $resourcePath . "/logo.png";
+			}
 		}
 
 		$response['logo_md5']       = $modpack->logo_md5;
@@ -229,7 +237,11 @@ class API_Controller extends Base_Controller {
 			$response['background'] = URL::to('resources/default/background.png');
 			$modpack->background_md5 = md5_file(path('public') . 'resources/default/background.png');
 		} else {
-			$response['background'] = $resourcePath . "/background.png";
+			if (Config::get('solder.use_s3')) {
+				$response['background'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/background.png';
+			} else {
+				$response['background'] = $resourcePath . "/background.png";
+			}
 		}
 
 		$response['background_md5'] = $modpack->background_md5;

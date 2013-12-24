@@ -35,7 +35,11 @@
 	<div class="controls">
 		@if ($modpack->logo)
 		<div class="modpack-logo">
+			@if (Config::get('solder.use_s3'))
+			<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/logo.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}">
+			@else
 			<img src="{{ URL::to('resources/' . $modpack->slug . '/logo.png') }}">
+			@endif
 		</div>
 		@endif
 		<input type="file" name="logo" id="logo">
@@ -47,7 +51,11 @@
 	<div class="controls">
 		@if ($modpack->background)
 		<div class="modpack-background">
-			<img src="{{ URL::to('resources/' . $modpack->slug . '/background.png') }}" style="width: 300px">
+			@if (Config::get('solder.use_s3'))
+			<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/background.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" style="width: 300px;">
+			@else
+			<img src="{{ URL::to('resources/' . $modpack->slug . '/background.png') }}" style="width: 300px;">
+			@endif
 		</div>
 		@endif
 		<input type="file" name="background" id="background">
@@ -59,7 +67,11 @@
 	<div class="controls">
 		@if ($modpack->icon)
 		<div class="modpack-icon">
+			@if (Config::get('solder.use_s3'))
+			<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}">
+			@else
 			<img src="{{ URL::to('resources/' . $modpack->slug . '/icon.png') }}">
+			@endif
 		</div>
 		@endif
 		<input type="file" name="icon" id="icon">
