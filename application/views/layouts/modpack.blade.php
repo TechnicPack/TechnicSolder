@@ -66,10 +66,10 @@
                   @if (Config::get('solder.use_s3'))
                   <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                   @else
-                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                   @endif
                 @else
-                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                 @endif
               @endforeach
               <li{{ $active = (URI::is('modpack/create') ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/create') }}"><i class="icon-plus"></i> Create New Modpack</a></li>
