@@ -62,7 +62,15 @@
             <ul class="nav nav-list">
               <li class="nav-header">Current Modpacks</li>
               @foreach (Modpack::all() as $modpack)
-                <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.mirror_url').$modpack->slug.'/resources/icon.png' }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                @if ($modpack->icon)
+                  @if (Config::get('solder.use_s3'))
+                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                  @else
+                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                  @endif
+                @else
+                  <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                @endif
               @endforeach
               <li{{ $active = (URI::is('modpack/create') ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/create') }}"><i class="icon-plus"></i> Create New Modpack</a></li>
             </ul>

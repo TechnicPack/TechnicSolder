@@ -8,7 +8,7 @@
 {{ Table::headers('Mod Name', 'Version', '') }}
 @foreach ($build->modversions as $ver)
 	<tr>
-		<td>{{ $ver->mod->pretty_name }} ({{ $ver->mod->name }})</td>
+		<td>{{ HTML::link('mod/view/'.$ver->mod->id, $ver->mod->pretty_name) }} ({{ $ver->mod->name }})</td>
 		<td>
 			<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-version">
 				<input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">

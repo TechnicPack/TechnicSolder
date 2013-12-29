@@ -22,7 +22,7 @@
 {{ Table::headers('#','Mod Name', 'Author', '') }}
 @foreach ($mods->results as $mod)
 	<tr>
-		<td>{{ $mod->id }}</td>
+		<td>{{ HTML::link('mod/view/'.$mod->id, $mod->id) }}</td>
 		@if (!empty($mod->pretty_name))
 			<td>{{ $mod->pretty_name }} ({{ $mod->name }})</td>
 		@else
