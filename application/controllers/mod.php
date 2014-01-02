@@ -73,6 +73,12 @@ class Mod_Controller extends Base_Controller {
 			$mod->description = Input::get('description');
 			$mod->link = Input::get('link');
 			$mod->save();
+      
+      $path = Config::get('solder.repo_location').'mods/'.$mod->name;
+      if (!file_exists($path)) {
+        mkdir($path, 0755);
+      }
+      
 			return Redirect::to('mod/view/'.$mod->id);
 		} catch (Exception $e) {
 			Log::exception($e);
