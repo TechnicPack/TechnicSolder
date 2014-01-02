@@ -23,9 +23,10 @@ class Mod_Controller extends Base_Controller {
 			$mods = DB::table('mods')
 					->where('name','LIKE','%'.$search.'%')
 					->or_where('pretty_name', 'LIKE', '%'.$search.'%')
-					->paginate(20);
+          ->order_by('pretty_name', 'asc')
+					->paginate(13);
 		} else {
-			$mods = DB::table('mods')->paginate(20);
+			$mods = DB::table('mods')->order_by('pretty_name', 'asc')->paginate(13);
 		}
 		return View::make('mod.list')->with(array('mods' => $mods,'search' => $search));
 	}
