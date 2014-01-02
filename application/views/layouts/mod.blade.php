@@ -64,12 +64,12 @@
               @section('navigation')
               <li{{ $active = (URI::is('mod/list') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/list') }}"><i class="icon-book"></i> Mod List</a></li>
               <li{{ $active = (URI::is('mod/create') ? ' class="active"' : null) }}><a href="{{ URL::to('mod/create') }}"><i class="icon-plus"></i> Add a Mod</a></li>
-              @yield_section
+              @output_section
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
-          @yield('content')
+          @output('content')
         </div><!--/span-->
       </div><!--/row-->
 
