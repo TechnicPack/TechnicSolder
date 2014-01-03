@@ -19,7 +19,7 @@
 	{{ $mods->appends(array('search' => $search))->links(3,null, Paginator::SIZE_SMALL) }}
 </div>
 {{ Table::open() }}
-{{ Table::headers('#','Mod Name', 'Author', '') }}
+{{ Table::headers('#','Mod Name', 'Author', 'Option','URL') }}
 @foreach ($mods->results as $mod)
 	<tr>
 		<td>{{ HTML::link('mod/view/'.$mod->id, $mod->id) }}</td>
@@ -30,6 +30,11 @@
 		@endif
 		<td>{{ $mod->author }}
 		<td>{{ HTML::link('mod/view/'.$mod->id,'Manage') }}</td>
+    @if (!empty($mod->link))
+    <td>{{ HTML::link($mod->link,__('mod.website'), array('target'=>'blank')) }}</td>
+    @else
+		<td>No URL</td>
+    @endif
 	</tr>
 @endforeach
 {{ Table::close() }}
