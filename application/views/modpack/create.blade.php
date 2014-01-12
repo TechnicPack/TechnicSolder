@@ -14,7 +14,7 @@
 	</div>
 @endif
 {{ Form::horizontal_open() }}
-{{ Form::control_group(Form::label('name', 'Modpack Name'), Form::xxlarge_text('name')) }}
+{{ Form::control_group(Form::label('name', 'Modpack Name'), Form::xxlarge_text('name'),'',Form::block_help('The Modpack-Name must match the modpacks name on the Platform for successful connect.')) }}
 {{ Form::control_group(Form::label('slug', 'Modpack Slug'), Form::xxlarge_text('slug')) }}
 {{ Form::actions(array(Button::primary_submit('Create Modpack'))) }}
 {{ Form::close() }}
