@@ -5,6 +5,9 @@
 </div>
 <div class="panel panel-default">
 	<div class="panel-heading">
+	<div class="pull-right">
+	    <a href="{{ URL::to('mod/create') }}" class="btn btn-xs btn-success">Add Mod</a>
+	</div>
 	Mod List
 	</div>
 	<div class="panel-body">
@@ -24,7 +27,7 @@
 					<td>{{ $mod->name }}</td>
 				@endif
 				<td>{{ $mod->author }}</td>
-				<td>{{ HTML::link('mod/view/'.$mod->id,'Manage', array("class" => "btn btn-sm btn-primary")) }}</td>
+				<td>{{ HTML::link('mod/view/'.$mod->id,'Manage', array("class" => "btn btn-xs btn-primary")) }}</td>
 			</tr>
 		@endforeach
 		</table>

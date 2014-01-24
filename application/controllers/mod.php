@@ -35,7 +35,6 @@ class Mod_Controller extends Base_Controller {
 
 	public function action_create()
 	{
-		Asset::add('jquery', 'js/jquery.slugify.js');
 		return View::make('mod.create');
 	}
 

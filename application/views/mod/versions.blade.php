@@ -33,7 +33,7 @@
 </tr>
 @foreach ($mod->versions()->order_by('id', 'desc')->get() as $ver)
 	<tr class="version" rel="{{ $ver->id }}">
-		<td><i class="version-icon icon-plus" rel="{{ $ver->id }}"></i></td>
+		<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
 		<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
 		<td><span class="md5" rel="{{ $ver->id }}">{{ $ver->md5 }}</span></td>
 		<td class="url" rel="{{ $ver->id }}"><a href="{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></td>
