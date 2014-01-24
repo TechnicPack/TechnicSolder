@@ -1,23 +1,43 @@
-@layout('layouts/modpack')
+@layout('layouts/master')
 @section('content')
+<div class="page-header">
 <h1>Modpack Management</h1>
-<hr>
-<h2>Create Modpack</h2>
-<p>Creating a modpack is simple. Fill in the information here and make sure you have the corresponding folder created on your repository with the necessary files. </p>
-<blockquote>/<span class="modslug">[modslug]</span>/
-</blockquote>
-@if ($errors->all())
-	<div class="alert alert-error">
-	@foreach ($errors->all() as $error)
-		{{ $error }}<br />
-	@endforeach
+</div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+	Create Modpack
 	</div>
-@endif
-{{ Form::horizontal_open() }}
-{{ Form::control_group(Form::label('name', 'Modpack Name'), Form::xxlarge_text('name')) }}
-{{ Form::control_group(Form::label('slug', 'Modpack Slug'), Form::xxlarge_text('slug')) }}
-{{ Form::actions(array(Button::primary_submit('Create Modpack'))) }}
-{{ Form::close() }}
+	<div class="panel-body">
+		
+		@if ($errors->all())
+			<div class="alert alert-error">
+			@foreach ($errors->all() as $error)
+				{{ $error }}<br />
+			@endforeach
+			</div>
+		@endif
+		{{ Form::open() }}
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+		            <label for="name">Modpack Name</label>
+		            <input type="text" class="form-control" name="name" id="name">
+		        </div>
+		        <div class="form-group">
+		            <label for="slug">Modpack Slug</label>
+		            <input type="text" class="form-control" name="slug" id="slug">
+		        </div>
+		    </div>
+		   	<div class="col-md-6">
+		   		<p>Creating a modpack is simple. Fill in the information here and make sure you have the corresponding folder created on your repository with the necessary files. </p>
+				<blockquote>/<span class="modslug">[modslug]</span>/
+				</blockquote>
+		   	</div>
+		</div>
+		{{ Form::actions(array(Button::primary_submit('Create Modpack'))) }}
+		{{ Form::close() }}
+	</div>
+</div>
 <script type="text/javascript">
 $("#slug").slugify('#name');
 $(".modslug").slugify("#name");
