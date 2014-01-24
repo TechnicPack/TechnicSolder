@@ -87,6 +87,7 @@
                       <li>
                           <a href="{{ URL::to('client/list') }}">Client Management</a>
                       </li>
+                      <li><a href="{{ URL::to('key/list') }}">API Key Management</a></li>
                   </ul>
                   <!-- /.nav-second-level -->
               </li>
