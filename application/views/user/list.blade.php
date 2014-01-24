@@ -21,7 +21,7 @@
 				<td>{{ $user->email }}</td>
 				<td>{{ $user->username }}</td>
 				<td>{{ $user->created_at }}</td>
-				<td>{{ HTML::link('user/edit/'.$user->id,'Edit', array('class' => 'btn btn-sm btn-warning')) }} {{ HTML::link('user/delete/'.$user->id, 'Delete', array('class' => 'btn btn-sm btn-danger')) }}</td>
+				<td>{{ HTML::link('user/edit/'.$user->id,'Edit', array('class' => 'btn btn-xs btn-warning')) }} {{ HTML::link('user/delete/'.$user->id, 'Delete', array('class' => 'btn btn-xs btn-danger')) }}</td>
 			</tr>
 		@endforeach
 		</table>

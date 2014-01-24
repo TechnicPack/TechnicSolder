@@ -4,6 +4,9 @@
 <hr>
 <div class="panel panel-default">
 	<div class="panel-heading">
+		<div class="pull-right">
+		    <a href="{{ URL::to('client/create') }}" class="btn btn-success btn-xs"><i class="icon-plus icon-white"></i> Add Client</a>
+		</div>
 	Client List
 	</div>
 	<div class="panel-body">
@@ -13,20 +16,27 @@
 				{{ Session::get('success') }}
 			</div>
 		@endif
-		<div class="pull-right">
-		    <a href="{{ URL::to('client/create') }}" class="btn btn-success"><i class="icon-plus icon-white"></i> Add Client</a>
-		</div>
-		{{ Table::open() }}
+		
+		<div class="table-responsive">
+		<table class="table table-striped table-bordered table-hover" id="dataTables">
 		{{ Table::headers('#', 'Name', 'UUID', '') }}
 		@foreach ($clients as $client)
 			<tr>
 				<td>{{ $client->id }}</td>
 				<td>{{ $client->name }}</td>
 				<td>{{ $client->uuid }}</td>
-				<td>{{ HTML::link('client/delete/'.$client->id, 'Delete') }}</td>
+				<td>{{ HTML::link('client/delete/'.$client->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
 			</tr>
 		@endforeach
-		{{ Table::close() }}
-		@endsection
+		</table>
+		</div>
 	</div>
 </div>
+@endsection
+@section('bottom')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#dataTables').dataTable();
+});
+</script>
+@endsection

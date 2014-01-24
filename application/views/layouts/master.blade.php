@@ -28,12 +28,10 @@
                   {{ Auth::user()->username }} <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                    <li><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    <li><a href="{{ URL::to('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                     </li>
                 </ul>
                 <!-- /.dropdown-user -->
@@ -49,19 +47,6 @@
     <nav class="navbar-default navbar-static-side" role="navigation">
       <div class="sidebar-collapse">
           <ul class="nav" id="side-menu">
-              <li class="sidebar-search">
-                <form action="{{ URL::to('mod/list') }}" method="post">
-                  <div class="input-group custom-search-form">
-                      <input type="text" class="form-control" name="search" placeholder="Search Mod Library...">
-                      <span class="input-group-btn">
-                          <button class="btn btn-default" type="button">
-                              <i class="fa fa-search"></i>
-                          </button>
-                      </span>
-                  </div>
-                  </form>
-                  <!-- /input-group -->
-              </li>
               <li>
                   <a href="{{ URL::to('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
               </li>
@@ -71,14 +56,15 @@
                        @foreach (Modpack::all() as $modpack)
                         @if ($modpack->icon)
                           @if (Config::get('solder.use_s3'))
-                          <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                           @else
-                          <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                           @endif
                         @else
-                          <li{{ $active = (URI::is('modpack/view/'.$modpack->id) ? ' class="active"' : null) }}><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                         @endif
                       @endforeach
+                      <li><a href="{{ URL::to('modpack/create') }}">Add Modpack</a></li>
                   </ul>
                   <!-- /.nav-second-level -->
               </li>

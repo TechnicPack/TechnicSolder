@@ -17,6 +17,7 @@ class Base_Controller extends Controller {
 		Asset::add('datatables', 'js/plugins/dataTables/jquery.dataTables.js');
 		Asset::add('datatables-bs', 'js/plugins/dataTables/dataTables.bootstrap.js');
 		Asset::add('datatables-css', 'css/dataTables.bootstrap.css');
+		Asset::add('slugify', 'js/jquery.slugify.js');
 	}
 
 	public function action_login()
