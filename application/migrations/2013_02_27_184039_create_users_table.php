@@ -14,7 +14,7 @@ class Create_Users_Table {
 			$table->string('username');
 			$table->string('email');
 			$table->string('password');
-			$table->string('created_ip');
+			$table->string('created_ip')->default('0.0.0.0');
 			$table->string('last_ip')->nullable();
 			$table->timestamps();
 		});
