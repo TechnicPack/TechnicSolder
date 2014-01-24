@@ -60,6 +60,15 @@ Solder waits for no one! If you use Solder you need to make sure it's up to date
 
 That's it. Your API is now on the latest version.
 
+Changes
+---------------
+
+**Version 0.6**
+
+-  Switched to Bootstrap 3 and revamped entire Solder interface
+-  API Keys are now managed by the database. Your old key will be imported during migration
+-  **0.6 requires a migration!**
+
 Troubleshooting
 ---------------
 If you are having an issue, chances are it's something wrong with your YAML files in your repository. The easiest way to check is by looking in your log files found in **storage/logs/**.
