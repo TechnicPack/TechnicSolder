@@ -101,12 +101,12 @@
   <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
-        @yield('content')
+        @output('content')
         </div>
     </div>
     <!-- /.row -->
 </div>
 <!-- /#page-wrapper -->
-@yield('bottom')
+@output('bottom')
   </body>
 </html>

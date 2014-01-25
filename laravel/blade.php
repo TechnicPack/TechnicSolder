@@ -368,9 +368,9 @@ class Blade {
 	 */
 	protected static function compile_yields($value)
 	{
-		$pattern = static::matcher('yield');
+		$pattern = static::matcher('output');
 
-		return preg_replace($pattern, '$1<?php echo \\Laravel\\Section::yield$2; ?>', $value);
+		return preg_replace($pattern, '$1<?php echo \\Laravel\\Section::output$2; ?>', $value);
 	}
 
 	/**
@@ -380,9 +380,9 @@ class Blade {
 	 */
 	protected static function compile_yield_sections($value)
 	{
-		$replace = '<?php echo \\Laravel\\Section::yield_section(); ?>';
+		$replace = '<?php echo \\Laravel\\Section::output_section(); ?>';
 
-		return str_replace('@yield_section', $replace, $value);
+		return str_replace('@output_section', $replace, $value);
 	}
 
 	/**
