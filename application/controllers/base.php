@@ -6,7 +6,18 @@ class Base_Controller extends Controller {
 	{
 		parent::__construct();
 		define('SOLDER_STREAM', 'DEV');
-		define('SOLDER_VERSION', '0.5');
+		define('SOLDER_VERSION', '0.6');
+		Asset::add('jquery', 'js/jquery-1.10.2.js');
+		Asset::add('bootstrap-js','js/bootstrap.min.js');
+		Asset::add('bootstrap-css', 'css/bootstrap.min.css');
+		Asset::add('font-awesome-css', 'font-awesome/css/font-awesome.css');
+		Asset::add('sb-admin', 'css/sb-admin.css');
+		Asset::add('metis-menu', 'js/plugins/metisMenu/jquery.metisMenu.js');
+		Asset::add('sb-admin-js', 'js/sb-admin.js');
+		Asset::add('datatables', 'js/plugins/dataTables/jquery.dataTables.js');
+		Asset::add('datatables-bs', 'js/plugins/dataTables/dataTables.bootstrap.js');
+		Asset::add('datatables-css', 'css/dataTables.bootstrap.css');
+		Asset::add('slugify', 'js/jquery.slugify.js');
 	}
 
 	public function action_login()

@@ -98,10 +98,12 @@ class API_Controller extends Base_Controller {
 		if (empty($key))
 			return Response::json(array("error" => "No API key provided."));
 
-		if ($key == Config::get('solder.platform_key'))
-			return Response::json(array("valid" => "Key validated."));
-		else
+		$key = Key::where('api_key', '=', $key)->first();
+
+		if (empty($key))
 			return Response::json(array("error" => "Invalid key provided."));
+		else
+			return Response::json(array("valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at));
 	}
 
 

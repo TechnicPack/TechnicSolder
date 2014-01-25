@@ -144,7 +144,6 @@ class Modpack_Controller extends Base_Controller {
 
 	public function action_create()
 	{
-		Asset::add('jquery', 'js/jquery.slugify.js');
 		return View::make('modpack.create');
 	}
 
@@ -200,7 +199,6 @@ class Modpack_Controller extends Base_Controller {
 			array_push($clients, $client->id);
 		}
 
-		Asset::add('jquery', 'js/jquery.slugify.js');
 		return View::make('modpack.edit')->with(array('modpack' => $modpack, 'clients' => $clients));
 	}
 

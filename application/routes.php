@@ -53,6 +53,9 @@ Route::controller('mod');
 Route::post('/client/create', 'client@do_create');
 Route::post('/client/delete/(:num)', 'client@do_delete');
 Route::controller('client');
+Route::post('/key/create', 'key@do_create');
+Route::post('/key/delete/(:num)', 'key@do_delete');
+Route::controller('key');
 
 /**
  * Authentication Routes

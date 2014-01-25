@@ -24,6 +24,8 @@ return array(
 	 * 
 	 * Enter your platform API key if you would like to link Solder to your
 	 * Platform account.
+	 *
+	 * @deprecated This config option is no longer required in Solder 0.6
 	 * 
 	 **/
 	'platform_key' => '',
