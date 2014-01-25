@@ -50,7 +50,7 @@
               <li>
                   <a href="{{ URL::to('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
               </li>
-              <li>
+              <li class="{{ URI::is('modpack/*') ? 'active' : '' }}">
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                        @foreach (Modpack::all() as $modpack)
@@ -68,14 +68,14 @@
                   </ul>
                   <!-- /.nav-second-level -->
               </li>
-              <li>
+              <li class="{{ URI::is('mod/*') ? 'active' : '' }}">
                   <a href="#"><i class="fa fa-book fa-fw"></i> Mod Library<span class="fa arrow"></span></a></a>
                   <ul class="nav nav-second-level">
                        <li><a href="{{ URL::to('mod/list') }}">Mod List</a></li>
                        <li><a href="{{ URL::to('mod/create') }}">Add a Mod</a></li>
                   </ul>
               </li>
-              <li>
+              <li class="{{ URI::is('solder/*') ? 'active' : URI::is('user/*') ? 'active' : URI::is('client/*') ? 'active': URI::is('key/*') ? 'active'  : '' }}">
                   <a href="#"><i class="fa fa-wrench fa-fw"></i> Configure Solder<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                       <li>

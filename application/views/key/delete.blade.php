@@ -1,4 +1,4 @@
-@layout('layouts/configure')
+@layout('layouts/master')
 @section('content')
 <h1>API Key Management</h1>
 <hr>
