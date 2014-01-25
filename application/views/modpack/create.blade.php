@@ -32,6 +32,7 @@
 		   		<p>Creating a modpack is simple. Fill in the information here and make sure you have the corresponding folder created on your repository with the necessary files. </p>
 				<blockquote>/<span class="modslug">[modslug]</span>/
 				</blockquote>
+				<p>If you wish to link this modpack with an existing Technic Platform modpack, the slug must be identical to your slug on the Platform!</p>
 		   	</div>
 		</div>
 		{{ Form::actions(array(Button::primary_submit('Create Modpack'))) }}
