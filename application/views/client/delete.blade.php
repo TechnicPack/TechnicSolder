@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@layout('layouts/configure')
 @section('content')
 <h1>Client Management</h1>
 <hr>

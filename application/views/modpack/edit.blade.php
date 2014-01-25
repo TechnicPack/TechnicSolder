@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@layout('layouts/modpack')
 @section('content')
 <div class="page-header">
 <h1>Modpack Management</h1>

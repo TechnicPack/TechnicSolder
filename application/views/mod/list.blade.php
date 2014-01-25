@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@layout('layouts/mod')
 @section('content')
 <div class="page-header">
 <h1>Mod Library</h1>
