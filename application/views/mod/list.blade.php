@@ -17,16 +17,17 @@
 		</div>
 		@endif
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-		{{ Table::headers('#','Mod Name', 'Author', '') }}
+		{{ Table::headers('#','Mod Name', 'Author', 'Website', '') }}
 		@foreach ($mods as $mod)
 			<tr>
 				<td>{{ HTML::link('mod/view/'.$mod->id, $mod->id) }}</td>
 				@if (!empty($mod->pretty_name))
-					<td>{{ $mod->pretty_name }} ({{ $mod->name }})</td>
+					<td>{{ HTML::link('mod/view/'.$mod->id, $mod->pretty_name) }} ({{ $mod->name }})</td>
 				@else
-					<td>{{ $mod->name }}</td>
+					<td>{{ HTML::link('mod/view/'.$mod->id, $mod->name) }}</td>
 				@endif
-				<td>{{ $mod->author }}</td>
+				<td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
+				<td>{{ !empty($mod->link) ? HTML::link($mod->link, $mod->link, array("target" => "_blank")) : "N/A" }}</td>
 				<td>{{ HTML::link('mod/view/'.$mod->id,'Manage', array("class" => "btn btn-xs btn-primary")) }}</td>
 			</tr>
 		@endforeach
