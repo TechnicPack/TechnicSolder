@@ -1,4 +1,4 @@
-@layout('layouts/main')
+@layout('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>Configure Solder</h1>
