@@ -33,13 +33,28 @@
 						<span class="help-block">Hidden modpacks will not show up in the API response for the modpack list regardless of whether or not a client has access to the modpack.</span>
 					</div>
 				</div>
-				<div class="control-group">
+				<div class="form-group">
 					<label class="control-label" for="private">Private Modpack</label>
 					<div class="controls">
 						<input type="checkbox" name="private" id="private"{{ ($modpack->private ? ' checked' : '') }}>
 						<span class="help-block">Private modpacks will only be available to clients that are linked to this modpack. You can link clients below. You can also individually mark builds as private.</span>
 					</div>
 				</div>
+				<div class="form-group">
+					<label class="control-label" for="donor_only">Donor Restricted</label>
+					<div class="controls">
+						<input type="checkbox" name="donor_only" id="donor_only"{{ ($modpack->donor_only ? ' checked' : '') }}>
+						<span class="help-block"><strong>Technic only feature!</strong></span>
+					</div>
+				</div>
+				<div class="form-group">
+                    <label for="donor_threshold">Donor Threshold</label>
+                    <div class="input-group">
+                    	<span class="input-group-addon">$</span>
+                    	<input type="text" class="form-control" name="donor_threshold" id="donor_threshold" value="{{ $modpack->donor_threshold }}">
+                    </div>
+                    <span class="help-block"><strong>Technic only feature!</strong></span>
+                </div>
 				<h3>Client Access</h3>
 				<p>Check the clients below you want to have access to this modpack if anything is set to private.</p>
 				@foreach (Client::all() as $client)

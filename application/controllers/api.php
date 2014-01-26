@@ -3,6 +3,7 @@
 class API_Controller extends Base_Controller {
 	public $restful = true;
 	public $client = null;
+	public $donor = null;
 
 	public function __construct()
 	{
@@ -16,6 +17,21 @@ class API_Controller extends Base_Controller {
 		else {
 			$clients = Client::all();
 			Cache::put('clients', $clients, 1);
+		}
+
+		/* Get Donors from technic donation api */
+		$donate = Donate::factory(Config::get('donate.url'), Config::get('donate.api_key'));
+
+		if (Cache::has('donors'))
+			$donors = Cache::get('donors');
+		else {
+			$donors = $donate->getEventUsers(1);
+			Cache::put('donors', $donors, 1);
+		}
+		foreach ($donors as $donor) {
+			if ($donor->username == Input::get('u')) {
+				$this->donor = $donor;
+			}
 		}
 
 		foreach ($clients as $client) {
@@ -146,12 +162,12 @@ class API_Controller extends Base_Controller {
 
 	private function fetch_modpacks()
 	{
-		if (Cache::has('modpacks') && empty($this->client))
+		if (Cache::has('modpacks') && empty($this->client) && empty($this->donor))
 		{
 			$modpacks = Cache::get('modpacks');
 		} else {
 			$modpacks = Modpack::where('hidden','=','0')->order_by('order')->get();
-			if (empty($this->client)) {
+			if (empty($this->client) && empty($this->donor)) {
 				Cache::put('modpacks', $modpacks, 5);
 			}
 			
@@ -169,6 +185,10 @@ class API_Controller extends Base_Controller {
 						}
 					}
 				}
+			} elseif ($modpack->donor_only == 1) {
+				if (isset($this->donor) && $this->donor->amount > $modpack->donor_threshold) {
+					$response['modpacks'][$modpack->slug] = $modpack->name;
+				}
 			} else {
 				$response['modpacks'][$modpack->slug] = $modpack->name;
 			}
@@ -183,13 +203,13 @@ class API_Controller extends Base_Controller {
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug) && empty($this->client))
+		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->donor))
 		{
 			$modpack = Cache::get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::with('Builds')
 							->where("slug","=",$slug)->first();
-			if (empty($this->client))
+			if (empty($this->client) && empty($this->donor))
 				Cache::put('modpack.'.$slug,$modpack,5);
 		}
 		
@@ -273,12 +293,12 @@ class API_Controller extends Base_Controller {
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug) && empty($this->client))
+		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->donor))
 		{
 			$modpack = Cache::Get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::where("slug","=",$slug)->first();
-			if (empty($this->client))
+			if (empty($this->client) && empty($this->donor))
 				Cache::put('modpack.'.$slug,$modpack,5);
 		}
 

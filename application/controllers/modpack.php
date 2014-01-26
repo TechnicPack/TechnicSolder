@@ -238,6 +238,8 @@ class Modpack_Controller extends Base_Controller {
 		$modpack->background_md5 = UrlUtils::get_remote_md5($url.'background.jpg');
 		$modpack->hidden = Input::get('hidden') ? true : false;
 		$modpack->private = Input::get('private') ? true : false;
+		$modpack->donor_only = Input::get('donor_only') ? true : false;
+		$modpack->donor_threshold = Input::get('donor_threshold');
 		$modpack->save();
 
 		$useS3 = Config::get('solder.use_s3');
