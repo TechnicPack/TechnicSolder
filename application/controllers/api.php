@@ -28,9 +28,12 @@ class API_Controller extends Base_Controller {
 			$donors = $donate->getEventUsers(1);
 			Cache::put('donors', $donors, 1);
 		}
-		foreach ($donors as $donor) {
-			if ($donor->username == Input::get('u')) {
-				$this->donor = $donor;
+
+		if (!empty($donors)) {
+			foreach ($donors as $donor) {
+				if ($donor->username == Input::get('u')) {
+					$this->donor = $donor;
+				}
 			}
 		}
 
@@ -184,8 +187,12 @@ class API_Controller extends Base_Controller {
 							$response['modpacks'][$modpack->slug] = $modpack->name;
 						}
 					}
+				} else {
+					if ($modpack->donor_only == 1 && isset($this->donor) && $this->donor->amount > $modpack->donor_threshold) {
+						$response['modpacks'][$modpack->slug] = $modpack->name;
+					}
 				}
-			} elseif ($modpack->donor_only == 1) {
+			} else if ($modpack->donor_only == 1) {
 				if (isset($this->donor) && $this->donor->amount > $modpack->donor_threshold) {
 					$response['modpacks'][$modpack->slug] = $modpack->name;
 				}

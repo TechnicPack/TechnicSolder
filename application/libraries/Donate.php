@@ -35,7 +35,11 @@ class Donate
 	{	
 		$event = json_decode($this->getUrlContents($this->url . "api/event/" . $eventId . "/users?api_key=" . $this->apiKey));
 
-		return $event->users;
+		if (!empty($event)) {
+			return $event->users;
+		} else {
+			return null;
+		}
 	}
 
 	private function getUrlContents($url)
