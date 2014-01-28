@@ -188,12 +188,12 @@ class API_Controller extends Base_Controller {
 						}
 					}
 				} else {
-					if ($modpack->donor_only == 1 && isset($this->donor) && $this->donor->amount > $modpack->donor_threshold) {
+					if ($modpack->donor_only == 1 && isset($this->donor) && $this->donor->amount >= $modpack->donor_threshold) {
 						$response['modpacks'][$modpack->slug] = $modpack->name;
 					}
 				}
 			} else if ($modpack->donor_only == 1) {
-				if (isset($this->donor) && $this->donor->amount > $modpack->donor_threshold) {
+				if (isset($this->donor) && $this->donor->amount >= $modpack->donor_threshold) {
 					$response['modpacks'][$modpack->slug] = $modpack->name;
 				}
 			} else {
