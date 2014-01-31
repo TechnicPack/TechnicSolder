@@ -31,7 +31,7 @@ class API_Controller extends Base_Controller {
 
 		if (!empty($donors)) {
 			foreach ($donors as $donor) {
-				if ($donor->username != "" && $donor->username == Input::get('u')) {
+				if ($donor->username != "" && strcasecmp($donor->username, Input::get('u')) == 0) {
 					$this->donor = $donor;
 				}
 			}
