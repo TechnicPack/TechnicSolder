@@ -31,7 +31,7 @@ class API_Controller extends Base_Controller {
 
 		if (!empty($donors)) {
 			foreach ($donors as $donor) {
-				if ($donor->username == Input::get('u')) {
+				if ($donor->username != "" && $donor->username == Input::get('u')) {
 					$this->donor = $donor;
 				}
 			}
@@ -192,7 +192,7 @@ class API_Controller extends Base_Controller {
 						$response['modpacks'][$modpack->slug] = $modpack->name;
 					}
 				}
-			} else if ($modpack->donor_only == 1) {
+			} elseif ($modpack->donor_only == 1) {
 				if (isset($this->donor) && $this->donor->amount >= $modpack->donor_threshold) {
 					$response['modpacks'][$modpack->slug] = $modpack->name;
 				}
