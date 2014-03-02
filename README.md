@@ -17,9 +17,12 @@ Requirements
 * PHP MCrypt Extension
 * PHP Curl Extension
 * PHP GD Extension
+* A sqllite, mysql, pgsql, or sqlsrv database
 
 Installation
 -------------
+
+If you want more step by step instructions, take a look at the wiki [here](https://github.com/TechnicPack/TechnicSolder/wiki)
 
 First thing is first, clone Solder into a directory on your web box. You will want to setup Apache, Nginx, or whatever you are using to use the "public" folder as the document root. This way the main Solder operating files are not publically available through the web.
 
