@@ -5,7 +5,7 @@
 </div>
 <div class="panel panel-default">
 	<div class="panel-heading">
-	Edit Modpack: {{ $modpack->name }}
+	Editing Modpack: {{ $modpack->name }}
 	</div>
 	<div class="panel-body">
 		@if ($errors->all())
