@@ -17,6 +17,7 @@ Requirements
 * PHP MCrypt Extension
 * PHP Curl Extension
 * PHP GD Extension
+* A sqllite, mysql, pgsql, or sqlsrv database
 
 Installation
 -------------

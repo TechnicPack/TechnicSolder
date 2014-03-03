@@ -5,7 +5,7 @@
 </div>
 <div class="panel panel-default">
 	<div class="panel-heading">
-	Edit Modpack: {{ $modpack->name }}
+	Editing Modpack: {{ $modpack->name }}
 	</div>
 	<div class="panel-body">
 		@if ($errors->all())
@@ -99,7 +99,7 @@
 				</div>
 			</div>
 		</div>
-		{{ Form::actions(array(Button::primary_submit('Edit Modpack'),Button::danger_link(URL::to('modpack/delete/'.$modpack->id),'Delete Modpack'))) }}
+		{{ Form::actions(array(Button::primary_submit('Save Changes'),Button::danger_link(URL::to('modpack/delete/'.$modpack->id),'Delete Modpack'))) }}
 		{{ Form::close() }}
 	</div>
 </div>
