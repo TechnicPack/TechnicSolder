@@ -22,8 +22,6 @@ Requirements
 Installation
 -------------
 
-If you want more step by step instructions, take a look at the wiki [here](https://github.com/TechnicPack/TechnicSolder/wiki)
-
 First thing is first, clone Solder into a directory on your web box. You will want to setup Apache, Nginx, or whatever you are using to use the "public" folder as the document root. This way the main Solder operating files are not publically available through the web.
 
 Next, copy **application/config-sample** to **application/config** and **public/.htaccess-sample** to **public/.htaccess**. Edit the files in the config directory to your liking. The only two files that currently *require* editing are **database.php** and **solder.php**. You will also want to give your box permissions to write to the **storage** folder. You can do this with a chmod or whatever you prefer.
