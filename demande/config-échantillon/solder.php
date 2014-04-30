@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return array(2a93ed9aba695d2eaebeb107b92355ffd965c38f237afac10e714fcdf4c40e
 	/**
 	 * Mod Respository Location
 	 * 
