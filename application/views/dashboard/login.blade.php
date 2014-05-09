@@ -51,7 +51,7 @@
 
     <div class="container">
 
-      <form class="form-signin" method="post" action="{{ URL::to('login') }}">
+      <form class="form-signin" method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
         @if (Session::has('login_failed'))
           <div class="alert alert-error">
