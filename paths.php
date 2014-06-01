@@ -94,7 +94,8 @@ $paths['public'] = 'public';
 // --------------------------------------------------------------
 // Change to the current working directory.
 // --------------------------------------------------------------
-chdir(__DIR__);
+// Do chdir in public/index.php
+//chdir(__DIR__);
 
 // --------------------------------------------------------------
 // Define the directory separator for the environment.
