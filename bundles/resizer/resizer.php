@@ -226,18 +226,21 @@ class Resizer {
 		}
 		
 		$mime = $file['type'];
-		$file_path = $file['tmp_name'];
-
-		switch ( $mime )
-		{
-			case 'image/pjpeg': // IE6
-			case File::mime('jpg'):	$img = @imagecreatefromjpeg( $file_path );	break;
-			case File::mime('gif'):	$img = @imagecreatefromgif( $file_path );	break;
-			case File::mime('png'):	$img = @imagecreatefrompng( $file_path );	break;
-			default:				$img = false;								break;
+		$file_path = $file['tmp_name'];		
+		$image = false;
+		
+		if(File::is(array('jpg', 'jpe', 'jpeg'), $file_path)){
+			$image = @imagecreatefromjpeg( $file_path );
+		}	
+		if(File::is('gif', $file_path)){
+			$image = @imagecreatefromgif( $file_path );
 		}
 		
-		return $img;
+		if(File::is('png', $file_path)){
+			$image = @imagecreatefrompng( $file_path );
+		}
+		
+		return $image;
 	}
 	
 	/**
