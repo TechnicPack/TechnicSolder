@@ -191,6 +191,10 @@ class Mod_Controller extends Base_Controller {
 		$ver = new ModVersion();
 		$ver->mod_id = $mod->id;
 		$ver->version = $version;
+		
+		if(Input::has_file('file'))
+			$this->upload_mod($mod,$version);
+			
 		if ($md5 = $this->mod_md5($mod,$version))
 		{
 			$ver->md5 = $md5;
@@ -220,6 +224,36 @@ class Mod_Controller extends Base_Controller {
 		$old_id = $ver->id;
 		$ver->delete();
 		return Response::json(array('version_id' => $old_id));
+	}
+	
+	
+	private function upload_mod($mod, $version)
+	{
+		//Store Upload Temporarily
+		$tempLoc=Config::get('solder.repo_location') . '../../temp/';
+		$tempMods = $tempLoc . "mods/";
+		$jarFilename = $mod->name . "-" . $version . ".jar";
+		$zipFilename = $mod->name . "-" . $version . ".zip";
+		Input::upload('file',$tempMods,$jarFilename);
+		//Create Zip
+		$zip = new ZipArchive();
+		$filename = $tempLoc .$zipFilename;
+		$zip->open($filename, ZipArchive::CREATE);
+		//Add Mod Folder
+		$zip->addEmptyDir('mods');
+		//Add Mod to folder
+		$zip->addFile($tempMods . $jarFilename ,"mods/" . $jarFilename);
+		$zip->close();
+		
+		//Make the mod folder if nessicary
+		$modFolder = Config::get('solder.repo_location').'mods/'.$mod->name.'/';
+		if (!is_dir($modFolder)) {
+   			 mkdir($modFolder, 0777, true);
+		}
+		//Move mod to public folder and delete the temp upload
+		rename($tempLoc . $zipFilename , $modFolder . $zipFilename);
+		unlink($tempMods . $jarFilename);
+
 	}
 
 	private function mod_md5($mod, $version)
