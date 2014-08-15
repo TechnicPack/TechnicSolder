@@ -76,9 +76,9 @@
 					<th style="width: 15%"></th>
 				</thead>
 				<tr id="add-row">
-					<form method="post" id="add" action="{{ URL::to('mod/addversion') }}">
+					<form method="post" id="add" action="{{ URL::to('mod/addversion') }}" enctype="multipart/form-data">
 						<input type="hidden" name="mod-id" value="{{ $mod->id }}">
-						<td></td>
+						<td><input type="file" name="file" id="file"></td>
 						<td>
 							<input type="text" name="add-version" id="add-version" class="form-control"></td>
 						<td>N/A</td>
@@ -125,7 +125,9 @@ $('#add').submit(function(e) {
 		$.ajax({
 			type: "POST",
 			url: "{{ URL::to('mod/addversion/') }}",
-			data: $("#add").serialize(),
+			data: new FormData( this ),
+      			processData: false,
+      			contentType: false,
 			success: function (data) {
 				if (data.status == "success") {
 					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
