@@ -59,7 +59,7 @@
 				<i class="icon-plus"></i> 
 				<select class="form-control" name="mod-name" id="mod">
 					<option value="">Select One</option>
-					@foreach (Mod::all() as $mod)
+					@foreach (Mod::order_by('name', 'asc')->get() as $mod)
 					<option value="{{ $mod->name }}">{{ $mod->pretty_name }}</option>
 					@endforeach
 				</select>
