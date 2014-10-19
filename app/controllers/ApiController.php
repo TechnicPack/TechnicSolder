@@ -1,49 +1,73 @@
 <?php
 
+class APIController extends BaseController {
 
-/**
-* API Controller
-*/
-class ApiController extends BaseController
-{
+	public function __construct()
+	{
+		parent::__construct();
 
-	/**
-	 * Main API Controller Index
-	 * @return String JSON Response
-	 */
+		/* This checks the client list for the CID. If a matching CID is found, all caching will be ignored
+		   for this request */
+
+		if (Cache::has('clients'))
+			$clients = Cache::get('clients');
+		else {
+			$clients = Client::all();
+			Cache::put('clients', $clients, 1);
+		}
+
+		foreach ($clients as $client) {
+			if ($client->uuid == Input::get('cid')) {
+				$this->client = $client;
+			}
+		}
+
+	}
+
 	public function getIndex()
 	{
 		return Response::json(array(
 				'api'     => 'TechnicSolder', 
-				'version' => $this->getSolderVersion(),
-				'stream' => $this->getSolderStream()
+				'version' => SOLDER_VERSION,
+				'stream' => SOLDER_STREAM
 				));
 	}
-	
-	/**
-	 * Retrieve a Modpack
-	 * @param  String $modpack Modpack slug
-	 * @param  String $build   Modpack build number
-	 * @return String          JSON Response
-	 */
+
 	public function getModpack($modpack = null, $build = null)
 	{
 		if (empty($modpack))
-			return Response::json($this->fetchModpacks());
+		{
+			if (Input::has('include'))
+			{
+				$include = Input::get('include');
+				switch ($include)
+				{
+					case "full":
+						$modpacks = $this->fetch_modpacks();
+						$m_array = array();
+						foreach ($modpacks['modpacks'] as $slug => $name)
+						{
+							$modpack = $this->fetch_modpack($slug);
+							$m_array[$slug] = $modpack;
+						}
+						$response = array();
+						$response['modpacks'] = $m_array;
+						$response['mirror_url'] = $modpacks['mirror_url'];
+						return Response::json($response);
+						break;
+				}
+			} else {
+				return Response::json($this->fetch_modpacks());
+			}
+		}
 		else {
 			if (empty($build))
-				return Response::json($this->fetchModpack($modpack));
+				return Response::json($this->fetch_modpack($modpack));
 			else
-				return Response::json($this->fetchBuild($modpack, $build));
+				return Response::json($this->fetch_build($modpack, $build));
 		}
 	}
 
-	/**
-	 * Retrieve a specific Mod
-	 * @param  String $mod     Mod Slug
-	 * @param  String $version Mod Version
-	 * @return String          JSON Response
-	 */
 	public function getMod($mod = null, $version = null)
 	{
 		if (empty($mod))
@@ -62,46 +86,90 @@ class ApiController extends BaseController
 			return Response::json(array('error' => 'Mod does not exist'));
 
 		if (empty($version))
-			return Response::json($this->fetchMod($mod));
+			return Response::json($this->fetch_mod($mod));
 
-		return Response::json($this->fetchModversion($mod,$version));
+		return Response::json($this->fetch_modversion($mod,$version));
 	}
 
-	/**
-	 * Verify Platform API Key
-	 * @param  String $key API Key
-	 * @return String      JSON Response
-	 */
 	public function getVerify($key = null)
 	{
 		if (empty($key))
 			return Response::json(array("error" => "No API key provided."));
 
-		if ($key == Config::get('solder.platform_key'))
-			return Response::json(array("valid" => "Key validated."));
-		else
+		$key = Key::where('api_key', '=', $key)->first();
+
+		if (empty($key))
 			return Response::json(array("error" => "Invalid key provided."));
+		else
+			return Response::json(array("valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at));
 	}
 
-	/**
-	 * Fetch All Modpacks
-	 * @return Array Array containing all available modpacks
-	 */
+
+	/* Private Functions */
+
+	private function fetchMod($mod)
+	{
+		$response = array();
+
+		$response['name'] = $mod->name;
+		$response['pretty_name'] = $mod->pretty_name;
+		$response['author'] = $mod->author;
+		$response['description'] = $mod->description;
+		$response['link'] = $mod->link;
+		$response['versions'] = array();
+
+		foreach ($mod->versions as $version)
+		{
+			array_push($response['versions'], $version->version);
+		}
+
+		return $response;
+	}
+
+	private function fetchModversion($mod, $version)
+	{
+		$response = array();
+
+		$version = ModVersion::where("mod_id", "=", $mod->id)
+								->where("version", "=", $version)->first();
+
+		if (empty($version))
+			return array("error" => "Mod version does not exist");
+
+		$response['md5'] = $version->md5;
+		$response['url'] = Config::get('solder.mirror_url').'mods/'.$version->mod->name.'/'.$version->mod->name.'-'.$version->version.'.zip';
+
+		return $response;
+	}
+
 	private function fetchModpacks()
 	{
-		if (Cache::has('modpacks'))
+		if (Cache::has('modpacks') && empty($this->client))
 		{
 			$modpacks = Cache::get('modpacks');
 		} else {
-			$modpacks = Modpack::all();
-			Cache::put('modpacks', $modpacks, 5);
+			$modpacks = Modpack::where('hidden','=','0')->order_by('order')->get();
+			if (empty($this->client)) {
+				Cache::put('modpacks', $modpacks, 5);
+			}
+			
 		}
 
 		$response = array();
 		$response['modpacks'] = array();
 		foreach ($modpacks as $modpack)
 		{
-			$response['modpacks'][$modpack->slug] = $modpack->name;
+			if ($modpack->private == 1) {
+				if (isset($this->client)) {
+					foreach ($this->client->modpacks as $pmodpack) {
+						if ($pmodpack->id == $modpack->id) {
+							$response['modpacks'][$modpack->slug] = $modpack->name;
+						}
+					}
+				}
+			} else {
+				$response['modpacks'][$modpack->slug] = $modpack->name;
+			}
 		}
 
 		$response['mirror_url'] = Config::get('solder.mirror_url');
@@ -109,21 +177,18 @@ class ApiController extends BaseController
 		return $response;
 	}
 
-	/**
-	 * Fetch Specific Modpack
-	 * @param  String $slug Modpack Slug
-	 * @return Array       Formatted Array with modpack data
-	 */
 	private function fetchModpack($slug)
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug))
+		if (Cache::has('modpack.'.$slug) && empty($this->client))
 		{
-			$modpack = Cache::Get('modpack.'.$slug);
+			$modpack = Cache::get('modpack.'.$slug);
 		} else {
-			$modpack = Modpack::where("slug","=",$slug)->first();
-			Cache::put('modpack.'.$slug,$modpack,5);
+			$modpack = Modpack::with('Builds')
+							->where("slug","=",$slug)->first();
+			if (empty($this->client))
+				Cache::put('modpack.'.$slug,$modpack,5);
 		}
 		
 
@@ -131,9 +196,54 @@ class ApiController extends BaseController
 			return array("error" => "Modpack does not exist");
 
 		$response['name']           = $modpack->slug;
+		$response['display_name']	= $modpack->name;
 		$response['url']            = $modpack->url;
+
+		$resourcePath = URL::to_asset('resources/' . $modpack->slug);
+
+		if ($modpack->icon == 0 && !empty($modpack->icon_md5)) {
+			$response['icon'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/icon.png";
+		} else if ($modpack->icon == 0 && empty($modpack->icon_md5)) {
+			$response['icon'] = URL::to_asset('resources/default/icon.png');
+			$modpack->icon_md5 = md5_file(path('public') . 'resources/default/icon.png');
+		} else {
+			if (Config::get('solder.use_s3')) {
+				$response['icon'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/icon.png?'.TimeUtils::getTimestampDate($modpack->updated_at);
+			} else {
+				$response['icon'] = $resourcePath . "/icon.png";
+			}
+		}
+
 		$response['icon_md5']       = $modpack->icon_md5;
+
+		if ($modpack->logo == 0 && !empty($modpack->logo_md5)) {
+			$response['logo'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/logo.png";
+		} else if ($modpack->logo == 0 && empty($modpack->logo_md5)) {
+			$response['logo'] = URL::to_asset('resources/default/logo.png');
+			$modpack->logo_md5 = md5_file(path('public') . 'resources/default/logo.png');
+		} else {
+			if (Config::get('solder.use_s3')) {
+				$response['logo'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/logo.png?'.TimeUtils::getTimestampDate($modpack->updated_at);
+			} else {
+				$response['logo'] = $resourcePath . "/logo.png";
+			}
+		}
+
 		$response['logo_md5']       = $modpack->logo_md5;
+
+		if ($modpack->background == 0 && !empty($modpack->background_md5)) {
+			$response['background'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/background.png";
+		} else if ($modpack->background == 0 && empty($modpack->background_md5)) {
+			$response['background'] = URL::to_asset('resources/default/background.png');
+			$modpack->background_md5 = md5_file(path('public') . 'resources/default/background.png');
+		} else {
+			if (Config::get('solder.use_s3')) {
+				$response['background'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/background.png?'.TimeUtils::getTimestampDate($modpack->updated_at);
+			} else {
+				$response['background'] = $resourcePath . "/background.png";
+			}
+		}
+
 		$response['background_md5'] = $modpack->background_md5;
 		$response['recommended']    = $modpack->recommended;
 		$response['latest']         = $modpack->latest;
@@ -141,49 +251,55 @@ class ApiController extends BaseController
 
 		foreach ($modpack->builds as $build)
 		{
-			if ($build->is_published)
-				array_push($response['builds'], $build->version);
+			if ($build->is_published) {
+				if (!$build->private) {
+					array_push($response['builds'], $build->version);
+				} else if (isset($this->client)) {
+					foreach ($this->client->modpacks as $pmodpack) {
+						if ($modpack->id == $pmodpack->id) {
+							array_push($response['builds'], $build->version);
+						}
+					}
+				}
+			}
 		}
 
 		return $response;
 	}
 
-	/**
-	 * Fetch Specific Modpack Build
-	 * @param  String $slug  Modpack Slug
-	 * @param  String $build Modpack Build Number
-	 * @return Array        Array containing build information and contained mods
-	 */
 	private function fetchBuild($slug, $build)
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug))
+		if (Cache::has('modpack.'.$slug) && empty($this->client))
 		{
 			$modpack = Cache::Get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::where("slug","=",$slug)->first();
-			Cache::put('modpack.'.$slug,$modpack,5);
+			if (empty($this->client))
+				Cache::put('modpack.'.$slug,$modpack,5);
 		}
 
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
 			
 		$buildpass = $build;
-		if (Cache::has('modpack.'.$slug.'.build.'.$build))
+		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client))
 		{
 			$build = Cache::get('modpack.'.$slug.'.build.'.$build);
 		} else {
-			$build = Build::with('modversions')
+			$build = Build::with('ModVersions')
 						->where("modpack_id", "=", $modpack->id)
 						->where("version", "=", $build)->first();
-			Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
+			if (empty($this->client))
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
 		}
 
 		if (empty($build))
 			return array("error" => "Build does not exist");
 
 		$response['minecraft'] = $build->minecraft;
+		$response['minecraft_md5'] = $build->minecraft_md5;
 		$response['forge'] = $build->forge;
 		$response['mods'] = array();
 
@@ -229,53 +345,6 @@ class ApiController extends BaseController
 
 		return $response;
 	}
-
-	/**
-	 * Fetch Specific Mod
-	 * @param  String $mod Mod Slug
-	 * @return Array      Array containing mod information
-	 */
-	private function fetchMod($mod)
-	{
-		$response = array();
-
-		$response['name'] = $mod->name;
-		$response['pretty_name'] = $mod->pretty_name;
-		$response['author'] = $mod->author;
-		$response['description'] = $mod->description;
-		$response['link'] = $mod->link;
-		$response['versions'] = array();
-
-		foreach ($mod->versions as $version)
-		{
-			array_push($response['versions'], $version->version);
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Fetch Specific Mod Version
-	 * @param  String $mod     Mod Slug
-	 * @param  String $version Mod Version
-	 * @return Array          Array containing mod version information
-	 */
-	private function fetchModversion($mod, $version)
-	{
-		$response = array();
-
-		$version = ModVersion::where("mod_id", "=", $mod->id)
-								->where("version", "=", $version)->first();
-
-		if (empty($version))
-			return array("error" => "Mod version does not exist");
-
-		$response['md5'] = $version->md5;
-		$response['url'] = Config::get('solder.mirror_url').'mods/'.$version->mod->name.'/'.$version->mod->name.'-'.$version->version.'.zip';
-
-		return $response;
-	}
-
 
 }
 

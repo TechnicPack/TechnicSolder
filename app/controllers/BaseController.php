@@ -2,55 +2,47 @@
 
 class BaseController extends Controller {
 
-	const SOLDER_STREAM = 'DEV';
-	const SOLDER_VERSION = '0.3';
-
-	public static function getSolderStream()
+	public function __construct()
 	{
-		return self::SOLDER_STREAM;
+		define('SOLDER_STREAM', 'DEV');
+		define('SOLDER_VERSION', '0.7');
 	}
 
-	public static function getSolderVersion()
-	{
-		return self::SOLDER_VERSION;
-	}
-
-	/**
-	 * Setup the layout used by the controller.
-	 *
-	 * @return void
-	 */
-	protected function setupLayout()
-	{
-		if ( ! is_null($this->layout))
-		{
-			$this->layout = View::make($this->layout);
-		}
-	}
-
-	public function getLogin()
+	public function showLogin()
 	{
 		return View::make('dashboard.login');
 	}
 
-	public function doLogin()
+	public function postLogin()
 	{
-		$email    = Input::get('email');
+		$email = Input::get('email');
 		$password = Input::get('password');
-		$remember = Input::get('remember');
+		$remember = Input::get('remember') ? true : false;
 
 		$credentials = array(
-			'username' => $email,
+			'email' => $email,
 			'password' => $password,
-			'remember' => !empty($remember) ? $remember : null
 			);
-		if ( Auth::attempt($credentials)) {
+
+		if ( Auth::attempt($credentials, $remember)) {
 			Auth::user()->last_ip = Request::ip();
 			Auth::user()->save();
 			return Redirect::to('dashboard/');
 		} else {
 			return Redirect::to('login')->with('login_failed',"Invalid Username/Password");
 		}
+	}
+
+	/**
+	 * Catch-all method for requests that can't be matched.
+	 *
+	 * @param  string    $method
+	 * @param  array     $parameters
+	 * @return Response
+	 */
+	public function __call($method, $parameters)
+	{
+		return App::abort('404');
 	}
 
 }
