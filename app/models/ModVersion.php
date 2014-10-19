@@ -1,15 +1,17 @@
 <?php
 
-class Modversion extends Eloquent {
+class ModVersion extends Eloquent {
 	public $timestamps = true;
 
 	public function mod()
 	{
-		return $this->belongsTo('Mod');
+		return $this->belongs_to('Mod');
 	}
 
 	public function builds()
 	{
-		return $this->belongsToMany('Build');
+		return $this->has_many_and_belongs_to('Build');
 	}
 }
+
+?>

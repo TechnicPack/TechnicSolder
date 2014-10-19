@@ -5,11 +5,13 @@ class Build extends Eloquent {
 
 	public function modpack()
 	{
-		return $this->belongsTo('Modpack');
+		return $this->belongs_to('Modpack');
 	}
 
 	public function modversions()
 	{
-		return $this->belongsToMany('Modversion');
+		return $this->has_many_and_belongs_to('ModVersion');
 	}
 }
+
+?>

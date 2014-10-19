@@ -1,52 +1,25 @@
 <?php
 
-use Illuminate\Auth\UserInterface;
-use Illuminate\Auth\Reminders\RemindableInterface;
+class User extends Eloquent {
+	public $timestamps = true;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
-
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'users';
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-	protected $hidden = array('password');
-
-	/**
-	 * Get the unique identifier for the user.
-	 *
-	 * @return mixed
-	 */
-	public function getAuthIdentifier()
+	public function permission()
 	{
-		return $this->getKey();
+		return $this->has_one('UserPermission');
 	}
 
-	/**
-	 * Get the password for the user.
-	 *
-	 * @return string
-	 */
-	public function getAuthPassword()
+	public function getRememberToken()
 	{
-		return $this->password;
+	    return $this->remember_token;
 	}
 
-	/**
-	 * Get the e-mail address where password reminders are sent.
-	 *
-	 * @return string
-	 */
-	public function getReminderEmail()
+	public function setRememberToken($value)
 	{
-		return $this->email;
+	    $this->remember_token = $value;
 	}
 
+	public function getRememberTokenName()
+	{
+	    return 'remember_token';
+	}
 }
