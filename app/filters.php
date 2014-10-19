@@ -22,22 +22,53 @@ App::after(function($request, $response)
 	//
 });
 
+/*App::missing(function($exception)
+{
+	return Response::make('Missing', 404);
+});*/
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Filters
 |--------------------------------------------------------------------------
 |
 | The following filters are used to verify that the user of the current
-| session is logged into this application. Also, a "guest" filter is
-| responsible for performing the opposite. Both provide redirects.
+| session is logged into this application. The "basic" filter easily
+| integrates HTTP Basic authentication for quick, simple checking.
 |
 */
 
 Route::filter('auth', function()
 {
-	if (Auth::guest()) return Redirect::route('login');
+	if (Auth::guest())
+	{
+		if (Request::ajax())
+		{
+			return Response::make('Unauthorized', 401);
+		}
+		else
+		{
+			return Redirect::guest('login');
+		}
+	}
 });
 
+
+Route::filter('auth.basic', function()
+{
+	return Auth::basic();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Guest Filter
+|--------------------------------------------------------------------------
+|
+| The "guest" filter is the counterpart of the authentication filters as
+| it simply checks that the current user is not logged in. A redirect
+| response will be issued if they are, which you may freely change.
+|
+*/
 
 Route::filter('guest', function()
 {
@@ -57,8 +88,46 @@ Route::filter('guest', function()
 
 Route::filter('csrf', function()
 {
-	if (Session::getToken() != Input::get('_token'))
+	if (Session::token() != Input::get('_token'))
 	{
 		throw new Illuminate\Session\TokenMismatchException;
+	}
+});
+
+Route::filter('perm', function($check)
+{
+	$perm = (array) Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm[$check])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('modpack', function($modpack)
+{
+	$perm = Auth::user()->permission;
+
+	if (!$perm->solder_full && !in_array($modpack, $perm->modpacks))
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('build', function($build)
+{
+	$perm = Auth::user()->permission;
+	$build = Build::find($build);
+	if (empty($build))
+		return Redirect::to('dashboard');
+
+	$modpack = $build->modpack;
+
+	if (!$perm->solder_full && !in_array($modpack->id, $perm->modpacks))
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
 	}
 });
