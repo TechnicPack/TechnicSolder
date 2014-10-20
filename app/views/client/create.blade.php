@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>Client Management</h1>
 <hr>
@@ -26,7 +26,8 @@
                     <label for="uuid">UUID</label>
                     <input type="text" class="form-control" name="uuid" id="uuid">
                 </div>
-				{{ Form::actions(array(Button::primary_submit('Add Client'),Button::link(URL::to('client/list'),'Go Back'))) }}
+				{{ Form::submit('Add Client', array('class' => 'btn btn-success')) }}
+				{{ HTML::link('client/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 				{{ Form::close() }}
 			</div>
 		</div>

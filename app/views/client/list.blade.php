@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>Client Management</h1>
 <hr>
@@ -19,15 +19,24 @@
 		
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-		{{ Table::headers('#', 'Name', 'UUID', '') }}
-		@foreach ($clients as $client)
-			<tr>
-				<td>{{ $client->id }}</td>
-				<td>{{ $client->name }}</td>
-				<td>{{ $client->uuid }}</td>
-				<td>{{ HTML::link('client/delete/'.$client->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
-			</tr>
-		@endforeach
+			<thead>	
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>API Key</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach ($clients as $client)
+				<tr>
+					<td>{{ $client->id }}</td>
+					<td>{{ $client->name }}</td>
+					<td>{{ $client->uuid }}</td>
+					<td>{{ HTML::link('client/delete/'.$client->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
+				</tr>
+			@endforeach
+			</tbody>
 		</table>
 		</div>
 	</div>

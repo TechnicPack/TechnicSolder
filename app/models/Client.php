@@ -5,7 +5,7 @@ class Client extends Eloquent {
 
 	public function modpacks()
 	{
-		return $this->has_many_and_belongs_to('Modpack');
+		return $this->belongsToMany('Modpack');
 	}
 
 }
