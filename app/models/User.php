@@ -38,7 +38,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	public function permission()
 	{
-		return $this->has_one('UserPermission');
+		return $this->hasOne('UserPermission');
 	}
 
 	public function getRememberToken()

@@ -40,19 +40,8 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-	if (Auth::guest())
-	{
-		if (Request::ajax())
-		{
-			return Response::make('Unauthorized', 401);
-		}
-		else
-		{
-			return Redirect::guest('login');
-		}
-	}
+	if (Auth::guest()) return Redirect::guest('login');
 });
-
 
 Route::filter('auth.basic', function()
 {
@@ -96,7 +85,7 @@ Route::filter('csrf', function()
 
 Route::filter('perm', function($check)
 {
-	$perm = (array) Auth::user()->permission;
+	$perm = Auth::user()->permission;
 	$perm = $perm['attributes'];
 	if (!$perm['solder_full'] && !$perm[$check])
 	{

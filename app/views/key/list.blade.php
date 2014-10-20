@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>API Key Management</h1>
 <hr>
@@ -19,7 +19,12 @@
 		
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-		{{ Table::headers('#', 'Name', 'API Key', '') }}
+			<tr>
+				<th>#</th>
+				<th>Name</th>
+				<th>API Key</th>
+				<th>Actions</th>
+			</tr>
 		@foreach ($keys as $key)
 			<tr>
 				<td>{{ $key->id }}</td>
