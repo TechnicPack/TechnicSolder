@@ -19,20 +19,24 @@
 		
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-			<tr>
-				<th>#</th>
-				<th>Name</th>
-				<th>API Key</th>
-				<th>Actions</th>
-			</tr>
-		@foreach ($keys as $key)
-			<tr>
-				<td>{{ $key->id }}</td>
-				<td>{{ $key->name }}</td>
-				<td>{{ $key->api_key }}</td>
-				<td>{{ HTML::link('key/delete/'.$key->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
-			</tr>
-		@endforeach
+			<thead>	
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>API Key</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach ($keys as $key)
+				<tr>
+					<td>{{ $key->id }}</td>
+					<td>{{ $key->name }}</td>
+					<td>{{ $key->api_key }}</td>
+					<td>{{ HTML::link('key/delete/'.$key->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
+				</tr>
+			@endforeach
+			</tbody>
 		</table>
 		</div>
 	</div>

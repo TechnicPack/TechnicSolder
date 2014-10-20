@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>API Key Management</h1>
 <hr>
@@ -6,6 +6,6 @@
 <p>This will immediately remove access to Solder using this API Key. Make sure to unlink any packs using this key before doing this.</p>
 <form method="post" action="{{ URL::current() }}">
 	<button type="submit" class="btn btn-danger">Confirm Deletion</button> 
-	<a href="{{ Request::referrer() }}" class="btn">Go Back</a>
+	{{ HTML::link('key/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 </form>
 @endsection

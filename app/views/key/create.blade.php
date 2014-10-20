@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>API Key Management</h1>
 <hr>
@@ -26,7 +26,8 @@
                     <label for="api_key">API Key</label>
                     <input type="text" class="form-control" name="api_key" id="api_key">
                 </div>
-				{{ Form::actions(array(Button::primary_submit('Add API Key'),Button::link(URL::to('key/list'),'Go Back'))) }}
+				{{ Form::submit('Add Client', array('class' => 'btn btn-success')) }}
+				{{ HTML::link('key/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 				{{ Form::close() }}
 			</div>
 		</div>
