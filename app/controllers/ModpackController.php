@@ -7,14 +7,11 @@ class ModpackController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->filter('before','auth');
-		$this->filter('before', 'perm', array('solder_modpacks'));
-		$this->filter('before', 'perm', array('solder_create'))
-			->only(array('create'));
-		$this->filter('before', 'modpack', array(URI::segment(3)))
-			->only(array('view','create','delete','edit'));
-		$this->filter('before', 'build', array(URI::segment(3)))
-			->only(array('build'));
+		$this->beforeFilter('auth');
+		$this->beforeFilter('perm', array('solder_modpacks'));
+		$this->beforeFilter('perm', array('solder_create'), array('only' => array('create')));
+		$this->beforeFilter('modpack', array(URI::segment(3)), array('only' => array('view','create','delete','edit')));
+		$this->beforeFilter('build', array(URI::segment(3)), array('only' => array('build')));
 	}
 
 	public function action_index()

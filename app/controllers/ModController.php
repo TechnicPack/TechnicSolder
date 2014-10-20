@@ -5,14 +5,11 @@ class ModController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->filter('before','auth');
-		$this->filter('before', 'perm', array('solder_mods'));
-		$this->filter('before', 'perm', array('mods_manage'))
-			->only(array('view','versions'));
-		$this->filter('before', 'perm', array('mods_create'))
-			->only(array('create'));
-		$this->filter('before', 'perm', array('mods_delete'))
-			->only(array('delete'));
+		$this->beforeFilter('auth');
+		$this->beforeFilter('perm', array('solder_mods'));
+		$this->beforeFilter('perm', array('mods_manage'), array('only' => array('view','versions')));
+		$this->beforeFilter('perm', array('mods_create'), array('only' => array('create')));
+		$this->beforeFilter('perm', array('mods_delete'), array('only' => array('delete')));
 	}
 
 	public function action_list()
