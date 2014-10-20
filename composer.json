@@ -18,7 +18,9 @@
                "role": "Developer"
                	}],
 	"require": {
-		"laravel/framework": "4.2.*"
+		"laravel/framework": "4.2.*",
+		"patricktalmadge/bootstrapper": "~5",
+		"intervention/image": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

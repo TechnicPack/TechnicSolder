@@ -8,7 +8,7 @@ class SolderController extends BaseController {
 		$this->beforeFilter('auth');
 	}
 
-	public function action_configure()
+	public function getConfigure()
 	{
 		if (Input::get('edit-solder'))
 		{

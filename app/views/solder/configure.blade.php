@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>Configure Solder</h1>
@@ -15,9 +15,9 @@
 		@endif
 
 		<div class="form-group">
-        <label for="mirror_url">Mirror URL</label>
+        <label for="mirror_url">Repository Mirror URL</label>
         <input type="text" class="form-control" name="mirror_url" id="mirror_url" value="{{ Config::get('solder.mirror_url') }}" disabled>
-        <span class="help-block">This is where the launcher will be told to search for your files. If your repo location is already a URL you can use the same location here. Include a trailing slash!</span>
+        <span class="help-block">This is the public facing URL for your repo. If your repository location is already a URL, you can use the same location here. Include a trailing slash!</span>
     </div>
 
     <div class="form-group">
@@ -26,7 +26,7 @@
         <span class="help-block">This is the location of your mod reposistory. INCLUDE a trailing slash! This can be a URL or an absolute file location. This is only required for your initial repository import.</span>
     </div>
 
-    <p>You can change these settings in <strong>application/config/solder.php</strong></p>
+    <p>You can change these settings in <strong>app/config/solder.php</strong></p>
 	</div>
 </div>
 @endsection
