@@ -17,11 +17,6 @@ class CreateKeysTable extends Migration {
 			$table->string('api_key');
 			$table->timestamps();
 		});
-
-		$key = new Key();
-		$key->name = "default";
-		$key->api_key = Config::get('solder.platform_key');
-		$key->save();
 	}
 
 	/**
