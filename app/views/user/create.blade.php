@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>User Management</h1>
@@ -9,7 +9,7 @@
     </div>
     <div class="panel-body">
         @if ($errors->all())
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
             @foreach ($errors->all() as $error)
                 {{ $error }}<br />
             @endforeach
@@ -65,7 +65,8 @@
                 </div>
             </div>
         </div>
-        {{ Form::actions(array(Button::primary_submit('Create User'),Button::link(URL::to('user/list'),'Go Back'))) }}
+        {{ Form::submit('Create User', array('class' => 'btn btn-success')) }}
+        {{ HTML::link('user/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
         {{ Form::close() }}
     </div>
 </div>

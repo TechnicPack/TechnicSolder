@@ -1,8 +1,13 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>User Management</h1>
 </div>
+@if (Session::has('error'))
+<div class="alert alert-danger">
+	{{ Session::get('error') }}
+</div>
+@endif
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<div class="pull-right">
@@ -14,16 +19,26 @@
 		
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-		{{ Table::headers('#', 'Email', 'Username', 'Created', '') }}
-		@foreach ($users as $user)
-			<tr>
-				<td>{{ $user->id }}</td>
-				<td>{{ $user->email }}</td>
-				<td>{{ $user->username }}</td>
-				<td>{{ $user->created_at }}</td>
-				<td>{{ HTML::link('user/edit/'.$user->id,'Edit', array('class' => 'btn btn-xs btn-warning')) }} {{ HTML::link('user/delete/'.$user->id, 'Delete', array('class' => 'btn btn-xs btn-danger')) }}</td>
-			</tr>
-		@endforeach
+			<thead>
+				<tr>
+					<th>ID #</th>
+					<th>Email</th>
+					<th>Username</th>
+					<th>Created at</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach ($users as $user)
+				<tr>
+					<td>{{ $user->id }}</td>
+					<td>{{ $user->email }}</td>
+					<td>{{ $user->username }}</td>
+					<td>{{ $user->created_at }}</td>
+					<td>{{ HTML::link('user/edit/'.$user->id,'Edit', array('class' => 'btn btn-xs btn-warning')) }} {{ HTML::link('user/delete/'.$user->id, 'Delete', array('class' => 'btn btn-xs btn-danger')) }}</td>
+				</tr>
+			@endforeach
+			</tbody>
 		</table>
 		</div>
 		@endsection

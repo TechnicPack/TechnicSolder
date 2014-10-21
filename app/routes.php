@@ -18,8 +18,6 @@ Route::group(array('before' => 'auth'), function() {
 	Route::post('/modpack/addbuild/(:num)', 'modpack@do_addbuild');
 	Route::controller('modpack', 'ModpackController');
 	Route::controller('solder', 'SolderController');
-	Route::post('/user/create', 'user@do_create');
-	Route::post('/user/delete/(:num)', 'user@do_delete');
 	Route::controller('user', 'UserController');
 	Route::controller('reminders', 'RemindersController');
 });
