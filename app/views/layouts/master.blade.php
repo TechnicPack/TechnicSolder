@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>TechnicSolder v{{ SOLDER_VERSION }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{ HTML::script('js/jquery-1.10.2.js') }}
+    {{ HTML::script('js/jquery-1.11.1.min.js') }}
     {{ HTML::script('js/bootstrap.min.js') }}
     {{ HTML::style('css/bootstrap.min.css') }}
     {{ HTML::style('font-awesome/css/font-awesome.css') }}
@@ -67,10 +67,10 @@
                           @if (Config::get('solder.use_s3'))
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                           @else
-                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                           @endif
                         @else
-                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::to_asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
+                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                         @endif
                       @endforeach
                       <li><a href="{{ URL::to('modpack/create') }}">Add Modpack</a></li>
