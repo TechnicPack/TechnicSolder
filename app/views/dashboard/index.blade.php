@@ -5,10 +5,10 @@
 <p class="lead">Welcome to Technic Solder!</p>
 </div>
 @if (Session::has('permission'))
-<div class="alert alert-error">
+<div class="alert alert-danger">
 	{{ Session::get('permission') }}
 </div>
 @endif
 <p>TechnicSolder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
-<p>TechnicSolder is an open source project. It is under the MIT license. Feel free to do whatever you want!</p>
+<p>TechnicSolder is an open source project. It is under the MIT license. Source Code: <a href="http://github.com/TechnicPack/TechnicSolder" target="_blank">http://github.com/TechnicPack/TechnicSolder</a></p>
 @endsection
