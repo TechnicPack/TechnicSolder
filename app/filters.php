@@ -83,8 +83,75 @@ Route::filter('csrf', function()
 	}
 });
 
-Route::filter('perm', function($check)
+Route::filter('solder_users', function()
 {
+	$user = Request::segment(3);
+	$action = Request::segment(2);
+	$perm = Auth::user()->permission;
+	$perm = $perm['attributes'];
+
+	if (!$perm['solder_full'] && !$perm['solder_users'])
+	{
+		/* This allows the user to edit thier own profile */
+		if ($action == 'edit'){
+			if ($user != Auth::user()->id){
+				return Redirect::to('dashboard')
+					->with('permission','You do not have permission to access this area.');
+			}
+		}
+		else
+		{
+			return Redirect::to('dashboard')
+					->with('permission','You do not have permission to access this area.');
+		}
+	}
+});
+
+Route::filter('solder_keys', function()
+{
+	$perm = Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm['solder_keys'])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('solder_clients', function()
+{
+	$perm = Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm['solder_clients'])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('solder_modpacks', function()
+{
+	$check = '';
+	switch(Request::segment(2)){
+		case 'create':
+		$check = 'modpacks_create';
+		break;
+		case 'delete':
+		$check = 'modpacks_delete';
+		break;
+		case 'edit':
+		$check = 'modpacks_manage';
+		break;
+		case 'view':
+		$check = 'modpacks_manage';
+		break;
+		case 'list':
+		$check = 'modpacks_manage';
+		break;
+		default:
+		return Redirect::to('dashboard');
+		break;
+	}
 	$perm = Auth::user()->permission;
 	$perm = $perm['attributes'];
 	if (!$perm['solder_full'] && !$perm[$check])
@@ -94,9 +161,44 @@ Route::filter('perm', function($check)
 	}
 });
 
-Route::filter('modpack', function($modpack)
+Route::filter('solder_mods', function()
 {
+	$check = '';
+	switch(Request::segment(2)){
+		case 'create':
+		$check = 'mods_create';
+		break;
+		case 'delete':
+		$check = 'mods_delete';
+		break;
+		case 'edit':
+		$check = 'mods_manage';
+		break;
+		case 'view':
+		$check = 'mods_manage';
+		break;
+		case 'list':
+		$check = 'mods_manage';
+		break;
+		default:
+		return Redirect::to('dashboard');
+		break;
+	}
 	$perm = Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm[$check])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
+Route::filter('modpack', function()
+{
+	$modpack = Request::segment(3);
+	$perm = Auth::user()->permission;
+	if (empty($modpack))
+		return Redirect::to('dashboard');
 
 	if (!$perm->solder_full && !in_array($modpack, $perm->modpacks))
 	{
@@ -105,13 +207,14 @@ Route::filter('modpack', function($modpack)
 	}
 });
 
-Route::filter('build', function($build)
+Route::filter('build', function()
 {
-	$perm = Auth::user()->permission;
+	$build = Request::segment(3);
 	$build = Build::find($build);
 	if (empty($build))
 		return Redirect::to('dashboard');
 
+	$perm = Auth::user()->permission;
 	$modpack = $build->modpack;
 
 	if (!$perm->solder_full && !in_array($modpack->id, $perm->modpacks))

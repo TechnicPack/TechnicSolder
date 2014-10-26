@@ -6,7 +6,7 @@ class ClientController extends BaseController {
 	{
 		parent::__construct();
 		$this->beforeFilter('auth');
-		$this->beforeFilter('perm', array('solder_users'), array('only' => array('delete','do_delete')));
+		$this->beforeFilter('solder_clients');
 	}
 
 	public function getList()

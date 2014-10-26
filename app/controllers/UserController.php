@@ -6,7 +6,7 @@ class UserController extends BaseController {
 	{
 		parent::__construct();
 		$this->beforeFilter('auth');
-		$this->beforeFilter('perm', array('solder_users'), array('only' => array('delete','do_delete')));
+		$this->beforeFilter('solder_users');
 	}
 
 	public function getList()
@@ -80,14 +80,18 @@ class UserController extends BaseController {
 					$perm->solder_full = Input::get('solder-full') ? true : false;
 				}
 				$perm->solder_users = Input::get('manage-users') ? true : false;
-				$perm->solder_modpacks = Input::get('manage-packs') ? true : false;
-				$perm->solder_mods = Input::get('manage-mods') ? true : false;
-				$perm->solder_create = Input::get('solder-create') ? true: false;
+				$perm->solder_keys = Input::get('manage-keys') ? true : false;
+				$perm->solder_clients = Input::get('manage-clients') ? true : false;
 
+				/* Mod Perms */
 				$perm->mods_create = Input::get('mod-create') ? true : false;
 				$perm->mods_manage = Input::get('mod-manage') ? true : false;
 				$perm->mods_delete = Input::get('mod-delete') ? true : false;
 
+				/* Modpack Perms */
+				$perm->modpacks_create = Input::get('modpack-create') ? true : false;
+				$perm->modpacks_manage = Input::get('modpack-manage') ? true : false;
+				$perm->modpacks_delete = Input::get('modpack-delete') ? true : false;
 				$modpack = Input::get('modpack');
 
 				if (!empty($modpack))
@@ -137,14 +141,18 @@ class UserController extends BaseController {
 
 		$perm->solder_full = Input::get('solder-full') ? true : false;
 		$perm->solder_users = Input::get('manage-users') ? true : false;
-		$perm->solder_modpacks = Input::get('manage-packs') ? true : false;
-		$perm->solder_mods = Input::get('manage-mods') ? true : false;
-		$perm->solder_create = Input::get('solder-create') ? true: false;
+		$perm->solder_keys = Input::get('manage-keys') ? true : false;
+		$perm->solder_clients = Input::get('manage-clients') ? true : false;
 
+		/* Mod Perms */
 		$perm->mods_create = Input::get('mod-create') ? true : false;
 		$perm->mods_manage = Input::get('mod-manage') ? true : false;
 		$perm->mods_delete = Input::get('mod-delete') ? true : false;
 
+		/* Modpack Perms */
+		$perm->modpacks_create = Input::get('modpack-create') ? true : false;
+		$perm->modpacks_manage = Input::get('modpack-manage') ? true : false;
+		$perm->modpacks_delete = Input::get('modpack-delete') ? true : false;
 		$modpack = Input::get('modpack');
 
 		if (!empty($modpack))

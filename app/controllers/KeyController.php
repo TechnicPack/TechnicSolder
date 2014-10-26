@@ -7,7 +7,7 @@ class KeyController extends BaseController
 	{
 		parent::__construct();
 		$this->beforeFilter('auth');
-		$this->beforeFilter('perm', array('solder_full'), array('only' => array('delete','do_delete')));
+		$this->beforeFilter('solder_keys');
 	}
 
 	public function getList()

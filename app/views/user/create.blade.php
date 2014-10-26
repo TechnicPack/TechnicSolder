@@ -31,23 +31,24 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
+                {{ Form::submit('Create User', array('class' => 'btn btn-success')) }}
             </div>
             <div class="col-md-6">
                 <h3>Permissions</h3>
                 <p>
-                    Please select the level of access this user will be given. The "Solderwide" permission is required to access a specific section. (Ex. Manage Modpacks is required for anyone to access even the list of modpacks. They will also need the respective permission for each modpack they should have access to.)
+                    Please select the level of access this user will be given. The "Solderwide" permission is required to access a specific section. Mod and Modpack user permissions are displayed in there corresponding sections.
                 </p>
                 <div class="form-group">
-                    <label class="control-label">Solderwide</label>
+                    <label>Solderwide</label>
                     <div class="controls">
-                        <label for="solder-full" class="checkbox-inline"><input type="checkbox" name="solder-full" id="solder-full" value="1"> Full Solder Access</label>
+                        <label for="solder-full" class="checkbox-inline"><input type="checkbox" name="solder-full" id="solder-full" value="1"> Full Solder Access (Blanket permission)</label>
                         <label for="manage-users" class="checkbox-inline"><input type="checkbox" name="manage-users" id="manage-users" value="1"> Manage Users</label>
-                        <label for="manage-packs" class="checkbox-inline"><input type="checkbox" name="manage-packs" id="manage-packs" value="1"> Manage Modpacks</label>
-                        <label for="manage-mods" class="checkbox-inline"><input type="checkbox" name="manage-mods" id="manage-mods" value="1"> Manage Mods</label>
+                        <label for="manage-keys" class="checkbox-inline"><input type="checkbox" name="manage-keys" id="manage-keys" value="1"> Manage API Keys</label>
+                        <label for="manage-clients" class="checkbox-inline"><input type="checkbox" name="manage-clients" id="manage-clients" value="1"> Manage Clients</label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Mod Library</label>
+                    <label>Mod Library</label>
                     <div class="controls">
                         <label for="mod-create" class="checkbox-inline"><input type="checkbox" name="mod-create" id="mod-create" value="1"> Create Mods</label>
                         <label for="mod-manage" class="checkbox-inline"><input type="checkbox" name="mod-manage" id="mod-manage" value="1"> Manage Mods</label>
@@ -55,9 +56,17 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Modpack Access</label>
+                    <label class="control-label">General Modpack Access</label>
+                    <p>General Modpack Access permissions are required before granting access to a specific modpack. Users without these permission will not be able to perform stated actions even if the specfic modpack is selected.</p>
                     <div class="controls">
-                        <label for="solder-create" class="checkbox-inline"><input type="checkbox" name="solder-create" id="solder-create" value="1"> Create Modpacks</label>
+                        <label for="modpack-create" class="checkbox-inline"><input type="checkbox" name="modpack-create" id="modpack-create" value="1"> Create Modpacks</label>
+                        <label for="modpack-manage" class="checkbox-inline"><input type="checkbox" name="modpack-manage" id="modpack-manage" value="1"> Manage Modpacks</label>
+                        <label for="modpack-delete" class="checkbox-inline"><input type="checkbox" name="modpack-delete" id="modpack-delete" value="1"> Delete Modpacks</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Specific Modpacks</label>
+                    <div class="controls">
                         @foreach (Modpack::all() as $modpack)
                             <label for="{{ $modpack->slug }}" class="checkbox-inline"><input type="checkbox" name="modpack[]" id="{{ $modpack->slug }}" value="{{ $modpack->id }}"> {{ $modpack->name }}</label>
                         @endforeach
@@ -65,8 +74,6 @@
                 </div>
             </div>
         </div>
-        {{ Form::submit('Create User', array('class' => 'btn btn-success')) }}
-        {{ HTML::link('user/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
         {{ Form::close() }}
     </div>
 </div>
