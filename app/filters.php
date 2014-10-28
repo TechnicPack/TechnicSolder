@@ -197,6 +197,7 @@ Route::filter('modpack', function()
 {
 	$modpack = Request::segment(3);
 	$perm = Auth::user()->permission;
+
 	if (empty($modpack))
 		return Redirect::to('dashboard');
 

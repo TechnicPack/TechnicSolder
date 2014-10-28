@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>Modpack Management</h1>
@@ -40,11 +40,13 @@
 						<span class="help-block">Private modpacks will only be available to clients that are linked to this modpack. You can link clients below. You can also individually mark builds as private.</span>
 					</div>
 				</div>
+				@if ($modpack->private)
 				<h3>Client Access</h3>
 				<p>Check the clients below you want to have access to this modpack if anything is set to private.</p>
 				@foreach (Client::all() as $client)
 				<div style="display: inline-block; padding-right: 10px;"><input type="checkbox" name="clients[]" value="{{ $client->id }}"{{ (in_array($client->id, $clients) ? ' checked' : '') }}> {{ $client->name }}</div>
 				@endforeach
+				@endif
 			</div>
 			<div class="col-md-6">
 				<h3>Image Management</h3>
@@ -99,7 +101,9 @@
 				</div>
 			</div>
 		</div>
-		{{ Form::actions(array(Button::primary_submit('Save Changes'),Button::danger_link(URL::to('modpack/delete/'.$modpack->id),'Delete Modpack'))) }}
+		{{ Form::submit('Save Modpack', array('class' => 'btn btn-success')) }}
+		{{ HTML::link('modpack/delete/' . $modpack->id, 'Delete Modpack', array('class' => 'btn btn-danger')) }}
+		{{ HTML::link('modpack/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 		{{ Form::close() }}
 	</div>
 </div>

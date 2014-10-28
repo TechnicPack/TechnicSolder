@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>Modpack Management</h1>
 <hr>

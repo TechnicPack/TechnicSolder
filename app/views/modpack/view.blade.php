@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <h1>Modpack Management</h1>
 <hr>
@@ -25,21 +25,36 @@
 		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-		{{ Table::headers('#', 'Build Number', 'MC Version', 'Mod Count', 'Rec', 'Latest', 'Published', 'Private', 'Created', '') }}
-		@foreach ($modpack->builds()->order_by('id', 'desc')->get() as $build)
-			<tr>
-				<td>{{ $build->id }}</td>
-				<td>{{ $build->version }}</td>
-				<td>{{ $build->minecraft }}</td>
-				<td>{{ count($build->modversions) }}</td>
-				<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
-				<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>
-				<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ ($build->is_published ? " checked" : "") }}></td>
-				<td><input type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ ($build->private ? " checked" : "") }}></td>
-				<td>{{ $build->created_at }}</td>
-				<td>{{ HTML::link('modpack/build/'.$build->id, "Manage",'class="btn btn-xs btn-primary"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-xs btn-danger"') }}</td>
-			</tr>
-		@endforeach
+			<thead>	
+				<tr>
+					<th>#</th>
+					<th>Build Number</th>
+					<th>MC Version</th>
+					<th>Mod Count</th>
+					<th>Rec</th>
+					<th>Latest</th>
+					<th>Published</th>
+					<th>Private</th>
+					<th>Created on</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach ($modpack->builds()->orderBy('id', 'desc')->get() as $build)
+				<tr>
+					<td>{{ $build->id }}</td>
+					<td>{{ $build->version }}</td>
+					<td>{{ $build->minecraft }}</td>
+					<td>{{ count($build->modversions) }}</td>
+					<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
+					<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>
+					<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ ($build->is_published ? " checked" : "") }}></td>
+					<td><input type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ ($build->private ? " checked" : "") }}></td>
+					<td>{{ $build->created_at }}</td>
+					<td>{{ HTML::link('modpack/build/'.$build->id, "Manage",'class="btn btn-xs btn-primary"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-xs btn-danger"') }}</td>
+				</tr>
+			@endforeach
+			</tbody>
 		</table>
 		</div>
 	</div>

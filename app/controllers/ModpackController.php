@@ -8,18 +8,18 @@ class ModpackController extends BaseController {
 	{
 		parent::__construct();
 		$this->beforeFilter('auth');
-		$this->beforeFilter('perm', array('solder_modpacks'));
-		$this->beforeFilter('perm', array('solder_create'), array('only' => array('create')));
-		$this->beforeFilter('modpack', array(URI::segment(3)), array('only' => array('view','create','delete','edit')));
-		$this->beforeFilter('build', array(URI::segment(3)), array('only' => array('build')));
+		$this->beforeFilter('solder_modpacks');
+		$this->beforeFilter('modpack', array('only' => array('getDelete', 'postEdit', 'getEdit', 'postEdit')));
+		$this->beforeFilter('build', array('only' => array('getBuild','getAddBuild','postAddBuild')));
 	}
 
-	public function action_index()
+	public function getList()
 	{
-		return View::make('modpack.index');
+		$modpacks = Modpack::all();
+		return View::make('modpack.list')->with('modpacks', $modpacks);
 	}
 
-	public function action_view($modpack_id = null)
+	public function getView($modpack_id = null)
 	{
 		if (empty($modpack_id))
 			return Redirect::to('modpack');
@@ -31,7 +31,7 @@ class ModpackController extends BaseController {
 		return View::make('modpack.view')->with('modpack', $modpack);
 	}
 
-	public function action_build($build_id = null)
+	public function getBuild($build_id = null)
 	{
 		if (empty($build_id))
 			return Redirect::to('modpack');
@@ -76,7 +76,7 @@ class ModpackController extends BaseController {
 			return View::make('modpack.build.view')->with('build', $build);
 	}
 
-	public function action_addbuild($modpack_id)
+	public function getAddBuild($modpack_id)
 	{
 		if (empty($modpack_id))
 			return Redirect::to('modpack');
@@ -94,7 +94,7 @@ class ModpackController extends BaseController {
 				));
 	}
 
-	public function action_do_addbuild($modpack_id)
+	public function postAddBuild($modpack_id)
 	{
 		if (empty($modpack_id))
 			return Redirect::to('modpack');
@@ -139,12 +139,12 @@ class ModpackController extends BaseController {
 		return Redirect::to('modpack/build/'.$build->id);
 	}
 
-	public function action_create()
+	public function getCreate()
 	{
 		return View::make('modpack.create');
 	}
 
-	public function action_do_create()
+	public function postCreate()
 	{
 
 		$rules = array(
@@ -167,6 +167,12 @@ class ModpackController extends BaseController {
 			$modpack->name = Input::get('name');
 			$modpack->slug = Str::slug(Input::get('slug'));
 			$modpack->save();
+
+			/* Gives creator modpack perms */
+			$perm = Auth::User()->permission;
+			$perm->modpacks .= $modpack->id;
+			$perm->save();
+
 			return Redirect::to('modpack/view/'.$modpack->id);
 		} catch (Exception $e) {
 			Log::exception($e);
@@ -178,7 +184,7 @@ class ModpackController extends BaseController {
 	 * @param  Integer $modpack_id Modpack ID
 	 * @return View
 	 */
-	public function action_edit($modpack_id)
+	public function getEdit($modpack_id)
 	{
 		if (empty($modpack_id))
 		{
@@ -199,7 +205,7 @@ class ModpackController extends BaseController {
 		return View::make('modpack.edit')->with(array('modpack' => $modpack, 'clients' => $clients));
 	}
 
-	public function action_do_edit($modpack_id)
+	public function postEdit($modpack_id)
 	{
 		if (empty($modpack_id))
 		{
@@ -240,21 +246,21 @@ class ModpackController extends BaseController {
 		$useS3 = Config::get('solder.use_s3');
 
 		if ($useS3) {
-			$resourcePath = path('storage') . 'resources/' . $modpack->slug;
+			$resourcePath = storage_path() . 'resources/' . $modpack->slug;
 		} else {
-			$resourcePath = path('public') . 'resources/' . $modpack->slug;
+			$resourcePath = public_path() . 'resources/' . $modpack->slug;
 		}
 		
 
 		/* Create new resources directory for modpack */
 		if (!file_exists($resourcePath)) {
-			mkdir($resourcePath);
+			mkdir($resourcePath, 0664, true);
 		}
 
 		/* If slug changed, move resources and delete old slug directory */
 		if ($oldSlug != $modpack->slug) {
 
-			$oldPath = path('public') . 'resources/' . $oldSlug;
+			$oldPath = public_path() . 'resources/' . $oldSlug;
 
 			if (Config::get('solder.use_s3')) {
 				try {
@@ -266,7 +272,7 @@ class ModpackController extends BaseController {
 					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png');
 				} catch (Exception $e) {
 				}
-				$oldPath = path('storage') . 'resources/' . $oldSlug;
+				$oldPath = storage_path() . 'resources/' . $oldSlug;
 			}
 
 			if (file_exists($oldPath . "/logo.png")) {
@@ -344,12 +350,17 @@ class ModpackController extends BaseController {
 
 		/* Client Syncing */
 		$clients = Input::get('clients');
-		$modpack->clients()->sync($clients);
+		if ($clients){
+			$modpack->clients()->sync($clients);
+		}
+		else{
+			$modpack->clients()->sync(array(null));
+		}
 
 		return Redirect::to('modpack/view/'.$modpack->id)->with('success','Modpack edited');
 	}
 
-	public function action_delete($modpack_id)
+	public function getDelete($modpack_id)
 	{
 		if (empty($modpack_id))
 		{
@@ -365,7 +376,7 @@ class ModpackController extends BaseController {
 		return View::make('modpack.delete')->with(array('modpack' => $modpack));
 	}
 
-	public function action_do_delete($modpack_id)
+	public function postDelete($modpack_id)
 	{
 		if (empty($modpack_id))
 		{
@@ -388,7 +399,7 @@ class ModpackController extends BaseController {
 		$modpack->delete();
 		Cache::forget('modpacks');
 
-		return Redirect::to('modpack')->with('deleted','Modpack Deleted');
+		return Redirect::to('modpack/list/')->with('deleted','Modpack Deleted');
 	}
 
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>TechnicSolder v{{ SOLDER_VERSION }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{ HTML::script('js/jquery-1.11.1.min.js') }}
@@ -17,7 +17,6 @@
     {{ HTML::script('js/jquery.slugify.js') }}
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   </head>
-
   <body>
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
@@ -62,6 +61,7 @@
               <li>
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
+
                        @foreach (Modpack::all() as $modpack)
                         @if ($modpack->icon)
                           @if (Config::get('solder.use_s3'))
@@ -73,6 +73,7 @@
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
                         @endif
                       @endforeach
+                      <li><a href="{{ URL::to('modpack/list') }}">Modpack List</a></li>
                       <li><a href="{{ URL::to('modpack/create') }}">Add Modpack</a></li>
                   </ul>
                   <!-- /.nav-second-level -->
