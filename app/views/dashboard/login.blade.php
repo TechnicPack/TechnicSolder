@@ -6,78 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    {{ HTML::script('js/jquery-1.10.2.js') }}
-    {{ HTML::script('js/bootstrap.min.js') }}
-    {{ HTML::style('css/bootstrap.min.css') }}
-    {{ HTML::style('font-awesome/css/font-awesome.css') }}
-    {{ HTML::style('css/sb-admin.css') }}
-    {{ HTML::script('js/plugins/metisMenu/jquery.metisMenu.js') }}
-    {{ HTML::script('js/sb-admin.js') }}
-    {{ HTML::script('js/plugins/dataTables/jquery.dataTables.js') }}
-    {{ HTML::script('js/plugins/dataTables/dataTables.bootstrap.js') }}
-    {{ HTML::style('css/dataTables.bootstrap.css') }}
-    {{ HTML::script('js/jquery.slugify.js') }}
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
     <!-- Le styles -->
-    <link href="../assets/css/bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-      }
-
-      .form-signin {
-        max-width: 300px;
-        padding: 19px 29px 29px;
-        margin: 0 auto 20px;
-        background-color: #fff;
-        border: 1px solid #e5e5e5;
-        -webkit-border-radius: 5px;
-           -moz-border-radius: 5px;
-                border-radius: 5px;
-        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-                box-shadow: 0 1px 2px rgba(0,0,0,.05);
-      }
-      .form-signin .form-signin-heading,
-      .form-signin .checkbox {
-        margin-bottom: 10px;
-      }
-      .form-signin input[type="text"],
-      .form-signin input[type="password"] {
-        font-size: 16px;
-        height: auto;
-        margin-bottom: 15px;
-        padding: 7px 9px;
-      }
-
-    </style>
+    {{ HTML::style('css/login.css') }}
   </head>
-
-  <body>
-
-    <div class="container">
-
-      <form class="form-signin" method="post" action="{{ URL::to('login') }}">
-        <h2 class="form-signin-heading">Please sign in</h2>
+  <body class="login">
+    <form class="vertical-form" method="post" action="{{ URL::to('login') }}">
+      <div style="margin:0;padding:0;display:inline;">
+        <legend>
+        Technic Solder
+        </legend>
         @if (Session::has('login_failed'))
-          <div class="alert alert-error">
-            {{ Session::get('login_failed') }}
-          </div>
+          <ul class="notice errors">
+            <li>{{ Session::get('login_failed') }}</li>
+          </ul>
         @endif
         @if (Session::has('logout'))
-          <div class="alert alert-success">
-            {{ Session::get('logout') }}
-          </div>
+          <ul class="notice success">
+            <li>{{ Session::get('logout') }}</li>
+          </ul>
         @endif
-        <input type="text" name="email" class="input-block-level" placeholder="Email address">
-        <input type="password" name="password" class="input-block-level" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" name="remember" value="1"> Remember me
-        </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
-      </form>
-
-    </div> <!-- /container -->
+        <input type="text" name="email" class="input-block-level" placeholder="Email Address" size="30" autocomplete="off">
+        <input type="password" name="password" class="input-block-level" placeholder="Password" size="30" autocomplete="off">
+        <input name="login" type="submit" value="Log In">
+        <label class="checkbox"><input type="checkbox" name="remember" value="1">Remember me</label>
+        <div class="footer">
+          <p><a href="http://technicpack.net/">Powered by the Technic Platform</a></p>
+        </div>
+      </div>
+    </form>
   </body>
 </html>
