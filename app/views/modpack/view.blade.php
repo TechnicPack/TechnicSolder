@@ -1,6 +1,6 @@
 @extends('layouts/master')
 @section('content')
-<h1>Modpack Management</h1>
+<h1>Build Management - {{ $modpack->name }}</h1>
 <hr>
 <div class="panel panel-default">
 	<div class="panel-heading">
@@ -8,7 +8,7 @@
 			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/addbuild/'.$modpack->id) }}">Create New Build</a> 
 			<a class="btn btn-warning btn-xs" href="{{ URL::to('modpack/edit/'.$modpack->id) }}">Edit Modpack</a>
 		</div>
-	{{ $modpack->name }}
+	Build Management: {{ $modpack->name }}
 	</div>
 	<div class="panel-body">
 		<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none">
@@ -19,7 +19,7 @@
 		</div>
 		@endif
 		@if (Session::has('deleted'))
-		<div class="alert alert-error">
+		<div class="alert alert-danger">
 			{{ Session::get('deleted') }}
 		</div>
 		@endif

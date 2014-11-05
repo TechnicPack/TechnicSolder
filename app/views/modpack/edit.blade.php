@@ -1,7 +1,7 @@
 @extends('layouts/master')
 @section('content')
 <div class="page-header">
-<h1>Modpack Management</h1>
+<h1>Modpack Management - {{ $modpack->name }}</h1>
 </div>
 <div class="panel panel-default">
 	<div class="panel-heading">
@@ -59,7 +59,7 @@
 							@if (Config::get('solder.use_s3'))
 							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/logo.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}">
 							@else
-							<img src="{{ URL::to_asset('resources/' . $modpack->slug . '/logo.png') }}">
+							<img src="{{ URL::asset('resources/' . $modpack->slug . '/logo.png') }}">
 							@endif
 						</div>
 						@endif
@@ -75,7 +75,7 @@
 							@if (Config::get('solder.use_s3'))
 							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/background.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" style="width: 300px;">
 							@else
-							<img src="{{ URL::to_asset('resources/' . $modpack->slug . '/background.png') }}" style="width: 300px;">
+							<img src="{{ URL::asset('resources/' . $modpack->slug . '/background.png') }}" style="width: 300px;">
 							@endif
 						</div>
 						@endif
@@ -91,7 +91,7 @@
 							@if (Config::get('solder.use_s3'))
 							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}">
 							@else
-							<img src="{{ URL::to_asset('resources/' . $modpack->slug . '/icon.png') }}">
+							<img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}">
 							@endif
 						</div>
 						@endif

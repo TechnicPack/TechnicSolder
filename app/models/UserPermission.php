@@ -9,19 +9,19 @@ class UserPermission extends Eloquent {
 		return $this->belongs_to('User');
 	}
 
-	public function set_modpacks($modpack_array)
+	public function setModpacksAttribute($modpack_array)
 	{
 		if (is_array($modpack_array))
 		{
-			$this->set_attribute('modpacks', implode(',',$modpack_array));
+			$this->attributes['modpacks'] = implode(',',$modpack_array);
 		} else {
-			$this->set_attribute('modpacks', null);
+			$this->attributes['modpacks'] = null;
 		}
 		
 	}
 
-	public function get_modpacks()
+	public function getModpacksAttribute($value)
 	{
-		return explode(',', $this->get_attribute('modpacks'));
+		return preg_split ('/[,]+/', $value, -1,PREG_SPLIT_NO_EMPTY);
 	}
 }

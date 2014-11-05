@@ -145,11 +145,17 @@ Route::filter('solder_modpacks', function()
 		case 'view':
 		$check = 'modpacks_manage';
 		break;
+		case 'build':
+		$check = 'modpacks_manage';
+		break;
+		case 'addbuild':
+		$check = 'modpacks_manage';
+		break;
 		case 'list':
 		$check = 'modpacks_manage';
 		break;
 		default:
-		return Redirect::to('dashboard');
+		return Redirect::to('modpack/list');
 		break;
 	}
 	$perm = Auth::user()->permission;
@@ -181,7 +187,7 @@ Route::filter('solder_mods', function()
 		$check = 'mods_manage';
 		break;
 		default:
-		return Redirect::to('dashboard');
+		return Redirect::to('mods/list');
 		break;
 	}
 	$perm = Auth::user()->permission;
@@ -212,6 +218,7 @@ Route::filter('build', function()
 {
 	$build = Request::segment(3);
 	$build = Build::find($build);
+
 	if (empty($build))
 		return Redirect::to('dashboard');
 

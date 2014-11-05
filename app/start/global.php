@@ -32,7 +32,7 @@ ClassLoader::addDirectories(array(
 |
 */
 
-$logFile = 'log-'.php_sapi_name().'.txt';
+$logFile = 'solderlog-' . date('Y-m-d') . '.txt';
 
 Log::useFiles(storage_path().'/logs/'. $logFile);
 

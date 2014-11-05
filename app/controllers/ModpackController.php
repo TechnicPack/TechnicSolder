@@ -13,6 +13,11 @@ class ModpackController extends BaseController {
 		$this->beforeFilter('build', array('only' => array('getBuild','getAddBuild','postAddBuild')));
 	}
 
+	public function getIndex()
+	{
+		return Redirect::to('modpack/list');
+	}
+
 	public function getList()
 	{
 		$modpacks = Modpack::all();
@@ -160,7 +165,7 @@ class ModpackController extends BaseController {
 		$validation = Validator::make(Input::all(), $rules, $messages);
 
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation->errors);
+			return Redirect::back()->with_errors($validation->errors());
 
 		try {
 			$modpack = new Modpack();
@@ -169,13 +174,24 @@ class ModpackController extends BaseController {
 			$modpack->save();
 
 			/* Gives creator modpack perms */
-			$perm = Auth::User()->permission;
-			$perm->modpacks .= $modpack->id;
+			$user = Auth::User();
+			$perm = $user->permission;
+			$modpacks = $perm->modpacks;
+			if(!empty($modpacks)){
+				Log::info($modpack->name .': Attempting to add modpack perm to user - '. $user->username . ' - Modpack perm not empty');
+				$newmodpacks = array_merge($modpacks, array($modpack->id));
+				$perm->modpacks = $newmodpacks;
+			}
+			else{
+				Log::info($modpack->name .': Attempting to add modpack perm to user - '. $user->username . ' - Modpack perm empty');
+				$perm->modpacks = array($modpack->id);
+			}
 			$perm->save();
 
 			return Redirect::to('modpack/view/'.$modpack->id);
 		} catch (Exception $e) {
-			Log::exception($e);
+			Log::error($e);
+			App::abort(504, 'Error creating pack. See logs for more details');
 		}
 	}
 
@@ -246,9 +262,9 @@ class ModpackController extends BaseController {
 		$useS3 = Config::get('solder.use_s3');
 
 		if ($useS3) {
-			$resourcePath = storage_path() . 'resources/' . $modpack->slug;
+			$resourcePath = storage_path() . '/resources/' . $modpack->slug;
 		} else {
-			$resourcePath = public_path() . 'resources/' . $modpack->slug;
+			$resourcePath = public_path() . '/resources/' . $modpack->slug;
 		}
 		
 
@@ -260,10 +276,11 @@ class ModpackController extends BaseController {
 		/* If slug changed, move resources and delete old slug directory */
 		if ($oldSlug != $modpack->slug) {
 
-			$oldPath = public_path() . 'resources/' . $oldSlug;
+			$oldPath = public_path() . '/resources/' . $oldSlug;
 
-			if (Config::get('solder.use_s3')) {
+			if ($useS3) {
 				try {
+
 					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
 					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
 					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
@@ -272,7 +289,7 @@ class ModpackController extends BaseController {
 					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png');
 				} catch (Exception $e) {
 				}
-				$oldPath = storage_path() . 'resources/' . $oldSlug;
+				$oldPath = storage_path() . '/resources/' . $oldSlug;
 			}
 
 			if (file_exists($oldPath . "/logo.png")) {
@@ -290,20 +307,22 @@ class ModpackController extends BaseController {
 				unlink($oldPath . "/icon.png");
 			}
 			
-			rmdir($oldPath);
+			if (file_exists($oldPath)) {
+				rmdir($oldPath);
+			}
 		}
 
 		/* Image dohickery */
-
 		$logo = Input::file('logo');
-		if (!empty($logo['name'])) {
-			$success = Resizer::open(Input::file('logo'))
-		        ->resize( 180 , 110 , 'exact' )
-		        ->save( $resourcePath . "/logo.png" , 90 );
+		if ($logo->isValid()) {
+			$success = Image::make(Input::file('logo'))
+		        ->resize(180, 110)->save($resourcePath . '/logo.png', 90);
 
+		    /*
 		    if ($useS3) {
-		    	S3::putObject(S3::inputFile($resourcePath . '/logo.png', false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
+		    	S3::putObject(S3::inputFile($resourcePath . '/logo.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
 		    }
+		    */
 
 		    if ($success) {
 		        $modpack->logo = true;
@@ -312,14 +331,15 @@ class ModpackController extends BaseController {
 		}
 
 		$background = Input::file('background');
-		if (!empty($background['name'])) {
-			$success = Resizer::open(Input::file('background'))
-		        ->resize( 880 , 520 , 'exact' )
-		        ->save( $resourcePath . "/background.png" , 90 );
+		if ($background->isValid()) {
+			$success = Image::make(Input::file('background'))
+		        ->resize(180, 110)->save($resourcePath . '/background.png', 90);
 
+		    /*
 		    if ($useS3) {
-		    	S3::putObject(S3::inputFile($resourcePath . '/background.png', false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
+		    	S3::putObject(S3::inputFile($resourcePath . '/background.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
 		    }
+		    */
 
 		    if ($success) {
 		        $modpack->background = true;
@@ -328,14 +348,15 @@ class ModpackController extends BaseController {
 		}
 
 		$icon = Input::file('icon');
-		if (!empty($icon['name'])) {
-			$success = Resizer::open(Input::file('icon'))
-		        ->resize( 50 , 50 , 'exact' )
-		        ->save( $resourcePath . "/icon.png" , 90 );
+		if ($icon->isValid()) {
+			$success = Image::make(Input::file('icon'))
+		        ->resize(180, 110)->save($resourcePath . '/icon.png', 90);
 
+			/*
 		    if ($useS3) {
-		    	S3::putObject(S3::inputFile($resourcePath . '/icon.png', false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
+		    	S3::putObject(S3::inputFile($resourcePath . '/icon.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
 		    }
+		    */
 
 		    if ($success) {
 		        $modpack->icon = true;
@@ -406,8 +427,11 @@ class ModpackController extends BaseController {
 	/**
 	 * AJAX Methods for Modpack Manager
 	 **/
-	public function action_modify($action = null)
+	public function getModify($action = null)
 	{
+		if (!Request::ajax())
+			return App::abort('404');
+
 		if (empty($action))
 			return Response::error('500');
 			

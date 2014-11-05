@@ -3,7 +3,7 @@
 <h1>Modpack Management</h1>
 <hr>
 @if (Session::has('deleted'))
-<div class="alert alert-error">
+<div class="alert alert-danger">
 	{{ Session::get('deleted') }}
 </div>
 @endif
@@ -20,7 +20,6 @@
 				{{ Session::get('success') }}
 			</div>
 		@endif
-		
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
 			<thead>	
@@ -39,11 +38,11 @@
 				<tr>
 					<td>{{ $modpack->name }}</td>
 					<td>{{ $modpack->slug }}</td>
-					<td>{{ $modpack->recommended }}</td>
-					<td>{{ $modpack->latest }}</td>
-					<td>{{ $modpack->hidden }}</td>
-					<td>{{ $modpack->private }}</td>
-					<td>{{ HTML::link('modpack/build/'.$modpack->id, 'Manage Builds', array('class' => 'btn btn-warning btn-xs')) }} {{ HTML::link('modpack/edit/'.$modpack->id, 'Edit', array('class' => 'btn btn-primary btn-xs')) }} {{ HTML::link('modpack/delete/'.$modpack->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
+					<td>{{ !empty($modpack->recommended) ? $modpack->recommended : "N/A" }}</td>
+					<td>{{ !empty($modpack->latest) ? $modpack->latest : "N/A" }}</td>
+					<td>{{ $modpack->hidden == 1 ? "Yes" : "No" }}</td>
+					<td>{{ $modpack->private == 1 ? "Yes" : "No" }}</td>
+					<td>{{ HTML::link('modpack/view/'.$modpack->id, 'Manage Builds', array('class' => 'btn btn-warning btn-xs')) }} {{ HTML::link('modpack/edit/'.$modpack->id, 'Edit', array('class' => 'btn btn-primary btn-xs')) }} {{ HTML::link('modpack/delete/'.$modpack->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) }}</td>
 				</tr>
 			@endforeach
 			</tbody>
