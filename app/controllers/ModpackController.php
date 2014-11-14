@@ -9,8 +9,8 @@ class ModpackController extends BaseController {
 		parent::__construct();
 		$this->beforeFilter('auth');
 		$this->beforeFilter('solder_modpacks');
-		$this->beforeFilter('modpack', array('only' => array('getDelete', 'postEdit', 'getEdit', 'postEdit')));
-		$this->beforeFilter('build', array('only' => array('getBuild','getAddBuild','postAddBuild')));
+		$this->beforeFilter('modpack', array('only' => array('getView', 'getDelete', 'postDelete', 'getEdit', 'postEdit')));
+		$this->beforeFilter('build', array('only' => array('anyBuild', 'getAddBuild', 'postAddBuild')));
 	}
 
 	public function getIndex()
@@ -36,7 +36,7 @@ class ModpackController extends BaseController {
 		return View::make('modpack.view')->with('modpack', $modpack);
 	}
 
-	public function getBuild($build_id = null)
+	public function anyBuild($build_id = null)
 	{
 		if (empty($build_id))
 			return Redirect::to('modpack');
@@ -91,6 +91,7 @@ class ModpackController extends BaseController {
 			return Redirect::to('modpack');
 
 		$minecraft = $this->getMinecraft();
+		krsort($minecraft, SORT_NATURAL);
 
 		return View::make('modpack.build.create')
 			->with(array(
@@ -427,7 +428,7 @@ class ModpackController extends BaseController {
 	/**
 	 * AJAX Methods for Modpack Manager
 	 **/
-	public function getModify($action = null)
+	public function anyModify($action = null)
 	{
 		if (!Request::ajax())
 			return App::abort('404');
@@ -517,6 +518,6 @@ class ModpackController extends BaseController {
 
 		$response = UrlUtils::get_url_contents($url);
 
-		return json_decode($response);
+		return json_decode($response, true);
 	}
 }

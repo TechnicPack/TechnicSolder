@@ -139,23 +139,8 @@ Route::filter('solder_modpacks', function()
 		case 'delete':
 		$check = 'modpacks_delete';
 		break;
-		case 'edit':
-		$check = 'modpacks_manage';
-		break;
-		case 'view':
-		$check = 'modpacks_manage';
-		break;
-		case 'build':
-		$check = 'modpacks_manage';
-		break;
-		case 'addbuild':
-		$check = 'modpacks_manage';
-		break;
-		case 'list':
-		$check = 'modpacks_manage';
-		break;
 		default:
-		return Redirect::to('modpack/list');
+		$check = 'modpacks_manage';
 		break;
 	}
 	$perm = Auth::user()->permission;

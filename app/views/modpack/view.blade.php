@@ -5,7 +5,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/addbuild/'.$modpack->id) }}">Create New Build</a> 
+			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/add-build/'.$modpack->id) }}">Create New Build</a> 
 			<a class="btn btn-warning btn-xs" href="{{ URL::to('modpack/edit/'.$modpack->id) }}">Edit Modpack</a>
 		</div>
 	Build Management: {{ $modpack->name }}

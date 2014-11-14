@@ -1,7 +1,7 @@
 @extends('layouts/master')
 @section('content')
 <div class="page-header">
-<h1>Modpack Management</h1>
+<h1>Build Management</h1>
 </div>
 <div class="panel panel-default">
 	<div class="panel-heading">
@@ -9,7 +9,7 @@
 	</div>
 	<div class="panel-body">
 		@if ($errors->all())
-			<div class="alert alert-error">
+			<div class="alert alert-danger">
 			@foreach ($errors->all() as $error)
 				{{ $error }}<br />
 			@endforeach
@@ -26,7 +26,7 @@
 		            <label for="version">Minecraft Version</label>
 		            <select class="form-control" name="minecraft">
 						@foreach ($minecraft as $version)
-						<option value="{{ $version->version }}:{{ $version->md5 }}">{{ $version->version }}</option>
+						<option value="{{ $version['version'] }}:{{ $version['md5'] }}">{{ $version['version'] }}</option>
 						@endforeach
 					</select>
 		        </div>
@@ -45,7 +45,8 @@
 				<p>All new builds by default will not be available in the API. They need to be published before they will show up.</p>
 			</div>
 		</div>
-		{{ Form::actions(array(Button::primary_submit('Add New Build'))) }}
+		{{ Form::submit('Add Build', array('class' => 'btn btn-success')) }}
+		{{ HTML::link('modpack/view/'.$modpack->id, 'Go Back', array('class' => 'btn btn-primary')) }}
 		{{ Form::close() }}
 	</div>
 </div>

@@ -1,7 +1,7 @@
 @extends('layouts/master')
 @section('content')
 <div class="page-header">
-<h1>Modpack Management</h1>
+<h1>Build Management</h1>
 </div>
 <div class="panel panel-default">
 	<div class="panel-heading">

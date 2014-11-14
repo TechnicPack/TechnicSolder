@@ -5,7 +5,7 @@ class Mod extends Eloquent {
 
 	public function versions()
 	{
-		return $this->has_many('ModVersion');
+		return $this->hasMany('ModVersion');
 	}
 }
 
