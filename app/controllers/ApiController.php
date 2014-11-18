@@ -130,7 +130,7 @@ class APIController extends BaseController {
 	{
 		$response = array();
 
-		$version = ModVersion::where("mod_id", "=", $mod->id)
+		$version = Modversion::where("mod_id", "=", $mod->id)
 								->where("version", "=", $version)->first();
 
 		if (empty($version))
@@ -288,7 +288,7 @@ class APIController extends BaseController {
 		{
 			$build = Cache::get('modpack.'.$slug.'.build.'.$build);
 		} else {
-			$build = Build::with('ModVersions')
+			$build = Build::with('Modversions')
 						->where("modpack_id", "=", $modpack->id)
 						->where("version", "=", $build)->first();
 			if (empty($this->client))

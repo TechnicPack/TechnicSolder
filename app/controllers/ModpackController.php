@@ -453,7 +453,7 @@ class ModpackController extends BaseController {
 			case "add":
 				$build = Build::find(Input::get('build'));
 				$mod = Mod::where('name','=',Input::get('mod-name'))->first();
-				$ver = ModVersion::where('mod_id','=', $mod->id)
+				$ver = Modversion::where('mod_id','=', $mod->id)
 									->where('version','=', Input::get('mod-version'))
 									->first();
 				$build->modversions()->attach($ver->id);
