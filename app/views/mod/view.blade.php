@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>Mod Library</h1>
@@ -13,16 +13,14 @@
 	</div>
 	<div class="panel-body">
 		<ul class="nav nav-tabs" id="tabs">
-            <li class="active"><a href="#details" data-toggle="tab">Details</a>
-            </li>
-            <li><a href="#versions" data-toggle="tab">Versions</a>
-            </li>
+            <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+            <li><a href="#versions" data-toggle="tab">Versions</a></li>
         </ul>
         <div class="tab-content">
 	        <div class="tab-pane fade in active" id="details">
-	        	<h4>Mod Details</h4>
+				<br>
 				@if ($errors->all())
-					<div class="alert alert-error">
+					<div class="alert alert-danger">
 					@foreach ($errors->all() as $error)
 						{{ $error }}<br />
 					@endforeach
@@ -58,12 +56,14 @@
 			                </div>
 						</div>
 					</div>
-					{{ Form::actions(array(Button::primary_submit('Save changes'),Button::danger_link('mod/delete/'.$mod->id,'Delete Mod'))) }}
+					{{ Form::submit('Save Changes', array('class' => 'btn btn-success')) }}
+					{{ HTML::link('mod/delete/'.$mod->id, 'Delete Mod', array('class' => 'btn btn-danger')) }}
+					{{ HTML::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 				</form>
 			</div>
 			<div class="tab-pane fade" id="versions">
-                <h4>Mod Versions</h4>
-                <p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory stucture for mods is as follow:</p>
+				<br>
+				<p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory stucture for mods is as follow:</p>
 					<blockquote><strong>/mods/[modslug]/[modslug]-[version].zip</strong></blockquote>
 				<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
 				<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
@@ -76,7 +76,7 @@
 					<th style="width: 15%"></th>
 				</thead>
 				<tr id="add-row">
-					<form method="post" id="add" action="{{ URL::to('mod/addversion') }}">
+					<form method="post" id="add" action="{{ URL::to('mod/add-version') }}">
 						<input type="hidden" name="mod-id" value="{{ $mod->id }}">
 						<td></td>
 						<td>
@@ -86,13 +86,13 @@
 						<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
 					</form>
 				</tr>
-				@foreach ($mod->versions()->order_by('id', 'desc')->get() as $ver)
+				@foreach ($mod->versions()->orderBy('id', 'desc')->get() as $ver)
 					<tr class="version" rel="{{ $ver->id }}">
 						<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
 						<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
 						<td><span class="md5" rel="{{ $ver->id }}">{{ $ver->md5 }}</span></td>
 						<td class="url" rel="{{ $ver->id }}"><small><a href="{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
-						<td>{{ HTML::link('mod/rehash/'.$ver->id,'Rehash', 'class="btn btn-primary btn-xs rehash" rel="'.$ver->id.'"') }} {{ HTML::link('mod/deleteversion/'.$ver->id,'Delete', 'class="btn btn-danger btn-xs delete" rel="'.$ver->id.'"') }}</td>
+						<td><button class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
 					</tr>
 					<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
 						<td colspan="5">
@@ -124,14 +124,18 @@ $('#add').submit(function(e) {
 	if ($('#add-version').val() != "") {
 		$.ajax({
 			type: "POST",
-			url: "{{ URL::to('mod/addversion/') }}",
+			url: "{{ URL::to('mod/add-version/') }}",
 			data: $("#add").serialize(),
 			success: function (data) {
 				if (data.status == "success") {
 					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
+					$("#success-ajax").stop(true, true).html('Added mod version.').fadeIn().delay(3000).fadeOut();
 				} else {
-					$("#danger-ajax").stop(true, true).html(data.reason).fadeIn().delay(2000).fadeOut();
+					$("#danger-ajax").stop(true, true).html('Error:' + data.reason).fadeIn().delay(3000).fadeOut();
 				}
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 			}
 		})
 	}
@@ -148,10 +152,18 @@ $('.rehash').click(function(e) {
 	$(".md5[rel=" + $(this).attr('rel') + "]").fadeOut();
 	$.ajax({
 		type: "GET",
-		url: "{{ URL::to('mod/rehash/') }}" + $(this).attr('rel'),
+		url: "{{ URL::to('mod/rehash/') }}/" + $(this).attr('rel'),
 		success: function (data) {
-			$(".md5[rel=" + data.version_id + "]").html(data.md5);
-			$(".md5[rel=" + data.version_id + "]").fadeIn();
+			if (data.status == "success") {
+				$(".md5[rel=" + data.version_id + "]").html(data.md5);
+				$("#success-ajax").stop(true, true).html('MD5 hashing complete.').fadeIn().delay(3000).fadeOut();
+				$(".md5[rel=" + data.version_id + "]").fadeIn();
+			} else {
+				$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 		}
 	});
 });
@@ -160,10 +172,18 @@ $('.delete').click(function(e) {
 	e.preventDefault();
 	$.ajax({
 		type: "GET",
-		url: "{{ URL::to('mod/deleteversion/') }}" + $(this).attr('rel'),
+		url: "{{ URL::to('mod/delete-version/') }}/" + $(this).attr('rel'),
 		success: function (data) {
-			$('.version[rel=' + data.version_id + ']').fadeOut();
-			$('.version-details[rel=' + data.version_id + ']').fadeOut();
+			if (data.status == "success") {
+				$('.version[rel=' + data.version_id + ']').fadeOut();
+				$('.version-details[rel=' + data.version_id + ']').fadeOut();
+				$("#success-ajax").stop(true, true).html('Deleting mod version complete.').fadeIn().delay(3000).fadeOut();
+			} else {
+				$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 		}
 	});
 });

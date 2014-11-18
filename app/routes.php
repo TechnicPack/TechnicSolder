@@ -8,9 +8,6 @@ Route::group(array('before' => 'auth'), function() {
 	Route::controller('client', 'ClientController');
 	Route::controller('dashboard', 'DashboardController');
 	Route::controller('key', 'KeyController');
-	Route::post('mod/view/(:num)', 'mod@do_modify');
-	Route::post('mod/delete/(:num)', 'mod@do_delete');
-	Route::post('mod/create', 'mod@do_create');
 	Route::controller('mod', 'ModController');
 	Route::controller('modpack', 'ModpackController');
 	Route::controller('solder', 'SolderController');

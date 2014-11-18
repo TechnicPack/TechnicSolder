@@ -12,13 +12,13 @@ class ModController extends BaseController {
 		$this->beforeFilter('perm', array('mods_delete'), array('only' => array('delete')));
 	}
 
-	public function action_list()
+	public function getList()
 	{
 		$mods = Mod::all();
 		return View::make('mod.list')->with(array('mods' => $mods));
 	}
 
-	public function action_view($mod_id = null)
+	public function getView($mod_id = null)
 	{
 		if (empty($mod_id))
 			return Redirect::to('mod/list');
@@ -30,12 +30,12 @@ class ModController extends BaseController {
 		return View::make('mod.view')->with(array('mod' => $mod));
 	}
 
-	public function action_create()
+	public function getCreate()
 	{
 		return View::make('mod.create');
 	}
 
-	public function action_do_create()
+	public function postCreate()
 	{
 		$rules = array(
 			'name' => 'required|unique:mods',
@@ -65,7 +65,7 @@ class ModController extends BaseController {
 		}
 	}
 
-	public function action_delete($mod_id = null)
+	public function getDelete($mod_id = null)
 	{
 		if (empty($mod_id))
 			return Redirect::to('mod/list');
@@ -77,7 +77,7 @@ class ModController extends BaseController {
 		return View::make('mod.delete')->with(array('mod' => $mod));
 	}
 
-	public function action_do_modify($mod_id = null)
+	public function postModify($mod_id = null)
 	{
 		if (empty($mod_id))
 			return Redirect::to('mod/list');
@@ -115,7 +115,7 @@ class ModController extends BaseController {
 		}
 	}
 
-	public function action_do_delete($mod_id = null)
+	public function postDelete($mod_id = null)
 	{
 		if (empty($mod_id))
 			return Redirect::to('mod/list');
@@ -134,7 +134,7 @@ class ModController extends BaseController {
 		return Redirect::to('mod/list')->with('deleted','Mod deleted!');
 	}
 
-	public function action_versions($mod_id = null)
+	public function getVersions($mod_id = null)
 	{
 		if (empty($mod_id))
 			return Redirect::to('mod/list');
@@ -146,77 +146,111 @@ class ModController extends BaseController {
 		return View::make('mod.versions')->with(array('mod' => $mod));
 	}
 
-	public function action_rehash($ver_id = null)
+	public function getRehash($ver_id = null)
 	{
-		if (empty($ver_id))
-			return Redirect::to('mod/list');
-
-		$ver = ModVersion::find($ver_id);
-		if (empty($ver))
-			return Redirect::to('mod/list');
-
-		if ($md5 = $this->mod_md5($ver->mod,$ver->version))
+		if (Request::ajax())
 		{
-			$ver->md5 = $md5;
-			$ver->save();
-			return Response::json(array(
-								'version_id' => $ver->id,
-								'md5' => $md5,
-								));
+			if (empty($ver_id))
+				return Response::json(array(
+									'status' => 'error',
+									'reason' => 'Missing Post Data',
+									));
+
+			$ver = Modversion::find($ver_id);
+			if (empty($ver))
+				return Response::json(array(
+									'status' => 'error',
+									'reason' => 'Could not pull mod version from database',
+									));
+
+			if ($md5 = $this->mod_md5($ver->mod,$ver->version))
+			{
+				$ver->md5 = $md5;
+				$ver->save();
+				return Response::json(array(
+									'version_id' => $ver->id,
+									'md5' => $md5,
+									'status' => 'success',
+									));
+			}
+
+			return Responsejson(array(
+									'status' => 'error',
+									'reason' => 'MD5 hashing failed',
+									));
 		}
 
-		return Response::error('500');
+		return App::abort(404);
 	}
 
-	public function action_addversion()
+	public function anyAddVersion()
 	{
-		$mod_id = Input::get('mod-id');
-		$version = Input::get('add-version');
-		if (empty($mod_id) || empty($version))
-			return Response::json(array(
-						'status' => 'error',
-						'reason' => 'Missing Post Data'
-						));
-
-		$mod = Mod::find($mod_id);
-		if (empty($mod))
-			return Response::json(array(
-						'status' => 'error',
-						'reason' => 'Could not pull mod from database'
-						));
-
-		$ver = new ModVersion();
-		$ver->mod_id = $mod->id;
-		$ver->version = $version;
-		if ($md5 = $this->mod_md5($mod,$version))
+		if (Request::ajax())
 		{
-			$ver->md5 = $md5;
-			$ver->save();
-			return Response::json(array(
-						'status' => 'success',
-						'version' => $ver->version,
-						'md5' => $ver->md5,
-						));
-		} else {
-			return Response::json(array(
-						'status' => 'error',
-						'reason' => 'Could not get MD5. URL Incorrect?'
-						));
+			$mod_id = Input::get('mod-id');
+			$version = Input::get('add-version');
+			if (empty($mod_id) || empty($version))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Missing Post Data'
+							));
+
+			$mod = Mod::find($mod_id);
+			if (empty($mod))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Could not pull mod from database'
+							));
+
+			$ver = new Modversion();
+			$ver->mod_id = $mod->id;
+			$ver->version = $version;
+			if ($md5 = $this->mod_md5($mod,$version))
+			{
+				$ver->md5 = $md5;
+				$ver->save();
+				return Response::json(array(
+							'status' => 'success',
+							'version' => $ver->version,
+							'md5' => $ver->md5,
+							));
+			} else {
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Could not get MD5. URL Incorrect?'
+							));
+			}
 		}
+
+		return App::abort(404);
 	}
 
-	public function action_deleteversion($ver_id = null)
+	public function getDeleteVersion($ver_id = null)
 	{
-		if (empty($ver_id))
-			return Redirect::to('mod/list');
+		if (Request::ajax())
+		{
+			if (empty($ver_id))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Missing Post Data'
+							));
 
-		$ver = ModVersion::find($ver_id);
-		if (empty($ver))
-			return Redirect::to('mod/list');
+			$ver = Modversion::find($ver_id);
+			if (empty($ver))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Could not pull mod version from database'
+							));
 
-		$old_id = $ver->id;
-		$ver->delete();
-		return Response::json(array('version_id' => $old_id));
+			$old_id = $ver->id;
+			$ver->delete();
+			return Response::json(array(
+									'status' => 'success',
+									'version_id' => $old_id
+									));
+		}
+
+		return App::abort(404);
 	}
 
 	private function mod_md5($mod, $version)

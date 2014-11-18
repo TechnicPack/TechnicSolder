@@ -1,4 +1,4 @@
-@layout('layouts/mod')
+@extends('layouts/mod')
 @section('navigation')
 @parent
 <li class="nav-header">Mod: {{ $mod->name }}</li>

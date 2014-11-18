@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>Mod Library</h1>
@@ -37,7 +37,8 @@
     </div>
     {{ Form::open() }}
     <hr>
-    <button type="submit" class="btn btn-danger">Confirm Deletion</button>  <a href="{{ Request::referrer() }}" class="btn">Go Back</a>
+    {{ Form::submit('Delete Mod', array('class' => 'btn btn-danger')) }}
+    {{ HTML::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
     {{ Form::close() }}
   </div>
 </div>

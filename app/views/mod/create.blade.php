@@ -1,4 +1,4 @@
-@layout('layouts/master')
+@extends('layouts/master')
 @section('content')
 <div class="page-header">
 <h1>Mod Library</h1>
@@ -46,7 +46,8 @@
 				</blockquote>
 			</div>
 		</div>
-		{{ Form::actions(array(Button::primary_submit('Add Mod'))) }}
+		{{ Form::submit('Add Mod', array('class' => 'btn btn-success')) }}
+		{{ HTML::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 		</form>
 	</div>
 </div>
