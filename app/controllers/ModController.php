@@ -61,7 +61,8 @@ class ModController extends BaseController {
 			$mod->save();
 			return Redirect::to('mod/view/'.$mod->id);
 		} catch (Exception $e) {
-			Log::exception($e);
+			Log::error($e);
+			App:abort(500);
 		}
 	}
 
@@ -109,9 +110,10 @@ class ModController extends BaseController {
 			$mod->link = Input::get('link');
 			$mod->save();
 
-			return Redirect::back()->with('success','Mod successfully edited.');
+			return Redirect::to('mod/view/'.$mod->id)->with('success','Mod successfully edited.');
 		} catch (Exception $e) {
-			Log::exception($e);
+			Log::error($e);
+			App::abort(500);
 		}
 	}
 
@@ -174,7 +176,7 @@ class ModController extends BaseController {
 									));
 			}
 
-			return Responsejson(array(
+			return Response::json(array(
 									'status' => 'error',
 									'reason' => 'MD5 hashing failed',
 									));
@@ -257,9 +259,11 @@ class ModController extends BaseController {
 	{
 		$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-		if (file_exists($location))
+		if (file_exists($location)) {
+			Log::info('Found \'' . $location . '\'');
 			return md5_file($location);
-		else {
+		} else {
+			Log::warning('File \'' . $location . '\' was not found.');
 			return $this->remote_mod_md5($mod, $version);
 		}
 	}
@@ -269,15 +273,16 @@ class ModController extends BaseController {
 		$url = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 		if ($attempts >= 3)
 		{
-			Log::write("ERROR", "Exceeded maximum number of attempts for remote MD5 on mod ". $mod->name ." version ".$version." located at ". $url);
+			Log::error("Exceeded maximum number of attempts for remote MD5 on mod ". $mod->name ." version ".$version." located at ". $url);
 			return "";
 		}
 
 		$hash = UrlUtils::get_remote_md5($url);
+
 		if ($hash != "")
 			return $hash;
 		else {
-			Log::write("ERROR", "Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
+			Log::warning("Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
 			return $this->remote_mod_md5($mod, $version, $attempts + 1);
 		}
 	}

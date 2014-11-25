@@ -26,8 +26,11 @@ class UrlUtils {
 	 */
 	public static function get_remote_md5($url)
 	{
-		$content = self::get_url_contents($url);
-		return md5($content);
+		if(self::checkRemoteFile($url)){
+			$content = self::get_url_contents($url);
+			return md5($content);
+		}
+		return "";
 	}
 
 	public static function checkRemoteFile($url)
@@ -40,12 +43,17 @@ class UrlUtils {
 		curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_exec($ch);
-		$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		if ($retcode == 200 || $retcode == 405)
-			return true;
-		else {
-			return false;
+		if(!curl_errno($ch)){
+			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+			if ($retcode == 200 || $retcode == 405)
+				return true;
+			else {
+				return false;
+			}
 		}
+		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
+		curl_close($ch);
+		return false;
 	}
 }

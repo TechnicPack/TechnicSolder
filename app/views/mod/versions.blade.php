@@ -1,9 +1,9 @@
 @extends('layouts/mod')
 @section('navigation')
-@parent
-<li class="nav-header">Mod: {{ $mod->name }}</li>
-<li><a href="{{ URL::to('mod/view/'.$mod->id) }}"><i class="icon-align-left"></i> Mod Details</a>
-<li class="active"><a href="{{ URL::to('mod/versions/'.$mod->id) }}"><i class="icon-tag"></i> Mod Versions</a></li>
+	@parent
+	<li class="nav-header">Mod: {{ $mod->name }}</li>
+	<li><a href="{{ URL::to('mod/view/'.$mod->id) }}"><i class="icon-align-left"></i> Mod Details</a>
+	<li class="active"><a href="{{ URL::to('mod/versions/'.$mod->id) }}"><i class="icon-tag"></i> Mod Versions</a></li>
 @endsection
 @section('content')
 <h1>Mod Library</h1>
@@ -18,8 +18,14 @@
 <hr>
 <p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory stucture for mods is as follow:</p>
 	<blockquote><strong>/mods/[modslug]/[modslug]-[version].zip</strong></blockquote>
-{{ Table::open() }}
-{{ Table::headers('','Version', 'MD5', 'Download URL', '') }}
+<table class="table">
+<thead>
+<th></th>
+<th style="width: 15%">Version</th>
+<th>MD5</th>
+<th>Download URL</th>
+<th style="width: 15%"></th>
+</thead>
 <tr id="add-row">
 	<form method="post" id="add" action="{{ URL::to('mod/addversion') }}">
 		<input type="hidden" name="mod-id" value="{{ $mod->id }}">

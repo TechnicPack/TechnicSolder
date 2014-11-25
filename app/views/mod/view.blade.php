@@ -31,7 +31,7 @@
 						{{ Session::get('success') }}
 					</div>
 				@endif
-				<form method="post" action="{{ URL::to('mod/view/'.$mod->id) }}">
+				<form method="post" action="{{ URL::to('mod/modify/'.$mod->id) }}">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
@@ -68,43 +68,45 @@
 				<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
 				<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 				<table class="table">
-				<thead>
-					<th></th>
-					<th style="width: 15%">Version</th>
-					<th>MD5</th>
-					<th>Download URL</th>
-					<th style="width: 15%"></th>
-				</thead>
-				<tr id="add-row">
-					<form method="post" id="add" action="{{ URL::to('mod/add-version') }}">
-						<input type="hidden" name="mod-id" value="{{ $mod->id }}">
-						<td></td>
-						<td>
-							<input type="text" name="add-version" id="add-version" class="form-control"></td>
-						<td>N/A</td>
-						<td><span id="add-url">N/A</span></td>
-						<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
-					</form>
-				</tr>
-				@foreach ($mod->versions()->orderBy('id', 'desc')->get() as $ver)
-					<tr class="version" rel="{{ $ver->id }}">
-						<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
-						<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
-						<td><span class="md5" rel="{{ $ver->id }}">{{ $ver->md5 }}</span></td>
-						<td class="url" rel="{{ $ver->id }}"><small><a href="{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
-						<td><button class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
-					</tr>
-					<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
-						<td colspan="5">
-							<h4>Builds Used In</h4>
-							<ul>
-							@foreach ($ver->builds as $build)
-								<li>{{ HTML::link('modpack/view/'.$build->modpack->id,$build->modpack->name) }} - {{ HTML::link('modpack/build/'.$build->id,$build->version) }}</li>
-							@endforeach
-							</ul>
-						</td>
-					</tr>
-				@endforeach
+					<thead>
+						<th></th>
+						<th style="width: 15%">Version</th>
+						<th>MD5</th>
+						<th>Download URL</th>
+						<th style="width: 15%"></th>
+					</thead>
+					<tbody>
+						<tr id="add-row">
+							<form method="post" id="add" action="{{ URL::to('mod/add-version') }}">
+								<input type="hidden" name="mod-id" value="{{ $mod->id }}">
+								<td></td>
+								<td>
+									<input type="text" name="add-version" id="add-version" class="form-control"></td>
+								<td>N/A</td>
+								<td><span id="add-url">N/A</span></td>
+								<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
+							</form>
+						</tr>
+						@foreach ($mod->versions()->orderBy('id', 'desc')->get() as $ver)
+						<tr class="version" rel="{{ $ver->id }}">
+							<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
+							<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
+							<td><span class="md5" rel="{{ $ver->id }}">{{ $ver->md5 }}</span></td>
+							<td class="url" rel="{{ $ver->id }}"><small><a href="{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
+							<td><button class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
+						</tr>
+						<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
+							<td colspan="5">
+								<h5>Builds Used In</h5>
+								<ul>
+								@foreach ($ver->builds as $build)
+									<li>{{ HTML::link('modpack/view/'.$build->modpack->id,$build->modpack->name) }} - {{ HTML::link('modpack/build/'.$build->id,$build->version) }}</li>
+								@endforeach
+								</ul>
+							</td>
+						</tr>
+						@endforeach
+					</tbody>
 				</table>
             </div>
 		</div>
@@ -129,9 +131,9 @@ $('#add').submit(function(e) {
 			success: function (data) {
 				if (data.status == "success") {
 					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
-					$("#success-ajax").stop(true, true).html('Added mod version.').fadeIn().delay(3000).fadeOut();
+					$("#success-ajax").stop(true, true).html('Added mod version at ' + data.version).fadeIn().delay(3000).fadeOut();
 				} else {
-					$("#danger-ajax").stop(true, true).html('Error:' + data.reason).fadeIn().delay(3000).fadeOut();
+					$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
 				}
 			},
 			error: function (xhr, textStatus, errorThrown) {
@@ -177,7 +179,7 @@ $('.delete').click(function(e) {
 			if (data.status == "success") {
 				$('.version[rel=' + data.version_id + ']').fadeOut();
 				$('.version-details[rel=' + data.version_id + ']').fadeOut();
-				$("#success-ajax").stop(true, true).html('Deleting mod version complete.').fadeIn().delay(3000).fadeOut();
+				$("#success-ajax").stop(true, true).html('Mod version ' + data.version + ' deleted.').fadeIn().delay(3000).fadeOut();
 			} else {
 				$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
 			}

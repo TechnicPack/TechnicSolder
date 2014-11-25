@@ -47,7 +47,10 @@
 @section('bottom')
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#dataTables').dataTable();
+    $('#dataTables').dataTable({
+        "order": [[ 1, "asc" ]]
+    });
+
 });
 </script>
 @endsection
