@@ -314,55 +314,58 @@ class ModpackController extends BaseController {
 		}
 
 		/* Image dohickery */
-		$logo = Input::file('logo');
-		if ($logo->isValid()) {
-			$success = Image::make(Input::file('logo'))
-		        ->resize(180, 110)->save($resourcePath . '/logo.png', 90);
+		if ($logo = Input::file('logo')) {
+			if ($logo->isValid()) {
+				$success = Image::make(Input::file('logo'))
+			        ->resize(180, 110)->save($resourcePath . '/logo.png', 90);
 
-		    /*
-		    if ($useS3) {
-		    	S3::putObject(S3::inputFile($resourcePath . '/logo.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
-		    }
-		    */
+			    /*
+			    if ($useS3) {
+			    	S3::putObject(S3::inputFile($resourcePath . '/logo.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
+			    }
+			    */
 
-		    if ($success) {
-		        $modpack->logo = true;
-		        $modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
-		    }
+			    if ($success) {
+			        $modpack->logo = true;
+			        $modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
+			    }
+			}
 		}
 
-		$background = Input::file('background');
-		if ($background->isValid()) {
-			$success = Image::make(Input::file('background'))
-		        ->resize(180, 110)->save($resourcePath . '/background.png', 90);
+		if ($background = Input::file('background')) {
+			if ($background->isValid()) {
+				$success = Image::make(Input::file('background'))
+			        ->resize(180, 110)->save($resourcePath . '/background.png', 90);
 
-		    /*
-		    if ($useS3) {
-		    	S3::putObject(S3::inputFile($resourcePath . '/background.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
-		    }
-		    */
+			    /*
+			    if ($useS3) {
+			    	S3::putObject(S3::inputFile($resourcePath . '/background.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
+			    }
+			    */
 
-		    if ($success) {
-		        $modpack->background = true;
-		        $modpack->background_md5 = md5_file($resourcePath . "/background.png");
-		    }
+			    if ($success) {
+			        $modpack->background = true;
+			        $modpack->background_md5 = md5_file($resourcePath . "/background.png");
+			    }
+			}
 		}
 
-		$icon = Input::file('icon');
-		if ($icon->isValid()) {
-			$success = Image::make(Input::file('icon'))
-		        ->resize(180, 110)->save($resourcePath . '/icon.png', 90);
+		if ($icon = Input::file('icon')) {
+			if ($icon->isValid()) {
+				$success = Image::make(Input::file('icon'))
+			        ->resize(180, 110)->save($resourcePath . '/icon.png', 90);
 
-			/*
-		    if ($useS3) {
-		    	S3::putObject(S3::inputFile($resourcePath . '/icon.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
-		    }
-		    */
+				/*
+			    if ($useS3) {
+			    	S3::putObject(S3::inputFile($resourcePath . '/icon.' . $extension, false), Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
+			    }
+			    */
 
-		    if ($success) {
-		        $modpack->icon = true;
-		        $modpack->icon_md5 = md5_file($resourcePath . "/icon.png");
-		    }
+			    if ($success) {
+			        $modpack->icon = true;
+			        $modpack->icon_md5 = md5_file($resourcePath . "/icon.png");
+			    }
+			}
 		}
 
 		$modpack->save();

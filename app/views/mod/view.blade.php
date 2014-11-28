@@ -199,13 +199,16 @@ $(document).ready(function() {
 		$('#tabs a[href="#details"]').tab('show');
 	}
 
+	/* Disabled for now, there is ample screen space that all we need to do is switch the tabs
+	        changing location is disorienting.
+	
 	$('#tabs a[href="#versions"]').click(function() {
 		window.location.hash = "#versions";
 	});
 
 	$('#tabs a[href="#details"]').click(function() {
 		window.location.hash = "#details";
-	});
+	});*/
 });
 
 </script>
