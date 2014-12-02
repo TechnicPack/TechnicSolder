@@ -9,46 +9,136 @@
 	{{ Session::get('permission') }}
 </div>
 @endif
-<div class="panel panel-default">
-	<div class="panel-heading">
-	<h4>Changelog</h4>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="recentModpacksHeading">
+		<h3 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#recentModpacks" aria-expanded="true" aria-controls="recentModpacks">
+				Recently Updated Modpacks
+			</a>
+		</h3>
+		</div>
+		<div id="recentModpacks" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="recentModpacksHeading">
+			<div class="panel-body">
+				<table class="table table-striped table-bordered table-hover" id="dataTables">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Build #</th>
+							<th>Modpack</th>
+							<th>MC Version</th>
+							<th># of Mods</th>
+							<th>Updated on</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach ($builds as $build)
+							<tr>
+								<td>{{ $build->id }}</td>
+								<td>{{ $build->version }}</td>
+								<td>{{ $build->modpack->name }}
+								<td>{{ $build->minecraft }}</td>
+								<td>{{ count($build->modversions) }}</td>
+								<td>{{ $build->updated_at }}</td>
+								<td>{{ HTML::link('build/'.$build->id, 'Manage Build', array('class' => 'btn btn-warning btn-xs')) }}</td>
+							</tr>
+						@endforeach
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
-	<div class="panel-body">
-		<p><strong>0.7-DEV</strong></p>
-		<ul>
-  		<li>Upgraded Laravel Framework from 3.0 to 4.2.x</li>
-  		<li>New login page</li>
-  		<li>Updated User Permission System
-  		<ul>
-  			<li>Added Manage API/Clients</li>
-  			<li>Added Global Modpack permissions <em>(These are required before assigning specific modpack access)</em>
-  			<ul>
-  				<li>Create</li>
-  				<li>Manage</li>
-  				<li>Delete</li>
-  			</ul>
-  			</li>
-  		</ul>
-  		</li>
-  		<li>Mod Library sort by name on default</li>
-  		<li>Improved Mod Version error messages
-  		<ul>
-  			<li>MD5 Hashing failure/success</li>
-  			<li>Adding new version failure/success</li>
-  			<li>Deleting a version failure/success</li>
-  		</ul>
-  		</li>
-  		<li>New Modpack Management page</li>
-  		<li>Optimize Build Management
-  		<ul>
-  			<li>Sort/Search mods when adding</li>
-  			<li>Builds views now sort by mod name by default</li>
-  			<li>Added ability to search for mods within builds</li>
-  			<li>Builds views are now paginated</li>
-  		</ul>
-  		</li>
-  		<li>More frequent updates!</li>
-		</ul>
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="recentModVersionsHeading">
+		<h3 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#recentModVersions" aria-expanded="true" aria-controls="recentModVersions">
+				Recently Added Mod Versions
+			</a>
+		</h3>
+		</div>
+		<div id="recentModVersions" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="recentModVersionsHeading">
+			<div class="panel-body">
+				<table class="table table-striped table-bordered table-hover" id="dataTables">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Version #</th>
+							<th>Mod Name</th>
+							<th>Author</th>
+							<th>Website</th>
+							<th>Created On</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach ($modversions as $modversion)
+						<tr>
+							<td>{{ HTML::link('mod/view/'.$modversion->mod->id, $modversion->mod->id) }}</td>
+							<td>{{ $modversion->version }}</td>
+							@if (!empty($modversion->mod->pretty_name))
+								<td>{{ HTML::link('mod/view/'.$modversion->mod->id, $modversion->mod->pretty_name) }} ({{ $modversion->mod->name }})</td>
+							@else
+								<td>{{ HTML::link('mod/view/'.$modversion->mod->id, $modversion->mod->name) }}</td>
+							@endif
+							<td>{{ !empty($modversion->mod->author) ? $modversion->mod->author : "N/A" }}</td>
+							<td>{{ !empty($modversion->mod->link) ? HTML::link($modversion->mod->link, $modversion->mod->link, array("target" => "_blank")) : "N/A" }}</td>
+							<td>{{ $modversion->created_at }}
+							<td>{{ HTML::link('mod/view/'.$modversion->mod->id.'#versions','Manage', array("class" => "btn btn-xs btn-primary")) }}</td>
+						</tr>
+					@endforeach
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="changelogHeading">
+		<h3 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#changelog" aria-expanded="true" aria-controls="changelog">
+				Changelog
+			</a>
+		</h3>
+		</div>
+		<div id="changelog" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="changelogHeading">
+			<div class="panel-body">
+				<p><strong>0.7-DEV</strong></p>
+				<ul>
+		  		<li>Upgraded Laravel Framework from 3.0 to 4.2.x</li>
+		  		<li>New login page</li>
+		  		<li>Updated User Permission System
+		  		<ul>
+		  			<li>Added Manage API/Clients</li>
+		  			<li>Added Global Modpack permissions <em>(These are required before assigning specific modpack access)</em>
+		  			<ul>
+		  				<li>Create</li>
+		  				<li>Manage</li>
+		  				<li>Delete</li>
+		  			</ul>
+		  			</li>
+		  		</ul>
+		  		</li>
+		  		<li>Mod Library sort by name on default</li>
+		  		<li>Improved Mod Version error messages
+		  		<ul>
+		  			<li>MD5 Hashing failure/success</li>
+		  			<li>Adding new version failure/success</li>
+		  			<li>Deleting a version failure/success</li>
+		  		</ul>
+		  		</li>
+		  		<li>New Modpack Management page</li>
+		  		<li>Optimize Build Management
+		  		<ul>
+		  			<li>Sort/Search mods when adding</li>
+		  			<li>Builds views now sort by mod name by default</li>
+		  			<li>Added ability to search for mods within builds</li>
+		  			<li>Builds views are now paginated</li>
+		  		</ul>
+		  		</li>
+		  		<li>More frequent updates!</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>
 <p>TechnicSolder v{{ SOLDER_VERSION }}-{{ SOLDER_STREAM }}</p>
