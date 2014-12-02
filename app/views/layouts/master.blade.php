@@ -15,6 +15,7 @@
     {{ HTML::script('js/plugins/dataTables/dataTables.bootstrap.js') }}
     {{ HTML::style('css/dataTables.bootstrap.css') }}
     {{ HTML::script('js/jquery.slugify.js') }}
+    @yield('top')
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
   </head>
   <body>

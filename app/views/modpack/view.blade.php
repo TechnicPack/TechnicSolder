@@ -40,7 +40,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			@foreach ($modpack->builds()->orderBy('id', 'desc')->get() as $build)
+			@foreach ($modpack->builds as $build)
 				<tr>
 					<td>{{ $build->id }}</td>
 					<td>{{ $build->version }}</td>
@@ -110,7 +110,9 @@ $(".private").change(function() {
 });
 
 $(document).ready(function() {
-    $('#dataTables').dataTable();
+    $('#dataTables').dataTable({
+    	"order": [[ 1, "asc" ]]
+    });
 });
 
 </script>

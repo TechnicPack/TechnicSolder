@@ -61,14 +61,14 @@ class ModpackController extends BaseController {
 				if ($switchrec)
 				{
 					$recbuild = Build::where('modpack_id','=',$modpack->id)
-										->order_by('id','desc')->first();
+										->orderBy('id','desc')->first();
 					$modpack->recommended = $recbuild->version;
 				}
 
 				if ($switchlat)
 				{
 					$latbuild = Build::where('modpack_id','=',$modpack->id)
-										->order_by('id','desc')->first();
+										->orderBy('id','desc')->first();
 					$modpack->latest = $latbuild->version;
 				}
 				$modpack->save();
