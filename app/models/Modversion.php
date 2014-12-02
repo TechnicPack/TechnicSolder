@@ -1,6 +1,7 @@
 <?php
 
 class Modversion extends Eloquent {
+	protected $table = 'modversions';
 	public $timestamps = true;
 
 	public function mod()
@@ -13,3 +14,5 @@ class Modversion extends Eloquent {
 		return $this->belongsToMany('Build');
 	}
 }
+
+?>

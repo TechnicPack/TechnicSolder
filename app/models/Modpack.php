@@ -7,4 +7,11 @@ class Modpack extends Eloquent {
 	{
 		return $this->hasMany('Build');
 	}
+
+	public function clients()
+	{
+		return $this->belongsToMany('Client');
+	}
 }
+
+?>

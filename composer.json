@@ -2,16 +2,25 @@
 	"name": "solder/solder",
 	"type": "application",
 	"description": "Technic Solder API using Laravel Framework",
+	"keywords": ["technic", "solder", "api"],
 	"homepage": "https://github.com/TechnicPack/TechnicSolder",
 	"license": "MIT",
 	"authors": [{
-		"name": "Ryan Cohen",
-		"email": "sctsnipe@gmail.com",
-		"homepage": "http://www.sctgaming.com",
-		"role": "Developer"
-		}],
+               "name": "Ryan Cohen",
+               "email": "sctsnipe@gmail.com",
+               "homepage": "http://www.sctgaming.com",
+               "role": "Developer"
+               },
+               {
+               "name": "Dylan Page",
+               "email": "dylandcpage@gmail.com",
+               "homepage": "http://www.pagefortress.com",
+               "role": "Developer"
+               	}],
 	"require": {
-		"laravel/framework": "4.0.*"
+		"laravel/framework": "4.2.*",
+		"patricktalmadge/bootstrapper": "~5",
+		"intervention/image": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
@@ -22,6 +31,22 @@
 			"app/database/seeds",
 			"app/tests/TestCase.php"
 		]
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"php artisan clear-compiled",
+			"php artisan optimize"
+		],
+		"post-update-cmd": [
+			"php artisan clear-compiled",
+			"php artisan optimize"
+		],
+		"post-create-project-cmd": [
+			"php artisan key:generate"
+		]
+	},
+	"config": {
+		"preferred-install": "dist"
 	},
 	"minimum-stability": "dev"
 }

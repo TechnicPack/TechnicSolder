@@ -13,3 +13,5 @@ class Build extends Eloquent {
 		return $this->belongsToMany('Modversion');
 	}
 }
+
+?>

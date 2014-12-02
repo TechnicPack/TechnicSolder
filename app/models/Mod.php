@@ -8,3 +8,5 @@ class Mod extends Eloquent {
 		return $this->hasMany('Modversion');
 	}
 }
+
+?>

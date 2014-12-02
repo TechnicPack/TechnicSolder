@@ -1,0 +1,121 @@
+body {
+  height: 100%;
+  font-size: 12px;
+  line-height: 140%;
+  margin: 0;
+}
+
+legend {
+  border: 0;
+  padding: 0;
+}
+
+button, input {
+  line-height: normal;
+}
+
+.login {
+  font-family: 'Open Sans', sans-serif;
+  padding: 90px 0 0 0;
+}
+
+.login .logo {
+  display: block;
+  margin: 0 auto 30px;
+}
+
+.login .vertical-form .footer {
+  text-align: center;
+  margin-bottom: 200px;
+}
+
+.login .vertical-form .footer a:first-child {
+  border-bottom: solid 1px #cccccc;
+  text-decoration: none;
+  color: inherit;
+}
+
+.login ul.notice {
+  margin: 30px auto;
+  width: 300px;
+  text-align: center;
+  list-style-position: inside;
+  font-size: 15px;
+  padding: 20px 30px;
+  border-radius: 3px;
+}
+
+ul.notice.errors {
+  background-color: #fff4f4;
+  border: 1px solid #f50909;
+  color: #f50909;
+}
+
+ul.notice.success {
+  background-color: #f4fff4;
+  border: 1px solid #3ec042;
+  color: #3ec042;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+.login .vertical-form {
+  margin: 0 auto;
+  width: 500px;
+}
+
+.login .vertical-form legend {
+  width: 100%;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 30px 0;
+}
+
+.login .vertical-form label {
+  display: block;
+  margin: 0 auto 18px auto;
+  width: 323px;
+  text-align: center;
+  border-radius: 3px;
+  color: #2d2d2d;
+  outline: none;
+  font-family: inherit;
+}
+
+.login .vertical-form input[type='text'], 
+.login .vertical-form input[type='password'] {
+  border: 1px #c1c1c1 solid;
+  color: #c1c1c1;
+  height: 50px;
+  font-size: 18px;
+}
+
+.login .vertical-form input[type='text'], 
+.login .vertical-form input[type='password'], 
+.login .vertical-form input[type='submit']  {
+  display: block;
+  margin: 0 auto 18px auto;
+  width: 323px;
+  text-align: center;
+  border-radius: 3px;
+  color: #2d2d2d;
+  outline: none;
+  font-family: inherit;
+}
+
+.login .vertical-form input[type='submit'] {
+  color: white;
+  background: #3686bb;
+  border: none;
+  height: 57px;
+  width: 327px;
+  font-size: 15px;
+  font-weight: 400;
+  outline: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+}
