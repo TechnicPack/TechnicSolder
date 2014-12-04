@@ -202,13 +202,12 @@ Route::filter('modpack', function()
 Route::filter('build', function()
 {
 	$build = Request::segment(3);
-	$build = Build::find($build);
+	$modpack = Modpack::find($build);
 
 	if (empty($build))
 		return Redirect::to('dashboard');
 
 	$perm = Auth::user()->permission;
-	$modpack = $build->modpack;
 
 	if (!$perm->solder_full && !in_array($modpack->id, $perm->modpacks))
 	{

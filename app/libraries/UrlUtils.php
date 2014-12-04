@@ -9,11 +9,14 @@ class UrlUtils {
 	 */
 	public static function get_url_contents($url)
 	{
-		$ch = curl_init();
-		$timeout = 5;
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$ch = curl_init($url);
+		$timeout = 30;
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+
 		$data = curl_exec($ch);
 		curl_close($ch);
 		return $data;
@@ -36,14 +39,20 @@ class UrlUtils {
 	public static function checkRemoteFile($url)
 	{
 		$ch = curl_init($url);
+		$timeout = 30;
 
 		curl_setopt($ch, CURLOPT_NOBODY, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-		curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
-		curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36');
+		curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_exec($ch);
+
+		//check if there are any errors
 		if(!curl_errno($ch)){
+			//check HTTP return code
 			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 			if ($retcode == 200 || $retcode == 405)
@@ -52,6 +61,8 @@ class UrlUtils {
 				return false;
 			}
 		}
+
+		//log the string return of the errors
 		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
 		curl_close($ch);
 		return false;

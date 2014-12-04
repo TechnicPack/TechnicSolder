@@ -22,6 +22,9 @@
 		"patricktalmadge/bootstrapper": "~5",
 		"intervention/image": "dev-master"
 	},
+	"require-dev": {
+		"barryvdh/laravel-debugbar": "1.*"
+	},
 	"autoload": {
 		"classmap": [
 			"app/commands",
