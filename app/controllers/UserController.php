@@ -102,11 +102,16 @@ class UserController extends BaseController {
 				$perm->save();
 			}
 
+			//Security logging
+			$user->updated_by_user_id = Auth::user()->id;
+			$user->updated_by_ip = Request::ip();
+
 			$user->save();
 
 			return Redirect::back()->with('success','User edited successfully!');
 		} catch (Exception $e) {
-			Log::exception($e);
+			Log::error($e);
+			App::abort('504', 'Error saving user changes. See logs for more details.' . $e->getMessage());
 		}
 	}
 
@@ -130,10 +135,17 @@ class UserController extends BaseController {
     	if ($validation->fails())
     		return Redirect::back()->with_errors($validation->errors);
 
+    	$creator = Auth::user()->id;
+    	$creatorIP = Request::ip();
+
     	$user = new User();
     	$user->email = Input::get('email');
     	$user->username = Input::get('username');
     	$user->password = Hash::make(Input::get('password'));
+    	$user->created_ip = $creatorIP;
+    	$user->created_by_user_id = $creator;
+    	$user->updated_by_ip = $creatorIP;
+    	$user->updated_by_user_id = $creator;
     	$user->save();
 
     	$perm = new UserPermission();

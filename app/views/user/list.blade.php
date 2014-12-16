@@ -24,7 +24,8 @@
 					<th>ID #</th>
 					<th>Email</th>
 					<th>Username</th>
-					<th>Created at</th>
+					<th>Updated by (User - IP)</th>
+					<th>Updated at</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -34,7 +35,8 @@
 					<td>{{ $user->id }}</td>
 					<td>{{ $user->email }}</td>
 					<td>{{ $user->username }}</td>
-					<td>{{ $user->created_at }}</td>
+					<td>{{ empty($user->updated_by_user_id) ? "N/A" : User::find($user->updated_by_user_id)->username }} - {{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}</td>
+					<td>{{ date_format($user->updated_at, 'M-d-Y g:ia') }}</td>
 					<td>{{ HTML::link('user/edit/'.$user->id,'Edit', array('class' => 'btn btn-xs btn-warning')) }} {{ HTML::link('user/delete/'.$user->id, 'Delete', array('class' => 'btn btn-xs btn-danger')) }}</td>
 				</tr>
 			@endforeach

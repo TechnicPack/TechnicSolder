@@ -111,7 +111,7 @@ $(".private").change(function() {
 
 $(document).ready(function() {
     $('#dataTables').dataTable({
-    	"order": [[ 1, "asc" ]]
+    	"order": [[ 1, "desc" ]]
     });
 });
 

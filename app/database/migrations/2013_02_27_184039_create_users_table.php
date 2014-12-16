@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration {
 			$table->string('username');
 			$table->string('email');
 			$table->string('password');
-			$table->string('created_ip')->default('0.0.0.0');
+			$table->string('created_ip');
 			$table->string('last_ip')->nullable();
 			$table->timestamps();
 		});
