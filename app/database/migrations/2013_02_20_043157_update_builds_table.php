@@ -12,7 +12,7 @@ class UpdateBuildsTable extends Migration {
 	public function up()
 	{
 		Schema::table('builds', function($table) {
-			$table->string('minecraft');
+			$table->string('minecraft')->nullable();
 			$table->string('forge')->nullable();
 		});
 	}
