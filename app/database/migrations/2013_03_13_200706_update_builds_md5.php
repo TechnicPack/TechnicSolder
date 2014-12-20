@@ -14,7 +14,7 @@ class UpdateBuildsMd5 extends Migration {
 	public function up()
 	{
 		Schema::table('builds', function($table) {
-			$table->string('minecraft_md5');
+			$table->string('minecraft_md5')->default('');
 		});
 
 		$minecraft = $this->getMinecraft();

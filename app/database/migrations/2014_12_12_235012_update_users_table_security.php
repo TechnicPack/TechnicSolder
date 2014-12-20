@@ -14,7 +14,7 @@ class UpdateUsersTableSecurity extends Migration {
 	{
 		Schema::table("users", function($table) {
 			$table->string('updated_by_ip')->nullable();
-			$table->integer('created_by_user_id');
+			$table->integer('created_by_user_id')->default(1);
 			$table->integer('updated_by_user_id')->nullable();
 		});
 	}

@@ -12,7 +12,7 @@ class UpdateModsTable extends Migration {
 	public function up()
 	{
 		Schema::table('mods', function($table) {
-			$table->string('pretty_name');
+			$table->string('pretty_name')->default('');
 		});
 	}
 

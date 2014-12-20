@@ -12,11 +12,11 @@ class UpdateModpackBuildsPrivate extends Migration {
 	public function up()
 	{
 		Schema::table('modpacks', function($table) {
-			$table->boolean('private');
+			$table->boolean('private')->default(0);
 		});
 
 		Schema::table('builds', function($table) {
-			$table->boolean('private');
+			$table->boolean('private')->default(0);
 		});
 	}
 
