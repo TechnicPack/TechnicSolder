@@ -4,3 +4,4 @@ composer.lock
 .DS_Store
 /app/config
 public/resources/
+public/vendor
