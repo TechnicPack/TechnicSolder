@@ -42,7 +42,7 @@ return array(
     |
     */
 
-    'default' => 'mysql',
+    'default' => 'sqlite',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return array(
 
         'sqlite' => array(
             'driver'   => 'sqlite',
-            'database' => 'solder',
+            'database' => __DIR__.'/../database/production.sqlite',
             'prefix'   => '',
         ),
 
