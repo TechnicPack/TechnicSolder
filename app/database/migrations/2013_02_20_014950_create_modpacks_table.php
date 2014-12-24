@@ -15,8 +15,8 @@ class CreateModpacksTable extends Migration {
 			$table->increments('id');
 			$table->string('name')->unique();
 			$table->string('slug')->unique();
-			$table->string('recommended');
-			$table->string('latest');
+			$table->string('recommended')->nullable();
+			$table->string('latest')->nullable();
 			$table->string('url')->nullable();
 			$table->string('icon_md5');
 			$table->string('logo_md5');
