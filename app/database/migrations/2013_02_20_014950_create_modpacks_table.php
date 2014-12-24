@@ -18,9 +18,9 @@ class CreateModpacksTable extends Migration {
 			$table->string('recommended')->nullable();
 			$table->string('latest')->nullable();
 			$table->string('url')->nullable();
-			$table->string('icon_md5');
-			$table->string('logo_md5');
-			$table->string('background_md5');
+			$table->string('icon_md5')->nullable();
+			$table->string('logo_md5')->nullable();
+			$table->string('background_md5')->nullable();
 			$table->timestamps();
 		});
 	}

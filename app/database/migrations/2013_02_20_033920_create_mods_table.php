@@ -14,9 +14,9 @@ class CreateModsTable extends Migration {
 		Schema::create('mods', function($table) {
 			$table->increments('id');
 			$table->string('name')->unique();
-			$table->text('description');
-			$table->string('author');
-			$table->string('link');
+			$table->text('description')->nullable();
+			$table->string('author')->nullable();
+			$table->string('link')->nullable();
 			$table->timestamps();
 		});
 	}
