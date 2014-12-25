@@ -54,6 +54,10 @@
 			                    <label for="link">Mod Website</label>
 			                    <input type="text" class="form-control" name="link" id="link" value="{{ $mod->link }}">
 			                </div>
+			                <div class="form-group">
+			                    <label for="donatelink">Author Donation Link</label>
+			                    <input type="text" class="form-control" name="donatelink" id="donatelink" value="{{ $mod->donatelink }}">
+			                </div>
 						</div>
 					</div>
 					{{ Form::submit('Save Changes', array('class' => 'btn btn-success')) }}

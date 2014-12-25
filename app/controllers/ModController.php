@@ -39,17 +39,21 @@ class ModController extends BaseController {
 	{
 		$rules = array(
 			'name' => 'required|unique:mods',
-			'pretty_name' => 'required'
+			'pretty_name' => 'required',
+			'link' => 'url',
+			'donatelink' => 'url',
 			);
 		$messages = array(
-			'name_required' => 'You must fill in a mod slug name.',
-			'name_unique' => 'The slug you entered is already taken',
-			'pretty_name_required' => 'You must enter in a mod name'
+			'name.required' => 'You must fill in a mod slug name.',
+			'name.unique' => 'The slug you entered is already taken',
+			'pretty_name.required' => 'You must enter in a mod name',
+			'link.url' => 'You must enter a properly formatted Website',
+			'donatelink.url' => 'You must enter a proper formatted Donation Link',
 			);
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation->errors);
+			return Redirect::back()->withErrors($validation->messages());
 
 		try {
 			$mod = new Mod();
@@ -58,11 +62,12 @@ class ModController extends BaseController {
 			$mod->author = Input::get('author');
 			$mod->description = Input::get('description');
 			$mod->link = Input::get('link');
+			$mod->donatelink = Input::get('donatelink');
 			$mod->save();
 			return Redirect::to('mod/view/'.$mod->id);
 		} catch (Exception $e) {
 			Log::error($e);
-			App:abort(500);
+			App:abort(504, 'Error creating mod. Please see log for more details');
 		}
 	}
 
@@ -90,17 +95,21 @@ class ModController extends BaseController {
 		$rules = array(
 			'pretty_name' => 'required',
 			'name' => 'required|unique:mods,name,'.$mod->id,
+			'link' => 'url',
+			'donatelink' => 'url',
 			);
 
 		$messages = array(
-			'pretty_name_required' => 'You must enter in a Mod Name',
-			'name_required' => 'You must enter a Mod Slug',
-			'name_unique' => 'The slug you entered is already in use by another mod',
+			'name.required' => 'You must fill in a mod slug name.',
+			'name.unique' => 'The slug you entered is already in use by another mod',
+			'pretty_name.required' => 'You must enter in a mod name',
+			'link.url' => 'You must enter a properly formatted Website',
+			'donatelink.url' => 'You must enter a proper formatted Donation Link',
 			);
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation->errors);
+			return Redirect::back()->withErrors($validation->messages());
 
 		try {
 			$mod->pretty_name = Input::get('pretty_name');
@@ -108,12 +117,13 @@ class ModController extends BaseController {
 			$mod->author = Input::get('author');
 			$mod->description = Input::get('description');
 			$mod->link = Input::get('link');
+			$mod->donatelink = Input::get('donatelink');
 			$mod->save();
 
 			return Redirect::to('mod/view/'.$mod->id)->with('success','Mod successfully edited.');
 		} catch (Exception $e) {
 			Log::error($e);
-			App::abort(500);
+			App::abort(504, 'Error saving mod. Please see log for more details');
 		}
 	}
 

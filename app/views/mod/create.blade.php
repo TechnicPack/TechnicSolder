@@ -9,12 +9,12 @@
 	</div>
 	<div class="panel-body">
 		@if ($errors->all())
-			<div class="alert alert-error">
-			@foreach ($errors->all() as $error)
-				{{ $error }}<br />
-			@endforeach
-			</div>
-		@endif
+            <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                {{ $error }}<br />
+            @endforeach
+            </div>
+        @endif
 		<form method="post" action="{{ URL::to('mod/create') }}">
 		<div class="row">
 			<div class="col-md-6">
@@ -34,9 +34,13 @@
                     <label for="description">Description</label>
                     <textarea name="description" id="description" class="form-control" rows="5"></textarea>
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="link">Mod Website</label>
                     <input type="text" class="form-control" name="link" id="link">
+                </div>
+                <div class="form-group">
+                    <label for="donatelink">Author Donation Link</label>
+                    <input type="text" class="form-control" name="donatelink" id="donatelink">
                 </div>
 			</div>
 			<div class="col-md-6">

@@ -116,6 +116,7 @@ class APIController extends BaseController {
 		$response['author'] = $mod->author;
 		$response['description'] = $mod->description;
 		$response['link'] = $mod->link;
+		$response['donate_link'] = $mod->donatelink;
 		$response['versions'] = array();
 
 		foreach ($mod->versions as $version)
@@ -321,7 +322,8 @@ class APIController extends BaseController {
 											"pretty_name" => $modversion->mod->pretty_name,
 											"author" => $modversion->mod->author,
 											"description" => $modversion->mod->description,
-											"link" => $modversion->mod->link
+											"link" => $modversion->mod->link,
+											"donate_link" => $modversion->mod->donatelink
 											);
 			} else {
 				$data = array(

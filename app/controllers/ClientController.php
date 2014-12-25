@@ -29,7 +29,7 @@ class ClientController extends BaseController {
 
     	$validation = Validator::make(Input::all(), $rules);
     	if ($validation->fails())
-    		return Redirect::back()->with_errors($validation->errors);
+    		return Redirect::back()->withErrors($validation->messages());
 
     	$client = new Client();
     	$client->name = Input::get('name');

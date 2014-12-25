@@ -117,7 +117,7 @@ class ModpackController extends BaseController {
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation->errors);
+			return Redirect::back()->withErrors($validation->messages());
 
 		$clone = Input::get('clone');
 		$build = new Build();
@@ -166,7 +166,7 @@ class ModpackController extends BaseController {
 		$validation = Validator::make(Input::all(), $rules, $messages);
 
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation->errors());
+			return Redirect::back()->withErrors($validation->messages());
 
 		try {
 			$modpack = new Modpack();
@@ -247,7 +247,7 @@ class ModpackController extends BaseController {
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation->errors);
+			return Redirect::back()->withErrors($validation->messages());
 
 		$url = Config::get('solder.repo_location').Input::get('slug').'/resources/';
 		$modpack->name = Input::get('name');

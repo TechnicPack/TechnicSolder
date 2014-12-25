@@ -57,7 +57,7 @@ class UserController extends BaseController {
 		$validation = Validator::make(Input::all(), $rules);
 
 		if ($validation->fails())
-			return Redirect::back()->with_errors($validation);
+			return Redirect::back()->withErrors($validation->messages());
 
 		try {
 			$user->email = Input::get('email');
@@ -133,7 +133,7 @@ class UserController extends BaseController {
 
     	$validation = Validator::make(Input::all(), $rules);
     	if ($validation->fails())
-    		return Redirect::back()->with_errors($validation->errors);
+    		return Redirect::back()->withErrors($validation->messages());
 
     	$creator = Auth::user()->id;
     	$creatorIP = Request::ip();
