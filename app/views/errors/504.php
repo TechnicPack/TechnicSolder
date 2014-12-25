@@ -30,7 +30,7 @@
 		ins { background: #ff9; color: #000; text-decoration: none; }
 		mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
 		pre, code, kbd, samp { font-family: monospace, serif; _font-family: 'courier new', monospace; font-size: 1em; }
-		pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
+		pre { word-break: break-all; word-wrap: break-word; background-color: #f5f5f5; border: 1px solid #ccc; padding: 9.5px; }
 		q { quotes: none; }
 		q:before, q:after { content: ""; content: none; }
 		small { font-size: 85%; }
@@ -118,7 +118,7 @@
 
 			<p>Here's a detailed error message to give to the developers:</p>
 
-			<code><?php echo $exception; ?></code>
+			<pre><?php echo $exception; ?></pre>
 
 			<p>
 				Perhaps you would like to go to our <?php echo HTML::link('/dashboard', 'Dashboard'); ?>?
