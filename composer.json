@@ -18,12 +18,12 @@
                "role": "Developer"
                	}],
 	"require": {
-		"laravel/framework": "4.2.12",
-		"patricktalmadge/bootstrapper": "5.4.0",
-		"intervention/image": "2.0.15",
-        "doctrine/dbal": "~2.3",
+		"laravel/framework": "4.2.*",
+		"patricktalmadge/bootstrapper": "5.4.*",
+		"intervention/image": "2.0.*",
+        "doctrine/dbal": "~2.5",
         "composer/composer": "1.0.0-alpha9",
-        "knplabs/github-api": "1.4.0"
+        "knplabs/github-api": "1.4.*"
 	},
 	"require-dev": {
 		"barryvdh/laravel-debugbar": "1.*"
@@ -40,15 +40,16 @@
 	},
 	"scripts": {
 		"post-install-cmd": [
-			"cp -r app/config-sample app/config",
 			"php artisan clear-compiled",
 			"php artisan optimize"
 		],
 		"post-update-cmd": [
 			"php artisan clear-compiled",
-			"php artisan optimize"
+			"php artisan optimize",
+			"php artisan migrate"
 		],
 		"post-create-project-cmd": [
+			"cp -r app/config-sample app/config",
 			"php artisan key:generate"
 		]
 	},
