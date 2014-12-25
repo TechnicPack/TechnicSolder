@@ -18,15 +18,6 @@ return array(
 	 * 
 	 **/
 	'mirror_url' => '',
-	
-	/**
-	 * Platform API Key
-	 * 
-	 * Enter your platform API key if you would like to link Solder to your
-	 * Platform account.
-	 * 
-	 **/
-	'platform_key' => '',
 
 );
 
