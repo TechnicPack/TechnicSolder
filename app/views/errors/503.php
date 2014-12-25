@@ -104,20 +104,15 @@
 
 			<h1><?php echo $messages[mt_rand(0, 2)]; ?></h1>
 
-			<h2>Server Error: 500 (Internal Server Error)</h2>
+			<h2>Server Error: 503 (Application offline for maintenance)</h2>
 
 			<hr>
 
 			<h3>What does this mean?</h3>
 
 			<p>
-				Something went wrong on our servers while we were processing your request.
-				We're really sorry about this, and will work hard to get this resolved as
-				soon as possible.
-			</p>
-
-			<p>
-				Perhaps you would like to go to our <?php echo HTML::link('/', 'home page'); ?>?
+				The application is current offline. This is purposefully done by the owner for a variety of reasons.
+				Please try again later.
 			</p>
 		</div>
 	</div>

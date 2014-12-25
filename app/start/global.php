@@ -51,7 +51,7 @@ Log::useFiles(storage_path().'/logs/'. $logFile);
 
 App::error(function(Exception $exception, $code)
 {
-	Log::error($exception);
+	return Response::view('errors.'.$code, array('exception' => $exception), $code);
 });
 
 /*
@@ -67,7 +67,8 @@ App::error(function(Exception $exception, $code)
 
 App::down(function()
 {
-	return Response::make("Be right back!", 503);
+	return Response::view('errors.503', array(), 503);
+
 });
 
 /*
