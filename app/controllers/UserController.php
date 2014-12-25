@@ -59,60 +59,55 @@ class UserController extends BaseController {
 		if ($validation->fails())
 			return Redirect::back()->withErrors($validation->messages());
 
-		try {
-			$user->email = Input::get('email');
-			$user->username = Input::get('username');
-			if (Input::get('password1'))
-			{
-				$user->password = Hash::make(Input::get('password1'));
-			}
-
-			/* Update User Permissions */
-			if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users)
-			{
-				$perm = $user->permission;
-
-				/* If user is original admin, always give full access. */
-				if ($user->id == 1)
-				{
-					$perm->solder_full = true;
-				} else {
-					$perm->solder_full = Input::get('solder-full') ? true : false;
-				}
-				$perm->solder_users = Input::get('manage-users') ? true : false;
-				$perm->solder_keys = Input::get('manage-keys') ? true : false;
-				$perm->solder_clients = Input::get('manage-clients') ? true : false;
-
-				/* Mod Perms */
-				$perm->mods_create = Input::get('mod-create') ? true : false;
-				$perm->mods_manage = Input::get('mod-manage') ? true : false;
-				$perm->mods_delete = Input::get('mod-delete') ? true : false;
-
-				/* Modpack Perms */
-				$perm->modpacks_create = Input::get('modpack-create') ? true : false;
-				$perm->modpacks_manage = Input::get('modpack-manage') ? true : false;
-				$perm->modpacks_delete = Input::get('modpack-delete') ? true : false;
-				$modpack = Input::get('modpack');
-
-				if (!empty($modpack))
-					$perm->modpacks = $modpack;
-				else
-					$perm->modpacks = null;
-
-				$perm->save();
-			}
-
-			//Security logging
-			$user->updated_by_user_id = Auth::user()->id;
-			$user->updated_by_ip = Request::ip();
-
-			$user->save();
-
-			return Redirect::back()->with('success','User edited successfully!');
-		} catch (Exception $e) {
-			Log::error($e);
-			App::abort('504', 'Error saving user changes. See logs for more details.' . $e->getMessage());
+		$user->email = Input::get('email');
+		$user->username = Input::get('username');
+		if (Input::get('password1'))
+		{
+			$user->password = Hash::make(Input::get('password1'));
 		}
+
+		/* Update User Permissions */
+		if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users)
+		{
+			$perm = $user->permission;
+
+			/* If user is original admin, always give full access. */
+			if ($user->id == 1)
+			{
+				$perm->solder_full = true;
+			} else {
+				$perm->solder_full = Input::get('solder-full') ? true : false;
+			}
+			$perm->solder_users = Input::get('manage-users') ? true : false;
+			$perm->solder_keys = Input::get('manage-keys') ? true : false;
+			$perm->solder_clients = Input::get('manage-clients') ? true : false;
+
+			/* Mod Perms */
+			$perm->mods_create = Input::get('mod-create') ? true : false;
+			$perm->mods_manage = Input::get('mod-manage') ? true : false;
+			$perm->mods_delete = Input::get('mod-delete') ? true : false;
+
+			/* Modpack Perms */
+			$perm->modpacks_create = Input::get('modpack-create') ? true : false;
+			$perm->modpacks_manage = Input::get('modpack-manage') ? true : false;
+			$perm->modpacks_delete = Input::get('modpack-delete') ? true : false;
+			$modpack = Input::get('modpack');
+
+			if (!empty($modpack))
+				$perm->modpacks = $modpack;
+			else
+				$perm->modpacks = null;
+
+			$perm->save();
+		}
+
+		//Security logging
+		$user->updated_by_user_id = Auth::user()->id;
+		$user->updated_by_ip = Request::ip();
+
+		$user->save();
+
+		return Redirect::back()->with('success','User edited successfully!');
 	}
 
     public function getCreate()

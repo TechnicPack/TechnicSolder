@@ -168,32 +168,27 @@ class ModpackController extends BaseController {
 		if ($validation->fails())
 			return Redirect::back()->withErrors($validation->messages());
 
-		try {
-			$modpack = new Modpack();
-			$modpack->name = Input::get('name');
-			$modpack->slug = Str::slug(Input::get('slug'));
-			$modpack->save();
+		$modpack = new Modpack();
+		$modpack->name = Input::get('name');
+		$modpack->slug = Str::slug(Input::get('slug'));
+		$modpack->save();
 
-			/* Gives creator modpack perms */
-			$user = Auth::User();
-			$perm = $user->permission;
-			$modpacks = $perm->modpacks;
-			if(!empty($modpacks)){
-				Log::info($modpack->name .': Attempting to add modpack perm to user - '. $user->username . ' - Modpack perm not empty');
-				$newmodpacks = array_merge($modpacks, array($modpack->id));
-				$perm->modpacks = $newmodpacks;
-			}
-			else{
-				Log::info($modpack->name .': Attempting to add modpack perm to user - '. $user->username . ' - Modpack perm empty');
-				$perm->modpacks = array($modpack->id);
-			}
-			$perm->save();
-
-			return Redirect::to('modpack/view/'.$modpack->id);
-		} catch (Exception $e) {
-			Log::error($e);
-			App::abort(504, 'Error creating pack. See logs for more details');
+		/* Gives creator modpack perms */
+		$user = Auth::User();
+		$perm = $user->permission;
+		$modpacks = $perm->modpacks;
+		if(!empty($modpacks)){
+			Log::info($modpack->name .': Attempting to add modpack perm to user - '. $user->username . ' - Modpack perm not empty');
+			$newmodpacks = array_merge($modpacks, array($modpack->id));
+			$perm->modpacks = $newmodpacks;
 		}
+		else{
+			Log::info($modpack->name .': Attempting to add modpack perm to user - '. $user->username . ' - Modpack perm empty');
+			$perm->modpacks = array($modpack->id);
+		}
+		$perm->save();
+
+		return Redirect::to('modpack/view/'.$modpack->id);
 	}
 
 	/**
@@ -280,16 +275,14 @@ class ModpackController extends BaseController {
 			$oldPath = public_path() . '/resources/' . $oldSlug;
 
 			if ($useS3) {
-				try {
 
-					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
-					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
-					S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
-					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png');
-					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png');
-					S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png');
-				} catch (Exception $e) {
-				}
+				S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/logo.png', S3::ACL_PUBLIC_READ);
+				S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/background.png', S3::ACL_PUBLIC_READ);
+				S3::copyObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png', Config::get('solder.bucket'), 'resources/'.$modpack->slug.'/icon.png', S3::ACL_PUBLIC_READ);
+				S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/logo.png');
+				S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/background.png');
+				S3::deleteObject(Config::get('solder.bucket'), 'resources/'.$oldSlug.'/icon.png');
+
 				$oldPath = storage_path() . '/resources/' . $oldSlug;
 			}
 

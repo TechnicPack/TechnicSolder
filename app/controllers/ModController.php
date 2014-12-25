@@ -55,20 +55,15 @@ class ModController extends BaseController {
 		if ($validation->fails())
 			return Redirect::back()->withErrors($validation->messages());
 
-		try {
-			$mod = new Mod();
-			$mod->name = Str::slug(Input::get('name'));
-			$mod->pretty_name = Input::get('pretty_name');
-			$mod->author = Input::get('author');
-			$mod->description = Input::get('description');
-			$mod->link = Input::get('link');
-			$mod->donatelink = Input::get('donatelink');
-			$mod->save();
-			return Redirect::to('mod/view/'.$mod->id);
-		} catch (Exception $e) {
-			Log::error($e);
-			App:abort(504, 'Error creating mod. Please see log for more details');
-		}
+		$mod = new Mod();
+		$mod->name = Str::slug(Input::get('name'));
+		$mod->pretty_name = Input::get('pretty_name');
+		$mod->author = Input::get('author');
+		$mod->description = Input::get('description');
+		$mod->link = Input::get('link');
+		$mod->donatelink = Input::get('donatelink');
+		$mod->save();
+		return Redirect::to('mod/view/'.$mod->id);
 	}
 
 	public function getDelete($mod_id = null)
@@ -111,20 +106,15 @@ class ModController extends BaseController {
 		if ($validation->fails())
 			return Redirect::back()->withErrors($validation->messages());
 
-		try {
-			$mod->pretty_name = Input::get('pretty_name');
-			$mod->name = Input::get('name');
-			$mod->author = Input::get('author');
-			$mod->description = Input::get('description');
-			$mod->link = Input::get('link');
-			$mod->donatelink = Input::get('donatelink');
-			$mod->save();
+		$mod->pretty_name = Input::get('pretty_name');
+		$mod->name = Input::get('name');
+		$mod->author = Input::get('author');
+		$mod->description = Input::get('description');
+		$mod->link = Input::get('link');
+		$mod->donatelink = Input::get('donatelink');
+		$mod->save();
 
-			return Redirect::to('mod/view/'.$mod->id)->with('success','Mod successfully edited.');
-		} catch (Exception $e) {
-			Log::error($e);
-			App::abort(504, 'Error saving mod. Please see log for more details');
-		}
+		return Redirect::to('mod/view/'.$mod->id)->with('success','Mod successfully edited.');
 	}
 
 	public function postDelete($mod_id = null)
