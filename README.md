@@ -19,6 +19,7 @@ Requirements
 * PHP MCrypt Extension
 * PHP Curl Extension
 * PHP GD Extension
+* PHP fileinfo Extension
 * A sqllite, mysql, pgsql, or sqlsrv database
 * Composer - PHP Dependency Manager - http://getcomposer.org
 
