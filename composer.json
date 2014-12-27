@@ -41,7 +41,7 @@
 	},
 	"scripts": {
 		"pre-update-cmd": [
-			"rm bootstrap/compiled.php"
+			"rm -f bootstrap/compiled.php"
 		],
 		"post-install-cmd": [
 			"cp -r app/config-sample app/config",
