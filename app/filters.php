@@ -201,8 +201,10 @@ Route::filter('modpack', function()
 
 Route::filter('build', function()
 {
-	$build = Request::segment(3);
-	$modpack = Modpack::find($build);
+	$buildId = Request::segment(3);
+	$build = Build::find($buildId);
+	$modpack = $build->modpack;
+
 
 	if (empty($build))
 		return Redirect::to('dashboard');
