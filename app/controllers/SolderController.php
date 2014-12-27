@@ -21,4 +21,34 @@ class SolderController extends BaseController {
 		return View::make('solder.configure');
 	}
 
+	public function getCacheMinecraft() {
+		if (Request::ajax())
+		{
+			$reason = '';
+			try {
+				$reason = MinecraftUtils::getMinecraftVersions();
+			}
+			catch (Exception $e) {
+				return Response::json(array(
+									'status' => 'error',
+									'reason' => $e
+									));
+			}
+
+			if (Cache::has('minecraftversions')){
+				return Response::json(array(
+									'status' => 'success',
+									'reason' => $reason
+									));
+			} else {
+				return Response::json(array(
+									'status' => 'error',
+									'reason' => 'An unknown error has occured.'
+									));
+			}
+		}
+
+		return App::abort(404);
+	}
+
 }

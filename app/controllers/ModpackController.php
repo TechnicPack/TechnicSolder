@@ -2,8 +2,6 @@
 
 class ModpackController extends BaseController {
 
-	const MINECRAFT_API = 'http://www.technicpack.net/api/minecraft';
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -90,8 +88,7 @@ class ModpackController extends BaseController {
 		if (empty($modpack))
 			return Redirect::to('modpack');
 
-		$minecraft = $this->getMinecraft();
-		krsort($minecraft, SORT_NATURAL);
+		$minecraft = MinecraftUtils::getMinecraft();
 
 		return View::make('modpack.build.create')
 			->with(array(
@@ -501,19 +498,5 @@ class ModpackController extends BaseController {
 						"success" => "Updated build ".$build->version."'s private status.",
 					));
 		}
-	}
-
-	public function getMinecraft()
-	{
-		if (Config::has('solder.minecraft_api'))
-		{
-			$url = Config::get('solder.minecraft_api');
-		} else {
-			$url = self::MINECRAFT_API;
-		}
-
-		$response = UrlUtils::get_url_contents($url);
-
-		return json_decode($response, true);
 	}
 }

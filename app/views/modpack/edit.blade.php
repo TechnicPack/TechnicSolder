@@ -18,6 +18,9 @@
 		<form method="POST" action="{{ URL::current() }}" accept-charset="UTF-8" enctype="multipart/form-data">
 		<div class="row">
 			<div class="col-md-6">
+				<h3>Modpack Management</h3>
+				<p>Edit your modpack settings here. You are required to delete and re-import your pack on the Technic Platform when changing the Modpack slug</p>
+				<hr>
 				<div class="form-group">
                     <label for="name">Modpack Name</label>
                     <input type="text" class="form-control" name="name" id="name" value="{{ $modpack->name }}">
@@ -26,6 +29,8 @@
                     <label for="slug">Modpack Slug</label>
                     <input type="text" class="form-control" name="slug" id="slug" value="{{ $modpack->slug }}">
                 </div>
+                <hr>
+                <p class="alert alert-warning"><strong>WARNING:</strong> Hidden and/or Private packs will not show up on the Platform when attempting to import. Set them to Hidden or Private AFTER importing</p>
 				<div class="form-group">
 					<label class="control-label" for="hidden">Hide Modpack</label>
 					<div class="controls">
@@ -41,6 +46,7 @@
 					</div>
 				</div>
 				@if ($modpack->private)
+				<hr>
 				<h3>Client Access</h3>
 				<p>Check the clients below you want to have access to this modpack if anything is set to private.</p>
 				@foreach (Client::all() as $client)
