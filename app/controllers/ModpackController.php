@@ -54,7 +54,7 @@ class ModpackController extends BaseController {
 					$switchrec = 1;
 				if ($build->version == $modpack->latest)
 					$switchlat = 1;
-				$build->modversions()->delete();
+				$build->modversions()->sync(array());
 				$build->delete();
 				if ($switchrec)
 				{
