@@ -5,3 +5,4 @@ composer.lock
 /app/config
 public/resources/
 public/vendor
+app/database/*.sqlite
