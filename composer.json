@@ -39,6 +39,9 @@
 		]
 	},
 	"scripts": {
+		"pre-update-cmd": [
+			"rm bootstrap/compiled.php"
+		],
 		"post-install-cmd": [
 			"cp -r app/config-sample app/config",
 			"php artisan clear-compiled",
@@ -46,8 +49,7 @@
 		],
 		"post-update-cmd": [
 			"php artisan clear-compiled",
-			"php artisan optimize",
-			"php artisan migrate"
+			"php artisan optimize"
 		],
 		"post-create-project-cmd": [
 			"php artisan key:generate"

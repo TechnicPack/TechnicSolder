@@ -41,7 +41,7 @@
 								<td>{{ $build->minecraft }}</td>
 								<td>{{ count($build->modversions) }}</td>
 								<td>{{ $build->updated_at }}</td>
-								<td>{{ HTML::link('build/'.$build->id, 'Manage Build', array('class' => 'btn btn-warning btn-xs')) }}</td>
+								<td>{{ HTML::link('modpack/build/'.$build->id, 'Manage Build', array('class' => 'btn btn-warning btn-xs')) }}</td>
 							</tr>
 						@endforeach
 					</tbody>
