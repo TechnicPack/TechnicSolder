@@ -31,7 +31,7 @@
 			<input type="hidden" name="action" value="add">
 			<tr id="mod-list-add">
 				<td>
-					<i class="icon-plus"></i> 
+					<i class="icon-plus"></i>
 					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod">
 						@foreach (Mod::all() as $mod)
 						<option value="{{ $mod->name }}">{{ $mod->pretty_name }}</option>
@@ -62,7 +62,7 @@
 					<td>
 						<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-version">
 							<input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
-							<input type="hidden" class="pivot-id" name="pivot_id" value="{{ $ver->pivot->id }}">
+							<input type="hidden" class="modversion-id" name="modversion_id" value="{{ $ver->pivot->modversion_id }}">
 							<input type="hidden" name="action" value="version">
 							<div class="form-group input-group">
 								<select class="form-control" name="version">
@@ -79,7 +79,7 @@
 					<td>
 						<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-delete">
 							<input type="hidden" name="build_id" value="{{ $build->id }}">
-							<input type="hidden" name="pivot_id" value="{{ $ver->pivot->id }}">
+							<input type="hidden" class="modversion-id" name="modversion_id" value="{{ $ver->pivot->modversion_id }}">
 							<input type="hidden" name="action" value="delete">
 							<button type="submit" class="btn btn-danger btn-small">Remove</button>
 						</form>

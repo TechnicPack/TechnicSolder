@@ -259,7 +259,7 @@ class ModpackController extends BaseController {
 		} else {
 			$resourcePath = public_path() . '/resources/' . $modpack->slug;
 		}
-		
+
 
 		/* Create new resources directory for modpack */
 		if (!file_exists($resourcePath)) {
@@ -297,7 +297,7 @@ class ModpackController extends BaseController {
 				copy($oldPath . "/icon.png", $resourcePath . "/icon.png");
 				unlink($oldPath . "/icon.png");
 			}
-			
+
 			if (file_exists($oldPath)) {
 				rmdir($oldPath);
 			}
@@ -428,18 +428,20 @@ class ModpackController extends BaseController {
 
 		if (empty($action))
 			return Response::error('500');
-			
+
 		switch ($action)
 		{
 			case "version":
 				$affected = DB::table('build_modversion')
-							->where('id','=', Input::get('pivot_id'))
+							->where('build_id','=', Input::get('build_id'))
+							->where('modversion_id', '=', Input::get('modversion_id'))
 							->update(array('modversion_id' => Input::get('version')));
 				return Response::json(array('success' => 'Rows Affected: '.$affected));
 				break;
 			case "delete":
 				$affected = DB::table('build_modversion')
-							->where('id','=', Input::get('pivot_id'))
+							->where('build_id','=', Input::get('build_id'))
+							->where('modversion_id', '=', Input::get('modversion_id'))
 							->delete();
 				return Response::json(array('success' => 'Rows Affected: '.$affected));
 				break;
@@ -480,7 +482,7 @@ class ModpackController extends BaseController {
 			case "published":
 				$build = Build::find(Input::get('build'));
 				$published = Input::get('published');
-				
+
 				$build->is_published = ($published ? true : false);
 				$build->save();
 
@@ -490,7 +492,7 @@ class ModpackController extends BaseController {
 			case "private":
 				$build = Build::find(Input::get('build'));
 				$private = Input::get('private');
-				
+
 				$build->private = ($private ? true : false);
 				$build->save();
 
