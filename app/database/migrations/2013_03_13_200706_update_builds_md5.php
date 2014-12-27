@@ -48,7 +48,7 @@ class UpdateBuildsMd5 extends Migration {
 			$url = self::MINECRAFT_API;
 		}
 
-		$response = UrlUtils::get_url_contents($url);
+		$response = UrlUtils::get_url_contents($url, 5);
 
 		return json_decode($response);
 	}
