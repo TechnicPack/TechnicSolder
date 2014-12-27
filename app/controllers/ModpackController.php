@@ -7,8 +7,8 @@ class ModpackController extends BaseController {
 		parent::__construct();
 		$this->beforeFilter('auth');
 		$this->beforeFilter('solder_modpacks');
-		$this->beforeFilter('modpack', array('only' => array('getView', 'getDelete', 'postDelete', 'getEdit', 'postEdit')));
-		$this->beforeFilter('build', array('only' => array('anyBuild', 'getAddBuild', 'postAddBuild')));
+		$this->beforeFilter('modpack', array('only' => array('getView', 'getDelete', 'postDelete', 'getEdit', 'postEdit', 'getAddBuild', 'postAddBuild')));
+		$this->beforeFilter('build', array('only' => array('anyBuild')));
 	}
 
 	public function getIndex()
