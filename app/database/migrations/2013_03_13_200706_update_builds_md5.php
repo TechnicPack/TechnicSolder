@@ -17,8 +17,7 @@ class UpdateBuildsMd5 extends Migration {
 			$table->string('minecraft_md5')->default('');
 		});
 
-		$minecraft = $this->getMinecraft();
-		$minecraft = (Array)$minecraft;
+		$minecraft = MinecraftUtils::getMinecraft();
 
 		foreach (Build::all() as $build)
 		{
@@ -37,19 +36,5 @@ class UpdateBuildsMd5 extends Migration {
 		Schema::table('builds', function($table) {
 			$table->dropColumn('minecraft_md5');
 		});
-	}
-
-	public function getMinecraft()
-	{
-		if (Config::has('solder.minecraft_api'))
-		{
-			$url = Config::get('solder.minecraft_api');
-		} else {
-			$url = self::MINECRAFT_API;
-		}
-
-		$response = UrlUtils::get_url_contents($url);
-
-		return json_decode($response);
 	}
 }
