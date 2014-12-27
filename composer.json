@@ -18,6 +18,7 @@
                "role": "Developer"
                	}],
 	"require": {
+		"php": ">=5.6.0",
 		"laravel/framework": "4.2.*",
 		"patricktalmadge/bootstrapper": "5.4.*",
 		"intervention/image": "2.0.*",
