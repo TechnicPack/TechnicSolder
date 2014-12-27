@@ -19,6 +19,15 @@ return array(
 	 **/
 	'mirror_url' => '',
 
+	/**
+	 * MD5 Hashing Timeout
+	 * 
+	 * This is the amount of time Solder will wait before giving up trying to 
+	 * calculate the MD5 checksum.
+	 * 
+	 **/
+	'md5filetimeout' => 30,
+
 );
 
 ?>

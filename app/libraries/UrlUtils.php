@@ -7,15 +7,14 @@ class UrlUtils {
 	 * @param  String $url
 	 * @return String
 	 */
-	public static function get_url_contents($url)
+	public static function get_url_contents($url, $timeout)
 	{
 		$ch = curl_init($url);
-		$timeout = 30;
-
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 
 		$data = curl_exec($ch);
 		curl_close($ch);
@@ -29,17 +28,24 @@ class UrlUtils {
 	 */
 	public static function get_remote_md5($url)
 	{
-		if(self::checkRemoteFile($url)){
-			$content = self::get_url_contents($url);
+		if (Config::has('solder.md5filetimeout'))
+		{
+			$timeout = Config::get('solder.md5filetimeout');
+		}
+		else {
+			$timeout = 30;
+		}
+
+		if(self::checkRemoteFile($url, $timeout)){
+			$content = self::get_url_contents($url, $timeout);
 			return md5($content);
 		}
 		return "";
 	}
 
-	public static function checkRemoteFile($url)
+	public static function checkRemoteFile($url, $timeout)
 	{
 		$ch = curl_init($url);
-		$timeout = 30;
 
 		curl_setopt($ch, CURLOPT_NOBODY, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -47,7 +53,8 @@ class UrlUtils {
 		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36');
 		curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 		curl_exec($ch);
 
 		//check if there are any errors
