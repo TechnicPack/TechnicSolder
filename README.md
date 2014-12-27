@@ -15,7 +15,7 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP 5.6+ 
+* PHP 5.5+ 
 * PHP MCrypt Extension
 * PHP Curl Extension
 * PHP GD Extension
@@ -32,7 +32,15 @@ If there is any missing info, please post an issue on our [issue tracker](https:
 Changes
 ---------------
 
-**Version 0.7-DEV**
+**Version 0.7.0.3**
+- Added: Custom MD5 hashing timeouts. (see app/config-sample/solder.php)
+- Added: New Minecraft Versions Caching
+- Fixed: Adding New Builds
+- Fixed: Image uploading, resizing, and preview
+- Fixed: Recent Builds Manage button link
+- Removed: Automatic DB migrations
+
+**Version 0.7.0.1**
 
 -  Upgraded Laravel Framework from 3.0 to 4.2.x
 -  New login page
