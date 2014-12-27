@@ -310,7 +310,7 @@ class ModpackController extends BaseController {
 		if ($logo = Input::file('logo')) {
 			if ($logo->isValid()) {
 				$success = Image::make(Input::file('logo'))
-			        ->resize(180, 110)->save($resourcePath . '/logo.png', 90);
+			        ->resize(370, 220)->save($resourcePath . '/logo.png', 100);
 
 			    /*
 			    if ($useS3) {
@@ -328,7 +328,7 @@ class ModpackController extends BaseController {
 		if ($background = Input::file('background')) {
 			if ($background->isValid()) {
 				$success = Image::make(Input::file('background'))
-			        ->resize(180, 110)->save($resourcePath . '/background.png', 90);
+			        ->resize(900, 600)->save($resourcePath . '/background.png', 100);
 
 			    /*
 			    if ($useS3) {
@@ -346,7 +346,7 @@ class ModpackController extends BaseController {
 		if ($icon = Input::file('icon')) {
 			if ($icon->isValid()) {
 				$success = Image::make(Input::file('icon'))
-			        ->resize(180, 110)->save($resourcePath . '/icon.png', 90);
+			        ->resize(50, 50)->save($resourcePath . '/icon.png', 100);
 
 				/*
 			    if ($useS3) {
@@ -372,7 +372,7 @@ class ModpackController extends BaseController {
 			$modpack->clients()->sync($clients);
 		}
 		else{
-			$modpack->clients()->sync(array(null));
+			$modpack->clients()->sync(array());
 		}
 
 		return Redirect::to('modpack/view/'.$modpack->id)->with('success','Modpack edited');

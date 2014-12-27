@@ -51,20 +51,37 @@
 			<div class="col-md-6">
 				<h3>Image Management</h3>
 				<p>Upload your modpacks resources here. These images are what will be served to the launcher. If your modpack already has images on your mirror, they will remain working until the first time you upload them here.</p>
+				<hr>
+				<div class="control-group">
+					<label class="control-label" for="icon">Modpack Icon</label>
+					<div class="controls">
+						@if ($modpack->icon)
+						<div class="modpack-icon">
+							@if (Config::get('solder.use_s3'))
+							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" class="img-thumbnail">
+							@else
+							<img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}" class="img-thumbnail">
+							@endif
+						</div>
+						@endif
+						<input type="file" name="icon" id="icon">
+						<span class="help-block">Recommended Size: 50x50</span>
+					</div>
+				</div>
 				<div class="form-group">
 					<label class="control-label" for="logo">Modpack Logo</label>
 					<div class="controls">
 						@if ($modpack->logo)
 						<div class="modpack-logo">
 							@if (Config::get('solder.use_s3'))
-							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/logo.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}">
+							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/logo.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" class="img-thumbnail">
 							@else
-							<img src="{{ URL::asset('resources/' . $modpack->slug . '/logo.png') }}">
+							<img src="{{ URL::asset('resources/' . $modpack->slug . '/logo.png') }}" class="img-thumbnail">
 							@endif
 						</div>
 						@endif
 						<input type="file" name="logo" id="logo">
-						<span class="help-block">Required Size: 180x110</span>
+						<span class="help-block">Required Size: 370x220</span>
 					</div>
 				</div>
 				<div class="form-group">
@@ -73,30 +90,14 @@
 						@if ($modpack->background)
 						<div class="modpack-background">
 							@if (Config::get('solder.use_s3'))
-							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/background.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" style="width: 300px;">
+							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/background.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" class="img-thumbnail">
 							@else
-							<img src="{{ URL::asset('resources/' . $modpack->slug . '/background.png') }}" style="width: 300px;">
+							<img src="{{ URL::asset('resources/' . $modpack->slug . '/background.png') }}" class="img-thumbnail">
 							@endif
 						</div>
 						@endif
 						<input type="file" name="background" id="background">
 						<span class="help-block">Required Size: 880x520</span>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="icon">Modpack Icon</label>
-					<div class="controls">
-						@if ($modpack->icon)
-						<div class="modpack-icon">
-							@if (Config::get('solder.use_s3'))
-							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}">
-							@else
-							<img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}">
-							@endif
-						</div>
-						@endif
-						<input type="file" name="icon" id="icon">
-						<span class="help-block">Recommended Size: 50x50</span>
 					</div>
 				</div>
 			</div>
