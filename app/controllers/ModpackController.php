@@ -263,7 +263,7 @@ class ModpackController extends BaseController {
 
 		/* Create new resources directory for modpack */
 		if (!file_exists($resourcePath)) {
-			mkdir($resourcePath, 0664, true);
+			mkdir($resourcePath, 0775, true);
 		}
 
 		/* If slug changed, move resources and delete old slug directory */
