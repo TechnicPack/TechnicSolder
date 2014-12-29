@@ -151,7 +151,7 @@ $(".mod-add").submit(function(e) {
 	});
 });
 
-mod.on('change', function() {
+function refreshModVersions() {
 	$.ajax({
 		type: "GET",
 		url: "{{ URL::to('api/mod/') }}/" + mod.getValue(),
@@ -163,7 +163,9 @@ mod.on('change', function() {
 			});
 		}
 	});
-});
+}
+
+mod.on('change', refreshModVersions);
 </script>
 <script type="text/javascript">
 $( document ).ready(function() {
@@ -175,6 +177,7 @@ $( document ).ready(function() {
 			{ "width": "30%", "targets": 1 }
 		]
     });
+    refreshModVersions();
 });
 </script>
 @endsection
