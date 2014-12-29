@@ -432,18 +432,36 @@ class ModpackController extends BaseController {
 		switch ($action)
 		{
 			case "version":
+				$version_id = Input::get('version');
+				$modversion_id = Input::get('modversion_id');
 				$affected = DB::table('build_modversion')
 							->where('build_id','=', Input::get('build_id'))
-							->where('modversion_id', '=', Input::get('modversion_id'))
-							->update(array('modversion_id' => Input::get('version')));
-				return Response::json(array('success' => 'Rows Affected: '.$affected));
+							->where('modversion_id', '=', $modversion_id)
+							->update(array('modversion_id' => $version_id));
+				$status = 'success';
+				if ($affected == 0 && ($modversion_id != $version_id)){
+					$status = 'failed';
+				} else {
+					$status = 'aborted';
+				}
+				return Response::json(array(
+							'status' => $status,
+							'reason' => 'Rows Affected: '.$affected
+							));
 				break;
 			case "delete":
 				$affected = DB::table('build_modversion')
 							->where('build_id','=', Input::get('build_id'))
 							->where('modversion_id', '=', Input::get('modversion_id'))
 							->delete();
-				return Response::json(array('success' => 'Rows Affected: '.$affected));
+				$status = 'success';
+				if ($affected == 0){
+					$status = 'failed';
+				}
+				return Response::json(array(
+							'status' => $status,
+							'reason' => 'Rows Affected: '.$affected
+							));
 				break;
 			case "add":
 				$build = Build::find(Input::get('build'));
@@ -451,11 +469,24 @@ class ModpackController extends BaseController {
 				$ver = Modversion::where('mod_id','=', $mod->id)
 									->where('version','=', Input::get('mod-version'))
 									->first();
-				$build->modversions()->attach($ver->id);
-				return Response::json(array(
-								'pretty_name' => $mod->pretty_name,
-								'version' => $ver->version,
+				$affected = DB::table('build_modversion')
+							->where('build_id','=', $build->id)
+							->where('modversion_id', '=', $ver->id)
+							->get();
+				$duplicate = !(empty($affected));
+				if($duplicate){
+					return Response::json(array(
+								'status' => 'failed',
+								'reason' => 'Duplicate Modversion found'
 								));
+				} else {
+					$build->modversions()->attach($ver->id);
+					return Response::json(array(
+								'status' => 'success',
+								'pretty_name' => $mod->pretty_name,
+								'version' => $ver->version
+								));
+				}
 				break;
 			case "recommended":
 				$modpack = Modpack::find(Input::get('modpack'));

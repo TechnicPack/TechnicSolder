@@ -7,6 +7,9 @@
 <div class="page-header">
 <h1>Build Management</h1>
 </div>
+<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
+<div class="alert alert-warning" id="warning-ajax" style="width: 100%;display: none"></div>
+<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<div class="pull-right">
@@ -16,8 +19,6 @@
 	Build Management: {{ $build->modpack->name }} - Build {{ $build->version }}
 	</div>
 	<div class="panel-body">
-		<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none">
-		</div>
 		<div class="table-responsive">
 		<table class="table">
 			<thead>
@@ -32,14 +33,14 @@
 			<tr id="mod-list-add">
 				<td>
 					<i class="icon-plus"></i>
-					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod">
+					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
 						@foreach (Mod::all() as $mod)
 						<option value="{{ $mod->name }}">{{ $mod->pretty_name }}</option>
 						@endforeach
 					</select>
 				</td>
 				<td>
-					<select class="form-control" name="mod-version" id="mod-version" placeholder="Select a Modversion">
+					<select class="form-control" name="mod-version" id="mod-version" placeholder="Select a Modversion...">
 					</select>
 				</td>
 				<td>
@@ -49,6 +50,7 @@
 			</form>
 			</tbody>
 		</table>
+		<hr>
 		<table class="table" id="mod-list">
 			<thead>
 				<th id="mod-header" style="width: 60%">Mod Name</th>
@@ -94,7 +96,6 @@
 @endsection
 @section('bottom')
 <script type="text/javascript">
-
 var $select = $("#mod").selectize({
 			persist: false,
 			maxItems: 1,
@@ -121,7 +122,15 @@ $(".mod-version").submit(function(e) {
 		url: "{{ URL::to('modpack/modify/version') }}",
 		data: $(this).serialize(),
 		success: function (data) {
-			$("#success-ajax").stop(true, true).html("Version Updated").fadeIn().delay(2000).fadeOut();
+			console.log(data.reason);
+			if(data.status == 'success'){
+				$("#success-ajax").stop(true, true).html("Modversion Updated").fadeIn().delay(2000).fadeOut();
+			} else if(data.status == 'failed') {
+				$("#warning-ajax").stop(true, true).html("Unable to update modversion").fadeIn().delay(2000).fadeOut();
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 		}
 	});
 });
@@ -133,7 +142,15 @@ $(".mod-delete").submit(function(e) {
 		url: "{{ URL::to('modpack/modify/delete') }}",
 		data: $(this).serialize(),
 		success: function (data) {
-			//
+			console.log(data.reason);
+			if(data.status == 'success'){
+				$("#success-ajax").stop(true, true).html("Modversion Deleted").fadeIn().delay(2000).fadeOut();
+			} else {
+				$("#warning-ajax").stop(true, true).html("Unable to delete modversion").fadeIn().delay(2000).fadeOut();
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 		}
 	});
 	$(this).parent().parent().fadeOut();
@@ -141,33 +158,55 @@ $(".mod-delete").submit(function(e) {
 
 $(".mod-add").submit(function(e) {
 	e.preventDefault();
-	$.ajax({
-		type: "POST",
-		url: "{{ URL::to('modpack/modify/add') }}",
-		data: $(this).serialize(),
-		success: function (data) {
-			$("#mod-list-add").before('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td></td></tr>');
-		}
-	});
+	if($("#mod-version").val()){
+		$.ajax({
+			type: "POST",
+			url: "{{ URL::to('modpack/modify/add') }}",
+			data: $(this).serialize(),
+			success: function (data) {
+				if(data.status == 'success'){
+					$("#mod-list-add").after('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td></td></tr>');
+					$("#success-ajax").stop(true, true).html("Mod " + data.pretty_name + " added at " + data.version).fadeIn().delay(2000).fadeOut();
+				} else {
+					$("#warning-ajax").stop(true, true).html("Unable to add mod. Reason: " + data.reason).fadeIn().delay(2000).fadeOut();
+				}
+			},
+			error: function (xhr, textStatus, errorThrown) {
+				$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+			}
+		});
+	} else {
+		$("#warning-ajax").stop(true, true).html("Please select a Modversion").fadeIn().delay(2000).fadeOut();
+	}
 });
 
 function refreshModVersions() {
+	modversion.disable();
+	modversion.clearOptions();
 	$.ajax({
 		type: "GET",
 		url: "{{ URL::to('api/mod/') }}/" + mod.getValue(),
 		success: function (data) {
-			modversion.clear();
-			$(data.versions).each(function(e, m) {
-				modversion.addOption({value: m, text: m});
-				modversion.refreshOptions(false);
-			});
+			if (data.versions.length === 0){
+				$("#warning-ajax").stop(true, true).html("No Modversions found for " + data.pretty_name).fadeIn().delay(2000).fadeOut();
+				$("#mod-version").attr("placeholder", "No Modversions found...");
+			} else {
+				$(data.versions).each(function(e, m) {
+					modversion.addOption({value: m, text: m});
+					modversion.refreshOptions(false);
+					$("#mod-version").attr("placeholder", "Select a Modversion...");
+				});
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 		}
 	});
+	modversion.enable();
 }
 
 mod.on('change', refreshModVersions);
-</script>
-<script type="text/javascript">
+
 $( document ).ready(function() {
 	$("#mod-list").dataTable({
     	"order": [[ 0, "asc" ]],
