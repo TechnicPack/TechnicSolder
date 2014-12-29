@@ -18,11 +18,10 @@
                "role": "Developer"
                	}],
 	"require": {
-		"php": ">=5.5.0",
 		"laravel/framework": "4.2.*",
 		"patricktalmadge/bootstrapper": "5.4.*",
 		"intervention/image": "2.0.*",
-        "doctrine/dbal": "~2.5",
+        "doctrine/dbal": "2.5.*",
         "composer/composer": "1.0.0-alpha9",
         "knplabs/github-api": "1.4.*"
 	},
@@ -46,6 +45,7 @@
 		"post-install-cmd": [
 			"php -r \"shell_exec((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'mkdir app\\config && copy app\\config-sample app\\config' : 'cp -r app/config-sample app/config');\"",
 			"php -r \"copy('app/database-sample/production.sqlite', 'app/database/production.sqlite');\"",
+			"php -r \"chmod('app/storage', 775);\""
 			"php artisan clear-compiled",
 			"php artisan optimize"
 		],
