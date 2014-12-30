@@ -166,7 +166,7 @@ $(".mod-add").submit(function(e) {
 			success: function (data) {
 				if(data.status == 'success'){
 					$("#mod-list-add").after('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td></td></tr>');
-					$("#success-ajax").stop(true, true).html("Mod " + data.pretty_name + " added at " + data.version).fadeIn().delay(2000).fadeOut();
+					//$("#success-ajax").stop(true, true).html("Mod " + data.pretty_name + " added at " + data.version).fadeIn().delay(2000).fadeOut();
 				} else {
 					$("#warning-ajax").stop(true, true).html("Unable to add mod. Reason: " + data.reason).fadeIn().delay(2000).fadeOut();
 				}
