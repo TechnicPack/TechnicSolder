@@ -128,7 +128,7 @@ class ModController extends BaseController {
 
 		foreach ($mod->versions as $ver)
 		{
-			$ver->builds()->delete();
+			$ver->builds()->sync(array());
 			$ver->delete();
 		}
 		$mod->delete();

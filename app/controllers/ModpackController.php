@@ -406,11 +406,11 @@ class ModpackController extends BaseController {
 
 		foreach ($modpack->builds as $build)
 		{
-			$build->modversions()->delete();
+			$build->modversions()->sync(array());
 			$build->delete();
 		}
 
-		$modpack->clients()->delete();
+		$modpack->clients()->sync(array());
 		$modpack->delete();
 		Cache::forget('modpacks');
 

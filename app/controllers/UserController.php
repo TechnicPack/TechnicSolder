@@ -192,7 +192,7 @@ class UserController extends BaseController {
     	$user = User::find($user_id);
     	if (empty($user))
     		return Redirect::to('dashboard');
-    	$user->permission()->delete();
+    	$user->permission()->sync(array());
     	$user->delete();
     	return Redirect::to('user/list');
     }

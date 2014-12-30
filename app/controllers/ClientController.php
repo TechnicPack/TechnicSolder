@@ -59,7 +59,7 @@ class ClientController extends BaseController {
 		if (empty($client))
 			return Redirect::back();
 
-		$client->modpacks()->delete();
+		$client->modpacks()->sync(array());
 		$client->delete();
 
 		Cache::forget('clients');
