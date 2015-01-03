@@ -21,6 +21,25 @@ class SolderController extends BaseController {
 		return View::make('solder.configure');
 	}
 
+	public function getUpdate()
+	{
+		$client = new \Github\Client();
+		$changelog = array_slice($client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => 'master')), 0, 10);
+
+		$version = UpdateUtils::getCurrentVersion();
+		$commit = UpdateUtils::getCurrentCommit();
+
+		$latestVersion = UpdateUtils::getLatestVersion()['name'];
+
+		$currentData = array('version' => $version,
+							 'commit' => $commit);
+
+		$latestData = array('version' => $latestVersion,
+							'commit' => $changelog[0]);
+
+		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
+	}
+
 	public function getCacheMinecraft() {
 		if (Request::ajax())
 		{
@@ -50,5 +69,4 @@ class SolderController extends BaseController {
 
 		return App::abort(404);
 	}
-
 }

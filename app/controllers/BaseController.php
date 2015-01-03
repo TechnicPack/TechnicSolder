@@ -5,7 +5,8 @@ class BaseController extends Controller {
 	public function __construct()
 	{
 		define('SOLDER_STREAM', 'DEV');
-		define('SOLDER_VERSION', '0.7');
+		define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+
 	}
 
 	public function showLogin()
@@ -25,8 +26,15 @@ class BaseController extends Controller {
 			);
 
 		if ( Auth::attempt($credentials, $remember)) {
+		
 			Auth::user()->last_ip = Request::ip();
 			Auth::user()->save();
+
+			//Check for update on login
+			if(UpdateUtils::getUpdateCheck()){
+				Session::put('update', true);
+			}
+
 			return Redirect::to('dashboard/');
 		} else {
 			return Redirect::to('login')->with('login_failed',"Invalid Username/Password");

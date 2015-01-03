@@ -13,7 +13,9 @@ class DashboardController extends BaseController {
 
 		$modversions = Modversion::whereNotNull('md5')->orderBy('updated_at', 'desc')->take(5)->get();
 
-		return View::make('dashboard.index')->with('modversions', $modversions)->with('builds', $builds);
+		$changelog = UpdateUtils::getChangeLog();
+
+		return View::make('dashboard.index')->with('modversions', $modversions)->with('builds', $builds)->with('changelog', $changelog);
 	}
 	
 }

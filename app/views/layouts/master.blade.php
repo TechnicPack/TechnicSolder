@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>TechnicSolder v{{ SOLDER_VERSION }}</title>
+    <title>TechnicSolder {{ SOLDER_VERSION }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{ HTML::script('js/jquery-1.11.1.min.js') }}
     {{ HTML::script('js/bootstrap.min.js') }}
@@ -27,11 +27,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ URL::to('dashboard') }}">TechnicSolder v{{ SOLDER_VERSION }}</a>
+            <a class="navbar-brand" href="{{ URL::to('dashboard') }}">TechnicSolder {{ SOLDER_VERSION }}</a>
         </div>
-        <!-- /.navbar-header -->
-
         <ul class="nav navbar-top-links navbar-right">
+            @if (Session::has('update'))
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                   Update Available! <i class="fa fa-exclamation-triangle"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="{{ URL::to('solder/update') }}"><i class="fa fa-upload fa-fw"></i> Update Checker</a>
+                    </li>
+                </ul>
+            </li>
+            @endif
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                   {{ Auth::user()->username }} <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
@@ -91,6 +100,9 @@
                   <ul class="nav nav-second-level">
                       <li>
                           <a href="{{ URL::to('solder/configure') }}">Main Settings</a>
+                      </li>
+                      <li>
+                          <a href="{{ URL::to('solder/update') }}">Update Checker</a>
                       </li>
                       <li>
                           <a href="{{ URL::to('user/list') }}">User Management</a>

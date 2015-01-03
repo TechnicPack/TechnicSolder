@@ -32,42 +32,8 @@ If there is any missing info, please post an issue on our [issue tracker](https:
 Changes
 ---------------
 
-**Version 0.7.0.3**
-- Added: Custom MD5 hashing timeouts. (see app/config-sample/solder.php)
-- Added: New Minecraft Versions Caching
-- Fixed: Adding New Builds
-- Fixed: Image uploading, resizing, and preview
-- Fixed: Recent Builds Manage button link
-- Removed: Automatic DB migrations
+Changes are now displayed within the application itself.
 
-**Version 0.7.0.1**
-
--  Upgraded Laravel Framework from 3.0 to 4.2.x
--  New login page
--  Updated User Permission System
-  -  Added Manage API/Clients
-  -  Added Global Modpack permissions (These are required before assigning specific modpack access)
-    -  Create
-    -  Manage
-    -  Delete
--  Mod Library sort by name on default
--  Improved Mod Version error messages
-  -  MD5 Hashing failure/success
-  -  Adding new version failure/success
-  -  Deleting a version failure/success
--  New Modpack Management page
--  Optimize Build Management
-  -  Sort/Search mods when adding
-  -  Builds views now sort by mod name by default
-  -  Added ability to search for mods within builds
-  -  Builds views are now paginated
--  More frequent updates!
-
-**Version 0.6**
-
--  Switched to Bootstrap 3 and revamped entire Solder interface
--  API Keys are now managed by the database. Your old key will be imported during migration
--  **0.6 requires a migration!**
 
 Troubleshooting
 ---------------
