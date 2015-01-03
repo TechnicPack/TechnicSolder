@@ -26,7 +26,7 @@
                     <label for="api_key">API Key</label>
                     <input type="text" class="form-control" name="api_key" id="api_key">
                 </div>
-				{{ Form::submit('Add Client', array('class' => 'btn btn-success')) }}
+				{{ Form::submit('Add Key', array('class' => 'btn btn-success')) }}
 				{{ HTML::link('key/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 				{{ Form::close() }}
 			</div>
