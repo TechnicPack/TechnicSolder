@@ -29,18 +29,17 @@
             </button>
             <a class="navbar-brand" href="{{ URL::to('dashboard') }}">TechnicSolder {{ SOLDER_VERSION }}</a>
         </div>
+        <ul class="nav navbar-top-links navbar-left">
+          @if (Session::has('update'))
+          <li>
+              <a href="{{ URL::to('solder/update') }}" style="color:orangered;">
+                 Update Available! <i class="fa fa-exclamation-triangle"></i>
+              </a>
+          </li>
+          @endif
+        </ul>
         <ul class="nav navbar-top-links navbar-right">
-            @if (Session::has('update'))
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                   Update Available! <i class="fa fa-exclamation-triangle"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="{{ URL::to('solder/update') }}"><i class="fa fa-upload fa-fw"></i> Update Checker</a>
-                    </li>
-                </ul>
-            </li>
-            @endif
+            <li><a href="https://github.com/TechnicPack/TechnicSolder/wiki" target="blank_">Help <i class="fa fa-question"></i></a></li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                   {{ Auth::user()->username }} <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>

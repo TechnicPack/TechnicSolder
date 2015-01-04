@@ -39,6 +39,28 @@ class SolderController extends BaseController {
 		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
 	}
 
+	public function getUpdateCheck()
+	{
+		if (Request::ajax())
+		{
+			if(UpdateUtils::getUpdateCheck(true)){
+				Session::put('update', true);
+				return Response::json(array(
+									'status' => 'success',
+									'update' => true
+									));
+			} else {
+				Session::forget('update');
+				return Response::json(array(
+									'status' => 'success',
+									'update' => false
+									));
+			}
+		}
+
+		return App::abort(404);
+	}
+
 	public function getCacheMinecraft() {
 		if (Request::ajax())
 		{

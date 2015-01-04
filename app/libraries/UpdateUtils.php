@@ -14,15 +14,18 @@ class UpdateUtils {
 
 	}
 
-	public static function getUpdateCheck() {
+	public static function getUpdateCheck($manual = false) {
 
-		Cache::forget('availableversions');
-		Cache::forget('latestlog');
+		if($manual) {
+			Cache::forget('availableversions');
+			Cache::forget('latestlog');
+		}
+
 		if (version_compare(self::getLatestVersion()['name'], self::getCurrentVersion(), '>')){
 			return true;
-		} else {
-			return false;
 		}
+		
+		return false;
 		
 	}
 
@@ -74,7 +77,7 @@ class UpdateUtils {
 	}
 
 	public static function getChangeLog($type = 'local') {
-		if($type = 'local'){
+		if($type == 'local'){
 			return self::getLocalChangeLog();
 		} else {
 			return self::getLatestChangeLog();
