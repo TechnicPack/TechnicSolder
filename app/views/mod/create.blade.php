@@ -41,6 +41,7 @@
                 <div class="form-group">
                     <label for="donatelink">Author Donation Link</label>
                     <input type="text" class="form-control" name="donatelink" id="donatelink">
+                    <span class="help-block">This is only in use by the official Technic Solder</span>
                 </div>
 			</div>
 			<div class="col-md-6">
