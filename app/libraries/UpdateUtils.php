@@ -17,6 +17,7 @@ class UpdateUtils {
 	public static function getUpdateCheck() {
 
 		Cache::forget('availableversions');
+		Cache::forget('latestlog');
 		if (version_compare(self::getLatestVersion()['name'], self::getCurrentVersion(), '>')){
 			return true;
 		} else {
@@ -61,18 +62,40 @@ class UpdateUtils {
 		$client = new \Github\Client();
 
 		$commitHash = substr($commit, 0, 7);
-		if (Cache::has($commit.'.json')) {
-			return Cache::get($commit.'.json');
+		if (Cache::has($commitHash.'.json')) {
+			return Cache::get($commitHash.'.json');
 		} else {
 			$commitJson = $client->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
 
-			Cache::put($commit.'.json', $commitJson, 360); //6 hours
+			Cache::put($commitHash.'.json', $commitJson, 360); //6 hours
 			return $commitJson;
 		}
 
 	}
 
-	public static function getChangeLog() {
+	public static function getChangeLog($type = 'local') {
+		if($type = 'local'){
+			return self::getLocalChangeLog();
+		} else {
+			return self::getLatestChangeLog();
+		}
+
+	}
+
+	private static function getLatestChangeLog() {
+
+		$client = new \Github\Client();
+		if (Cache::has('latestlog')) {
+			return Cache::get('latestlog');
+		} else {
+			$changelogJson = $client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => 'master'));
+
+			Cache::put('latestlog', $changelogJson, 15); //15 minutes
+			return $changelogJson;
+		}
+	}
+
+	public static function getLocalChangeLog() {
 
 		/* This is debatable. A better way might be to explode the current version and manually downgrade to get the changelog */
 
@@ -88,16 +111,16 @@ class UpdateUtils {
 			}
 		}
 
-		$rawInput = shell_exec('git log --pretty=format:%H~%h~%s~%ar ' . $allVersions[$versionIndex + 1]['name'] . '..' . $currentVersion);
+		$rawInput = shell_exec('git log --pretty=format:%H~%h~%ar~%s ' . $allVersions[$versionIndex + 1]['name'] . '..' . $currentVersion);
 		$cleanedInput = explode("\n", $rawInput);
 
 		$changelog = array();
 		foreach($cleanedInput as $commit){
-			$rawCommitData = explode("~", $commit);
+			$rawCommitData = explode("~", $commit, 4);
 			$commitData = array('hash' => $rawCommitData[0],
 								'abr_hash' => $rawCommitData[1],
-								'message' => $rawCommitData[2],
-								'time_elapsed' => $rawCommitData[3]);
+								'message' => $rawCommitData[3],
+								'time_elapsed' => $rawCommitData[2]);
 			array_push($changelog, $commitData);
 		}
 

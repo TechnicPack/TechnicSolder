@@ -23,11 +23,10 @@ class SolderController extends BaseController {
 
 	public function getUpdate()
 	{
-		$client = new \Github\Client();
-		$changelog = array_slice($client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => 'master')), 0, 10);
 
 		$version = UpdateUtils::getCurrentVersion();
 		$commit = UpdateUtils::getCurrentCommit();
+		$changelog = array_slice(UpdateUtils::getChangelog('latest'), 0, 10);
 
 		$latestVersion = UpdateUtils::getLatestVersion()['name'];
 
