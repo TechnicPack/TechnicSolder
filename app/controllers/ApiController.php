@@ -296,7 +296,7 @@ class APIController extends BaseController {
 			$modversions->each(function($modversion){
 				$modversion->name = $modversion->mod['name'];
 			});
-			$build->modversions = $modverions->sortBy('name');
+			$build->modversions = $modversions->sortBy('name');
 			if (empty($this->client))
 				Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
 		}
