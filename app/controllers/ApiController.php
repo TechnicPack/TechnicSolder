@@ -292,6 +292,11 @@ class APIController extends BaseController {
 			$build = Build::with('Modversions')
 						->where("modpack_id", "=", $modpack->id)
 						->where("version", "=", $build)->first();
+			$modverions = $build->modversions;
+			$modverions->each(function($modversion){
+				$modversion->name = $modversion->mod['name'];
+			});
+			$build->modversions = $modverions->sortBy('name');
 			if (empty($this->client))
 				Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
 		}
