@@ -35,7 +35,7 @@ class BaseController extends Controller {
 				Session::put('update', true);
 			}
 
-			return Redirect::to('dashboard/');
+			return Redirect::intended('dashboard/');
 		} else {
 			return Redirect::to('login')->with('login_failed',"Invalid Username/Password");
 		}
