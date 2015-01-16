@@ -5,7 +5,11 @@ class BaseController extends Controller {
 	public function __construct()
 	{
 		define('SOLDER_STREAM', 'DEV');
-		define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+		if(UpdateUtils::getCheckerEnabled()){
+			define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+		} else {
+			define('SOLDER_VERSION', '0.7.0.8');
+		}
 
 	}
 
@@ -30,9 +34,19 @@ class BaseController extends Controller {
 			Auth::user()->last_ip = Request::ip();
 			Auth::user()->save();
 
-			//Check for update on login
-			if(UpdateUtils::getUpdateCheck()){
-				Session::put('update', true);
+			try {
+				//Check for update on login
+				if(UpdateUtils::getCheckerEnabled()){
+					Session::put('checker', true);
+					if(UpdateUtils::getUpdateCheck(true)){
+						Session::put('update', true);
+					}
+				} else {
+					Session::put('checker', false);
+				}
+			} catch (Exception $e){
+				Log::error($exception);
+				return Redirect::to('dashboard/');
 			}
 
 			return Redirect::to('dashboard/');

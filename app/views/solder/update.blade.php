@@ -12,12 +12,20 @@
 		    Solder Versioning
 		    </div>
 		    <div class="panel-body">
+                @if (!Session::get('checker'))
+                <div class="alert alert-danger">Update Checker is disabled. Latest info from Github is displayed instead.</div>
+                @endif
 		        <label>Current Version: <span class="label label-default">{{ $currentData['version'] }}</span></label><br>
+                @if (Session::get('checker'))
 		        <label>Current Commit: <span class="label label-default">{{ $currentData['commit'] }}</span></label><br>
-		        <label>Latest Version: <span class="label label-default">{{ $currentData['version'] }}</span></label><br>
-		        <label>Latest Commit: <span class="label label-default">{{ $currentData['commit'] }}</span></label>
+                @endif
+		        <label>Latest Version: <span class="label label-default">{{ $latestData['version'] }}</span></label><br>
+		        <label>Latest Commit: <span class="label label-default">{{ $latestData['commit']['sha'] }}</span></label><br>
+                <label>Shell Access: {{ $currentData['shell_exec'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
+                <label>Git Installed: {{ $currentData['git'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
 			</div>
 		</div>
+        @if (Session::get('checker'))
         <div class="panel panel-default">
             <div class="panel-heading">
             Update Check
@@ -33,6 +41,7 @@
                 <span id="solder-checking" style="margin-left:10px;" class="hidden"><i class="fa fa-cog fa-spin"></i> Checking...</span>
             </div>
         </div>
+        @endif
 	</div>
 	<div class="col-lg-6">
         <div class="panel panel-default">

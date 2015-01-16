@@ -1,11 +1,13 @@
 <?php
 
 class UpdateUtils {
+
+	public static function getCheckerEnabled() {
+		return self::isGitInstalled();
+	}
 	
 	public static function getCurrentVersion() {
-
 		return str_replace(array("\r", "\n"), "", shell_exec('git describe --abbrev=0 --tags'));
-			
 	}
 
 	public static function getCurrentCommit() {
@@ -16,13 +18,19 @@ class UpdateUtils {
 
 	public static function getUpdateCheck($manual = false) {
 
-		if($manual) {
+		if ($manual) {
 			Cache::forget('availableversions');
 			Cache::forget('latestlog');
 		}
 
-		if (version_compare(self::getLatestVersion()['name'], self::getCurrentVersion(), '>')){
-			return true;
+		if (self::isExecEnabled()) {
+			if (version_compare(self::getLatestVersion()['name'], self::getCurrentVersion(), '>')){
+				return true;
+			}
+		} else {
+			if (version_compare(self::getLatestVersion()['name'], SOLDER_VERSION, '>')){
+				return true;
+			}
 		}
 		
 		return false;
@@ -30,7 +38,7 @@ class UpdateUtils {
 	}
 
 	public static function getUpdateDetails() {
-		if(self::getUpdateCheck()){
+		if (self::getUpdateCheck()){
 			return self::getRawRepoStatus();
 		}
 
@@ -58,8 +66,12 @@ class UpdateUtils {
 	}
 
 	public static function getCommitInfo($commit = null) {
-		if(is_null($commit)){
-			$commit = self::getCurrentCommit();
+		if (is_null($commit)){
+			if (self::isExecEnabled()) {
+				$commit = self::getCurrentCommit();
+			} else {
+				$commit = self::getLatestVersion()['commit']['sha'];
+			}		
 		}
 
 		$client = new \Github\Client();
@@ -77,7 +89,7 @@ class UpdateUtils {
 	}
 
 	public static function getChangeLog($type = 'local') {
-		if($type == 'local'){
+		if ($type == 'local' && self::isGitInstalled()){
 			return self::getLocalChangeLog();
 		} else {
 			return self::getLatestChangeLog();
@@ -108,7 +120,7 @@ class UpdateUtils {
 		//Calculates the place of the version 
 		$versionIndex = 0;
 		for ($i = 0; $i < sizeof($allVersions); $i++){
-			if($allVersions[$i]['name'] == $currentVersion){
+			if ($allVersions[$i]['name'] == $currentVersion){
 				$versionIndex = $i;
 				break;
 			}
@@ -131,10 +143,24 @@ class UpdateUtils {
 
 	}
 
-	private static function getRawRepoStatus(){
+	public static function isExecEnabled() {
+  		$disabled = explode(',', ini_get('disable_functions'));
+  		return !in_array('exec', $disabled);
+	}
 
-		return `git status -sb --porcelain`;
-		
+	public static function isGitInstalled() {
+		if (self::isExecEnabled()) {
+			$raw = `git --version`;
+			$check = explode(' ', $raw);
+			if($check[0] == 'git'){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static function getRawRepoStatus() {
+		return `git status -sb --porcelain`;	
 	}
 
 }

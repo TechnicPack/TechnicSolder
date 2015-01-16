@@ -23,19 +23,29 @@ class SolderController extends BaseController {
 
 	public function getUpdate()
 	{
-
-		$version = UpdateUtils::getCurrentVersion();
-		$commit = UpdateUtils::getCurrentCommit();
 		$changelog = array_slice(UpdateUtils::getChangelog('latest'), 0, 10);
 
 		$latestVersion = UpdateUtils::getLatestVersion()['name'];
 
-		$currentData = array('version' => $version,
-							 'commit' => $commit);
-
 		$latestData = array('version' => $latestVersion,
 							'commit' => $changelog[0]);
 
+		if (Session::get('checker')) {
+			$version = UpdateUtils::getCurrentVersion();
+			$commit = UpdateUtils::getCurrentCommit();
+
+			$currentData = array('version' => $version,
+							 'commit' => $commit,
+							 'shell_exec' => UpdateUtils::isExecEnabled(),
+							 'git' => UpdateUtils::isGitInstalled());
+
+			return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
+		}
+
+		$currentData = array('version' => SOLDER_VERSION,
+							 'shell_exec' => UpdateUtils::isExecEnabled(),
+							 'git' => UpdateUtils::isGitInstalled());
+		
 		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
 	}
 
