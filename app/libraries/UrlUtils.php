@@ -12,14 +12,28 @@ class UrlUtils {
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36');
+		curl_setopt($ch, CURLOPT_USERAGENT, 'TechnicSolder/0.7 (https://github.com/TechnicPack/TechnicSolder)');
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 
 		$data = curl_exec($ch);
+		
+		if(!curl_errno($ch)){
+			//check HTTP return code
+			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+			if ($retcode == 200 || $retcode == 405)
+				return $data;
+			else {
+				return false;
+			}
+		}
+
+		//log the string return of the errors
+		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
 		curl_close($ch);
-		return $data;
+		return false;
 	}
 
 	/**
@@ -39,7 +53,9 @@ class UrlUtils {
 
 		if(self::checkRemoteFile($url, $timeout)){
 			$content = self::get_url_contents($url, $timeout);
-			return md5($content);
+			if($content){
+				return md5($content);
+			}
 		}
 		return "";
 	}
@@ -51,9 +67,9 @@ class UrlUtils {
 		curl_setopt($ch, CURLOPT_NOBODY, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
-		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36');
-		curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'TechnicSolder/0.7 (https://github.com/TechnicPack/TechnicSolder)');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 		curl_exec($ch);
@@ -65,6 +81,39 @@ class UrlUtils {
 			curl_close($ch);
 			if ($retcode == 200 || $retcode == 405)
 				return true;
+			else {
+				return false;
+			}
+		}
+
+		//log the string return of the errors
+		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
+		curl_close($ch);
+		return false;
+	}
+
+	public static function getHeaders($url, $timeout){
+		$ch = curl_init($url);
+
+		curl_setopt($ch, CURLOPT_NOBODY, true);
+		curl_setopt($ch, CURLOPT_HEADER, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'TechnicSolder/0.7 (www.techincpack.net)');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+
+		$data = curl_exec($ch);
+		
+		if(!curl_errno($ch)){
+			//check HTTP return code
+			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+			if ($retcode == 200 || $retcode == 405)
+				return $data;
 			else {
 				return false;
 			}

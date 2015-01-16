@@ -2,65 +2,85 @@
 
 class MinecraftUtils {
 
-	public static function getMinecraft() {
+	public static function getMinecraft($manual = false) {
 		$response = '';
+
+		if ($manual) {
+			Cache::forget('minecraftversions');
+		}
 
 		if (Cache::has('minecraftversions')) {
 			$response = Cache::get('minecraftversions');
 		} else {
-			$response = self::getMinecraftVersions();
+			$response = self::getVersions();
 		}
 
 		return $response;
 	}
 
-	public static function getMinecraftVersions() {
+	public static function getVersions() {
 		$response = '';
-		Cache::forget('minecraftversions');
+		$success = UrlUtils::checkRemoteFile('http://www.technicpack.net/api/minecraft', 15);
 
-		if (UrlUtils::checkRemoteFile('http://www.technicpack.net/api/minecraft', 15)){
+		if ($success){
 			$response = UrlUtils::get_url_contents('http://www.technicpack.net/api/minecraft', 15);
-			$response = json_decode($response, true);
-			krsort($response);
-			Cache::put('minecraftversions', $response, 60);
+			if(!empty($response)) {
+				$response = json_decode($response, true);
+				krsort($response);
+				Cache::put('minecraftversions', $versions, 180);
+				return $response;
+			} else {
+				$success = false;
+			}
 		} else {
-			$response = self::getMojangVersions();
-			Cache::put('minecraftversions', $response, 60);
+			$success = UrlUtils::checkRemoteFile('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15);
+			if ($success){
+				$response = UrlUtils::get_url_contents('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15);
+				if(!empty($response)) {
+					$mojangResponse = json_decode($response, true);
+					
+					$versions = array();
+
+					foreach ($mojangVersions['versions'] as $versionEntry) {
+						if ($versionEntry['type'] != 'release') {
+							continue;
+						}
+						$mcVersion = $versionEntry['id'];
+						$md5 = self::getMinecraftMD5($mcVersion);
+
+						$versions[$mcVersion] = array('version' => $mcVersion, 'md5' => $md5);
+					}
+
+					krsort($versions);
+					Cache::put('minecraftversions', $versions, 180);
+					return $versions;
+				} else {
+					$success = false;
+				}
+			}
 		}
 
 		return $response;
 	}
 
-	public static function getMojangVersions() {
-		define('MINECRAFT_API', 'https://s3.amazonaws.com/Minecraft.Download/versions/versions.json');
-
-		$rawContent = file_get_contents(MINECRAFT_API);
-		$mojangVersions = json_decode($rawContent, true);
-
-		$versions = array();
-
-		foreach ($mojangVersions['versions'] as $versionEntry) {
-			if ($versionEntry['type'] != 'release') {
-				continue;
-			}
-			$mcVersion = $versionEntry['id'];
-			$md5 = self::getMinecraftMD5($mcVersion);
-
-			$versions[$mcVersion] = array('version' => $mcVersion, 'md5' => $md5);
-		}
-
-		krsort($versions);
-
-		return $versions;
-	}
-
-	public static function getMinecraftMD5($MCVersion) {
+	private static function getMinecraftMD5($MCVersion) {
 
 		$url = 'https://s3.amazonaws.com/Minecraft.Download/versions/'.$MCVersion.'/'.$MCVersion.'.jar';
 
-		stream_context_set_default(array('http' => array('method' => 'HEAD')));
-		$md5 = get_headers($url, 1)['ETag'];
+		$response = UrlUtils::getHeaders($url, 15);
+		if(!empty($response))
+			$response = str_replace('"', '', $response);
+			$data = explode("\n", $response, 11);
+			$headers = array();
+			array_shift($data);
 
-		return str_replace('"', "", $md5);
+			foreach($data as $part) {
+				$middle = explode(": ", $part, 2);
+				$headers[trim($middle[0])] = trim($middle[1]);
+			}
+
+			return $headers['ETag'];
+		}
+		return '';
 	}
 }
