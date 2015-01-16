@@ -211,7 +211,9 @@ class ModpackController extends BaseController {
 			array_push($clients, $client->id);
 		}
 
-		return View::make('modpack.edit')->with(array('modpack' => $modpack, 'clients' => $clients));
+		$resourcesWritable = is_writable(public_path() . '/resources/' . $modpack->slug);
+
+		return View::make('modpack.edit')->with(array('modpack' => $modpack, 'clients' => $clients, 'resourcesWritable' => $resourcesWritable));
 	}
 
 	public function postEdit($modpack_id)

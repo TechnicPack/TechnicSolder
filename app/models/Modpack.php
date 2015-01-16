@@ -12,6 +12,18 @@ class Modpack extends Eloquent {
 	{
 		return $this->belongsToMany('Client');
 	}
+
+	public function private_builds()
+	{
+		$private = false;
+		foreach($this->builds as $build){
+			if($build->private){
+				$private = true;
+				break;
+			}
+		}
+		return $private;
+	}
 }
 
 ?>

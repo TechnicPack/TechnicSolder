@@ -45,19 +45,26 @@
 						<span class="help-block">Private modpacks will only be available to clients that are linked to this modpack. You can link clients below. You can also individually mark builds as private.</span>
 					</div>
 				</div>
-				@if ($modpack->private)
+				@if ($modpack->private || $modpack->private_builds())
 				<hr>
 				<h3>Client Access</h3>
 				<p>Check the clients below you want to have access to this modpack if anything is set to private.</p>
+				@if (Client::all()->isEmpty())
+				<div class="alert alert-warning">No Clients to add</div>
+				@else
 				@foreach (Client::all() as $client)
 				<div style="display: inline-block; padding-right: 10px;"><input type="checkbox" name="clients[]" value="{{ $client->id }}"{{ (in_array($client->id, $clients) ? ' checked' : '') }}> {{ $client->name }}</div>
 				@endforeach
+				@endif
 				@endif
 			</div>
 			<div class="col-md-6">
 				<h3>Image Management</h3>
 				<p>Upload your modpacks resources here. These images are what will be served to the launcher. If your modpack already has images on your mirror, they will remain working until the first time you upload them here.</p>
 				<hr>
+				@if(!$resourcesWritable)
+				<div class="alert alert-warning">Unable to write to <code>'public/resources/{{$modpack->slug}}'</code>. Please check your file/folder permissions.</div>
+				@endif
 				<div class="control-group">
 					<label class="control-label" for="icon">Modpack Icon</label>
 					<div class="controls">
@@ -108,9 +115,14 @@
 				</div>
 			</div>
 		</div>
-		{{ Form::submit('Save Modpack', array('class' => 'btn btn-success')) }}
-		{{ HTML::link('modpack/delete/' . $modpack->id, 'Delete Modpack', array('class' => 'btn btn-danger')) }}
-		{{ HTML::link('modpack/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
+		<div class="row">
+			<div class="col-md-12">
+				<hr>
+				{{ Form::submit('Save Modpack', array('class' => 'btn btn-success')) }}
+				{{ HTML::link('modpack/delete/' . $modpack->id, 'Delete Modpack', array('class' => 'btn btn-danger')) }}
+				{{ HTML::link(URL::previous(), 'Go Back', array('class' => 'btn btn-primary')) }}
+			</div>
+		</div>
 		{{ Form::close() }}
 	</div>
 </div>
