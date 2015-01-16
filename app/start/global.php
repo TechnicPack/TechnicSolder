@@ -51,10 +51,9 @@ Log::useFiles(storage_path().'/logs/'. $logFile);
 
 App::error(function(Exception $exception, $code)
 {
-	if(Config::get('app.debug')){
-		Log::error($exception);
-	} else {
-		Log::error($exception);
+	Log::error($exception);
+
+	if (!Config::get('app.debug')) {
 		return Response::view('errors.'.$code, array('exception' => $exception), $code);
 	}
 });
