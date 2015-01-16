@@ -304,7 +304,7 @@ class APIController extends BaseController {
 		$response['forge'] = $build->forge;
 		$response['mods'] = array();
 
-		foreach ($build->modversions as $modversion)
+		foreach ($build->modversions->sortBy('name') as $modversion)
 		{
 			if (!Input::has('include'))
 			{
