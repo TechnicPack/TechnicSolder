@@ -17,7 +17,7 @@ class UpdateBuildsMd5 extends Migration {
 			$table->string('minecraft_md5')->default('');
 		});
 
-		$minecraft = MinecraftUtils::getMinecraft();
+		$minecraft = MinecraftUtils::getMinecraft(true);
 
 		foreach (Build::all() as $build)
 		{

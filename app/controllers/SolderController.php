@@ -76,7 +76,7 @@ class SolderController extends BaseController {
 		{
 			$reason = '';
 			try {
-				$reason = MinecraftUtils::getMinecraftVersions();
+				$reason = MinecraftUtils::getMinecraft(true);
 			}
 			catch (Exception $e) {
 				return Response::json(array(
