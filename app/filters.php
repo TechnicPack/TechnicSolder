@@ -13,7 +13,9 @@
 
 App::before(function($request)
 {
-	//
+	if(!Cache::has('checker')){
+		Cache::forever('checker', UpdateUtils::getCheckerEnabled());
+	}
 });
 
 

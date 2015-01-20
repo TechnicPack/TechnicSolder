@@ -37,14 +37,16 @@ class SolderController extends BaseController {
 			$currentData = array('version' => $version,
 							 'commit' => $commit,
 							 'shell_exec' => UpdateUtils::isExecEnabled(),
-							 'git' => UpdateUtils::isGitInstalled());
+							 'git' => UpdateUtils::isGitInstalled(),
+							 'gitrepo' => UpdateUtils::isGitRepo());
 
 			return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
 		}
 
 		$currentData = array('version' => SOLDER_VERSION,
 							 'shell_exec' => UpdateUtils::isExecEnabled(),
-							 'git' => UpdateUtils::isGitInstalled());
+							 'git' => UpdateUtils::isGitInstalled(),
+							 'gitrepo' => UpdateUtils::isGitRepo());
 		
 		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
 	}

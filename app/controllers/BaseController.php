@@ -8,7 +8,7 @@ class BaseController extends Controller {
 		if(UpdateUtils::getCheckerEnabled()){
 			define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
 		} else {
-			define('SOLDER_VERSION', '0.7.0.8');
+			define('SOLDER_VERSION', 'v0.7.0.9');
 		}
 
 	}
@@ -34,19 +34,15 @@ class BaseController extends Controller {
 			Auth::user()->last_ip = Request::ip();
 			Auth::user()->save();
 
-			try {
-				//Check for update on login
-				if(UpdateUtils::getCheckerEnabled()){
-					Session::put('checker', true);
+			//Check for update on login
+			if(!Cache::has('checker')){
+				Cache::forever('checker', UpdateUtils::getCheckerEnabled());
+			} else {
+				if(Cache::get('checker')){
 					if(UpdateUtils::getUpdateCheck(true)){
-						Session::put('update', true);
+						Cache::put('update', true, 60);
 					}
-				} else {
-					Session::put('checker', false);
 				}
-			} catch (Exception $e){
-				Log::error($exception);
-				return Redirect::to('dashboard/');
 			}
 
 			return Redirect::to('dashboard/');

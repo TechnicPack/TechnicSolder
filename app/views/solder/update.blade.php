@@ -12,26 +12,27 @@
 		    Solder Versioning
 		    </div>
 		    <div class="panel-body">
-                @if (!Session::get('checker'))
+                @if (!Cache::get('checker'))
                 <div class="alert alert-danger">Update Checker is disabled. Latest info from Github is displayed instead.</div>
                 @endif
 		        <label>Current Version: <span class="label label-default">{{ $currentData['version'] }}</span></label><br>
-                @if (Session::get('checker'))
+                @if (Cache::get('checker'))
 		        <label>Current Commit: <span class="label label-default">{{ $currentData['commit'] }}</span></label><br>
                 @endif
 		        <label>Latest Version: <span class="label label-default">{{ $latestData['version'] }}</span></label><br>
 		        <label>Latest Commit: <span class="label label-default">{{ $latestData['commit']['sha'] }}</span></label><br>
                 <label>Shell Access: {{ $currentData['shell_exec'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
                 <label>Git Installed: {{ $currentData['git'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
+                <label>Git Repository Found: {{ $currentData['gitrepo'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
 			</div>
 		</div>
-        @if (Session::get('checker'))
+        @if (Cache::get('checker'))
         <div class="panel panel-default">
             <div class="panel-heading">
             Update Check
             </div>
             <div class="panel-body">
-                @if (Session::has('update'))
+                @if (Cache::has('update') && Cache::get('update'))
                 <p id='solder-update-ajax' class="alert alert-warning">Solder is out of date. Please refer to the wiki on how to update.</p>                
                 @else
                 <p id='solder-update-ajax' class="alert alert-success">Solder is up to date</p>

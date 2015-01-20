@@ -3,7 +3,7 @@
 class UpdateUtils {
 
 	public static function getCheckerEnabled() {
-		return self::isGitInstalled();
+		return self::isGitRepo();
 	}
 	
 	public static function getCurrentVersion() {
@@ -23,7 +23,7 @@ class UpdateUtils {
 			Cache::forget('latestlog');
 		}
 
-		if (self::isExecEnabled()) {
+		if (self::isGitRepo()) {
 			if (version_compare(self::getLatestVersion()['name'], self::getCurrentVersion(), '>')){
 				return true;
 			}
@@ -67,7 +67,7 @@ class UpdateUtils {
 
 	public static function getCommitInfo($commit = null) {
 		if (is_null($commit)){
-			if (self::isExecEnabled()) {
+			if (self::isGitRepo()) {
 				$commit = self::getCurrentCommit();
 			} else {
 				$commit = self::getLatestVersion()['commit']['sha'];
@@ -89,7 +89,7 @@ class UpdateUtils {
 	}
 
 	public static function getChangeLog($type = 'local') {
-		if ($type == 'local' && self::isGitInstalled()){
+		if ($type == 'local' && self::isGitRepo()){
 			return self::getLocalChangeLog();
 		} else {
 			return self::getLatestChangeLog();
@@ -110,12 +110,14 @@ class UpdateUtils {
 		}
 	}
 
-	public static function getLocalChangeLog() {
+	public static function getLocalChangeLog($currentVersion = SOLDER_VERSION) {
 
 		/* This is debatable. A better way might be to explode the current version and manually downgrade to get the changelog */
 
 		$allVersions = self::getAllVersions();
-		$currentVersion = self::getCurrentVersion();
+		if (self::isGitRepo()) {
+			$currentVersion = self::getCurrentVersion();
+		}
 
 		//Calculates the place of the version 
 		$versionIndex = 0;
@@ -130,13 +132,15 @@ class UpdateUtils {
 		$cleanedInput = explode("\n", $rawInput);
 
 		$changelog = array();
-		foreach($cleanedInput as $commit){
-			$rawCommitData = explode("~", $commit, 4);
-			$commitData = array('hash' => $rawCommitData[0],
-								'abr_hash' => $rawCommitData[1],
-								'message' => $rawCommitData[3],
-								'time_elapsed' => $rawCommitData[2]);
-			array_push($changelog, $commitData);
+		if (sizeof($cleanedInput) >= 4){		
+			foreach($cleanedInput as $commit){
+				$rawCommitData = explode("~", $commit, 4);
+				$commitData = array('hash' => $rawCommitData[0],
+									'abr_hash' => $rawCommitData[1],
+									'message' => $rawCommitData[3],
+									'time_elapsed' => $rawCommitData[2]);
+				array_push($changelog, $commitData);
+			}		
 		}
 
 		return $changelog;
@@ -145,7 +149,7 @@ class UpdateUtils {
 
 	public static function isExecEnabled() {
   		$disabled = explode(',', ini_get('disable_functions'));
-  		return !in_array('exec', $disabled);
+  		return !in_array('shell_exec', $disabled);
 	}
 
 	public static function isGitInstalled() {
@@ -155,6 +159,13 @@ class UpdateUtils {
 			if($check[0] == 'git'){
 				return true;
 			}
+		}
+		return false;
+	}
+
+	public static function isGitRepo() {
+		if (self::isGitInstalled()){
+			return (trim(`git rev-parse --is-inside-work-tree`) == 'true');
 		}
 		return false;
 	}
