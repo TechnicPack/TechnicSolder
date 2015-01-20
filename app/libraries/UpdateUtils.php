@@ -132,7 +132,7 @@ class UpdateUtils {
 		$cleanedInput = explode("\n", $rawInput);
 
 		$changelog = array();
-		if (sizeof($cleanedInput) >= 4){		
+		if (sizeof($cleanedInput) >= 4) {
 			foreach($cleanedInput as $commit){
 				$rawCommitData = explode("~", $commit, 4);
 				$commitData = array('hash' => $rawCommitData[0],
@@ -140,7 +140,7 @@ class UpdateUtils {
 									'message' => $rawCommitData[3],
 									'time_elapsed' => $rawCommitData[2]);
 				array_push($changelog, $commitData);
-			}		
+			}
 		}
 
 		return $changelog;

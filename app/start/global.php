@@ -54,7 +54,7 @@ App::error(function(Exception $exception, $code)
 	Log::error($exception);
 
 	if (!Config::get('app.debug')) {
-		return Response::view('errors.'.$code, array('exception' => $exception), $code);
+		return View::make('errors.500', array('code' => $code, 'exception' => $exception));
 	}
 });
 
