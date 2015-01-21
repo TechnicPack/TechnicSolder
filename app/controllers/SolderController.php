@@ -30,7 +30,7 @@ class SolderController extends BaseController {
 		$latestData = array('version' => $latestVersion,
 							'commit' => $changelog[0]);
 
-		if (Session::get('checker')) {
+		if (Cache::has('checker') && Cache::get('checker')) {
 			$version = UpdateUtils::getCurrentVersion();
 			$commit = UpdateUtils::getCurrentCommit();
 
@@ -56,13 +56,13 @@ class SolderController extends BaseController {
 		if (Request::ajax())
 		{
 			if(UpdateUtils::getUpdateCheck(true)){
-				Session::put('update', true);
+				Cache::put('update', true, 60);
 				return Response::json(array(
 									'status' => 'success',
 									'update' => true
 									));
 			} else {
-				Session::forget('update');
+				Cache::forget('update');
 				return Response::json(array(
 									'status' => 'success',
 									'update' => false

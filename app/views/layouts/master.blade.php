@@ -30,7 +30,7 @@
             <a class="navbar-brand" href="{{ URL::to('dashboard') }}">TechnicSolder {{ SOLDER_VERSION }}</a>
         </div>
         <ul class="nav navbar-top-links navbar-left">
-          @if (Session::has('update'))
+          @if (Cache::has('update') && Cache::get('update'))
           <li>
               <a href="{{ URL::to('solder/update') }}" style="color:orangered;">
                  Update Available! <i class="fa fa-exclamation-triangle"></i>
