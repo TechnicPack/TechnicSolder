@@ -38,12 +38,12 @@ class MinecraftUtils {
 				
 				$versions = array();
 
-				foreach ($mojangVersions['versions'] as $versionEntry) {
+				foreach ($mojangResponse['versions'] as $versionEntry) {
 					if ($versionEntry['type'] != 'release') {
 						continue;
 					}
 					$mcVersion = $versionEntry['id'];
-					$md5 = self::getMinecraftMD5($mcVersion);
+					$md5 = self::getMojangMD5($mcVersion);
 
 					$versions[$mcVersion] = array('version' => $mcVersion, 'md5' => $md5);
 				}
@@ -57,7 +57,7 @@ class MinecraftUtils {
 		return $response;
 	}
 
-	private static function getMinecraftMD5($MCVersion) {
+	private static function getMojangMD5($MCVersion) {
 
 		$url = 'https://s3.amazonaws.com/Minecraft.Download/versions/'.$MCVersion.'/'.$MCVersion.'.jar';
 
@@ -69,8 +69,10 @@ class MinecraftUtils {
 			array_shift($data);
 
 			foreach($data as $part) {
-				$middle = explode(": ", $part, 2);
-				$headers[trim($middle[0])] = trim($middle[1]);
+				if(strpos($part, ':') !== FALSE){
+					$middle = explode(": ", $part, 2);
+					$headers[trim($middle[0])] = trim($middle[1]);
+				}
 			}
 
 			return $headers['ETag'];

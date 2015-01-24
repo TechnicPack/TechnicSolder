@@ -97,7 +97,7 @@ class SolderController extends BaseController {
 			catch (Exception $e) {
 				return Response::json(array(
 									'status' => 'error',
-									'reason' => $e
+									'reason' => $e->getMessage()
 									));
 			}
 
