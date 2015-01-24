@@ -23,7 +23,7 @@
 				<tr>
 					<th>#</th>
 					<th>Name</th>
-					<th>API Key</th>
+					<th>Client UUID</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
