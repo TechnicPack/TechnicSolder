@@ -33,9 +33,11 @@ class SolderController extends BaseController {
 		if (Cache::has('checker') && Cache::get('checker')) {
 			$version = UpdateUtils::getCurrentVersion();
 			$commit = UpdateUtils::getCurrentCommit();
+			$branch = UpdateUtils::getCurrentBranch();
 
 			$currentData = array('version' => $version,
 							 'commit' => $commit,
+							 'branch' => $branch,
 							 'shell_exec' => UpdateUtils::isExecEnabled(),
 							 'git' => UpdateUtils::isGitInstalled(),
 							 'gitrepo' => UpdateUtils::isGitRepo());
@@ -55,16 +57,28 @@ class SolderController extends BaseController {
 	{
 		if (Request::ajax())
 		{
+			$branch = UpdateUtils::getCurrentBranch();
+
 			if(UpdateUtils::getUpdateCheck(true)){
 				Cache::put('update', true, 60);
 				return Response::json(array(
 									'status' => 'success',
+									'build' => false,
+									'branch' => $branch,
 									'update' => true
 									));
 			} else {
 				Cache::forget('update');
+
+				$changelog = array_slice(UpdateUtils::getChangelog('latest'), 0, 10)[0];
+				$commit = UpdateUtils::getCurrentCommit();
+				$build = boolval(strcasecmp($commit, $changelog['sha']) != 0);
+				
+
 				return Response::json(array(
 									'status' => 'success',
+									'build' => $build,
+									'branch' => $branch,
 									'update' => false
 									));
 			}

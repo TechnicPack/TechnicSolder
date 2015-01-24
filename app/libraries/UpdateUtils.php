@@ -16,6 +16,11 @@ class UpdateUtils {
 
 	}
 
+	public static function getCurrentBranch() {
+
+		return str_replace(array("\r", "\n"), "", shell_exec('git rev-parse --abbrev-ref HEAD'));
+	}
+
 	public static function getUpdateCheck($manual = false) {
 
 		if ($manual) {
