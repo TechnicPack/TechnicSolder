@@ -16,9 +16,22 @@ class APIController extends BaseController {
 			Cache::put('clients', $clients, 1);
 		}
 
+		if (Cache::has('keys'))
+			$keys = Cache::get('keys');
+		else {
+			$keys = Key::all();
+			Cache::put('keys', $keys, 1);
+		}
+
 		foreach ($clients as $client) {
 			if ($client->uuid == Input::get('cid')) {
 				$this->client = $client;
+			}
+		}
+
+		foreach ($keys as $key) {
+			if ($key->api_key == Input::get('key')) {
+				$this->key = $key;
 			}
 		}
 
@@ -145,12 +158,12 @@ class APIController extends BaseController {
 
 	private function fetchModpacks()
 	{
-		if (Cache::has('modpacks') && empty($this->client))
+		if (Cache::has('modpacks') && empty($this->client) && empty($this->key))
 		{
 			$modpacks = Cache::get('modpacks');
 		} else {
-			$modpacks = Modpack::where('hidden','=','0')->orderBy('order')->get();
-			if (empty($this->client)) {
+			$modpacks = Modpack::all();
+			if (empty($this->client) && empty($this->key)) {
 				Cache::put('modpacks', $modpacks, 5);
 			}
 			
@@ -160,13 +173,15 @@ class APIController extends BaseController {
 		$response['modpacks'] = array();
 		foreach ($modpacks as $modpack)
 		{
-			if ($modpack->private == 1) {
+			if ($modpack->private == 1 || $modpack->hidden == 1) {
 				if (isset($this->client)) {
 					foreach ($this->client->modpacks as $pmodpack) {
 						if ($pmodpack->id == $modpack->id) {
 							$response['modpacks'][$modpack->slug] = $modpack->name;
 						}
 					}
+				} else if (isset($this->key)) {
+					$response['modpacks'][$modpack->slug] = $modpack->name;
 				}
 			} else {
 				$response['modpacks'][$modpack->slug] = $modpack->name;
@@ -182,19 +197,29 @@ class APIController extends BaseController {
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug) && empty($this->client))
+		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->key))
 		{
 			$modpack = Cache::get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::with('Builds')
 							->where("slug","=",$slug)->first();
-			if (empty($this->client))
+			if (empty($this->client) && empty($this->key))
 				Cache::put('modpack.'.$slug,$modpack,5);
 		}
 		
-
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
+
+
+		if ($modpack->private == 1 && !(isset($this->key))) {
+			if(!(isset($this->client))) {
+				return array("error" => "Modpack does not exist");
+			} else {
+				if(!in_array($modpack->id, array_map(function($modpack){ return $modpack->id; }, $this->client->modpacks->all()))) {
+					return array("error" => "Modpack does not exist");
+				}
+			}
+		}
 
 		$response['name']           = $modpack->slug;
 		$response['display_name']	= $modpack->name;
@@ -253,7 +278,7 @@ class APIController extends BaseController {
 		foreach ($modpack->builds as $build)
 		{
 			if ($build->is_published) {
-				if (!$build->private) {
+				if (!$build->private || isset($this->key)) {
 					array_push($response['builds'], $build->version);
 				} else if (isset($this->client)) {
 					foreach ($this->client->modpacks as $pmodpack) {
@@ -272,12 +297,12 @@ class APIController extends BaseController {
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug) && empty($this->client))
+		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->key))
 		{
 			$modpack = Cache::Get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::where("slug","=",$slug)->first();
-			if (empty($this->client))
+			if (empty($this->client) && empty($this->key))
 				Cache::put('modpack.'.$slug,$modpack,5);
 		}
 
@@ -285,14 +310,14 @@ class APIController extends BaseController {
 			return array("error" => "Modpack does not exist");
 			
 		$buildpass = $build;
-		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client))
+		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client) && empty($this->key))
 		{
 			$build = Cache::get('modpack.'.$slug.'.build.'.$build);
 		} else {
 			$build = Build::with('Modversions')
 						->where("modpack_id", "=", $modpack->id)
 						->where("version", "=", $build)->first();
-			if (empty($this->client))
+			if (empty($this->client) && empty($this->key))
 				Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
 		}
 
