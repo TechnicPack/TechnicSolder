@@ -6,4 +6,4 @@ composer.lock
 public/resources/
 public/vendor
 app/database/*.sqlite
-docs/site
+site/
