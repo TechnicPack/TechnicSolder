@@ -14,7 +14,7 @@
 		<div class="panel-heading" role="tab" id="recentModpacksHeading">
 		<h3 class="panel-title">
 			<a data-toggle="collapse" data-parent="#accordion" href="#recentModpacks" aria-expanded="true" aria-controls="recentModpacks">
-				Recently Updated Modpacks
+				<i class="fa fa-refresh"></i> Recently Updated Modpacks
 			</a>
 		</h3>
 		</div>
@@ -53,7 +53,7 @@
 		<div class="panel-heading" role="tab" id="recentModVersionsHeading">
 		<h3 class="panel-title">
 			<a data-toggle="collapse" data-parent="#accordion" href="#recentModVersions" aria-expanded="true" aria-controls="recentModVersions">
-				Recently Added Mod Versions
+				<i class="fa fa-refresh"></i> Recently Added Mod Versions
 			</a>
 		</h3>
 		</div>
@@ -96,7 +96,7 @@
 		<div class="panel-heading" role="tab" id="changelogHeading">
 		<h3 class="panel-title">
 			<a data-toggle="collapse" data-parent="#accordion" href="#changelog" aria-expanded="true" aria-controls="changelog">
-				Changelog
+				<i class="fa fa-list"></i> Changelog
 			</a>
 		</h3>
 		</div>

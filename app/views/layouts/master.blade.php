@@ -9,6 +9,7 @@
     {{ HTML::style('css/bootstrap.min.css') }}
     {{ HTML::style('font-awesome/css/font-awesome.css') }}
     {{ HTML::style('css/sb-admin.css') }}
+    {{ HTML::style('css/solder.css') }}
     {{ HTML::script('js/plugins/metisMenu/jquery.metisMenu.js') }}
     {{ HTML::script('js/sb-admin.js') }}
     {{ HTML::script('js/plugins/dataTables/jquery.dataTables.js') }}
@@ -27,7 +28,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ URL::to('dashboard') }}">TechnicSolder {{ SOLDER_VERSION }}</a>
+            <a class="navbar-brand" href="{{ URL::to('dashboard') }}"><img src="{{ URL::asset('img/title.png') }}"> {{ SOLDER_VERSION }}</a>
         </div>
         <ul class="nav navbar-top-links navbar-left">
           @if (Cache::has('update') && Cache::get('update'))
@@ -47,7 +48,6 @@
                 <ul class="dropdown-menu dropdown-user">
                     <li><a href="{{ URL::to('user/edit/'.Auth::user()->id) }}"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li>
-                    <li class="divider"></li>
                     <li><a href="{{ URL::to('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                     </li>
                 </ul>
@@ -63,9 +63,9 @@
 
     <nav class="navbar-default navbar-static-side" role="navigation">
       <div class="sidebar-collapse">
-          <ul class="nav" id="side-menu">
+          <ul class="nav side-menu" id="side-menu">
               <li>
-                  <a href="{{ URL::to('dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                  <a href="{{ URL::to('dashboard') }}" {{ Request::is('dashboard') ? ' class="active"' : '' }}><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
               </li>
               <li>
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
