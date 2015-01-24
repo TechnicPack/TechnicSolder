@@ -1,9 +1,0 @@
-site_name: Solder
-
-pages:
-- [index.md, Home]
-- [gettingstarted.md, Getting Started]
-- [updating.md, Updating Solder]
-- [addingmods.md, Adding Mods to the Mod Library]
-- [zipstructure.md, Zip File Structure]
-- [linking.md, Linking Solder to the Platform]
