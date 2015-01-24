@@ -97,18 +97,18 @@ class UpdateUtils {
 		if ($type == 'local' && self::isGitRepo()){
 			return self::getLocalChangeLog();
 		} else {
-			return self::getLatestChangeLog();
+			return self::getLatestChangeLog(self::getCurrentBranch());
 		}
 
 	}
 
-	private static function getLatestChangeLog() {
+	private static function getLatestChangeLog($branch = 'master') {
 
 		$client = new \Github\Client();
 		if (Cache::has('latestlog')) {
 			return Cache::get('latestlog');
 		} else {
-			$changelogJson = $client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => 'master'));
+			$changelogJson = $client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => $branch));
 
 			Cache::put('latestlog', $changelogJson, 15); //15 minutes
 			return $changelogJson;
