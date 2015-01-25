@@ -5,8 +5,12 @@ class BaseController extends Controller {
 	public function __construct()
 	{
 		define('SOLDER_STREAM', 'DEV');
-		if(UpdateUtils::getCheckerEnabled()){
-			define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+		if(Cache::has('checker') && Cache::get('checker')){
+			if(Cache::has('currentversion')) {
+				define('SOLDER_VERSION', Cache::get('currentversion'));
+			} else {
+				define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+			}
 		} else {
 			define('SOLDER_VERSION', 'v0.7.0.9');
 		}

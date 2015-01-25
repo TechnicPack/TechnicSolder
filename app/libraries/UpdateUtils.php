@@ -7,7 +7,13 @@ class UpdateUtils {
 	}
 	
 	public static function getCurrentVersion() {
-		return str_replace(array("\r", "\n"), "", shell_exec('git describe --abbrev=0 --tags'));
+		if(Cache::has('currentversion')) {
+			return Cache::get('currentversion');
+		} else {
+			$version = str_replace(array("\r", "\n"), "", shell_exec('git describe --abbrev=0 --tags'));
+			Cache::put('currentversion', $version, 60);
+			return $version;
+		}
 	}
 
 	public static function getCurrentCommit() {
