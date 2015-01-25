@@ -329,48 +329,53 @@ class APIController extends BaseController {
 		$response['forge'] = $build->forge;
 		$response['mods'] = array();
 
-		foreach ($build->modversions as $modversion)
+		if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion') && empty($this->client) && empty($this->key))
 		{
-			if (!Input::has('include'))
+			$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion');
+		} else {
+			foreach ($build->modversions as $modversion)
 			{
-				$response['mods'][] = array(
-											"name" => $modversion->mod->name,
-											"version" => $modversion->version,
-											"md5" => $modversion->md5,
-											"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
-											);
-			} else if (Input::get('include') == "mods") {
-				$response['mods'][] = array(
-											"name" => $modversion->mod->name,
-											"version" => $modversion->version,
-											"md5" => $modversion->md5,
-											"pretty_name" => $modversion->mod->pretty_name,
-											"author" => $modversion->mod->author,
-											"description" => $modversion->mod->description,
-											"link" => $modversion->mod->link,
-											"donate" => $modversion->mod->donatelink
-											);
-			} else {
-				$data = array(
-											"name" => $modversion->mod->name,
-											"version" => $modversion->version,
-											"md5" => $modversion->md5,
-											);
-				$request = explode(",", Input::get('include'));
-				$mod = (array)$modversion->mod;
-				$mod = $mod['attributes'];
-				foreach ($request as $type)
+				if (!Input::has('include'))
 				{
-					if (isset($mod[$type]))
-						$data[$type] = $mod[$type];
+					$response['mods'][] = array(
+												"name" => $modversion->mod->name,
+												"version" => $modversion->version,
+												"md5" => $modversion->md5,
+												"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
+												);
+				} else if (Input::get('include') == "mods") {
+					$response['mods'][] = array(
+												"name" => $modversion->mod->name,
+												"version" => $modversion->version,
+												"md5" => $modversion->md5,
+												"pretty_name" => $modversion->mod->pretty_name,
+												"author" => $modversion->mod->author,
+												"description" => $modversion->mod->description,
+												"link" => $modversion->mod->link,
+												"donate" => $modversion->mod->donatelink
+												);
+				} else {
+					$data = array(
+												"name" => $modversion->mod->name,
+												"version" => $modversion->version,
+												"md5" => $modversion->md5,
+												);
+					$request = explode(",", Input::get('include'));
+					$mod = (array)$modversion->mod;
+					$mod = $mod['attributes'];
+					foreach ($request as $type)
+					{
+						if (isset($mod[$type]))
+							$data[$type] = $mod[$type];
+					}
+
+					$response['mods'][] = $data;
 				}
-
-				$response['mods'][] = $data;
 			}
-			
-		}
 
-		usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+			usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+			Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion',$response['mods'],5);
+		}
 
 		return $response;
 	}
