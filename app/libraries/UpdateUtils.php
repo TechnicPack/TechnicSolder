@@ -7,24 +7,36 @@ class UpdateUtils {
 	}
 	
 	public static function getCurrentVersion() {
-		if(Cache::has('currentversion')) {
-			return Cache::get('currentversion');
+		if($currentVersion = Cache::get('currentversion')) {
+			return $currentVersion;
 		} else {
-			$version = str_replace(array("\r", "\n"), "", shell_exec('git describe --abbrev=0 --tags'));
-			Cache::put('currentversion', $version, 60);
+			$version = 'v0.7.0.9';
+			if(self::isGitRepo()) {
+				$version = str_replace(array("\r", "\n"), "", shell_exec('git describe --abbrev=0 --tags'));
+			}
+			Cache::put('currentversion', $version, 360);
 			return $version;
 		}
 	}
 
 	public static function getCurrentCommit() {
-
-		return `git show --format=format:%H -s`;
-
+		if($currentCommit = Cache::get('currentcommit')) {
+			return $currentCommit;
+		} else {
+			$commit = str_replace(array("\r", "\n"), "", shell_exec('git show --format=format:%H -s'));
+			Cache::put('currentcommit', $commit, 360);
+			return $commit;
+		}
 	}
 
 	public static function getCurrentBranch() {
-
-		return str_replace(array("\r", "\n"), "", shell_exec('git rev-parse --abbrev-ref HEAD'));
+		if($currentBranch = Cache::get('currentbranch')) {
+			return $currentBranch;
+		} else {
+			$branch = str_replace(array("\r", "\n"), "", shell_exec('git rev-parse --abbrev-ref HEAD'));
+			Cache::put('currentbranch', $branch, 360);
+			return $branch;
+		}
 	}
 
 	public static function getUpdateCheck($manual = false) {
@@ -32,6 +44,12 @@ class UpdateUtils {
 		if ($manual) {
 			Cache::forget('availableversions');
 			Cache::forget('latestlog');
+			Cache::forget('currentversion');
+			Cache::forget('currentcommit');
+			Cache::forget('currentbranch');
+			Cache::forget('execenabled');
+			Cache::forget('gitinstalled');
+			Cache::forget('gitrepo');
 		}
 
 		if (self::isGitRepo()) {
@@ -65,8 +83,8 @@ class UpdateUtils {
 	public static function getAllVersions() {
 		$client = new \Github\Client();
 
-		if (Cache::has('availableversions')) {
-			return Cache::get('availableversions');
+		if ($availversions = Cache::get('availableversions')) {
+			return $availversions;
 		} else {
 			$solderVersions = $client->api('repo')->tags('technicpack', 'technicsolder');
 
@@ -88,12 +106,12 @@ class UpdateUtils {
 		$client = new \Github\Client();
 
 		$commitHash = substr($commit, 0, 7);
-		if (Cache::has($commitHash.'.json')) {
-			return Cache::get($commitHash.'.json');
+		if ($commitinfo = Cache::get($commitHash.'-json')) {
+			return $commitinfo;
 		} else {
 			$commitJson = $client->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
 
-			Cache::put($commitHash.'.json', $commitJson, 360); //6 hours
+			Cache::put($commitHash.'-json', $commitJson, 360); //6 hours
 			return $commitJson;
 		}
 
@@ -111,74 +129,94 @@ class UpdateUtils {
 	private static function getLatestChangeLog($branch = 'master') {
 
 		$client = new \Github\Client();
-		if (Cache::has('latestlog')) {
-			return Cache::get('latestlog');
+		if ($latestlog = Cache::get('latestchangelog')) {
+			return $latestlog;
 		} else {
 			$changelogJson = $client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => $branch));
 
-			Cache::put('latestlog', $changelogJson, 15); //15 minutes
+			Cache::put('latestchangelog', $changelogJson, 60);
 			return $changelogJson;
 		}
 	}
 
 	public static function getLocalChangeLog($currentVersion = SOLDER_VERSION) {
 
-		/* This is debatable. A better way might be to explode the current version and manually downgrade to get the changelog */
-
 		$allVersions = self::getAllVersions();
 		if (self::isGitRepo()) {
 			$currentVersion = self::getCurrentVersion();
 		}
 
-		//Calculates the place of the version 
-		$versionIndex = 0;
-		for ($i = 0; $i < sizeof($allVersions); $i++){
-			if ($allVersions[$i]['name'] == $currentVersion){
-				$versionIndex = $i;
-				break;
+		if ($changelog = Cache::get('localchangelog'.$currentVersion)) {
+			return $changelog;
+		} else {
+			//Calculates the place of the version 
+			$versionIndex = 0;
+			for ($i = 0; $i < sizeof($allVersions); $i++){
+				if ($allVersions[$i]['name'] == $currentVersion){
+					$versionIndex = $i;
+					break;
+				}
 			}
-		}
 
-		$rawInput = shell_exec('git log --pretty=format:%H~%h~%ar~%s ' . $allVersions[$versionIndex + 1]['name'] . '..' . $currentVersion);
-		$cleanedInput = explode("\n", $rawInput);
+			$rawInput = shell_exec('git log --pretty=format:%H~%h~%ar~%s ' . $allVersions[$versionIndex + 1]['name'] . '..' . $currentVersion);
+			$cleanedInput = explode("\n", $rawInput);
 
-		$changelog = array();
-		if (sizeof($cleanedInput) >= 4) {
-			foreach($cleanedInput as $commit){
-				$rawCommitData = explode("~", $commit, 4);
-				$commitData = array('hash' => $rawCommitData[0],
-									'abr_hash' => $rawCommitData[1],
-									'message' => $rawCommitData[3],
-									'time_elapsed' => $rawCommitData[2]);
-				array_push($changelog, $commitData);
+			$changelog = array();
+			if (sizeof($cleanedInput) >= 4) {
+				foreach($cleanedInput as $commit){
+					$rawCommitData = explode("~", $commit, 4);
+					$commitData = array('hash' => $rawCommitData[0],
+										'abr_hash' => $rawCommitData[1],
+										'message' => $rawCommitData[3],
+										'time_elapsed' => $rawCommitData[2]);
+					array_push($changelog, $commitData);
+				}
 			}
+			Cache::put('localchangelog'.$currentVersion, $changelog, 360);
+			return $changelog;
 		}
-
-		return $changelog;
-
 	}
 
 	public static function isExecEnabled() {
-  		$disabled = explode(',', ini_get('disable_functions'));
-  		return !in_array('shell_exec', $disabled);
+		if ($isdisabled = Cache::get('execenabled')) {
+			return $isdisabled;
+		} else {
+	  		$disabled = explode(',', ini_get('disable_functions'));
+	  		$isdisabled = !in_array('shell_exec', $disabled);
+	  		Cache::put('execenabled', $isdisabled, 360);
+			return $isdisabled;
+	  	}
 	}
 
 	public static function isGitInstalled() {
-		if (self::isExecEnabled()) {
-			$raw = `git --version`;
-			$check = explode(' ', $raw);
-			if($check[0] == 'git'){
-				return true;
+		if ($git = Cache::get('gitinstalled')) {
+			return $git;
+		} else {
+			if (self::isExecEnabled()) {
+				$raw = `git --version`;
+				$check = explode(' ', $raw);
+				if($check[0] == 'git'){
+					Cache::put('gitinstalled', true, 360);
+					return true;
+				}
 			}
+			Cache::put('gitinstalled', false, 360);
+			return false;
 		}
-		return false;
 	}
 
 	public static function isGitRepo() {
-		if (self::isGitInstalled()){
-			return (trim(`git rev-parse --is-inside-work-tree`) == 'true');
+		if ($gitrepo = Cache::get('gitrepo')) {
+			return $gitrepo;
+		} else {
+			if (self::isGitInstalled()){
+				$gitrepo = (trim(`git rev-parse --is-inside-work-tree`) == 'true');
+				Cache::put('gitrepo', $gitrepo, 360);
+				return $gitrepo;
+			}
+			Cache::put('gitrepo', false, 360);
+			return false;
 		}
-		return false;
 	}
 
 	private static function getRawRepoStatus() {

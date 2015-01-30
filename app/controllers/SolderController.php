@@ -6,6 +6,7 @@ class SolderController extends BaseController {
 	{
 		parent::__construct();
 		$this->beforeFilter('auth');
+		$this->beforeFilter('checker');
 	}
 
 	public function getConfigure()

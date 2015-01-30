@@ -13,9 +13,7 @@
 
 App::before(function($request)
 {
-	if(!Cache::has('checker')){
-		Cache::forever('checker', UpdateUtils::getCheckerEnabled());
-	}
+	//
 });
 
 
@@ -86,6 +84,13 @@ Route::filter('csrf', function()
 	if (Session::token() !== Input::get('_token'))
 	{
 		throw new Illuminate\Session\TokenMismatchException;
+	}
+});
+
+Route::filter('checker', function()
+{
+	if(!Cache::has('checker')){
+		Cache::forever('checker', UpdateUtils::getCheckerEnabled());
 	}
 });
 

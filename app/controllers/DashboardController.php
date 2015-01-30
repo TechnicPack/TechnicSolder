@@ -5,6 +5,7 @@ class DashboardController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
+		$this->beforeFilter('checker');
 	}
 
 	public function getIndex()
