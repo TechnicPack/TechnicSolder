@@ -3,7 +3,8 @@ composer.phar
 composer.lock
 .DS_Store
 /app/config
-public/resources/
+public/resources/*
+!public/resources/default
 public/vendor
 app/database/*.sqlite
 site/

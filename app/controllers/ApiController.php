@@ -222,54 +222,13 @@ class APIController extends BaseController {
 		}
 
 		$response['name']           = $modpack->slug;
-		$response['display_name']	= $modpack->name;
+		$response['display_name']   = $modpack->name;
 		$response['url']            = $modpack->url;
-
-		$resourcePath = URL::asset('resources/' . $modpack->slug);
-
-		if ($modpack->icon == 0 && !empty($modpack->icon_md5)) {
-			$response['icon'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/icon.png";
-		} else if ($modpack->icon == 0 && empty($modpack->icon_md5)) {
-			$response['icon'] = URL::asset('resources/default/icon.png');
-			$modpack->icon_md5 = md5_file(public_path() . '/resources/default/icon.png');
-		} else {
-			if (Config::get('solder.use_s3')) {
-				$response['icon'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/icon.png?'.TimeUtils::getTimestampDate($modpack->updated_at);
-			} else {
-				$response['icon'] = $resourcePath . "/icon.png";
-			}
-		}
-
+		$response['icon']           = $modpack->icon_url;
 		$response['icon_md5']       = $modpack->icon_md5;
-
-		if ($modpack->logo == 0 && !empty($modpack->logo_md5)) {
-			$response['logo'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/logo.png";
-		} else if ($modpack->logo == 0 && empty($modpack->logo_md5)) {
-			$response['logo'] = URL::asset('resources/default/logo.png');
-			$modpack->logo_md5 = md5_file(public_path() . '/resources/default/logo.png');
-		} else {
-			if (Config::get('solder.use_s3')) {
-				$response['logo'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/logo.png?'.TimeUtils::getTimestampDate($modpack->updated_at);
-			} else {
-				$response['logo'] = $resourcePath . "/logo.png";
-			}
-		}
-
+		$response['logo']           = $modpack->logo_url;
 		$response['logo_md5']       = $modpack->logo_md5;
-
-		if ($modpack->background == 0 && !empty($modpack->background_md5)) {
-			$response['background'] = Config::get('solder.mirror_url') . $modpack->slug . "/resources/background.png";
-		} else if ($modpack->background == 0 && empty($modpack->background_md5)) {
-			$response['background'] = URL::asset('resources/default/background.png');
-			$modpack->background_md5 = md5_file(public_path() . '/resources/default/background.png');
-		} else {
-			if (Config::get('solder.use_s3')) {
-				$response['background'] = Config::get('solder.s3_url').'resources/'.$modpack->slug.'/background.png?'.TimeUtils::getTimestampDate($modpack->updated_at);
-			} else {
-				$response['background'] = $resourcePath . "/background.png";
-			}
-		}
-
+		$response['background']     = $modpack->background_url;
 		$response['background_md5'] = $modpack->background_md5;
 		$response['recommended']    = $modpack->recommended;
 		$response['latest']         = $modpack->latest;

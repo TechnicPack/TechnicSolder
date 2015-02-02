@@ -9,7 +9,7 @@
 	</div>
 	<div class="panel-body">
 		@if ($errors->all())
-			<div class="alert alert-error">
+			<div class="alert alert-danger">
 			@foreach ($errors->all() as $error)
 				{{ $error }}<br />
 			@endforeach
@@ -65,52 +65,50 @@
 				@if(!$resourcesWritable)
 				<div class="alert alert-warning">Unable to write to <code>'public/resources/{{$modpack->slug}}'</code>. Please check your file/folder permissions.</div>
 				@endif
-				<div class="control-group">
-					<label class="control-label" for="icon">Modpack Icon</label>
-					<div class="controls">
-						@if ($modpack->icon)
-						<div class="modpack-icon">
-							@if (Config::get('solder.use_s3'))
-							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" class="img-thumbnail">
-							@else
-							<img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}" class="img-thumbnail">
-							@endif
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group" style="border-bottom:1px solid #ddd;">
+							<label class="control-label" for="background">Modpack Background</label>
+							<div class="controls">
+								@if ($modpack->background)
+								<div class="modpack-background">
+									<img src="{{ $modpack->background_url }}" class="img-thumbnail">
+								</div>
+								@endif
+								<input type="file" name="background" id="background">
+								<span class="help-block">Required Size: 880x520</span>
+							</div>
 						</div>
-						@endif
-						<input type="file" name="icon" id="icon">
-						<span class="help-block">Recommended Size: 50x50</span>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="control-label" for="logo">Modpack Logo</label>
-					<div class="controls">
-						@if ($modpack->logo)
-						<div class="modpack-logo">
-							@if (Config::get('solder.use_s3'))
-							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/logo.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" class="img-thumbnail">
-							@else
-							<img src="{{ URL::asset('resources/' . $modpack->slug . '/logo.png') }}" class="img-thumbnail">
-							@endif
+				<div class="row">
+					<div class="col-md-6">
+						<div class="control-group" style="padding-top:10px;">
+							<label class="control-label" for="icon">Modpack Icon</label>
+							<div class="controls">
+								@if ($modpack->icon)
+								<div class="modpack-icon">
+									<img src="{{ $modpack->icon_url }}" class="img-thumbnail">
+								</div>
+								@endif
+								<input type="file" name="icon" id="icon">
+								<span class="help-block">Recommended Size: 50x50</span>
+							</div>
 						</div>
-						@endif
-						<input type="file" name="logo" id="logo">
-						<span class="help-block">Required Size: 370x220</span>
 					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label" for="background">Modpack Background</label>
-					<div class="controls">
-						@if ($modpack->background)
-						<div class="modpack-background">
-							@if (Config::get('solder.use_s3'))
-							<img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/background.png?{{ TimeUtils::getTimestampDate($modpack->updated_at) }}" class="img-thumbnail">
-							@else
-							<img src="{{ URL::asset('resources/' . $modpack->slug . '/background.png') }}" class="img-thumbnail">
-							@endif
+					<div class="col-md-6">
+						<div class="control-group">
+							<label class="control-label" for="logo">Modpack Logo</label>
+							<div class="controls">
+								@if ($modpack->logo)
+								<div class="modpack-logo">
+									<img src="{{ $modpack->logo_url }}" class="img-thumbnail">
+								</div>
+								@endif
+								<input type="file" name="logo" id="logo">
+								<span class="help-block">Required Size: 370x220</span>
+							</div>
 						</div>
-						@endif
-						<input type="file" name="background" id="background">
-						<span class="help-block">Required Size: 880x520</span>
 					</div>
 				</div>
 			</div>
