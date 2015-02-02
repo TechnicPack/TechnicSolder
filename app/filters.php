@@ -24,11 +24,7 @@ App::after(function($request, $response)
 
 App::missing(function($exception)
 {
-	if (Auth::guest()) { 
-		return Response::view('errors.500', array('code' => 404, 'exception' => new Exception('Page not found')), 404);
-	}
-
-	return Response::view('errors.missing', array(), 404);
+	return Response::view('errors.500', array('code' => 404, 'exception' => new Exception('Page not found')), 404);
 });
 
 /*
