@@ -76,7 +76,7 @@
 								</div>
 								@endif
 								<input type="file" name="background" id="background">
-								<span class="help-block">Required Size: 880x520</span>
+								<span class="help-block">Required Size: 900x600</span>
 							</div>
 						</div>
 					</div>
