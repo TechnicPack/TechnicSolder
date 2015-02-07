@@ -5,7 +5,6 @@ class DashboardController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->beforeFilter('checker');
 	}
 
 	public function getIndex()
@@ -14,9 +13,10 @@ class DashboardController extends BaseController {
 
 		$modversions = Modversion::whereNotNull('md5')->orderBy('updated_at', 'desc')->take(5)->get();
 
-		$changelog = UpdateUtils::getChangeLog();
+		$checkerEnabled = UpdateUtils::getCheckerEnabled() ;
+		$changelog = UpdateUtils::getChangeLog($checkerEnabled ? 'local' : 'latest');
 
-		return View::make('dashboard.index')->with('modversions', $modversions)->with('builds', $builds)->with('changelog', $changelog);
+		return View::make('dashboard.index')->with('modversions', $modversions)->with('builds', $builds)->with('changelog', $changelog)->with('checker', $checkerEnabled);
 	}
 	
 }

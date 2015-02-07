@@ -5,7 +5,6 @@ class SolderController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->beforeFilter('checker');
 	}
 
 	public function getConfigure()
@@ -30,7 +29,7 @@ class SolderController extends BaseController {
 		$latestData = array('version' => $latestVersion,
 							'commit' => $changelog[0]);
 
-		if (Cache::has('checker') && Cache::get('checker')) {
+		if ($checkerEnabled = UpdateUtils::getCheckerEnabled()) {
 			$version = UpdateUtils::getCurrentVersion();
 			$commit = UpdateUtils::getCurrentCommit();
 			$branch = UpdateUtils::getCurrentBranch();
@@ -42,7 +41,7 @@ class SolderController extends BaseController {
 							 'git' => UpdateUtils::isGitInstalled(),
 							 'gitrepo' => UpdateUtils::isGitRepo());
 
-			return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
+			return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData)->with('checker', $checkerEnabled);
 		}
 
 		$currentData = array('version' => SOLDER_VERSION,
@@ -50,7 +49,7 @@ class SolderController extends BaseController {
 							 'git' => UpdateUtils::isGitInstalled(),
 							 'gitrepo' => UpdateUtils::isGitRepo());
 		
-		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData);
+		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData)->with('checker', $checkerEnabled);
 	}
 
 	public function getUpdateCheck()

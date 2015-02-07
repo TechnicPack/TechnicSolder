@@ -83,13 +83,6 @@ Route::filter('csrf', function()
 	}
 });
 
-Route::filter('checker', function()
-{
-	if(!Cache::has('checker')){
-		Cache::forever('checker', UpdateUtils::getCheckerEnabled());
-	}
-});
-
 Route::filter('solder_users', function()
 {
 	$user = Request::segment(3);

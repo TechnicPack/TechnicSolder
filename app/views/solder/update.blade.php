@@ -12,11 +12,11 @@
 		    Solder Versioning
 		    </div>
 		    <div class="panel-body">
-                @if (!Cache::get('checker'))
+                @if (!$checker)
                 <div class="alert alert-danger">Update Checker is disabled. Latest info from Github is displayed instead.</div>
                 @endif
 		        <label>Current Version: <span class="label label-default">{{ $currentData['version'] }}</span></label><br>
-                @if (Cache::get('checker'))
+                @if ($checker)
 		        <label>Current Commit: <span class="label label-default">{{ $currentData['commit'] }}</span></label><br>
                 <label>Current Branch: <span class="label label-default">{{ $currentData['branch'] }}</span></label><br>
                 @endif
@@ -35,9 +35,9 @@
             <div class="panel-body">
                 @if (Cache::has('update') && Cache::get('update'))
                 <p id='solder-update-ajax' class="alert alert-danger">Solder is out of date. Please refer to the wiki on how to update.</p>                
-                @elseif (Cache::get('checker') && strcasecmp($currentData['commit'], $latestData['commit']['sha']) != 0 && $currentData['branch'] == 'master')
+                @elseif ($checker && strcasecmp($currentData['commit'], $latestData['commit']['sha']) != 0 && $currentData['branch'] == 'master')
                 <p id='solder-update-ajax' class="alert alert-warning">Solder is up to date, but hotfixes are available</p>
-                @elseif (Cache::get('checker') && strcasecmp($currentData['commit'], $latestData['commit']['sha']) != 0 && $currentData['branch'] == 'dev')
+                @elseif ($checker && strcasecmp($currentData['commit'], $latestData['commit']['sha']) != 0 && $currentData['branch'] == 'dev')
                 <p id='solder-update-ajax' class="alert alert-warning">Solder is up to date, but dev builds are available</p>
                 @else
                 <p id='solder-update-ajax' class="alert alert-success">Solder is up to date</p>

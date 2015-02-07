@@ -3,7 +3,13 @@
 class UpdateUtils {
 
 	public static function getCheckerEnabled() {
-		return self::isGitRepo();
+		if($currentVersion = Cache::get('checkerenabled')) {
+			return $currentVersion;
+		} else {
+			$enabled = self::isGitRepo();
+			Cache::put('checkerenabled', $enabled, 1440);
+			return $enabled;
+		}
 	}
 	
 	public static function getCurrentVersion() {
@@ -42,14 +48,12 @@ class UpdateUtils {
 	public static function getUpdateCheck($manual = false) {
 
 		if ($manual) {
+			Cache::forget('checkerenabled');			
 			Cache::forget('availableversions');
 			Cache::forget('latestlog');
 			Cache::forget('currentversion');
 			Cache::forget('currentcommit');
 			Cache::forget('currentbranch');
-			Cache::forget('execenabled');
-			Cache::forget('gitinstalled');
-			Cache::forget('gitrepo');
 		}
 
 		if (self::isGitRepo()) {
@@ -178,45 +182,27 @@ class UpdateUtils {
 	}
 
 	public static function isExecEnabled() {
-		if ($isdisabled = Cache::get('execenabled')) {
-			return $isdisabled;
-		} else {
-	  		$disabled = explode(',', ini_get('disable_functions'));
-	  		$isdisabled = !in_array('shell_exec', $disabled);
-	  		Cache::put('execenabled', $isdisabled, 360);
-			return $isdisabled;
-	  	}
+	  	$disabled = explode(',', ini_get('disable_functions'));
+	  	return !in_array('shell_exec', $disabled);
 	}
 
 	public static function isGitInstalled() {
-		if ($git = Cache::get('gitinstalled')) {
-			return $git;
-		} else {
-			if (self::isExecEnabled()) {
-				$raw = `git --version`;
-				$check = explode(' ', $raw);
-				if($check[0] == 'git'){
-					Cache::put('gitinstalled', true, 360);
-					return true;
-				}
+		if (self::isExecEnabled()) {
+			$raw = `git --version`;
+			$check = explode(' ', $raw);
+			if($check[0] == 'git'){
+				return true;
 			}
-			Cache::put('gitinstalled', false, 360);
 			return false;
 		}
+		return false;
 	}
 
 	public static function isGitRepo() {
-		if ($gitrepo = Cache::get('gitrepo')) {
-			return $gitrepo;
-		} else {
-			if (self::isGitInstalled()){
-				$gitrepo = (trim(`git rev-parse --is-inside-work-tree`) == 'true');
-				Cache::put('gitrepo', $gitrepo, 360);
-				return $gitrepo;
-			}
-			Cache::put('gitrepo', false, 360);
-			return false;
+		if (self::isGitInstalled()){
+			return trim(`git rev-parse --is-inside-work-tree`) == 'true';
 		}
+		return false;
 	}
 
 	private static function getRawRepoStatus() {
