@@ -10,6 +10,8 @@ sudo: false
 
 install: travis_retry composer install --no-interaction
 
-before_script: php artisan migrate:refresh --seed --seeder=TestSeedera
+before_script: 
+	- php artisan migrate:refresh --seed --seeder=TestSeeder --force
+	- php artisan db:seed --class="TestSeeder" --force
 
 script: vendor/bin/phpunit --verbose

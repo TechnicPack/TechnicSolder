@@ -20,7 +20,7 @@ class ModTableTestSeeder extends Seeder {
 
 		DB::table('modversions')->delete();
 
-		$testmodversion = ModVersion::create(array('mod_id' => $testmod->id,
+		$testmodversion = Modversion::create(array('mod_id' => $testmod->id,
 							'version' => '0.1',
 							'md5' => 'fb6582e4d9c9bc208181907ecc108eb1'
 							));
