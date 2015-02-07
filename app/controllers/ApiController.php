@@ -288,13 +288,13 @@ class APIController extends BaseController {
 		$response['forge'] = $build->forge;
 		$response['mods'] = array();
 
-		if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion') && empty($this->client) && empty($this->key))
+		if (!Input::has('include'))
 		{
-			$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion');
-		} else {
-			foreach ($build->modversions as $modversion)
+			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion') && empty($this->client) && empty($this->key))
 			{
-				if (!Input::has('include'))
+				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion');
+			} else {
+				foreach ($build->modversions as $modversion)
 				{
 					$response['mods'][] = array(
 												"name" => $modversion->mod->name,
@@ -302,7 +302,17 @@ class APIController extends BaseController {
 												"md5" => $modversion->md5,
 												"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
 												);
-				} else if (Input::get('include') == "mods") {
+				}
+				usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion',$response['mods'],5);
+			}
+		} else if (Input::get('include') == "mods") {
+			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.mods') && empty($this->client) && empty($this->key))
+			{
+				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.mods');
+			} else {
+				foreach ($build->modversions as $modversion)
+				{
 					$response['mods'][] = array(
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
@@ -311,15 +321,26 @@ class APIController extends BaseController {
 												"author" => $modversion->mod->author,
 												"description" => $modversion->mod->description,
 												"link" => $modversion->mod->link,
-												"donate" => $modversion->mod->donatelink
+												"donate" => $modversion->mod->donatelink,
+												"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
 												);
-				} else {
+				}
+				usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.mods',$response['mods'],5);
+			}
+		} else {
+			$request = explode(",", Input::get('include'));
+			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.'.$request) && empty($this->client) && empty($this->key))
+			{
+				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.'.$request);
+			} else {
+				foreach ($build->modversions as $modversion)
+				{
 					$data = array(
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
 												);
-					$request = explode(",", Input::get('include'));
 					$mod = (array)$modversion->mod;
 					$mod = $mod['attributes'];
 					foreach ($request as $type)
@@ -330,10 +351,9 @@ class APIController extends BaseController {
 
 					$response['mods'][] = $data;
 				}
+				usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.'.$request,$response['mods'],5);
 			}
-
-			usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
-			Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion',$response['mods'],5);
 		}
 
 		return $response;
