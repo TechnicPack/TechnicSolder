@@ -35,6 +35,8 @@ class BaseTest extends TestCase {
 
 		$response = $this->call('GET', '/dashboard');
 
-		$this->client->getResponse()->isOk();
+		$this->assertTrue(Cache::get('checker'));
+
+		$this->assertResponseOk();
 	}
 }

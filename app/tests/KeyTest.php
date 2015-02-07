@@ -19,7 +19,7 @@ class KeyTest extends TestCase {
 
 		$response = $this->call('GET', '/key/create');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testKeyDeleteGet()
@@ -30,7 +30,7 @@ class KeyTest extends TestCase {
 
 		$response = $this->call('GET', '/key/delete/'.$key->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testKeyList()
@@ -40,6 +40,6 @@ class KeyTest extends TestCase {
 
 		$response = $this->call('GET', '/key/list');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 }

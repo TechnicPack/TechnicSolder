@@ -19,7 +19,7 @@ class ClientTest extends TestCase {
 
 		$response = $this->call('GET', '/client/create');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testClientDeleteGet()
@@ -30,7 +30,7 @@ class ClientTest extends TestCase {
 
 		$response = $this->call('GET', '/client/delete/'.$client->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testClientList()
@@ -40,6 +40,6 @@ class ClientTest extends TestCase {
 
 		$response = $this->call('GET', '/client/list');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 }

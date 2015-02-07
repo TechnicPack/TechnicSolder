@@ -19,7 +19,7 @@ class UserTest extends TestCase {
 
 		$response = $this->call('GET', '/user/create');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testUserDeleteGet()
@@ -29,7 +29,7 @@ class UserTest extends TestCase {
 
 		$response = $this->call('GET', '/user/delete/'.$user->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertRedirectedTo('/dashboard');
 	}
 
 	public function testUserList()
@@ -39,7 +39,7 @@ class UserTest extends TestCase {
 
 		$response = $this->call('GET', '/user/list');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testUserEdit()
@@ -49,6 +49,6 @@ class UserTest extends TestCase {
 
 		$response = $this->call('GET', '/user/edit/'.$user->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 }

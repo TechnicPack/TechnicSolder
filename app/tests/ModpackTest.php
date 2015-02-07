@@ -19,7 +19,7 @@ class ModpackTest extends TestCase {
 
 		$response = $this->call('GET', '/modpack/create');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testModpackDeleteGet()
@@ -30,7 +30,7 @@ class ModpackTest extends TestCase {
 
 		$response = $this->call('GET', '/modpack/delete/'.$modpack->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testModpackList()
@@ -40,7 +40,7 @@ class ModpackTest extends TestCase {
 
 		$response = $this->call('GET', '/modpack/list');
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testModpackBuild()
@@ -52,7 +52,7 @@ class ModpackTest extends TestCase {
 
 		$response = $this->call('GET', '/modpack/build/'.$build->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 
 	public function testModpackEdit()
@@ -63,6 +63,6 @@ class ModpackTest extends TestCase {
 
 		$response = $this->call('GET', '/modpack/edit/'.$modpack->id);
 
-		$this->client->getResponse()->isOk();
+		$this->assertResponseOk();
 	}
 }
