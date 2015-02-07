@@ -41,23 +41,11 @@ class NewPermissionSystem extends Migration {
 	public function down()
 	{
 		Schema::table('user_permissions', function($table) {
-			$table->dropColumn('modpacks_delete');
-        });
-
-        Schema::table('user_permissions', function($table) {
-            $table->dropColumn('modpacks_manage');
-        });
-
-        Schema::table('user_permissions', function($table) {
-            $table->dropColumn('modpacks_create');
-        });
-
-        Schema::table('user_permissions', function($table) {
-            $table->dropColumn('solder_clients');
-        });
-
-        Schema::table('user_permissions', function($table) {
-            $table->dropColumn('solder_keys');
+			$table->dropColumn(array('modpacks_delete', 
+                                    'modpacks_manage', 
+                                    'modpacks_create', 
+                                    'solder_clients',
+                                    'solder_keys'));
         });
 
         Schema::table('user_permissions', function($table) {

@@ -1,6 +1,15 @@
 language: php
 
 php:
-  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
 
-script: "php artisan test:core"
+sudo: false
+
+install: travis_retry composer install --no-interaction
+
+before_script: php artisan migrate:refresh --seed --seeder=TestSeedera
+
+script: vendor/bin/phpunit --verbose

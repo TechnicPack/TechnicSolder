@@ -6,8 +6,12 @@ class KeyController extends BaseController
 	public function __construct()
 	{
 		parent::__construct();
-		$this->beforeFilter('auth');
 		$this->beforeFilter('solder_keys');
+	}
+
+	public function getIndex()
+	{
+		return Redirect::to('key/list');
 	}
 
 	public function getList()

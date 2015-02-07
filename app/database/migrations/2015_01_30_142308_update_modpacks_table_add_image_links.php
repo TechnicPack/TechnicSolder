@@ -27,9 +27,7 @@ class UpdateModpacksTableAddImageLinks extends Migration {
 	public function down()
 	{
 		Schema::table('modpacks', function($table) {
-			$table->dropColumn('icon_url');
-			$table->dropColumn('logo_url');
-			$table->dropColumn('background_url');
+			$table->dropColumn(array('icon_url', 'logo_url', 'background_url'));
 		});
 	}
 

@@ -1,7 +1,7 @@
 TechnicSolder
 =============
 
-[![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Total Downloads](https://poser.pugx.org/solder/solder/downloads.svg)](https://packagist.org/packages/solder/solder) [![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![License](https://poser.pugx.org/solder/solder/license.svg)](https://packagist.org/packages/solder/solder)
+[![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=master)](https://travis-ci.org/TechnicPack/TechnicSolder) [![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Total Downloads](https://poser.pugx.org/solder/solder/downloads.svg)](https://packagist.org/packages/solder/solder) [![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![License](https://poser.pugx.org/solder/solder/license.svg)](https://packagist.org/packages/solder/solder)
 
 What is Solder?
 --------------
@@ -25,9 +25,9 @@ Requirements
 Installation/Updating Solder
 -------------
 
-Refer to our wiki here: https://github.com/TechnicPack/TechnicSolder/wiki
+Refer to our documentation here: https://docs.solder.io/
 
-If there is any missing info, please post an issue on our [issue tracker](https://github.com/TechnicPack/TechnicSolder/issues)
+If there is any missing/incorrect info, please post an issue on our [issue tracker](https://github.com/TechnicPack/TechnicSolder/issues)
 
 Changes
 ---------------
@@ -40,5 +40,5 @@ Troubleshooting
 
 [@GenPage](http://twitter.com/gen_page)
 
-If you are having issues and can't seem to figure out what's going on, come ask GenPage in IRC @ **irc.synirc.net #technic** or open an issue here on GitHub. Support is not guaranteed!
+If you are having issues and can't seem to figure out what's going on, come ask GenPage in IRC @ **irc.synirc.net #technic** or open an issue here on GitHub.
 

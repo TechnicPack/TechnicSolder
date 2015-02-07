@@ -5,8 +5,12 @@ class UserController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->beforeFilter('auth');
 		$this->beforeFilter('solder_users');
+	}
+
+	public function getIndex()
+	{
+		return Redirect::to('user/list');
 	}
 
 	public function getList()

@@ -5,7 +5,6 @@ class ModController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->beforeFilter('auth');
 		$this->beforeFilter('perm', array('solder_mods'));
 		$this->beforeFilter('perm', array('mods_manage'), array('only' => array('view','versions')));
 		$this->beforeFilter('perm', array('mods_create'), array('only' => array('create')));

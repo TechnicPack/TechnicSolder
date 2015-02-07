@@ -4,8 +4,12 @@ class BaseController extends Controller {
 
 	public function __construct()
 	{
-		define('SOLDER_STREAM', 'DEV');
-		define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+		if(!defined('SOLDER_STREAM')) {
+			define('SOLDER_STREAM', 'DEV');
+		}
+		if(!defined('SOLDER_VERSION')) {
+			define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+		}
 	}
 
 	public function showLogin()
