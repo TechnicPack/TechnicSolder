@@ -6,16 +6,13 @@ class BaseTest extends TestCase {
 	{
 		$response = $this->call('GET', '/login');
 
-		$this->assertTrue($this->client->getResponse()->isOk());
+		$this->assertResponseOk();
 	}
 
-	public function testUnauthorizedAccess()
-	{
-		//This fails for some reason
-		//$response = $this->call('GET', '/dashboard');
+	public function testCheckerCache(){
 
-		//$this->assertTrue($this->client->getResponse()->isOk());
-		//$this->assertRedirectedTo('/login');
+		$this->assertTrue(Cache::get('checker'));
+
 	}
 
 	public function testIndex()
@@ -27,6 +24,15 @@ class BaseTest extends TestCase {
 
 		$this->assertRedirectedTo('/dashboard');
 	}
+/*
+	public function testUnauthorizedAccess()
+	{
+		//This fails for some reason
+		//$response = $this->call('GET', '/dashboard');
+
+		//$this->assertTrue($this->client->getResponse()->isOk());
+		//$this->assertRedirectedTo('/login');
+	}
 
 	public function testDashboard()
 	{
@@ -35,8 +41,6 @@ class BaseTest extends TestCase {
 
 		$response = $this->call('GET', '/dashboard');
 
-		$this->assertTrue(Cache::get('checker'));
-
 		$this->assertResponseOk();
-	}
+	}*/
 }
