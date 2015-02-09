@@ -1,6 +1,8 @@
 TechnicSolder
 =============
 
+[![Join the chat at https://gitter.im/TechnicPack/TechnicSolder](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/TechnicPack/TechnicSolder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Total Downloads](https://poser.pugx.org/solder/solder/downloads.svg)](https://packagist.org/packages/solder/solder) [![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![License](https://poser.pugx.org/solder/solder/license.svg)](https://packagist.org/packages/solder/solder)
 
 What is Solder?
