@@ -2,12 +2,18 @@
 
 class KeyTest extends TestCase {
 
-	public function testKeyIndex()
+	public function setUp()
 	{
+		parent::setUp();
+
 		Route::enableFilters();
+		
 		$user = User::find(1);
 		$this->be($user);
+	}
 
+	public function testKeyIndex()
+	{
 		$this->call('GET', '/key');
 
 		$this->assertRedirectedTo('/key/list');
@@ -15,10 +21,6 @@ class KeyTest extends TestCase {
 
 	public function testKeyCreateGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/key/create');
 
 		$this->assertResponseOk();
@@ -26,10 +28,7 @@ class KeyTest extends TestCase {
 
 	public function testKeyDeleteGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
 		$key = Key::find(1);
-		$this->be($user);
 
 		$this->call('GET', '/key/delete/'.$key->id);
 
@@ -38,10 +37,6 @@ class KeyTest extends TestCase {
 
 	public function testKeyList()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/key/list');
 
 		$this->assertResponseOk();

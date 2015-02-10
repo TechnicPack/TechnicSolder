@@ -2,12 +2,18 @@
 
 class ModpackTest extends TestCase {
 
-	public function testModpackIndex()
+	public function setUp()
 	{
+		parent::setUp();
+
 		Route::enableFilters();
+		
 		$user = User::find(1);
 		$this->be($user);
+	}
 
+	public function testModpackIndex()
+	{
 		$this->call('GET', '/modpack');
 
 		$this->assertRedirectedTo('/modpack/list');
@@ -15,10 +21,6 @@ class ModpackTest extends TestCase {
 
 	public function testModpackCreateGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/modpack/create');
 
 		$this->assertResponseOk();
@@ -26,10 +28,7 @@ class ModpackTest extends TestCase {
 
 	public function testModpackDeleteGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
 		$modpack = Modpack::find(1);
-		$this->be($user);
 
 		$this->call('GET', '/modpack/delete/'.$modpack->id);
 
@@ -38,10 +37,6 @@ class ModpackTest extends TestCase {
 
 	public function testModpackList()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/modpack/list');
 
 		$this->assertResponseOk();
@@ -49,11 +44,8 @@ class ModpackTest extends TestCase {
 
 	public function testModpackBuild()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
 		$modpack = Modpack::find(1);
 		$build = $modpack->builds()->first();
-		$this->be($user);
 
 		$this->call('GET', '/modpack/build/'.$build->id);
 
@@ -62,10 +54,7 @@ class ModpackTest extends TestCase {
 
 	public function testModpackEdit()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
 		$modpack = Modpack::find(1);
-		$this->be($user);
 
 		$this->call('GET', '/modpack/edit/'.$modpack->id);
 

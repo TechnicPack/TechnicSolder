@@ -32,6 +32,16 @@ class ApiTest extends TestCase {
 		$this->assertTrue(array_key_exists('error', $json));
 	}
 
+	public function testInvalidModpack()
+	{
+		$response = $this->call('GET', 'api/modpack/bob');
+		$this->assertResponseOk();
+		$this->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
+		$json = $response->getData(true);
+
+		$this->assertTrue(array_key_exists('error', $json));
+	}
+
 	public function testModpackSlug()
 	{
 		$modpack = Modpack::find(1);
@@ -52,6 +62,16 @@ class ApiTest extends TestCase {
 		$this->assertTrue(array_key_exists('background', $json));
 		$this->assertTrue(array_key_exists('background_md5', $json));
 		$this->assertTrue(array_key_exists('builds', $json));
+	}
+
+	public function testInvalidMod()
+	{
+		$response = $this->call('GET', 'api/mod/bob');
+		$this->assertResponseOk();
+		$this->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
+		$json = $response->getData(true);
+
+		$this->assertTrue(array_key_exists('error', $json));
 	}
 
 	public function testModSlug()

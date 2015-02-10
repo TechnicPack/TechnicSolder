@@ -11,6 +11,11 @@ class ModController extends BaseController {
 		$this->beforeFilter('perm', array('mods_delete'), array('only' => array('delete')));
 	}
 
+		public function getIndex()
+	{
+		return Redirect::to('mod/list');
+	}
+
 	public function getList()
 	{
 		$mods = Mod::all();
@@ -133,18 +138,6 @@ class ModController extends BaseController {
 		$mod->delete();
 
 		return Redirect::to('mod/list')->with('deleted','Mod deleted!');
-	}
-
-	public function getVersions($mod_id = null)
-	{
-		if (empty($mod_id))
-			return Redirect::to('mod/list');
-
-		$mod = Mod::find($mod_id);
-		if (empty($mod))
-			return Redirect::to('mod/list');
-
-		return View::make('mod.versions')->with(array('mod' => $mod));
 	}
 
 	public function getRehash($ver_id = null)

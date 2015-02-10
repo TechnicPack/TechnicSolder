@@ -2,12 +2,19 @@
 
 class ClientTest extends TestCase {
 
-	public function testClientIndex()
+
+	public function setUp()
 	{
+		parent::setUp();
+
 		Route::enableFilters();
+		
 		$user = User::find(1);
 		$this->be($user);
+	}
 
+	public function testClientIndex()
+	{
 		$this->call('GET', '/client');
 
 		$this->assertRedirectedTo('/client/list');
@@ -15,10 +22,6 @@ class ClientTest extends TestCase {
 
 	public function testClientCreateGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/client/create');
 
 		$this->assertResponseOk();
@@ -26,10 +29,7 @@ class ClientTest extends TestCase {
 
 	public function testClientDeleteGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
 		$client = Client::find(1);
-		$this->be($user);
 
 		$this->call('GET', '/client/delete/'.$client->id);
 
@@ -38,10 +38,6 @@ class ClientTest extends TestCase {
 
 	public function testClientList()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/client/list');
 
 		$this->assertResponseOk();

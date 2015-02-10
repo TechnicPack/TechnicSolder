@@ -2,12 +2,18 @@
 
 class UserTest extends TestCase {
 
-	public function testUserIndex()
+	public function setUp()
 	{
+		parent::setUp();
+
 		Route::enableFilters();
+		
 		$user = User::find(1);
 		$this->be($user);
+	}
 
+	public function testUserIndexGet()
+	{
 		$this->call('GET', '/user');
 
 		$this->assertRedirectedTo('/user/list');
@@ -15,10 +21,6 @@ class UserTest extends TestCase {
 
 	public function testUserCreateGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/user/create');
 
 		$this->assertResponseOk();
@@ -26,32 +28,24 @@ class UserTest extends TestCase {
 
 	public function testUserDeleteGet()
 	{
-		Route::enableFilters();
 		$user = User::find(1);
-		$this->be($user);
 
 		$this->call('GET', '/user/delete/'.$user->id);
 
 		$this->assertRedirectedTo('/dashboard');
 	}
 
-	public function testUserList()
+	public function testUserListGet()
 	{
-		Route::enableFilters();
-		$user = User::find(1);
-		$this->be($user);
-
 		$this->call('GET', '/user/list');
 
 		$this->assertResponseOk();
 	}
 
-	public function testUserEdit()
+	public function testUserEditGet()
 	{
-		Route::enableFilters();
 		$user = User::find(1);
-		$this->be($user);
-
+		
 		$this->call('GET', '/user/edit/'.$user->id);
 
 		$this->assertResponseOk();

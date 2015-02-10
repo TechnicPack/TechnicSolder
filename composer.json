@@ -29,6 +29,7 @@
 	},
 	"require-dev": {
 		"barryvdh/laravel-debugbar": "1.*",
+        "mockery/mockery": "master@dev",
 		"phpunit/phpunit": "~4.0"
 	},
 	"autoload": {
