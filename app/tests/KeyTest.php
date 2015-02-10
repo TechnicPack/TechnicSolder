@@ -31,7 +31,7 @@ class KeyTest extends TestCase {
 		$data = array(
 			'name' => 'TestKey2', 
 			'api_key' => 'sfIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
-		;
+		);
 
 		$response = $this->call('POST', '/key/create', $data);
 		$this->assertRedirectedTo('/key/create');
