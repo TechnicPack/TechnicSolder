@@ -22,9 +22,11 @@ class SolderController extends BaseController {
 
 	public function getUpdate()
 	{
-		$changelog = array_slice(UpdateUtils::getChangelog('latest'), 0, 10);
+		$rawChangeLog = UpdateUtils::getChangelog('latest');
+		$changelog = array_key_exists('error', $rawChangeLog) ? $rawChangeLog['error'] : array_slice($rawChangeLog, 0, 10);
 
-		$latestVersion = UpdateUtils::getLatestVersion()['name'];
+		$rawLatestVersion = UpdateUtils::getLatestVersion();
+		$latestVersion = array_key_exists('error', $rawLatestVersion) ? $rawLatestVersion['error'] : $rawLatestVersion['name'];
 
 		$latestData = array('version' => $latestVersion,
 							'commit' => $changelog[0]);

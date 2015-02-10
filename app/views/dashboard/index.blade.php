@@ -112,9 +112,13 @@
 				<li>{{ HTML::link('https://github.com/TechnicPack/TechnicSolder/commit/'.$change['hash'], $change['abr_hash']) }} <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['message'] }} </li>
 				@endforeach
 				@else
+				@if (array_key_exists('error',$changelog))
+				<div class="alert alert-warning">$changelog['error']</div>
+				@else
 				@foreach ($changelog as $change)
 				<li>{{ HTML::link($change['commit']['url'], substr($change['sha'], 0, 7)) }} <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['commit']['message'] }} </li>
 				@endforeach
+				@endif
 				@endif
 				</ul>
 			</div>

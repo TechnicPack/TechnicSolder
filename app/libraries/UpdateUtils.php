@@ -81,6 +81,9 @@ class UpdateUtils {
 	public static function getLatestVersion() {
 
 		$allVersions = self::getAllVersions();
+		if(array_key_exists('error', $allVersions)){
+			return array('error' => 'Latest Version not available - '.$allVersions['error']);
+		}
 		return $allVersions[0];
 	}
 
@@ -90,10 +93,13 @@ class UpdateUtils {
 		if ($availversions = Cache::get('availableversions')) {
 			return $availversions;
 		} else {
-			$solderVersions = $client->api('repo')->tags('technicpack', 'technicsolder');
-
-			Cache::put('availableversions', $solderVersions, 360); //6 hours
-			return $solderVersions;
+			try {
+				$solderVersions = $client->api('repo')->tags('technicpack', 'technicsolder');
+				Cache::put('availableversions', $solderVersions, 360); //6 hours
+				return $solderVersions;
+			} catch (ApiLimitExceedException $e){
+				return array('error' => 'GitHub API Limit exceeded');
+			}
 		}
 
 	}
@@ -113,10 +119,13 @@ class UpdateUtils {
 		if ($commitinfo = Cache::get($commitHash.'-json')) {
 			return $commitinfo;
 		} else {
-			$commitJson = $client->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
-
-			Cache::put($commitHash.'-json', $commitJson, 360); //6 hours
-			return $commitJson;
+			try {
+				$commitJson = $client->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
+				Cache::put($commitHash.'-json', $commitJson, 360); //6 hours
+				return $commitJson;
+			} catch (ApiLimitExceedException $e){
+				return array('error' => 'Commit Info not available - GitHub API Limit Exceeded');
+			}
 		}
 
 	}
@@ -136,10 +145,13 @@ class UpdateUtils {
 		if ($latestlog = Cache::get('latestchangelog')) {
 			return $latestlog;
 		} else {
-			$changelogJson = $client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => $branch));
-
-			Cache::put('latestchangelog', $changelogJson, 60);
-			return $changelogJson;
+			try {
+				$changelogJson = $client->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => $branch));
+				Cache::put('latestchangelog', $changelogJson, 60);
+				return $changelogJson;
+			} catch(ApiLimitExceedException $e){
+				return array('error' => 'Changelog not available - GitHub API Limit Exceeded');
+			}
 		}
 	}
 
@@ -153,16 +165,21 @@ class UpdateUtils {
 		if ($changelog = Cache::get('localchangelog'.$currentVersion)) {
 			return $changelog;
 		} else {
-			//Calculates the place of the version 
-			$versionIndex = 0;
-			for ($i = 0; $i < sizeof($allVersions); $i++){
-				if ($allVersions[$i]['name'] == $currentVersion){
-					$versionIndex = $i;
-					break;
+			if(!array_key_exists('error', $allVersions)){
+				//Calculates the place of the version 
+				$versionIndex = 0;
+				for ($i = 0; $i < sizeof($allVersions); $i++){
+					if ($allVersions[$i]['name'] == $currentVersion){
+						$versionIndex = $i;
+						break;
+					}
 				}
+
+				$rawInput = shell_exec('git log --pretty=format:%H~%h~%ar~%s ' . $allVersions[$versionIndex + 1]['name'] . '..' . $currentVersion);
+			} else {
+				$rawInput = shell_exec('git log --pretty=format:%H~%h~%ar~%s -n 5');
 			}
 
-			$rawInput = shell_exec('git log --pretty=format:%H~%h~%ar~%s ' . $allVersions[$versionIndex + 1]['name'] . '..' . $currentVersion);
 			$cleanedInput = explode("\n", $rawInput);
 
 			$changelog = array();
