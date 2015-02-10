@@ -27,23 +27,23 @@ class ClientController extends BaseController {
 	public function postCreate()
 	{
 		$rules = array(
-    		'name' => 'required|unique:clients',
-    		'uuid' => 'required|unique:clients'
-    		);
+			'name' => 'required|unique:clients',
+			'uuid' => 'required|unique:clients'
+			);
 
-    	$validation = Validator::make(Input::all(), $rules);
-    	if ($validation->fails())
-    		return Redirect::back()->withErrors($validation->messages());
+		$validation = Validator::make(Input::all(), $rules);
+		if ($validation->fails())
+			return Redirect::to('client/create')->withErrors($validation->messages());
 
-    	$client = new Client();
-    	$client->name = Input::get('name');
-    	$client->uuid = Input::get('uuid');
-    	$client->save();
+		$client = new Client();
+		$client->name = Input::get('name');
+		$client->uuid = Input::get('uuid');
+		$client->save();
 
-    	/* Immediately clear the cache */
-    	Cache::forget('clients');
+		/* Immediately clear the cache */
+		Cache::forget('clients');
 
-    	return Redirect::to('client/list')->with('success','Client added!');
+		return Redirect::to('client/list')->with('success','Client added!');
 	}
 
 	public function getDelete($client_id)
@@ -51,7 +51,7 @@ class ClientController extends BaseController {
 		$client = Client::find($client_id);
 
 		if (empty($client))
-			return Redirect::back();
+			return Redirect::to('client/list');
 
 		return View::make('client.delete')->with('client', $client);
 	}
@@ -61,7 +61,7 @@ class ClientController extends BaseController {
 		$client = Client::find($client_id);
 
 		if (empty($client))
-			return Redirect::back();
+			return Redirect::to('client/list');
 
 		$client->modpacks()->sync(array());
 		$client->delete();

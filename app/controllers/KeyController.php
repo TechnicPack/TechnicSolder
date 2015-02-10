@@ -28,20 +28,20 @@ class KeyController extends BaseController
 	public function postCreate()
 	{
 		$rules = array(
-    		'name' => 'required|unique:keys',
-    		'api_key' => 'required|unique:keys'
-    		);
+			'name' => 'required|unique:keys',
+			'api_key' => 'required|unique:keys'
+			);
 
-    	$validation = Validator::make(Input::all(), $rules);
-    	if ($validation->fails())
-    		return Redirect::back()->withErrors($validation->messages());
+		$validation = Validator::make(Input::all(), $rules);
+		if ($validation->fails())
+			return Redirect::to('key/create')->withErrors($validation->messages());
 
-    	$key = new Key();
-    	$key->name = Input::get('name');
-    	$key->api_key = Input::get('api_key');
-    	$key->save();
+		$key = new Key();
+		$key->name = Input::get('name');
+		$key->api_key = Input::get('api_key');
+		$key->save();
 
-    	return Redirect::to('key/list')->with('success','API key added!');
+		return Redirect::to('key/list')->with('success','API key added!');
 	}
 
 	public function getDelete($key_id)
@@ -49,7 +49,7 @@ class KeyController extends BaseController
 		$key = Key::find($key_id);
 
 		if (empty($key))
-			return Redirect::back();
+			return Redirect::to('key/list');
 
 		return View::make('key.delete')->with('key', $key);
 	}
@@ -59,7 +59,7 @@ class KeyController extends BaseController
 		$key = Key::find($key_id);
 
 		if (empty($key))
-			return Redirect::back();
+			return Redirect::to('key/list');
 
 		$key->delete();
 

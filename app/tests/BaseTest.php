@@ -18,29 +18,29 @@ class BaseTest extends TestCase {
 		$this->assertResponseOk();
 	}
 
-	public function testUnauthorizedLogin() 
+	public function testUnauthorizedLogin()
 	{
 		$credentials = array(
-        	'email' => 'test@admin.com', 
-        	'password' => 'ifail',
-        	'remember' => false
-        );
+			'email' => 'test@admin.com',
+			'password' => 'ifail',
+			'remember' => false
+		);
 
-	    $response = $this->call('POST', '/login', $credentials);
-	    $this->assertRedirectedTo('/login');
-	    $this->assertSessionHas('login_failed');
+		$response = $this->call('POST', '/login', $credentials);
+		$this->assertRedirectedTo('/login');
+		$this->assertSessionHas('login_failed');
 	}
 
-	public function testAuthorizedLogin() 
+	public function testAuthorizedLogin()
 	{
 		$credentials = array(
-        	'email' => 'admin@admin.com', 
-        	'password' => 'admin',
-        	'remember' => false
-        );
+			'email' => 'admin@admin.com',
+			'password' => 'admin',
+			'remember' => false
+		);
 
-	    $response = $this->call('POST', '/login', $credentials);
-	    $this->assertRedirectedTo('/dashboard');
+		$response = $this->call('POST', '/login', $credentials);
+		$this->assertRedirectedTo('/dashboard');
 	}
 
 	public function testIndex()
