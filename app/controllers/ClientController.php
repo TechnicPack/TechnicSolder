@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\MessageBag;
 class ClientController extends BaseController {
 
 	public function __construct()
@@ -51,7 +52,7 @@ class ClientController extends BaseController {
 		$client = Client::find($client_id);
 
 		if (empty($client))
-			return Redirect::to('client/list');
+			return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
 
 		return View::make('client.delete')->with('client', $client);
 	}
@@ -61,7 +62,7 @@ class ClientController extends BaseController {
 		$client = Client::find($client_id);
 
 		if (empty($client))
-			return Redirect::to('client/list');
+			return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
 
 		$client->modpacks()->sync(array());
 		$client->delete();

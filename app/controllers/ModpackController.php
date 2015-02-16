@@ -25,24 +25,18 @@ class ModpackController extends BaseController {
 
 	public function getView($modpack_id = null)
 	{
-		if (empty($modpack_id))
-			return Redirect::to('modpack');
-
 		$modpack = Modpack::find($modpack_id);
 		if (empty($modpack))
-			return Redirect::to('modpack');
+			return Redirect::to('modpack/list')->withErrors(new MessageBag(array('Modpack not found')));
 
 		return View::make('modpack.view')->with('modpack', $modpack);
 	}
 
 	public function anyBuild($build_id = null)
 	{
-		if (empty($build_id))
-			return Redirect::to('modpack');
-
 		$build = Build::find($build_id);
 		if (empty($build))
-			return Redirect::to('modpack');
+			return Redirect::to('modpack/list')->withErrors(new MessageBag(array('Modpack not found')));
 
 		if (Input::get('action') == "delete")
 		{
@@ -82,12 +76,9 @@ class ModpackController extends BaseController {
 
 	public function getAddBuild($modpack_id)
 	{
-		if (empty($modpack_id))
-			return Redirect::to('modpack');
-
 		$modpack = Modpack::find($modpack_id);
 		if (empty($modpack))
-			return Redirect::to('modpack');
+			return Redirect::to('modpack/list')->withErrors(new MessageBag(array('Modpack not found')));
 
 		$minecraft = MinecraftUtils::getMinecraft();
 
@@ -100,12 +91,9 @@ class ModpackController extends BaseController {
 
 	public function postAddBuild($modpack_id)
 	{
-		if (empty($modpack_id))
-			return Redirect::to('modpack');
-
 		$modpack = Modpack::find($modpack_id);
 		if (empty($modpack))
-			return Redirect::to('modpack');
+			return Redirect::to('modpack/list')->withErrors(new MessageBag(array('Modpack not found')));
 
 		$rules = array(
 			"version" => "required",
@@ -164,7 +152,7 @@ class ModpackController extends BaseController {
 		$validation = Validator::make(Input::all(), $rules, $messages);
 
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::to('modpack/create')->withErrors($validation->messages());
 
 		$modpack = new Modpack();
 		$modpack->name = Input::get('name');
@@ -207,7 +195,7 @@ class ModpackController extends BaseController {
 			}
 		} catch(Exception $e) {
 			Log::error($e);
-			return Redirect::back()->withErrors($e->getMessage());
+			return Redirect::to('modpack/create')->withErrors($e->getMessage());
 		}
 
 		return Redirect::to('modpack/view/'.$modpack->id);
@@ -220,15 +208,10 @@ class ModpackController extends BaseController {
 	 */
 	public function getEdit($modpack_id)
 	{
-		if (empty($modpack_id))
-		{
-			return Redirect::to('dashboard');
-		}
-
 		$modpack = Modpack::find($modpack_id);
-		if (empty($modpack_id))
+		if (empty($modpack))
 		{
-			return Redirect::to('dashboard');
+			return Redirect::to('dashboard')->withErrors(new MessageBag(array('Modpack not found')));
 		}
 
 		$clients = array();
@@ -243,15 +226,10 @@ class ModpackController extends BaseController {
 
 	public function postEdit($modpack_id)
 	{
-		if (empty($modpack_id))
-		{
-			return Redirect::to('dashboard');
-		}
-
 		$modpack = Modpack::find($modpack_id);
-		if (empty($modpack_id))
+		if (empty($modpack))
 		{
-			return Redirect::to('dashboard');
+			return Redirect::to('modpack/list/')->withErrors(new MessageBag(array('Modpack not found')));
 		}
 
 		$rules = array(
@@ -530,15 +508,10 @@ class ModpackController extends BaseController {
 
 	public function getDelete($modpack_id)
 	{
-		if (empty($modpack_id))
-		{
-			return Redirect::to('dashboard');
-		}
-
 		$modpack = Modpack::find($modpack_id);
-		if (empty($modpack_id))
+		if (empty($modpack))
 		{
-			return Redirect::to('dashboard');
+			return Redirect::to('modpack/list/')->withErrors(new MessageBag(array('Modpack not found')));
 		}
 
 		return View::make('modpack.delete')->with(array('modpack' => $modpack));
@@ -546,15 +519,10 @@ class ModpackController extends BaseController {
 
 	public function postDelete($modpack_id)
 	{
-		if (empty($modpack_id))
-		{
-			return Redirect::to('dashboard');
-		}
-
 		$modpack = Modpack::find($modpack_id);
-		if (empty($modpack_id))
+		if (empty($modpack))
 		{
-			return Redirect::to('dashboard');
+			return Redirect::to('modpack/list/')->withErrors(new MessageBag(array('Modpack not found')));
 		}
 
 		foreach ($modpack->builds as $build)
@@ -567,7 +535,7 @@ class ModpackController extends BaseController {
 		$modpack->delete();
 		Cache::forget('modpacks');
 
-		return Redirect::to('modpack/list/')->with('deleted','Modpack Deleted');
+		return Redirect::to('modpack/list/')->with('success','Modpack Deleted');
 	}
 
 

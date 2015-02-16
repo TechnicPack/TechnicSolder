@@ -18,11 +18,6 @@
 			{{ Session::get('success') }}
 		</div>
 		@endif
-		@if (Session::has('deleted'))
-		<div class="alert alert-danger">
-			{{ Session::get('deleted') }}
-		</div>
-		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
 			<thead>	

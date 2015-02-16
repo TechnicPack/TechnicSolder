@@ -30,7 +30,6 @@
                     <input type="text" class="form-control" name="slug" id="slug" value="{{ $modpack->slug }}">
                 </div>
                 <hr>
-                <p class="alert alert-warning"><strong>WARNING:</strong> Hidden and/or Private packs will not show up on the Platform when attempting to import. Set them to Hidden or Private AFTER importing</p>
 				<div class="form-group">
 					<label class="control-label" for="hidden">Hide Modpack</label>
 					<div class="controls">

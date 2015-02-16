@@ -16,7 +16,6 @@
 				{{ Session::get('success') }}
 			</div>
 		@endif
-		
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
 			<thead>	

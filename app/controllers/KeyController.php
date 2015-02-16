@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\MessageBag;
 class KeyController extends BaseController
 {
 
@@ -49,7 +50,7 @@ class KeyController extends BaseController
 		$key = Key::find($key_id);
 
 		if (empty($key))
-			return Redirect::to('key/list');
+			return Redirect::to('key/list')->withErrors(new MessageBag(array('Platform Key not found')));
 
 		return View::make('key.delete')->with('key', $key);
 	}
@@ -59,7 +60,7 @@ class KeyController extends BaseController
 		$key = Key::find($key_id);
 
 		if (empty($key))
-			return Redirect::to('key/list');
+			return Redirect::to('key/list')->withErrors(new MessageBag(array('Platform Key not found')));
 
 		$key->delete();
 

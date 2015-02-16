@@ -19,11 +19,53 @@ class ModpackTest extends TestCase {
 		$this->assertRedirectedTo('/modpack/list');
 	}
 
+	public function testModpackList()
+	{
+		$this->call('GET', '/modpack/list');
+
+		$this->assertResponseOk();
+	}
+
 	public function testModpackCreateGet()
 	{
 		$this->call('GET', '/modpack/create');
 
 		$this->assertResponseOk();
+	}
+
+	public function testModpackCreatePostNonUniqueSlug()
+	{
+		$data = array(
+			'name' => 'TestModpack2',
+			'slug' => 'testmodpack'
+		);
+
+		$response = $this->call('POST', '/modpack/create', $data);
+		$this->assertRedirectedTo('/modpack/create');
+		$this->assertSessionHasErrors('slug');
+	}
+
+	public function testModpackCreatePostNonUniqueName()
+	{
+		$data = array(
+			'name' => 'TestModpack',
+			'slug' => 'testmodpack2'
+		);
+
+		$response = $this->call('POST', '/modpack/create', $data);
+		$this->assertRedirectedTo('/modpack/create');
+		$this->assertSessionHasErrors('name');
+	}
+
+	public function testModpackCreatePost() 
+	{
+		$data = array(
+			'name' => 'TestModpack2', 
+			'slug' => 'testmodpack2'
+		);
+
+		$response = $this->call('POST', '/modpack/create', $data);
+		$this->assertRedirectedTo('/modpack/view/2');
 	}
 
 	public function testModpackDeleteGet()
@@ -35,11 +77,25 @@ class ModpackTest extends TestCase {
 		$this->assertResponseOk();
 	}
 
-	public function testModpackList()
+	public function testModpackDeleteGetInvalidID()
 	{
-		$this->call('GET', '/modpack/list');
+		$this->call('GET', '/modpack/delete/100000');
+		$this->assertRedirectedTo('/modpack/list');
+	}
 
-		$this->assertResponseOk();
+	public function testModpackDeletePostInvalidID()
+	{
+		$this->call('POST', '/modpack/delete/100000');
+		$this->assertRedirectedTo('/modpack/list');
+	}
+
+	public function testModpackDeletePost()
+	{
+		$modpack = Modpack::where('slug', '=', 'testmodpack2')->firstOrFail();
+
+		$this->call('POST', '/modpack/delete/'.$modpack->id);
+		$this->assertRedirectedTo('/modpack/list');
+		$this->assertSessionHas('success');
 	}
 
 	public function testModpackBuild()

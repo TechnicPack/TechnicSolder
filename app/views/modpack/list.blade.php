@@ -2,23 +2,26 @@
 @section('content')
 <h1>Modpack Management</h1>
 <hr>
-@if (Session::has('deleted'))
-<div class="alert alert-danger">
-	{{ Session::get('deleted') }}
-</div>
-@endif
+
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-		    <a href="{{ URL::to('modpack/create') }}" class="btn btn-success btn-xs"><i class="icon-plus icon-white"></i>Create Modpack</a>
+			<a href="{{ URL::to('modpack/create') }}" class="btn btn-success btn-xs"><i class="icon-plus icon-white"></i>Create Modpack</a>
 		</div>
 	Modpack List
 	</div>
 	<div class="panel-body">
-	@if (Session::has('success'))
-			<div class="alert alert-success">
-				{{ Session::get('success') }}
-			</div>
+		@if (Session::has('success'))
+		<div class="alert alert-success">
+			{{ Session::get('success') }}
+		</div>
+		@endif
+		@if ($errors->all())
+		<div class="alert alert-danger">
+		@foreach ($errors->all() as $error)
+			{{ $error }}<br />
+		@endforeach
+		</div>
 		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
@@ -54,7 +57,7 @@
 @section('bottom')
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#dataTables').dataTable();
+	$('#dataTables').dataTable();
 });
 </script>
 @endsection
