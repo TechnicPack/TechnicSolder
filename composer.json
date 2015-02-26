@@ -19,16 +19,16 @@
                	}],
 	"require": {
 		"laravel/framework": "4.2.*",
-		"patricktalmadge/bootstrapper": "5.4.*",
-		"intervention/image": "2.0.*",
+		"patricktalmadge/bootstrapper": "5.5.*",
+		"intervention/image": "2.1.*",
         "doctrine/dbal": "2.5.*",
         "composer/composer": "1.0.0-alpha9",
         "knplabs/github-api": "1.4.*",
-        "guzzlehttp/guzzle": "~5.0@dev",
-        "aws/aws-sdk-php": "2.6.*"
+        "guzzlehttp/guzzle": "5.2.*",
+        "aws/aws-sdk-php": "2.7.*"
 	},
 	"require-dev": {
-		"barryvdh/laravel-debugbar": "1.*",
+		"barryvdh/laravel-debugbar": "~1.8@dev",
         "mockery/mockery": "master@dev",
 		"phpunit/phpunit": "~4.0"
 	},
