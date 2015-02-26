@@ -13,10 +13,10 @@ class DashboardController extends BaseController {
 
 		$modversions = Modversion::whereNotNull('md5')->orderBy('updated_at', 'desc')->take(5)->get();
 
-		$checkerEnabled = UpdateUtils::getCheckerEnabled() ;
-		$changelog = UpdateUtils::getChangeLog($checkerEnabled ? 'local' : 'latest');
+		$rawChangeLog = UpdateUtils::getLatestChangeLog();
+		$changelogJson = array_key_exists('error', $rawChangeLog) ? $rawChangeLog : array_slice($rawChangeLog, 0, 10);
 
-		return View::make('dashboard.index')->with('modversions', $modversions)->with('builds', $builds)->with('changelog', $changelog)->with('checker', $checkerEnabled);
+		return View::make('dashboard.index')->with('modversions', $modversions)->with('builds', $builds)->with('changelog', $changelogJson);
 	}
 	
 }

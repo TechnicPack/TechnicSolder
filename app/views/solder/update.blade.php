@@ -12,42 +12,38 @@
 		    Solder Versioning
 		    </div>
 		    <div class="panel-body">
-                @if (!$checker)
-                <div class="alert alert-danger">Update Checker is disabled. Latest info from Github is displayed instead.</div>
+		        <label>Current Version: <span class="label label-default">{{ $currentVersion }}</span></label><br>
+		        <label>Latest Version: 
+                @if (is_array($latestData['version']) && array_key_exists('error', $latestData['version']))
+                <span class="label label-danger">{{ $latestData['version']['error'] }}</span>
+                @else
+                <span class="label label-default">{{ $latestData['version'] }}</span>
                 @endif
-		        <label>Current Version: <span class="label label-default">{{ $currentData['version'] }}</span></label><br>
-                @if ($checker)
-		        <label>Current Commit: <span class="label label-default">{{ $currentData['commit'] }}</span></label><br>
-                <label>Current Branch: <span class="label label-default">{{ $currentData['branch'] }}</span></label><br>
+                </label><br>
+                <label>Latest Commit: 
+                @if (array_key_exists('error', $changelog))
+                <span class="label label-danger">{{ $latestData['error'] }}</span>
+                @else
+		        <span class="label label-default">{{ $latestData['commit']['sha'] }}</span>
                 @endif
-		        <label>Latest Version: <span class="label label-default">{{ $latestData['version'] }}</span></label><br>
-		        <label>Latest Commit: <span class="label label-default">{{ $latestData['commit']['sha'] }}</span></label><br>
-                <label>Shell Access: {{ $currentData['shell_exec'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
-                <label>Git Installed: {{ $currentData['git'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
-                <label>Git Repository Found: {{ $currentData['gitrepo'] ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br>
+                </label><br>
 			</div>
 		</div>
-        @if (Cache::get('checker'))
         <div class="panel panel-default">
             <div class="panel-heading">
             Update Check
             </div>
             <div class="panel-body">
-                @if (Cache::has('update') && Cache::get('update'))
+                @if (Cache::get('update'))
                 <p id='solder-update-ajax' class="alert alert-danger">Solder is out of date. Please refer to the wiki on how to update.</p>                
-                @elseif ($checker && strcasecmp($currentData['commit'], $latestData['commit']['sha']) != 0 && $currentData['branch'] == 'master')
-                <p id='solder-update-ajax' class="alert alert-warning">Solder is up to date, but hotfixes are available</p>
-                @elseif ($checker && strcasecmp($currentData['commit'], $latestData['commit']['sha']) != 0 && $currentData['branch'] == 'dev')
-                <p id='solder-update-ajax' class="alert alert-warning">Solder is up to date, but dev builds are available</p>
                 @else
                 <p id='solder-update-ajax' class="alert alert-success">Solder is up to date</p>
                 @endif
-                <a href="https://github.com/TechnicPack/TechnicSolder/wiki/Updating-Solder#updating-from-v07-onward" target="blank_"><button id='solder-wiki' class="btn btn-default">Updating Solder <i class="fa fa-question"></i></button></a>
+                <a href="http://docs.solder.io/v0.7/docs/updating-solder" target="blank_"><button id='solder-wiki' class="btn btn-default">Updating Solder <i class="fa fa-question"></i></button></a>
                 <button id='solder-update' type="submit" class="btn btn-default">Check for update</button>
                 <span id="solder-checking" style="margin-left:10px;" class="hidden"><i class="fa fa-cog fa-spin"></i> Checking...</span>
             </div>
         </div>
-        @endif
 	</div>
 	<div class="col-lg-6">
         <div class="panel panel-default">
@@ -56,12 +52,16 @@
             </div>
             <div class="panel-body">
                 <div class="list-group">
+                    @if (array_key_exists('error', $changelog))
+                    <div class="alert alert-warning">$changelog['error']</div>
+                    @else
                 	@foreach ($changelog as $change)
                     <a href="{{ $change['html_url'] }}" target="blank_" class="list-group-item">
                         <span class="badge" style="margin-left:5px;">{{  date_format(date_create($change['commit']['author']['date']), 'M, d, Y | g:i a') }}</span>
                         <img src="{{ $change['author']['avatar_url']}}" alt="{{ $change['author']['login']}}" height="23" width="23"> {{ $change['commit']['message'] }}
                     </a>
-                    @endforeach                    
+                    @endforeach
+                    @endif               
                 </div>
                 <div class="text-right">
                     <a href="https://github.com/TechnicPack/TechnicSolder/commits/master">View All Activity <i class="fa fa-arrow-circle-right"></i></a>
@@ -86,15 +86,7 @@ $('#solder-update').click(function(e) {
                 if(data.update) {
                     $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Solder is out of date. Please refer to the wiki on how to update.').fadeIn();
                 } else {
-                    if(data.build) {
-                        if(data.branch == 'dev'){
-                            $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-warning").html('Solder is up to date, but dev builds are available').fadeIn();
-                        } else {
-                            $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-warning").html('Solder is up to date, but hotfixes are available').fadeIn();
-                        }
-                    } else {
-                        $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-success").html('Solder is up to date.').fadeIn();
-                    }
+                    $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-success").html('Solder is up to date.').fadeIn();
                 }
             } else {
                 $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Error checking for update. ' + data.reason);

@@ -31,7 +31,7 @@
             <a class="navbar-brand" href="{{ URL::to('dashboard') }}"><img src="{{ URL::asset('img/title.png') }}"> {{ SOLDER_VERSION }}</a>
         </div>
         <ul class="nav navbar-top-links navbar-left">
-          @if (Cache::has('update') && Cache::get('update'))
+          @if (Cache::get('update'))
           <li>
               <a href="{{ URL::to('solder/update') }}" style="color:orangered;">
                  Update Available! <i class="fa fa-exclamation-triangle"></i>
@@ -40,7 +40,7 @@
           @endif
         </ul>
         <ul class="nav navbar-top-links navbar-right">
-            <li><a href="https://github.com/TechnicPack/TechnicSolder/wiki" target="blank_">Help <i class="fa fa-question"></i></a></li>
+            <li><a href="http://docs.solder.io/" target="blank_">Help <i class="fa fa-question"></i></a></li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                   {{ Auth::user()->username }} <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>

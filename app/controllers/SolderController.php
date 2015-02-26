@@ -22,64 +22,35 @@ class SolderController extends BaseController {
 
 	public function getUpdate()
 	{
-		$rawChangeLog = UpdateUtils::getChangelog('latest');
-		$changelog = array_key_exists('error', $rawChangeLog) ? $rawChangeLog['error'] : array_slice($rawChangeLog, 0, 10);
+		$rawChangeLog = UpdateUtils::getLatestChangeLog();
+		$changelog = array_key_exists('error', $rawChangeLog) ? $rawChangeLog : array_slice($rawChangeLog, 0, 10);
 
 		$rawLatestVersion = UpdateUtils::getLatestVersion();
-		$latestVersion = array_key_exists('error', $rawLatestVersion) ? $rawLatestVersion['error'] : $rawLatestVersion['name'];
+		$latestVersion = array_key_exists('error', $rawLatestVersion) ? $rawLatestVersion : $rawLatestVersion['name'];
 
 		$latestData = array('version' => $latestVersion,
 							'commit' => $changelog[0]);
-
-		if ($checkerEnabled = UpdateUtils::getCheckerEnabled()) {
-			$version = UpdateUtils::getCurrentVersion();
-			$commit = UpdateUtils::getCurrentCommit();
-			$branch = UpdateUtils::getCurrentBranch();
-
-			$currentData = array('version' => $version,
-							 'commit' => $commit,
-							 'branch' => $branch,
-							 'shell_exec' => UpdateUtils::isExecEnabled(),
-							 'git' => UpdateUtils::isGitInstalled(),
-							 'gitrepo' => UpdateUtils::isGitRepo());
-
-			return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData)->with('checker', $checkerEnabled);
-		}
-
-		$currentData = array('version' => SOLDER_VERSION,
-							 'shell_exec' => UpdateUtils::isExecEnabled(),
-							 'git' => UpdateUtils::isGitInstalled(),
-							 'gitrepo' => UpdateUtils::isGitRepo());
 		
-		return View::make('solder.update')->with('changelog', $changelog)->with('currentData', $currentData)->with('latestData', $latestData)->with('checker', $checkerEnabled);
+		return View::make('solder.update')->with('changelog', $changelog)->with('currentVersion', SOLDER_VERSION)->with('latestData', $latestData);
 	}
 
 	public function getUpdateCheck()
 	{
 		if (Request::ajax())
 		{
-			$branch = UpdateUtils::getCurrentBranch();
 
-			if(UpdateUtils::getUpdateCheck(true)){
+			if(UpdateUtils::getUpdateCheck()){
 				Cache::put('update', true, 60);
 				return Response::json(array(
 									'status' => 'success',
-									'build' => false,
-									'branch' => $branch,
 									'update' => true
 									));
 			} else {
-				Cache::forget('update');
-
-				$changelog = array_slice(UpdateUtils::getChangelog('latest'), 0, 10)[0];
-				$commit = UpdateUtils::getCurrentCommit();
-				$build = boolval(strcasecmp($commit, $changelog['sha']) != 0);
-				
-
+				if(Cache::get('update')){
+					Cache::forget('update');
+				}
 				return Response::json(array(
 									'status' => 'success',
-									'build' => $build,
-									'branch' => $branch,
 									'update' => false
 									));
 			}

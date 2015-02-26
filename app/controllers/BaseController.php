@@ -8,8 +8,10 @@ class BaseController extends Controller {
 			define('SOLDER_STREAM', 'DEV');
 		}
 		if(!defined('SOLDER_VERSION')) {
-			define('SOLDER_VERSION', UpdateUtils::getCurrentVersion());
+			define('SOLDER_VERSION', 'v0.7.0.8');
 		}
+
+		UpdateUtils::init();
 	}
 
 	public function showLogin()
@@ -34,14 +36,8 @@ class BaseController extends Controller {
 			Auth::user()->save();
 
 			//Check for update on login
-			if(!Cache::has('checker')){
-				Cache::forever('checker', UpdateUtils::getCheckerEnabled());
-			} else {
-				if(Cache::get('checker')){
-					if(UpdateUtils::getUpdateCheck(true)){
-						Cache::put('update', true, 60);
-					}
-				}
+			if(UpdateUtils::getUpdateCheck()){
+				Cache::put('update', true, 60);
 			}
 
 			return Redirect::to('dashboard/');
