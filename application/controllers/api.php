@@ -3,6 +3,7 @@
 class API_Controller extends Base_Controller {
 	public $restful = true;
 	public $client = null;
+	public $key = null;
 
 	public function __construct()
 	{
@@ -21,6 +22,19 @@ class API_Controller extends Base_Controller {
 		foreach ($clients as $client) {
 			if ($client->uuid == Input::get('cid')) {
 				$this->client = $client;
+			}
+		}
+
+		if (Cache::has('keys'))
+			$keys = Cache::get('keys');
+		else {
+			$keys = Key::all();
+			Cache::put('keys', $keys, 1);
+		}
+
+		foreach ($keys as $key) {
+			if ($key->api_key == Input::get('k')) {
+				$this->key = $key;
 			}
 		}
 
@@ -146,12 +160,12 @@ class API_Controller extends Base_Controller {
 
 	private function fetch_modpacks()
 	{
-		if (Cache::has('modpacks') && empty($this->client))
+		if (Cache::has('modpacks') && empty($this->client) && empty($this->key))
 		{
 			$modpacks = Cache::get('modpacks');
 		} else {
 			$modpacks = Modpack::where('hidden','=','0')->order_by('order')->get();
-			if (empty($this->client)) {
+			if (empty($this->client) && empty($this->key)) {
 				Cache::put('modpacks', $modpacks, 5);
 			}
 			
@@ -168,6 +182,8 @@ class API_Controller extends Base_Controller {
 							$response['modpacks'][$modpack->slug] = $modpack->name;
 						}
 					}
+				} elseif (isset($this->key)) {
+					$response['modpacks'][$modpack->slug] = $modpack->name;
 				}
 			} else {
 				$response['modpacks'][$modpack->slug] = $modpack->name;
@@ -183,14 +199,16 @@ class API_Controller extends Base_Controller {
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug) && empty($this->client))
+		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->key))
 		{
 			$modpack = Cache::get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::with('Builds')
 							->where("slug","=",$slug)->first();
-			if (empty($this->client))
+
+			if (empty($this->client) && empty($this->key)) {
 				Cache::put('modpack.'.$slug,$modpack,5);
+			}
 		}
 		
 
@@ -256,12 +274,14 @@ class API_Controller extends Base_Controller {
 			if ($build->is_published) {
 				if (!$build->private) {
 					array_push($response['builds'], $build->version);
-				} else if (isset($this->client)) {
+				} elseif (isset($this->client)) {
 					foreach ($this->client->modpacks as $pmodpack) {
 						if ($modpack->id == $pmodpack->id) {
 							array_push($response['builds'], $build->version);
 						}
 					}
+				} elseif (isset($this->key)) {
+					array_push($response['builds'], $build->version);
 				}
 			}
 		}
@@ -273,27 +293,29 @@ class API_Controller extends Base_Controller {
 	{
 		$response = array();
 
-		if (Cache::has('modpack.'.$slug) && empty($this->client))
+		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->key))
 		{
 			$modpack = Cache::Get('modpack.'.$slug);
 		} else {
 			$modpack = Modpack::where("slug","=",$slug)->first();
-			if (empty($this->client))
+
+			if (empty($this->client) && empty($this->key)) {
 				Cache::put('modpack.'.$slug,$modpack,5);
+			}
 		}
 
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
 			
 		$buildpass = $build;
-		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client))
+		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client) && empty($this->key))
 		{
 			$build = Cache::get('modpack.'.$slug.'.build.'.$build);
 		} else {
 			$build = Build::with('ModVersions')
 						->where("modpack_id", "=", $modpack->id)
 						->where("version", "=", $build)->first();
-			if (empty($this->client))
+			if (empty($this->client) && empty($this->key))
 				Cache::put('modpack.'.$slug.'.build.'.$buildpass,$build,5);
 		}
 
