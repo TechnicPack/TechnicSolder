@@ -27,7 +27,7 @@ Requirements
 Installation/Updating Solder
 -------------
 
-Refer to our documentation here: https://docs.solder.io/
+Refer to our documentation here: http://docs.solder.io/
 
 If there is any missing/incorrect info, please post an issue on our [issue tracker](https://github.com/TechnicPack/TechnicSolder/issues)
 
