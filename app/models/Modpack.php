@@ -10,7 +10,7 @@ class Modpack extends Eloquent {
 
 	public function clients()
 	{
-		return $this->belongsToMany('Client');
+		return $this->belongsToMany('Client')->withTimestamps();;
 	}
 
 	public function private_builds()
