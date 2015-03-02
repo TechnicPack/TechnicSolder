@@ -22,7 +22,7 @@
                 </label><br>
                 <label>Latest Commit: 
                 @if (array_key_exists('error', $changelog))
-                <span class="label label-danger">{{ $latestData['error'] }}</span>
+                <span class="label label-danger">{{ $latestData['commit']['error'] }}</span>
                 @else
 		        <span class="label label-default">{{ $latestData['commit']['sha'] }}</span>
                 @endif

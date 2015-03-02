@@ -24,12 +24,13 @@ class SolderController extends BaseController {
 	{
 		$rawChangeLog = UpdateUtils::getLatestChangeLog();
 		$changelog = array_key_exists('error', $rawChangeLog) ? $rawChangeLog : array_slice($rawChangeLog, 0, 10);
+		$latestCommit = array_key_exists('error', $rawChangeLog) ? $rawChangeLog : $rawChangeLog[0];
 
 		$rawLatestVersion = UpdateUtils::getLatestVersion();
 		$latestVersion = array_key_exists('error', $rawLatestVersion) ? $rawLatestVersion : $rawLatestVersion['name'];
 
 		$latestData = array('version' => $latestVersion,
-							'commit' => $changelog[0]);
+							'commit' => $latestCommit);
 		
 		return View::make('solder.update')->with('changelog', $changelog)->with('currentVersion', SOLDER_VERSION)->with('latestData', $latestData);
 	}

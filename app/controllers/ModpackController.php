@@ -255,7 +255,7 @@ class ModpackController extends BaseController {
 
 		$useS3 = Config::get('solder.use_s3') ? true : false;
 		$S3bucket = Config::get('solder.bucket');
-		$newSlug = boolval($oldSlug != $modpack->slug);
+		$newSlug = (bool) $oldSlug != $modpack->slug;
 
 		if ($useS3) {
 			$resourcePath = storage_path() . '/resources/' . $modpack->slug;
