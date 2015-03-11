@@ -5,7 +5,7 @@ class Client extends Eloquent {
 
 	public function modpacks()
 	{
-		return $this->belongsToMany('Modpack')->withTimestamps();;
+		return $this->belongsToMany('Modpack')->withTimestamps();
 	}
 
 }
