@@ -70,8 +70,38 @@ class ModpackController extends BaseController {
 			}
 
 			return View::make('modpack.build.delete')->with('build', $build);
-		} else
+		} else if (Input::get('action') == "edit") {
+			if (Input::get('confirm-edit'))
+			{
+				$rules = array(
+					"version" => "required",
+					"memory" => "numeric"
+					);
+
+				$messages = array('version.required' => "You must enter in the build number.",
+									'memory.numeric' => "You may enter in numbers only for the memory requirement");
+
+				$validation = Validator::make(Input::all(), $rules, $messages);
+				if ($validation->fails())
+					return Redirect::to('modpack/build/'.$build->id.'?action=edit')->withErrors($validation->messages());
+
+				$build->version = Input::get('version');
+
+				$minecraft = explode(':', Input::get('minecraft'));
+
+				$build->minecraft = $minecraft[0];
+				$build->minecraft_md5 = $minecraft[1];
+				$build->min_java = Input::get('java-version');
+				$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
+				$build->save();
+				Cache::forget('modpack.' . $build->modpack->slug . '.build.' . $build->version);
+				return Redirect::to('modpack/build/'.$build->id);
+			}
+			$minecraft = MinecraftUtils::getMinecraft();
+			return View::make('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
+		} else {
 			return View::make('modpack.build.view')->with('build', $build);
+		}
 	}
 
 	public function getAddBuild($modpack_id)
@@ -96,10 +126,12 @@ class ModpackController extends BaseController {
 			return Redirect::to('modpack/list')->withErrors(new MessageBag(array('Modpack not found')));
 
 		$rules = array(
-			"version" => "required",
-			);
+					"version" => "required",
+					"memory" => "numeric"
+					);
 
-		$messages = array('version_required' => "You must enter in the build number.");
+		$messages = array('version.required' => "You must enter in the build number.",
+							'memory.numeric' => "You may enter in numbers only for the memory requirement");
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
@@ -114,6 +146,8 @@ class ModpackController extends BaseController {
 
 		$build->minecraft = $minecraft[0];
 		$build->minecraft_md5 = $minecraft[1];
+		$build->min_java = Input::get('java-version');
+		$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
 		$build->save();
 		Cache::forget('modpack.' . $modpack->slug);
 		if (!empty($clone))

@@ -285,6 +285,8 @@ class APIController extends BaseController {
 
 		$response['minecraft'] = $build->minecraft;
 		$response['minecraft_md5'] = $build->minecraft_md5;
+		$response['java'] = $build->min_java;
+		$response['memory'] = $build->min_memory;
 		$response['forge'] = $build->forge;
 		$response['mods'] = array();
 
