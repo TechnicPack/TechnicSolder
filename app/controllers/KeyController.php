@@ -41,6 +41,7 @@ class KeyController extends BaseController
 		$key->name = Input::get('name');
 		$key->api_key = Input::get('api_key');
 		$key->save();
+		Cache::forget('keys');
 
 		return Redirect::to('key/list')->with('success','API key added!');
 	}
@@ -63,6 +64,7 @@ class KeyController extends BaseController
 			return Redirect::to('key/list')->withErrors(new MessageBag(array('Platform Key not found')));
 
 		$key->delete();
+		Cache::forget('keys');
 
 		return Redirect::to('key/list')->with('success', 'API Key deleted!');
 	}

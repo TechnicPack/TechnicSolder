@@ -109,6 +109,7 @@ class ModController extends BaseController {
 		$mod->link = Input::get('link');
 		$mod->donatelink = Input::get('donatelink');
 		$mod->save();
+		Cache::forget('mod.'.$mod->name);
 
 		return Redirect::to('mod/view/'.$mod->id)->with('success','Mod successfully edited.');
 	}
@@ -125,6 +126,7 @@ class ModController extends BaseController {
 			$ver->delete();
 		}
 		$mod->delete();
+		Cache::forget('mod.'.$mod->name);
 
 		return Redirect::to('mod/list')->with('success','Mod deleted!');
 	}
