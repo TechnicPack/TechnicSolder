@@ -23,7 +23,7 @@ class APIController extends BaseController {
 			Cache::put('keys', $keys, 1);
 		}
 
-		$input_cid = Input::get('cid')
+		$input_cid = Input::get('cid');
 		if(!empty($input_cid)) {
 			foreach ($clients as $client) {
 				if ($client->uuid == $input_cid) {
