@@ -235,7 +235,31 @@ class ModController extends BaseController {
 
 		return App::abort(404);
 	}
-
+	
+	public function getRehashall()
+	{
+		if (Request::ajax()){
+			$mods = Mod::all();
+			foreach ($mods as $i => $mod_info) {
+				$mod = Mod::find($mod_info['id']);
+				$mod_versions = $mod->versions()->get();
+				foreach ($mod_versions as $mod_version) {
+					$ver = Modversion::find($mod_version['id']);
+					if (empty($ver)){
+						return;		
+					}
+					if ($md5 = $this->mod_md5($ver->mod,$ver->version))
+					{
+						$ver->md5 = $md5;
+						$ver->save();
+					}
+				}
+			}
+			return Response::json(array('status' => 'success',));
+		}
+		return App::abort(404);	
+	}
+	
 	private function mod_md5($mod, $version)
 	{
 		$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
