@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>{{ $mod->pretty_name }} - TechnicSolder</title>
+@stop
 @section('content')
 <div class="page-header">
 <h1>Mod Library</h1>
@@ -206,7 +209,7 @@ $(document).ready(function() {
 
 	/* Disabled for now, there is ample screen space that all we need to do is switch the tabs
 	        changing location is disorienting.
-	
+
 	$('#tabs a[href="#versions"]').click(function() {
 		window.location.hash = "#versions";
 	});
