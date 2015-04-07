@@ -146,6 +146,11 @@ class ModController extends BaseController {
 							'reason' => 'Could not pull mod from database'
 							));
 			$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/';
+			if(!file_exists($location))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Folder '.$mod->name.' does not exist.'
+							));
 			$files = scandir($location);
 			if(!$files)
 				return Response::json(array(
