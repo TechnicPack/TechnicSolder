@@ -143,6 +143,7 @@ function refresh() {
 						});
 					} else {
 						$('#add-version').append('<option value=\"\">N/A</option>');
+						$("#add-url").html('N/A');
 					}
 				} else {
 					$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
