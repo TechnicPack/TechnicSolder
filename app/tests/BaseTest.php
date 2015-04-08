@@ -61,7 +61,7 @@ class BaseTest extends TestCase {
 	}
 
 	public function testDashboard()
-	{;
+	{
 		$user = User::find(1);
 		$this->be($user);
 
