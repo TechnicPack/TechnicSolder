@@ -108,7 +108,7 @@ class ModpackTest extends TestCase {
 		$this->assertResponseOk();
 	}
 
-	public function testModpackEdit()
+	public function testModpackEditGet()
 	{
 		$modpack = Modpack::find(1);
 
@@ -116,4 +116,40 @@ class ModpackTest extends TestCase {
 
 		$this->assertResponseOk();
 	}
+
+	public function testModpackEditPostBlank() 
+	{
+		$modpack = Modpack::find(1);
+
+		$data = array(
+			'name' => $modpack->name, 
+			'slug' => $modpack->slug,
+			'hidden' => $modpack->hidden,
+			'private' => $modpack->private
+		);
+
+		$response = $this->call('POST', '/modpack/edit/'.$modpack->id, $data);
+		$this->assertRedirectedTo('/modpack/view/'.$modpack->id);
+	}
+
+	public function testModpackEditPost() 
+	{
+		$modpack = Modpack::find(1);
+
+		$data = array(
+			'name' => 'TestTest', 
+			'slug' => 'test-test',
+			'hidden' => true,
+			'private' => true
+		);
+
+		$response = $this->call('POST', '/modpack/edit/'.$modpack->id, $data);
+		$this->assertRedirectedTo('/modpack/view/'.$modpack->id);
+		$modpack = Modpack::find(1);
+		$this->assertEquals('TestTest', $modpack->name);
+		$this->assertEquals('test-test', $modpack->slug);
+		$this->assertTrue((bool)($modpack->hidden));
+		$this->assertTrue((bool)($modpack->private));
+	}
+
 }

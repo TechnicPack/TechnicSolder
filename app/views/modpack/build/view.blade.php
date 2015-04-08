@@ -7,15 +7,32 @@
 <div class="page-header">
 <h1>Build Management</h1>
 </div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+	<div class="pull-right">
+		<a href="{{ URL::current() }}" class="btn btn-xs btn-warning">Refresh</a>
+		<a href="{{ URL::to('modpack/build/' . $build->id . '?action=edit') }}" class="btn btn-xs btn-danger">Edit</a>
+	    <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-info">Back to Modpack</a>
+	</div>
+	Build Info: {{ $build->modpack->name }} - Build {{ $build->version }}
+	</div>
+	<div class="panel-body">
+		<div class="col-md-6">
+			<label>Build Version: <span class="label label-default">{{ $build->version }}</span></label><br>
+			<label>Minecraft Version: <span class="label label-default">{{ $build->minecraft }}</span></label><br>
+			<label>Minecraft MD5: <span class="label label-default">{{ $build->md5 }}</span></label>
+		</div>
+		<div class="col-md-6">
+			<label>Java Version: <span class="label label-default">{{ $build->min_java }}</span></label><br>
+			<label>Memory (<i>in MB</i>): <span class="label label-default">{{ $build->min_memory }}</span></label>
+		</div>
+	</div>
+</div>
 <div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
 <div class="alert alert-warning" id="warning-ajax" style="width: 100%;display: none"></div>
 <div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 <div class="panel panel-default">
 	<div class="panel-heading">
-	<div class="pull-right">
-		<a href="{{ URL::current() }}" class="btn btn-xs btn-warning">Refresh</a>
-	    <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-info">Back to Modpack</a>
-	</div>
 	Build Management: {{ $build->modpack->name }} - Build {{ $build->version }}
 	</div>
 	<div class="panel-body">
@@ -50,7 +67,15 @@
 			</form>
 			</tbody>
 		</table>
-		<hr>
+		</div>
+	</div>
+</div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+	Build Management: {{ $build->modpack->name }} - Build {{ $build->version }}
+	</div>
+	<div class="panel-body">
+		<div class="table-responsive">
 		<table class="table" id="mod-list">
 			<thead>
 				<th id="mod-header" style="width: 60%">Mod Name</th>

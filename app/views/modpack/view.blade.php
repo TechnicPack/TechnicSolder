@@ -1,11 +1,14 @@
 @extends('layouts/master')
+@section('title')
+    <title>{{ $modpack->name }} - TechnicSolder</title>
+@stop
 @section('content')
 <h1>Build Management - {{ $modpack->name }}</h1>
 <hr>
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/add-build/'.$modpack->id) }}">Create New Build</a> 
+			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/add-build/'.$modpack->id) }}">Create New Build</a>
 			<a class="btn btn-warning btn-xs" href="{{ URL::to('modpack/edit/'.$modpack->id) }}">Edit Modpack</a>
 		</div>
 	Build Management: {{ $modpack->name }}
@@ -20,7 +23,7 @@
 		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-			<thead>	
+			<thead>
 				<tr>
 					<th>#</th>
 					<th>Build Number</th>
@@ -46,7 +49,7 @@
 					<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ ($build->is_published ? " checked" : "") }}></td>
 					<td><input type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ ($build->private ? " checked" : "") }}></td>
 					<td>{{ $build->created_at }}</td>
-					<td>{{ HTML::link('modpack/build/'.$build->id, "Manage",'class="btn btn-xs btn-primary"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-xs btn-danger"') }}</td>
+					<td>{{ HTML::link('modpack/build/'.$build->id, "Manage",'class="btn btn-xs btn-primary"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=edit', "Edit",'class="btn btn-xs btn-warning"') }} {{ HTML::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-xs btn-danger"') }}</td>
 				</tr>
 			@endforeach
 			</tbody>
