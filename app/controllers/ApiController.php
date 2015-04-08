@@ -32,7 +32,7 @@ class APIController extends BaseController {
 			}
 		}
 
-		$input_key = Input::get('key');
+		$input_key = Input::get('k');
 		if(!empty($input_key)) {
 			foreach ($keys as $key) {
 				if ($key->api_key == $input_key) {
