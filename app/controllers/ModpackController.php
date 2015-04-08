@@ -100,7 +100,20 @@ class ModpackController extends BaseController {
 			$minecraft = MinecraftUtils::getMinecraft();
 			return View::make('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
 		} else {
-			return View::make('modpack.build.view')->with('build', $build);
+			$mods = Mod::all();
+			$modversions = $build->modversions()->get();
+			$modsInBuild = array();
+			foreach ($modversions as $i => $modversion) {
+				$modsInBuild[] = $modversion->mod()->get()[0];
+			}
+
+			$listMods = array();
+			foreach ($mods as $i => $mod) {
+				if(!in_array($mod, $modsInBuild)) {
+					$listMods[] = $mod;
+				}
+			}
+			return View::make('modpack.build.view')->with('build', $build)->with('listMods', $listMods);
 		}
 	}
 
@@ -388,7 +401,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $logoimg->save($resourcePath . '/logo.png', 100)) {
 					$modpack->logo = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -455,7 +468,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $backgroundimg->save($resourcePath . '/background.jpg', 100)) {
 					$modpack->background = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
