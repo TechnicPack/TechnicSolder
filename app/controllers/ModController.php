@@ -129,6 +129,57 @@ class ModController extends BaseController {
 		return Redirect::to('mod/list')->with('success','Mod deleted!');
 	}
 
+	public function getFileRefresh($mod_id = null)
+	{
+		if (Request::ajax())
+		{
+			if (empty($mod_id))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Missing Post Data'
+							));
+
+			$mod = Mod::find($mod_id);
+			if (empty($mod))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Could not pull mod from database'
+							));
+			$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/';
+			if(!file_exists($location))
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Folder '.$mod->name.' does not exist.'
+							));
+			$files = scandir($location);
+			if(!$files)
+				return Response::json(array(
+							'status' => 'error',
+							'reason' => 'Could not find mod folder'
+							));
+			$existingVersionsObjects = $mod->versions()->get();
+			$existingVersions = array();
+			foreach ($existingVersionsObjects as $i => $version) {
+				$existingVersions[] = $version->version;
+			}
+			$versions = array();
+			foreach ($files as $i => $file) {
+				if(strpos($file, ".zip") !== false) {
+					$version = str_replace(".zip", "", str_replace($mod->name."-", "", $file));
+					if(!in_array($version, $existingVersions)) {
+						$versions[] = $version;
+					}
+				}
+			}
+			return Response::json(array(
+									'versions' => $versions,
+									'status' => 'success'
+									));
+
+		}
+		return App::abort(404);
+	}
+
 	public function getRehash($ver_id = null)
 	{
 		if (Request::ajax())
