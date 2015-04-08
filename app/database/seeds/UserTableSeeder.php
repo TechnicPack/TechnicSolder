@@ -20,7 +20,7 @@ class UserTableSeeder extends Seeder {
 							'created_by_user_id' => 1
 							));
 
-		DB::table('user_permissions')::delete();
+		DB::table('user_permissions')->delete();
 
 		UserPermission::create(array('user_id' => $testuser->id,
 										'solder_full' => true
