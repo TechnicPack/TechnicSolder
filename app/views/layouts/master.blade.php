@@ -6,20 +6,21 @@
       <title>TechnicSolder {{ SOLDER_VERSION }}</title>
     @show
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{ HTML::script('js/jquery-1.11.1.min.js') }}
-    {{ HTML::script('js/bootstrap.min.js') }}
-    {{ HTML::style('css/bootstrap.min.css') }}
-    {{ HTML::style('font-awesome/css/font-awesome.css') }}
-    {{ HTML::style('css/sb-admin.css') }}
-    {{ HTML::style('css/solder.css') }}
-    {{ HTML::script('js/plugins/metisMenu/jquery.metisMenu.js') }}
-    {{ HTML::script('js/sb-admin.js') }}
-    {{ HTML::script('js/plugins/dataTables/jquery.dataTables.js') }}
-    {{ HTML::script('js/plugins/dataTables/dataTables.bootstrap.js') }}
-    {{ HTML::style('css/dataTables.bootstrap.css') }}
-    {{ HTML::script('js/jquery.slugify.js') }}
-    {{ HTML::script('js/nav-float.js') }}
-    {{ HTML::style('css/OpenSansfont.css') }}
+    <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}">
+    <script src="{{{ asset('js/jquery-1.11.1.min.js') }}}"></script>
+    <script src="{{{ asset('js/bootstrap.min.js') }}}"></script>
+    <link href="{{{ asset('css/bootstrap.min.css') }}}" rel="stylesheet">
+    <link href="{{{ asset('font-awesome/css/font-awesome.css') }}}" rel="stylesheet">
+    <link href="{{{ asset('css/sb-admin.css') }}}" rel="stylesheet">
+    <link href="{{{ asset('css/solder.css') }}}" rel="stylesheet">
+    <script src="{{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}}"></script>
+    <script src="{{{ asset('js/sb-admin.js') }}}"></script>
+    <script src="{{{ asset('js/plugins/dataTables/jquery.dataTables.js') }}}"></script>
+    <script src="{{{ asset('js/plugins/dataTables/dataTables.bootstrap.js') }}}"></script>
+    <link href="{{{ asset('css/dataTables.bootstrap.css') }}}" rel="stylesheet">
+    <script src="{{{ asset('js/jquery.slugify.js') }}}"></script>
+    <script src="{{{ asset('js/nav-float.js') }}}"></script>
+    <link href="{{{ asset('css/OpenSansfont.css') }}}" rel="stylesheet">
     @yield('top')
   </head>
   <body>

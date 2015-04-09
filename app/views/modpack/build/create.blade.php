@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>New Build - {{ $modpack->name }} - TechnicSolder</title>
+@stop
 @section('content')
 <div class="page-header">
 <h1>Build Management</h1>

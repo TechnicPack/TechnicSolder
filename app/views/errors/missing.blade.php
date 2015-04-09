@@ -1,6 +1,9 @@
 @extends('layouts/master')
+@section('title')
+    <title>Page not found! - TechnicSolder</title>
+@stop
 @section('top')
-    {{ HTML::style('css/errors.css')}}
+    <link href="{{{ asset('css/errors.css') }}}" rel="stylesheet">
 @endsection
 @section('content')
 <div class="container">

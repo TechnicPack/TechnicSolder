@@ -1,7 +1,10 @@
 @extends('layouts/master')
+@section('title')
+    <title>{{ $build->version }} - {{ $build->modpack->name }} - TechnicSolder</title>
+@stop
 @section('top')
-    {{ HTML::script('js/selectize.min.js')}}
-    {{ HTML::style('css/selectize.css')}}
+    <script src="{{{ asset('js/selectize.min.js') }}}"></script>
+    <link href="{{{ asset('css/selectize.css') }}}" rel="stylesheet">
 @endsection
 @section('content')
 <div class="page-header">

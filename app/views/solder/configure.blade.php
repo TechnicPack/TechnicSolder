@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>Main Settings - TechnicSolder</title>
+@stop
 @section('content')
 <div class="page-header">
 <h1>Configure Solder</h1>

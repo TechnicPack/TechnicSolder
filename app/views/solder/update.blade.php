@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>Update Checker - TechnicSolder</title>
+@stop
 @section('content')
 <div class="row">
 	<div class="page-header">

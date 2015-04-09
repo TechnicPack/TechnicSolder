@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>Create Client - TechnicSolder</title>
+@stop
 @section('content')
 <h1>Client Management</h1>
 <hr>

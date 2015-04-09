@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>Dashboard - TechnicSolder</title>
+@stop
 @section('content')
 <div class="page-header">
 <h1>Solder Dashboard</h1>

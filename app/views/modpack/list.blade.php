@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>Modpack Management - TechnicSolder</title>
+@stop
 @section('content')
 <h1>Modpack Management</h1>
 <hr>

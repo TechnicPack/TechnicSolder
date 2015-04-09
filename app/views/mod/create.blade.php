@@ -1,4 +1,7 @@
 @extends('layouts/master')
+@section('title')
+    <title>Create Mod - TechnicSolder</title>
+@stop
 @section('content')
 <div class="page-header">
 <h1>Mod Library</h1>
