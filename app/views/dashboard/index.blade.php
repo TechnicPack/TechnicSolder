@@ -105,9 +105,9 @@
 		</div>
 		<div id="changelog" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="changelogHeading">
 			<div class="panel-body">
-				<p><strong>{{SOLDER_VERSION}}</strong></p>		
+				<p><strong>{{SOLDER_VERSION}}</strong></p>
 				@if (array_key_exists('error',$changelog))
-				<div class="alert alert-warning">$changelog['error']</div>
+				<div class="alert alert-warning">{{ $changelog['error'] }}</div>
 				@else
 				<ul>
 				@foreach ($changelog as $change)

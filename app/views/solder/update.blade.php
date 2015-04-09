@@ -56,7 +56,7 @@
             <div class="panel-body">
                 <div class="list-group">
                     @if (array_key_exists('error', $changelog))
-                    <div class="alert alert-warning">$changelog['error']</div>
+                    <div class="alert alert-warning">{{ $changelog['error'] }}</div>
                     @else
                 	@foreach ($changelog as $change)
                     <a href="{{ $change['html_url'] }}" target="blank_" class="list-group-item">
