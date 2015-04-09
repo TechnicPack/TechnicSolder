@@ -1,11 +1,14 @@
 @extends('layouts/master')
+@section('title')
+    <title>{{ $modpack->name }} - TechnicSolder</title>
+@stop
 @section('content')
 <h1>Build Management - {{ $modpack->name }}</h1>
 <hr>
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<div class="pull-right">
-			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/add-build/'.$modpack->id) }}">Create New Build</a> 
+			<a class="btn btn-primary btn-xs" href="{{ URL::to('modpack/add-build/'.$modpack->id) }}">Create New Build</a>
 			<a class="btn btn-warning btn-xs" href="{{ URL::to('modpack/edit/'.$modpack->id) }}">Edit Modpack</a>
 		</div>
 	Build Management: {{ $modpack->name }}
@@ -20,7 +23,7 @@
 		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-			<thead>	
+			<thead>
 				<tr>
 					<th>#</th>
 					<th>Build Number</th>

@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>TechnicSolder {{ SOLDER_VERSION }}</title>
+    @section('title')
+      <title>TechnicSolder {{ SOLDER_VERSION }}</title>
+    @show
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{ HTML::script('js/jquery-1.11.1.min.js') }}
     {{ HTML::script('js/bootstrap.min.js') }}
