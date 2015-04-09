@@ -16,6 +16,7 @@
     {{ HTML::script('js/plugins/dataTables/dataTables.bootstrap.js') }}
     {{ HTML::style('css/dataTables.bootstrap.css') }}
     {{ HTML::script('js/jquery.slugify.js') }}
+    {{ HTML::script('js/nav-float.js') }}
     {{ HTML::style('css/OpenSansfont.css') }}
     @yield('top')
   </head>

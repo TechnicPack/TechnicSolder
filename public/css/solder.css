@@ -12,6 +12,10 @@ input[type=file] {
 	padding-top: 10px;
 }
 
+.nav > li > a > img {
+  border: 1px solid #9a9a9a;
+}
+
 .nav-tabs {
 	margin-bottom: 5px;
 	border-bottom: 1px solid #bfb8b6;
@@ -39,6 +43,7 @@ input[type=file] {
 
 #page-wrapper {
 	background: #e8e8e8;
+	border-left: 1px solid #9a9a9a;
 }
 
 .navbar {
@@ -86,8 +91,12 @@ input[type=file] {
 	background: #163f69;
 }
 
+.navbar-static-side ul > li:first-child {
+	border-top: 1px solid #9a9a9a;
+}
+
 .navbar-static-side ul li {
-	border-bottom: none;
+	border-bottom: 1px solid #9a9a9a;
 }
 
 .navbar-static-side .nav>li>a {
@@ -100,6 +109,14 @@ input[type=file] {
 	background: #e8e8e8;
 	color: #4C4643;
 }
+
+.sidebar-scrolled {
+	position: fixed;
+	width: inherit;
+	top: 0;
+}
+
+.navbar-static-side 
 
 .panel-group .panel {
 	border-radius: 0;
