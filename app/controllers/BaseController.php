@@ -8,7 +8,7 @@ class BaseController extends Controller {
 			define('SOLDER_STREAM', 'DEV');
 		}
 		if(!defined('SOLDER_VERSION')) {
-			define('SOLDER_VERSION', 'v0.7.1.1');
+			define('SOLDER_VERSION', 'v0.7.2.0');
 		}
 
 		UpdateUtils::init();
