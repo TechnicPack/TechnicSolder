@@ -6,11 +6,6 @@
 <div class="page-header">
 <h1>User Management</h1>
 </div>
-@if (Session::has('error'))
-<div class="alert alert-danger">
-	{{ Session::get('error') }}
-</div>
-@endif
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<div class="pull-right">
@@ -19,7 +14,13 @@
 	User List
 	</div>
 	<div class="panel-body">
-		
+		@if ($errors->all())
+			<div class="alert alert-danger">
+			@foreach ($errors->all() as $error)
+				{{ $error }}<br />
+			@endforeach
+			</div>
+		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
 			<thead>
