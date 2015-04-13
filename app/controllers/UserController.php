@@ -43,7 +43,7 @@ class UserController extends BaseController {
 
 		if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users && $user_id != Auth::user()->id)
 			return Redirect::to('dashboard')
-    			->with('permission','You do not have permission to access this area.');
+				->with('permission','You do not have permission to access this area.');
 
 		$user = User::find($user_id);
 
@@ -53,12 +53,11 @@ class UserController extends BaseController {
 
 		$rules = array(
 				'email' => 'required|email|unique:users,email,' . $user_id,
-				'username' => 'required|min:3|max:30|unique:users,username,' . $user_id,
-				'password' => 'min:3'
+				'username' => 'required|min:3|max:30|unique:users,username,' . $user_id
 				);
 
 		if (Input::get('password1'))
-			$rules['password1'] = "same:password2";
+			$rules['password1'] = "min:3|same:password2";
 
 		$validation = Validator::make(Input::all(), $rules);
 
@@ -116,42 +115,42 @@ class UserController extends BaseController {
 		return Redirect::to('user/list')->with('success','User edited successfully!');
 	}
 
-    public function getCreate()
-    {
-    	if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users)
-    		return Redirect::to('dashboard')
-    			->with('permission','You do not have permission to access this area.');
+	public function getCreate()
+	{
+		if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users)
+			return Redirect::to('dashboard')
+				->with('permission','You do not have permission to access this area.');
 
-        return View::make('user.create');
-    }
+		return View::make('user.create');
+	}
 
-    public function postCreate()
-    {	
-    	$rules = array(
-    		'email' => 'required|email|unique:users',
-    		'username' => 'required|min:3|max:30|unique:users',
-    		'password' => 'required|min:3'
-    		);
+	public function postCreate()
+	{	
+		$rules = array(
+			'email' => 'required|email|unique:users',
+			'username' => 'required|min:3|max:30|unique:users',
+			'password' => 'required|min:3'
+			);
 
-    	$validation = Validator::make(Input::all(), $rules);
-    	if ($validation->fails())
-    		return Redirect::to('user/create')->withErrors($validation->messages());
+		$validation = Validator::make(Input::all(), $rules);
+		if ($validation->fails())
+			return Redirect::to('user/create')->withErrors($validation->messages());
 
-    	$creator = Auth::user()->id;
-    	$creatorIP = Request::ip();
+		$creator = Auth::user()->id;
+		$creatorIP = Request::ip();
 
-    	$user = new User();
-    	$user->email = Input::get('email');
-    	$user->username = Input::get('username');
-    	$user->password = Hash::make(Input::get('password'));
-    	$user->created_ip = $creatorIP;
-    	$user->created_by_user_id = $creator;
-    	$user->updated_by_ip = $creatorIP;
-    	$user->updated_by_user_id = $creator;
-    	$user->save();
+		$user = new User();
+		$user->email = Input::get('email');
+		$user->username = Input::get('username');
+		$user->password = Hash::make(Input::get('password'));
+		$user->created_ip = $creatorIP;
+		$user->created_by_user_id = $creator;
+		$user->updated_by_ip = $creatorIP;
+		$user->updated_by_user_id = $creator;
+		$user->save();
 
-    	$perm = new UserPermission();
-    	$perm->user_id = $user->id;
+		$perm = new UserPermission();
+		$perm->user_id = $user->id;
 
 		$perm->solder_full = Input::get('solder-full') ? true : false;
 		$perm->solder_users = Input::get('manage-users') ? true : false;
@@ -177,40 +176,40 @@ class UserController extends BaseController {
 		$perm->save();
 
 		return Redirect::to('user/edit/'.$user->id)->with('success','User created!');
-    }
+	}
 
-    public function getDelete($user_id = null)
-    {
-    	if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users)
-    		return Redirect::to('dashboard')
-    			->with('permission','You do not have permission to access this area.');
+	public function getDelete($user_id = null)
+	{
+		if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users)
+			return Redirect::to('dashboard')
+				->with('permission','You do not have permission to access this area.');
 
-    	if (empty($user_id) || $user_id == 1)
-    		return Redirect::to('user/list')
-    			->withErrors(new MessageBag(array('User ID not provided')));
+		if (empty($user_id) || $user_id == 1)
+			return Redirect::to('user/list')
+				->withErrors(new MessageBag(array('User ID not provided')));
 
-    	$user = User::find($user_id);
-    	if (empty($user))
-    		return Redirect::to('user/list')
-    			->withErrors(new MessageBag(array('User not found')));
+		$user = User::find($user_id);
+		if (empty($user))
+			return Redirect::to('user/list')
+				->withErrors(new MessageBag(array('User not found')));
 
-    	return View::make('user.delete')->with(array('user' => $user));
-    }
+		return View::make('user.delete')->with(array('user' => $user));
+	}
 
-    public function postDelete($user_id = null)
-    {
-    	if (empty($user_id) || $user_id == 1)
-    		return Redirect::to('user/list')
-    			->withErrors(new MessageBag(array('User ID not provided')));
+	public function postDelete($user_id = null)
+	{
+		if (empty($user_id) || $user_id == 1)
+			return Redirect::to('user/list')
+				->withErrors(new MessageBag(array('User ID not provided')));
 
-    	$user = User::find($user_id);
-    	if (empty($user))
-    		return Redirect::to('user/list')
-    			->withErrors(new MessageBag(array('User not found')));
+		$user = User::find($user_id);
+		if (empty($user))
+			return Redirect::to('user/list')
+				->withErrors(new MessageBag(array('User not found')));
 
-    	$user->permission()->delete();
-    	$user->delete();
+		$user->permission()->delete();
+		$user->delete();
 
-    	return Redirect::to('user/list')->with('success','User deleted!');
-    }
+		return Redirect::to('user/list')->with('success','User deleted!');
+	}
 }
