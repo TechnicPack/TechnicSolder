@@ -52,8 +52,9 @@ class UserController extends BaseController {
 				->withErrors(new MessageBag(array('User not found')));
 
 		$rules = array(
-				"email" => "email|required",
-				"username" => "required|max:20"
+				'email' => 'required|email|unique:users,email,' . $user_id,
+				'username' => 'required|min:3|max:30|unique:users,username,' . $user_id,
+				'password' => 'min:3'
 				);
 
 		if (Input::get('password1'))
@@ -62,7 +63,7 @@ class UserController extends BaseController {
 		$validation = Validator::make(Input::all(), $rules);
 
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::to('user/edit/'. $user_id)->withErrors($validation->messages());
 
 		$user->email = Input::get('email');
 		$user->username = Input::get('username');
@@ -112,7 +113,7 @@ class UserController extends BaseController {
 
 		$user->save();
 
-		return Redirect::back()->with('success','User edited successfully!');
+		return Redirect::to('user/list')->with('success','User edited successfully!');
 	}
 
     public function getCreate()
@@ -134,7 +135,7 @@ class UserController extends BaseController {
 
     	$validation = Validator::make(Input::all(), $rules);
     	if ($validation->fails())
-    		return Redirect::back()->withErrors($validation->messages());
+    		return Redirect::to('user/create')->withErrors($validation->messages());
 
     	$creator = Auth::user()->id;
     	$creatorIP = Request::ip();
