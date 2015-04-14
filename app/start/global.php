@@ -58,12 +58,12 @@ App::error(function(Exception $exception, $code)
 	}
 });
 
-App::fatal(function(Exception $exception, $code)
+App::fatal(function(Exception $exception)
 {
 	Log::error($exception);
 
 	if (!Config::get('app.debug') && !App::runningInConsole()) {
-		return Response::view('errors.500', array('code' => $code, 'exception' => $exception), $code);
+		return Response::view('errors.500', array('code' => 'Fatal', 'exception' => $exception), 500);
 	}
 }
 );
