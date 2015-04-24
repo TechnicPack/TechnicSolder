@@ -216,17 +216,6 @@ class APIController extends BaseController {
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
 
-
-		if ($modpack->private == 1 && !(isset($this->key))) {
-			if(!(isset($this->client))) {
-				return array("error" => "Modpack does not exist");
-			} else {
-				if(!in_array($modpack->id, array_map(function($modpack){ return $modpack->id; }, $this->client->modpacks->all()))) {
-					return array("error" => "Modpack does not exist");
-				}
-			}
-		}
-
 		$response['name']           = $modpack->slug;
 		$response['display_name']   = $modpack->name;
 		$response['url']            = $modpack->url;
