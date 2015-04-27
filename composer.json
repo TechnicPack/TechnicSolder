@@ -25,12 +25,13 @@
         "composer/composer": "1.0.0-alpha9",
         "knplabs/github-api": "1.4.*",
         "guzzlehttp/guzzle": "5.2.*",
-        "aws/aws-sdk-php": "2.7.*"
+        "aws/aws-sdk-php": "2.7.*",
+		"phpunit/phpunit": "~4.8@dev",
+		"league/csv": "~7.1@dev"
 	},
 	"require-dev": {
 		"barryvdh/laravel-debugbar": "~1.8@dev",
-        "mockery/mockery": "master@dev",
-		"phpunit/phpunit": "~4.0"
+        "mockery/mockery": "master@dev"
 	},
 	"autoload": {
 		"classmap": [
