@@ -21,7 +21,7 @@ class MinecraftUtils {
 	public static function getVersions() {
 		$response = '';
 
-		if ($success = UrlUtils::checkRemoteFile('http://www.technicpack.net/api/minecraft', 15)) {
+		/*if ($success = UrlUtils::checkRemoteFile('http://www.technicpack.net/api/minecraft', 15)) {
 			$response = UrlUtils::get_url_contents('http://www.technicpack.net/api/minecraft', 15);
 			if(!empty($response)) {
 				$response = json_decode($response, true);
@@ -29,13 +29,13 @@ class MinecraftUtils {
 				Cache::put('minecraftversions', $response, 180);
 				return $response;
 			}
-		}
+		}*/
 
 		if ($success = UrlUtils::checkRemoteFile('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15)) {
 			$response = UrlUtils::get_url_contents('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15);
 			if(!empty($response)) {
 				$mojangResponse = json_decode($response, true);
-				
+
 				$versions = array();
 
 				foreach ($mojangResponse['versions'] as $versionEntry) {
@@ -51,7 +51,7 @@ class MinecraftUtils {
 				krsort($versions);
 				Cache::put('minecraftversions', $versions, 180);
 				return $versions;
-			} 
+			}
 		}
 
 		return $response;
@@ -61,21 +61,9 @@ class MinecraftUtils {
 
 		$url = 'https://s3.amazonaws.com/Minecraft.Download/versions/'.$MCVersion.'/'.$MCVersion.'.jar';
 
-		$response = UrlUtils::getHeaders($url, 15);
+		$response = get_headers($url, 1);
 		if(!empty($response)) {
-			$response = str_replace('"', '', $response);
-			$data = explode("\n", $response, 11);
-			$headers = array();
-			array_shift($data);
-
-			foreach($data as $part) {
-				if(strpos($part, ':') !== FALSE){
-					$middle = explode(": ", $part, 2);
-					$headers[trim($middle[0])] = trim($middle[1]);
-				}
-			}
-
-			return $headers['ETag'];
+				return str_replace('"', '', $response['ETag']);
 		}
 		return '';
 	}
