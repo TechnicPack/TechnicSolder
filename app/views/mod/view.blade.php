@@ -1,6 +1,6 @@
 @extends('layouts/master')
 @section('title')
-    <title>{{ empty($mod->pretty_name) ? $mod->name : $mod->pretty_name }} - TechnicSolder</title>
+		<title>{{ empty($mod->pretty_name) ? $mod->name : $mod->pretty_name }} - TechnicSolder</title>
 @stop
 @section('content')
 <div class="page-header">
@@ -16,11 +16,11 @@
 	</div>
 	<div class="panel-body">
 		<ul class="nav nav-tabs" id="tabs">
-            <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
-            <li><a href="#versions" data-toggle="tab">Versions</a></li>
-        </ul>
-        <div class="tab-content">
-	        <div class="tab-pane fade in active" id="details">
+						<li class="active"><a href="#versions" data-toggle="tab">Versions</a></li>
+						<li><a href="#details" data-toggle="tab">Details</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane fade" id="details">
 				<br>
 				@if ($errors->all())
 					<div class="alert alert-danger">
@@ -38,30 +38,30 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-			                    <label for="pretty_name">Mod Name</label>
-			                    <input type="text" class="form-control" name="pretty_name" id="pretty_name" value="{{ $mod->pretty_name }}">
-			                </div>
-			                <div class="form-group">
-			                    <label for="name">Mod Slug</label>
-			                    <input type="text" class="form-control" name="name" id="name" value="{{ $mod->name }}">
-			                </div>
-			                <div class="form-group">
-			                    <label for="author">Author</label>
-			                    <input type="text" class="form-control" name="author" id="author" value="{{ $mod->author }}">
-			                </div>
-			                <div class="form-group">
-			                    <label for="description">Description</label>
-			                    <textarea name="description" id="description" class="form-control" rows="5">{{ $mod->description }}</textarea>
-			                </div>
-			                <div class="form-group">
-			                    <label for="link">Mod Website</label>
-			                    <input type="text" class="form-control" name="link" id="link" value="{{ $mod->link }}">
-			                </div>
-			                <div class="form-group">
-			                    <label for="donatelink">Author Donation Link</label>
-			                    <input type="text" class="form-control" name="donatelink" id="donatelink" value="{{ $mod->donatelink }}">
-			                    <span class="help-block">This is only in use by the official Technic Solder</span>
-			                </div>
+													<label for="pretty_name">Mod Name</label>
+													<input type="text" class="form-control" name="pretty_name" id="pretty_name" value="{{ $mod->pretty_name }}">
+											</div>
+											<div class="form-group">
+													<label for="name">Mod Slug</label>
+													<input type="text" class="form-control" name="name" id="name" value="{{ $mod->name }}">
+											</div>
+											<div class="form-group">
+													<label for="author">Author</label>
+													<input type="text" class="form-control" name="author" id="author" value="{{ $mod->author }}">
+											</div>
+											<div class="form-group">
+													<label for="description">Description</label>
+													<textarea name="description" id="description" class="form-control" rows="5">{{ $mod->description }}</textarea>
+											</div>
+											<div class="form-group">
+													<label for="link">Mod Website</label>
+													<input type="text" class="form-control" name="link" id="link" value="{{ $mod->link }}">
+											</div>
+											<div class="form-group">
+													<label for="donatelink">Author Donation Link</label>
+													<input type="text" class="form-control" name="donatelink" id="donatelink" value="{{ $mod->donatelink }}">
+													<span class="help-block">This is only in use by the official Technic Solder</span>
+											</div>
 						</div>
 					</div>
 					{{ Form::submit('Save Changes', array('class' => 'btn btn-success')) }}
@@ -69,11 +69,12 @@
 					{{ HTML::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) }}
 				</form>
 			</div>
-			<div class="tab-pane fade" id="versions">
+			<div class="tab-pane fade in active" id="versions">
 				<br>
 				<p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory stucture for mods is as follow:</p>
 					<blockquote><strong>/mods/[modslug]/[modslug]-[version].zip</strong></blockquote>
 				<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
+				<div class="alert alert-warning" id="warning-ajax" style="width: 100%;display: none"></div>
 				<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 				<table class="table">
 					<thead>
@@ -89,19 +90,24 @@
 								<input type="hidden" name="mod-id" value="{{ $mod->id }}">
 								<td></td>
 								<td>
-									<input type="text" name="add-version" id="add-version" class="form-control"></td>
-								<td>N/A</td>
+									<input type="text" name="add-version" id="add-version" class="form-control" placeholder="1.0.0"></td>
+								<td>
+									<input type="text" name="add-md5" id="add-md5" class="form-control" placeholder="N/A"></td>
+								</td>
 								<td><span id="add-url">N/A</span></td>
 								<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
 							</form>
 						</tr>
 						@foreach ($mod->versions()->orderBy('id', 'desc')->get() as $ver)
 						<tr class="version" rel="{{ $ver->id }}">
-							<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
-							<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
-							<td><span class="md5" rel="{{ $ver->id }}">{{ $ver->md5 }}</span></td>
-							<td class="url" rel="{{ $ver->id }}"><small><a href="{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
-							<td><button class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
+							<form method="post" id="rehash" action="{{ URL::to('mod/rehash/') }}">
+								<input type="hidden" name="version-id" value="{{ $ver->id }}">
+								<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
+								<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
+								<td><input type="text" class="md5 form-control" name="md5" id="md5" value="{{ $ver->md5 }}" rel="{{ $ver->id }}"></input></td>
+								<td class="url" rel="{{ $ver->id }}"><small><a href="{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ Config::get('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
+								<td><button type="submit" class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
+							</form>
 						</tr>
 						<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
 							<td colspan="5">
@@ -116,7 +122,7 @@
 						@endforeach
 					</tbody>
 				</table>
-            </div>
+						</div>
 		</div>
 	</div>
 </div>
@@ -124,13 +130,13 @@
 @section('bottom')
 <script type="text/javascript">
 
-$('#add-version').keyup(function() {
+$('#add-version').focusout(function() {
 	$("#add-url").html('<a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + $(this).val() + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + $(this).val() + '.zip</a>');
 });
 
 $('#add').submit(function(e) {
 	e.preventDefault();
-
+	console.log($("#add").serialize());
 	if ($('#add-version').val() != "") {
 		$.ajax({
 			type: "POST",
@@ -140,6 +146,9 @@ $('#add').submit(function(e) {
 				if (data.status == "success") {
 					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
 					$("#success-ajax").stop(true, true).html('Added mod version at ' + data.version).fadeIn().delay(3000).fadeOut();
+				} else if (data.status == "warning") {
+					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
+					$("#warning-ajax").stop(true, true).html('Added mod version at ' + data.version + ". " + data.reason).fadeIn().delay(5000).fadeOut();
 				} else {
 					$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
 				}
@@ -160,17 +169,21 @@ $('.version-icon').click(function() {
 $('.rehash').click(function(e) {
 	e.preventDefault();
 	$(".md5[rel=" + $(this).attr('rel') + "]").fadeOut();
+	console.log($("#rehash").serialize());
 	$.ajax({
-		type: "GET",
-		url: "{{ URL::to('mod/rehash/') }}/" + $(this).attr('rel'),
+		type: "POST",
+		url: "{{ URL::to('mod/rehash/') }}/",
+		data: $("#rehash").serialize(),
 		success: function (data) {
 			if (data.status == "success") {
-				$(".md5[rel=" + data.version_id + "]").html(data.md5);
 				$("#success-ajax").stop(true, true).html('MD5 hashing complete.').fadeIn().delay(3000).fadeOut();
-				$(".md5[rel=" + data.version_id + "]").fadeIn();
+			} else if (data.status == "warning") {
+				$("#warning-ajax").stop(true, true).html('MD5 hashing complete. ' + data.reason).fadeIn().delay(5000).fadeOut();
 			} else {
 				$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
 			}
+			$(".md5[rel=" + data.version_id + "]").val(data.md5);
+			$(".md5[rel=" + data.version_id + "]").fadeIn();
 		},
 		error: function (xhr, textStatus, errorThrown) {
 			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
@@ -196,27 +209,6 @@ $('.delete').click(function(e) {
 			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
 		}
 	});
-});
-
-$(document).ready(function() {
-	var tab = window.location.hash.substr(1);
-
-	if (tab == "versions") {
-		$('#tabs a[href="#versions"]').tab('show');
-	} else {
-		$('#tabs a[href="#details"]').tab('show');
-	}
-
-	/* Disabled for now, there is ample screen space that all we need to do is switch the tabs
-	        changing location is disorienting.
-
-	$('#tabs a[href="#versions"]').click(function() {
-		window.location.hash = "#versions";
-	});
-
-	$('#tabs a[href="#details"]').click(function() {
-		window.location.hash = "#details";
-	});*/
 });
 
 </script>
