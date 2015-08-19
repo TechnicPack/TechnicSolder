@@ -52,7 +52,7 @@ class APIController extends BaseController {
 				));
 	}
 
-	public function getModpack($modpack = null, $build = null)
+	public function getModpack($modpack = null, $build = null, $target = null)
 	{
 		if (empty($modpack))
 		{
@@ -83,7 +83,7 @@ class APIController extends BaseController {
 			if (empty($build))
 				return Response::json($this->fetchModpack($modpack));
 			else
-				return Response::json($this->fetchBuild($modpack, $build));
+				return Response::json($this->fetchBuild($modpack, $build, $target));
 		}
 	}
 
@@ -247,9 +247,19 @@ class APIController extends BaseController {
 		return $response;
 	}
 
-	private function fetchBuild($slug, $build)
+	private function fetchBuild($slug, $build, $target)
 	{
 		$response = array();
+
+		switch ($target) {
+			case 'server':
+				$qTarget = array(0,2);
+				break;
+			case 'client':
+			default:
+				$qTarget = array(0,1);
+				break;
+		}
 
 		if (Cache::has('modpack.'.$slug) && empty($this->client) && empty($this->key))
 		{
@@ -286,30 +296,35 @@ class APIController extends BaseController {
 
 		if (!Input::has('include'))
 		{
-			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion') && empty($this->client) && empty($this->key))
+			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion') && empty($this->client) && empty($this->key))
 			{
-				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion');
+				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion');
 			} else {
 				foreach ($build->modversions as $modversion)
 				{
-					$response['mods'][] = array(
+					if( in_array($modversion->pivot->target, $qTarget))
+					{
+						$response['mods'][] = array(
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
 												"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
 												);
+					}
 				}
 				usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
-				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion',$response['mods'],5);
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion',$response['mods'],5);
 			}
 		} else if (Input::get('include') == "mods") {
-			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.mods') && empty($this->client) && empty($this->key))
+			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion.include.mods') && empty($this->client) && empty($this->key))
 			{
-				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.mods');
+				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion.include.mods');
 			} else {
 				foreach ($build->modversions as $modversion)
 				{
-					$response['mods'][] = array(
+					if( in_array($modversion->pivot->target, $qTarget))
+					{
+						$response['mods'][] = array(
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
@@ -320,35 +335,39 @@ class APIController extends BaseController {
 												"donate" => $modversion->mod->donatelink,
 												"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
 												);
+					}
 				}
 				usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
-				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.mods',$response['mods'],5);
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion.include.mods',$response['mods'],5);
 			}
 		} else {
 			$request = explode(",", Input::get('include'));
-			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.'.$request) && empty($this->client) && empty($this->key))
+			if (Cache::has('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion.include.'.$request) && empty($this->client) && empty($this->key))
 			{
-				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.'.$request);
+				$response['mods'] = Cache::get('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion.include.'.$request);
 			} else {
 				foreach ($build->modversions as $modversion)
 				{
-					$data = array(
-												"name" => $modversion->mod->name,
-												"version" => $modversion->version,
-												"md5" => $modversion->md5,
-												);
-					$mod = (array)$modversion->mod;
-					$mod = $mod['attributes'];
-					foreach ($request as $type)
+					if( in_array($modversion->pivot->target, $qTarget))
 					{
-						if (isset($mod[$type]))
-							$data[$type] = $mod[$type];
-					}
+						$data = array(
+													"name" => $modversion->mod->name,
+													"version" => $modversion->version,
+													"md5" => $modversion->md5,
+													);
+						$mod = (array)$modversion->mod;
+						$mod = $mod['attributes'];
+						foreach ($request as $type)
+						{
+							if (isset($mod[$type]))
+								$data[$type] = $mod[$type];
+						}
 
-					$response['mods'][] = $data;
+						$response['mods'][] = $data;
+					}
 				}
 				usort($response['mods'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
-				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'modversion.include.'.$request,$response['mods'],5);
+				Cache::put('modpack.'.$slug.'.build.'.$buildpass.'.target.'.$target.'modversion.include.'.$request,$response['mods'],5);
 			}
 		}
 

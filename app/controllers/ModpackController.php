@@ -605,6 +605,20 @@ class ModpackController extends BaseController {
 							'reason' => 'Rows Affected: '.$affected
 							));
 				break;
+			case "target":
+			$affected = DB::table('build_modversion')
+						->where('build_id','=', Input::get('build_id'))
+						->where('modversion_id', '=', Input::get('modversion_id'))
+						->update(array('target' => Input::get('target')));
+				$status = 'success';
+				if ($affected == 0){
+					$status = 'failed';
+				}
+				return Response::json(array(
+							'status' => $status,
+							'reason' => 'Rows Affected: '.$affected
+							));
+				break;
 			case "delete":
 				$affected = DB::table('build_modversion')
 							->where('build_id','=', Input::get('build_id'))
@@ -625,6 +639,7 @@ class ModpackController extends BaseController {
 				$ver = Modversion::where('mod_id','=', $mod->id)
 									->where('version','=', Input::get('mod-version'))
 									->first();
+				$target = Input::get('target');
 				$affected = DB::table('build_modversion')
 							->where('build_id','=', $build->id)
 							->where('modversion_id', '=', $ver->id)
@@ -636,11 +651,13 @@ class ModpackController extends BaseController {
 								'reason' => 'Duplicate Modversion found'
 								));
 				} else {
-					$build->modversions()->attach($ver->id);
+					$build->modversions()->attach($ver->id, array('target' => $target));
+					$targets = [0 => 'Universal', 1 => 'Client', 2 => 'Server'];
 					return Response::json(array(
 								'status' => 'success',
 								'pretty_name' => $mod->pretty_name,
-								'version' => $ver->version
+								'version' => $ver->version,
+								'target' => $targets[$target]
 								));
 				}
 				break;

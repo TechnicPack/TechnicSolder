@@ -22,7 +22,7 @@ class TestSeeder extends Seeder {
 		$testbuild = Build::find(1);
 
 		//Add testmodversion to testbuild
-		$testbuild->modversions()->attach(1);
+		$testbuild->modversions()->attach(1, array('target' => 1));
 	}
 
 }

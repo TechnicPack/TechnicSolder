@@ -41,7 +41,7 @@
 		<div class="table-responsive">
 		<table class="table">
 			<thead>
-				<th style="width: 60%">Add a Mod</th>
+				<th style="width: 50%">Add a Mod</th>
 				<th></th>
 				<th></th>
 			</thead>
@@ -62,6 +62,13 @@
 					<select class="form-control" name="mod-version" id="mod-version" placeholder="Select a Modversion...">
 					</select>
 				</td>
+        <td>
+          <select class="form-control" name="target" id="target" placeholder="Select a Modversion...">
+            <option value="0" selected>Universal</option>
+            <option value="1">Client</option>
+            <option value="2">Server</option>
+          </select>
+        </td>
 				<td>
 					<button type="submit" class="btn btn-success btn-small">Add Mod</button>
 				</td>
@@ -80,8 +87,9 @@
 		<div class="table-responsive">
 		<table class="table" id="mod-list">
 			<thead>
-				<th id="mod-header" style="width: 60%">Mod Name</th>
+				<th id="mod-header" style="width: 50%">Mod Name</th>
 				<th>Version</th>
+        <th>Target</th>
 				<th></th>
 			</thead>
 			<tbody>
@@ -98,6 +106,23 @@
 									@foreach ($ver->mod->versions as $version)
 									<option value="{{ $version->id }}"{{ $selected = ($ver->version == $version->version ? 'selected' : '') }}>{{ $version->version }}</option>
 									@endforeach
+								</select>
+								<span class="input-group-btn">
+									<button type="submit" class="btn btn-primary">Change</button>
+								</span>
+							</div>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-target">
+							<input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
+							<input type="hidden" class="modversion-id" name="modversion_id" value="{{ $ver->pivot->modversion_id }}">
+							<input type="hidden" name="action" value="target">
+							<div class="form-group input-group">
+								<select class="form-control" name="target">
+									<option value="0"{{ $selected = ($ver->pivot->target == 0 ? 'selected' : '') }}>Universal</option>
+                  <option value="1"{{ $selected = ($ver->pivot->target == 1 ? 'selected' : '') }}>Client</option>
+                  <option value="2"{{ $selected = ($ver->pivot->target == 2 ? 'selected' : '') }}>Server</option>
 								</select>
 								<span class="input-group-btn">
 									<button type="submit" class="btn btn-primary">Change</button>
@@ -164,6 +189,26 @@ $(".mod-version").submit(function(e) {
 	});
 });
 
+$(".mod-target").submit(function(e) {
+	e.preventDefault();
+	$.ajax({
+		type: "POST",
+		url: "{{ URL::to('modpack/modify/target') }}",
+		data: $(this).serialize(),
+		success: function (data) {
+			console.log(data.reason);
+			if(data.status == 'success'){
+				$("#success-ajax").stop(true, true).html("Target Updated").fadeIn().delay(2000).fadeOut();
+			} else if(data.status == 'failed') {
+				$("#warning-ajax").stop(true, true).html("Unable to update target").fadeIn().delay(2000).fadeOut();
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+		}
+	});
+});
+
 $(".mod-delete").submit(function(e) {
 	e.preventDefault();
 	$.ajax({
@@ -194,7 +239,7 @@ $(".mod-add").submit(function(e) {
 			data: $(this).serialize(),
 			success: function (data) {
 				if(data.status == 'success'){
-					$("#mod-list-add").after('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td></td></tr>');
+					$("#mod-list-add").after('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td>' + data.target + '</td></tr>');
 					//$("#success-ajax").stop(true, true).html("Mod " + data.pretty_name + " added at " + data.version).fadeIn().delay(2000).fadeOut();
 				} else {
 					$("#warning-ajax").stop(true, true).html("Unable to add mod. Reason: " + data.reason).fadeIn().delay(2000).fadeOut();
@@ -241,8 +286,9 @@ $( document ).ready(function() {
     	"order": [[ 0, "asc" ]],
     	"autoWidth": false,
     	"columnDefs": [
-			{ "width": "60%", "targets": 0 },
-			{ "width": "30%", "targets": 1 }
+			{ "width": "50%", "targets": 0 },
+			{ "width": "20%", "targets": 1 },
+      { "width": "20%", "targets": 2 }
 		]
     });
     refreshModVersions();
