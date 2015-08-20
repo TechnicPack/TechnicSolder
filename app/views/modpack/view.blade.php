@@ -64,7 +64,7 @@
 $("input[name=recommended]").change(function() {
 	$.ajax({
 		type: "GET",
-		url: "{{ URL::to('modpack/modify/recommended?modpack='.$modpack->id) }}&recommended=" + $(this).val(),
+		url: "{{ URL::to('modpack/modify/recommended?modpack='.$modpack->id) }}&recommended=" + encodeURIComponent($(this).val()),
 		success: function (data) {
 			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}
@@ -74,7 +74,7 @@ $("input[name=recommended]").change(function() {
 $("input[name=latest]").change(function() {
 	$.ajax({
 		type: "GET",
-		url: "{{ URL::to('modpack/modify/latest?modpack='.$modpack->id) }}&latest=" + $(this).val(),
+		url: "{{ URL::to('modpack/modify/latest?modpack='.$modpack->id) }}&latest=" + encodeURIComponent($(this).val()),
 		success: function (data) {
 			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
 		}
