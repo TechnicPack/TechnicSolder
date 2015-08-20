@@ -90,16 +90,28 @@ class APIController extends BaseController {
 	public function getMod($mod = null, $version = null)
 	{
 		if (empty($mod))
-			return Response::json(array("error" => "No mod requested"));
-
-		if (Cache::has('mod.'.$mod))
 		{
-			$mod = Cache::get('mod.'.$mod);
+			if (Cache::has('modlist') && empty($this->client) && empty($this->key))
+			{
+				$response['mods'] = Cache::get('modlist');
+			} else {
+				foreach (Mod::all() as $mod)
+				{
+					$response['mods'][$mod->name] = $mod-> pretty_name;
+				}
+				//usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+				Cache::put('modlist',$response['mods'],5);
+				return Response::json($response);
+			}
 		} else {
-			$modname = $mod;
-			$mod = Mod::where('name', '=', $mod)->first();
-			Cache::put('mod.'.$modname,$mod,5);
-		}
+			if (Cache::has('mod.'.$mod))
+			{
+				$mod = Cache::get('mod.'.$mod);
+			} else {
+				$modname = $mod;
+				$mod = Mod::where('name', '=', $mod)->first();
+				Cache::put('mod.'.$modname,$mod,5);
+			}
 
 		if (empty($mod))
 			return Response::json(array('error' => 'Mod does not exist'));
@@ -108,6 +120,7 @@ class APIController extends BaseController {
 			return Response::json($this->fetchMod($mod));
 
 		return Response::json($this->fetchModversion($mod,$version));
+		}
 	}
 
 	public function getVerify($key = null)
