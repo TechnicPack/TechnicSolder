@@ -14,8 +14,6 @@
 	Build Management: {{ $modpack->name }}
 	</div>
 	<div class="panel-body">
-		<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none">
-		</div>
 		@if (Session::has('success'))
 		<div class="alert alert-success">
 			{{ Session::get('success') }}
@@ -66,7 +64,7 @@ $("input[name=recommended]").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/recommended?modpack='.$modpack->id) }}&recommended=" + encodeURIComponent($(this).val()),
 		success: function (data) {
-			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
+			$.jGrowl(data.success, { group: 'alert-success' });
 		}
 	});
 });
@@ -76,7 +74,7 @@ $("input[name=latest]").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/latest?modpack='.$modpack->id) }}&latest=" + encodeURIComponent($(this).val()),
 		success: function (data) {
-			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
+			$.jGrowl(data.success, { group: 'alert-success' });
 		}
 	});
 });
@@ -89,7 +87,7 @@ $(".published").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + checked,
 		success: function (data) {
-			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
+			$.jGrowl(data.success, { group: 'alert-success' });
 		}
 	})
 });
@@ -102,7 +100,7 @@ $(".private").change(function() {
 		type: "GET",
 		url: "{{ URL::to('modpack/modify/private') }}?build=" + $(this).attr("rel") + "&private=" + checked,
 		success: function (data) {
-			$("#success-ajax").stop(true, true).html(data.success).fadeIn().delay(2000).fadeOut();
+			$.jGrowl(data.success, { group: 'alert-success' });
 		}
 	})
 });

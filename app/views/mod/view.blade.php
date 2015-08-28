@@ -73,9 +73,6 @@
 				<br>
 				<p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory stucture for mods is as follow:</p>
 					<blockquote><strong>/mods/[modslug]/[modslug]-[version].zip</strong></blockquote>
-				<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
-				<div class="alert alert-warning" id="warning-ajax" style="width: 100%;display: none"></div>
-				<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 				<table class="table">
 					<thead>
 						<th></th>
@@ -145,16 +142,16 @@ $('#add').submit(function(e) {
 			success: function (data) {
 				if (data.status == "success") {
 					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
-					$("#success-ajax").stop(true, true).html('Added mod version at ' + data.version).fadeIn().delay(3000).fadeOut();
+					$.jGrowl('Added mod version at ' + data.version, { group: 'alert-success' });
 				} else if (data.status == "warning") {
 					$("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">{{ Config::get("solder.mirror_url") }}mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td></td></tr>');
-					$("#warning-ajax").stop(true, true).html('Added mod version at ' + data.version + ". " + data.reason).fadeIn().delay(5000).fadeOut();
+					$.jGrowl('Added mod version at ' + data.version + ". " + data.reason, { group: 'alert-warning' });
 				} else {
-					$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
+					$.jGrowl('Error: ' + data.reason, { group: 'alert-danger' });
 				}
 			},
 			error: function (xhr, textStatus, errorThrown) {
-				$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+				$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 			}
 		})
 	}
@@ -176,17 +173,17 @@ $('.rehash').click(function(e) {
 		data: $("#rehash").serialize(),
 		success: function (data) {
 			if (data.status == "success") {
-				$("#success-ajax").stop(true, true).html('MD5 hashing complete.').fadeIn().delay(3000).fadeOut();
+				$.jGrowl('MD5 hashing complete.', { group: 'alert-success' });
 			} else if (data.status == "warning") {
-				$("#warning-ajax").stop(true, true).html('MD5 hashing complete. ' + data.reason).fadeIn().delay(5000).fadeOut();
+				$.jGrowl('MD5 hashing complete. ' + data.reason, { group: 'alert-warning' });
 			} else {
-				$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
+				$.jGrowl('Error: ' + data.reason, { group: 'alert-danger' });
 			}
 			$(".md5[rel=" + data.version_id + "]").val(data.md5);
 			$(".md5[rel=" + data.version_id + "]").fadeIn();
 		},
 		error: function (xhr, textStatus, errorThrown) {
-			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 		}
 	});
 });
@@ -200,13 +197,13 @@ $('.delete').click(function(e) {
 			if (data.status == "success") {
 				$('.version[rel=' + data.version_id + ']').fadeOut();
 				$('.version-details[rel=' + data.version_id + ']').fadeOut();
-				$("#success-ajax").stop(true, true).html('Mod version ' + data.version + ' deleted.').fadeIn().delay(3000).fadeOut();
+				$.jGrowl('Mod version ' + data.version + ' deleted.', { group: 'alert-success' });
 			} else {
-				$("#danger-ajax").stop(true, true).html('Error: ' + data.reason).fadeIn().delay(3000).fadeOut();
+				$.jGrowl('Error: ' + data.reason, { group: 'alert-danger' });
 			}
 		},
 		error: function (xhr, textStatus, errorThrown) {
-			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 		}
 	});
 });
