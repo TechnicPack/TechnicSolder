@@ -57,7 +57,7 @@ class SolderController extends BaseController {
 			}
 		}
 
-		return App::abort(404);
+		return Response::view('errors.missing', array(), 404);
 	}
 
 	public function getCacheMinecraft() {
@@ -87,6 +87,6 @@ class SolderController extends BaseController {
 			}
 		}
 
-		return App::abort(404);
+		return Response::view('errors.missing', array(), 404);
 	}
 }

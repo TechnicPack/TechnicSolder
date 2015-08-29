@@ -579,10 +579,10 @@ class ModpackController extends BaseController {
 	public function anyModify($action = null)
 	{
 		if (!Request::ajax())
-			return App::abort('404');
+			return Response::view('errors.missing', array(), 404);
 
 		if (empty($action))
-			return Response::error('500');
+			return Response::view('errors.500', array(), 500);
 
 		switch ($action)
 		{
