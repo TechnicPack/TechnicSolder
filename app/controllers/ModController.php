@@ -183,7 +183,7 @@ class ModController extends BaseController {
 			}
 		}
 
-		return App::abort(404);
+		return Response::view('errors.missing', array(), 404);
 	}
 
 	public function anyAddVersion()
@@ -244,10 +244,10 @@ class ModController extends BaseController {
 			}
 		}
 
-		return App::abort(404);
+		return Response::view('errors.missing', array(), 404);
 	}
 
-	public function getDeleteVersion($ver_id = null)
+	public function anyDeleteVersion($ver_id = null)
 	{
 		if (Request::ajax())
 		{
@@ -274,7 +274,7 @@ class ModController extends BaseController {
 									));
 		}
 
-		return App::abort(404);
+		return Response::view('errors.missing', array(), 404);
 	}
 
 	private function mod_md5($mod, $version)

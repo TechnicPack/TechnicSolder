@@ -116,7 +116,7 @@ class ModTest extends TestCase {
 
 	public function testModVersionAddPostNonAjax()
 	{
-		$this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3","mod-id"=>"1"));
+		$this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","add-md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3","mod-id"=>"1"));
 		$this->assertResponseStatus(404);
 	}
 
@@ -139,7 +139,7 @@ class ModTest extends TestCase {
 	public function testModVersionAddPostEmptyModID()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
+		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","add-md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -155,7 +155,7 @@ class ModTest extends TestCase {
 	public function testModVersionAddPostInvalidModID()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3","mod-id"=>"1000000"),
+		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","add-md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3","mod-id"=>"1000000"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -171,7 +171,7 @@ class ModTest extends TestCase {
 	public function testModVersionAddPost()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3","mod-id"=>"1000000"),
+		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","add-md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3","mod-id"=>"1"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -191,7 +191,7 @@ class ModTest extends TestCase {
 	public function testModVersionAddPostMD5Fail()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","md5"=>"","mod-id"=>"1"),
+		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.0.0","add-md5"=>"","mod-id"=>"1"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -213,7 +213,7 @@ class ModTest extends TestCase {
 	public function testModVersionRehashPostEmptyID()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("version-id"=>"","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
+		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -229,7 +229,7 @@ class ModTest extends TestCase {
 	public function testModVersionRehashPostInvalidID()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("version-id"=>"10000000","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
+		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"10000000","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
