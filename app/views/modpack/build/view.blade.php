@@ -155,6 +155,8 @@ $(".mod-version").submit(function(e) {
 				$("#success-ajax").stop(true, true).html("Modversion Updated").fadeIn().delay(2000).fadeOut();
 			} else if(data.status == 'failed') {
 				$("#warning-ajax").stop(true, true).html("Unable to update modversion").fadeIn().delay(2000).fadeOut();
+			} else if(data.status == 'aborted') {
+				$("#success-ajax").stop(true, true).html("Mod was already set to that version").fadeIn().delay(2000).fadeOut();
 			}
 		},
 		error: function (xhr, textStatus, errorThrown) {

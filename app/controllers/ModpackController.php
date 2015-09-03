@@ -388,7 +388,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $logoimg->save($resourcePath . '/logo.png', 100)) {
 					$modpack->logo = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -455,7 +455,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $backgroundimg->save($resourcePath . '/background.jpg', 100)) {
 					$modpack->background = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -593,11 +593,14 @@ class ModpackController extends BaseController {
 							->where('build_id','=', Input::get('build_id'))
 							->where('modversion_id', '=', $modversion_id)
 							->update(array('modversion_id' => $version_id));
-				$status = 'success';
-				if ($affected == 0 && ($modversion_id != $version_id)){
-					$status = 'failed';
+				if ($affected == 0) {
+					if ($modversion_id != $version_id) {
+						$status = 'failed';
+					} else {
+						$status = 'aborted';
+					}
 				} else {
-					$status = 'aborted';
+					$status = 'success';
 				}
 				return Response::json(array(
 							'status' => $status,
