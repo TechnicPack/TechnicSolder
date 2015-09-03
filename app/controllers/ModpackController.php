@@ -652,6 +652,8 @@ class ModpackController extends BaseController {
 				$modpack->recommended = $new_version;
 				$modpack->save();
 
+				Cache::forget('modpack.' . $modpack->slug);
+
 				return Response::json(array(
 						"success" => "Updated ".$modpack->name."'s recommended  build to ".$new_version,
 						"version" => $new_version
@@ -662,6 +664,8 @@ class ModpackController extends BaseController {
 				$new_version = Input::get('latest');
 				$modpack->latest = $new_version;
 				$modpack->save();
+
+				Cache::forget('modpack.' . $modpack->slug);
 
 				return Response::json(array(
 						"success" => "Updated ".$modpack->name."'s latest  build to ".$new_version,
