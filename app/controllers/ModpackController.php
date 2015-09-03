@@ -388,7 +388,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $logoimg->save($resourcePath . '/logo.png', 100)) {
 					$modpack->logo = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -455,7 +455,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $backgroundimg->save($resourcePath . '/background.jpg', 100)) {
 					$modpack->background = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -649,6 +649,8 @@ class ModpackController extends BaseController {
 				$modpack->recommended = $new_version;
 				$modpack->save();
 
+				Cache::forget('modpack.' . $modpack->slug);
+
 				return Response::json(array(
 						"success" => "Updated ".$modpack->name."'s recommended  build to ".$new_version,
 						"version" => $new_version
@@ -659,6 +661,8 @@ class ModpackController extends BaseController {
 				$new_version = Input::get('latest');
 				$modpack->latest = $new_version;
 				$modpack->save();
+
+				Cache::forget('modpack.' . $modpack->slug);
 
 				return Response::json(array(
 						"success" => "Updated ".$modpack->name."'s latest  build to ".$new_version,
