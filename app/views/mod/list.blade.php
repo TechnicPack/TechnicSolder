@@ -9,6 +9,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<div class="pull-right">
+		<a href="{{ URL::to('mod/bulk') }}" class="btn btn-xs btn-success">Bulk Upload Mods</a>
 		<a href="{{ URL::to('mod/create') }}" class="btn btn-xs btn-success">Add Mod</a>
 	</div>
 	Mod List

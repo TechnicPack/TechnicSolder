@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\MessageBag;
+use League\Csv\Reader;
+
 class ModController extends BaseController {
 
 	public function __construct()
@@ -8,7 +10,7 @@ class ModController extends BaseController {
 		parent::__construct();
 		$this->beforeFilter('perm', array('solder_mods'));
 		$this->beforeFilter('perm', array('mods_manage'), array('only' => array('view','versions')));
-		$this->beforeFilter('perm', array('mods_create'), array('only' => array('create')));
+		$this->beforeFilter('perm', array('mods_create'), array('only' => array('create', 'bulk')));
 		$this->beforeFilter('perm', array('mods_delete'), array('only' => array('delete')));
 	}
 
@@ -66,6 +68,74 @@ class ModController extends BaseController {
 		$mod->donatelink = Input::get('donatelink');
 		$mod->save();
 		return Redirect::to('mod/view/'.$mod->id);
+	}
+
+	public function getBulk()
+	{
+		return View::make('mod.bulk');
+	}
+
+	public function postBulk()
+	{
+		$rules = array(
+			'csv' => 'required|csv',
+			);
+		$messages = array(
+			'csv.required' => 'You must select a file to upload.',
+			'csv.csv' => 'The file either did not have the csv extension or did not read like a csv.'
+			);
+
+		$file_validation = Validator::make(Input::all(), $rules, $messages);
+		if ($file_validation->fails())
+			return Redirect::to('mod/bulk')->withErrors($file_validation->messages());
+
+		$file = Input::file('csv');
+		$csv = Reader::createFromPath($file->getRealPath());
+		$data = $csv->fetchAssoc(0, function ($row){
+			return array_map('trim', $row);
+		});
+		$errors = array();
+		$notices = array();
+		foreach ($data as $line => $mod_data)
+		{
+			$rules = array(
+				'name' => 'required|unique:mods',
+				'pretty_name' => 'required',
+				'link' => 'url',
+				'donatelink' => 'url',
+				);
+			$messages = array(
+				'name.required' => 'On line: ' . (intval($line) + 1) . ' you are missing a mod slug name.',
+				'name.unique' => 'The slug on line: ' . (intval($line) + 1) . ' for mod: ' . $mod_data['name'] . ' is already taken',
+				'pretty_name.required' => 'On line: ' . (intval($line) + 1) . ' for mod: ' . $mod_data['name'] . ' is missing a mod name',
+				'link.url' => 'On line: ' . (intval($line) + 1) . ' for mod: ' . $mod_data['pretty_name'] . ' you must enter a properly formatted Website',
+				'donatelink.url' => 'On line: ' . (intval($line) + 1) . ' for mod: ' . $mod_data['pretty_name'] . ' you must enter a proper formatted Donation Link',
+				);
+
+			$validation = Validator::make($mod_data, $rules, $messages);
+			if ($validation->fails())
+			{
+				foreach ($validation->messages()->all() as $error)
+				{
+					$errors[] = $error;
+				}
+				continue;
+			}
+
+			$mod = new Mod();
+			$mod->name = Str::slug($mod_data['name']);
+			$mod->pretty_name = $mod_data['pretty_name'];
+			$mod->author = $mod_data['author'];
+			$mod->description = $mod_data['description'];
+			$mod->link = $mod_data['link'];
+			$mod->donatelink = $mod_data['donatelink'];
+			$mod->save();
+			$notices[] = 'Added ' . $mod_data['pretty_name'] . ' to Mod List.';
+		}
+		if (!empty($errors))
+			return Redirect::to('mod/bulk')->withErrors($errors)->with('notices', $notices);
+
+		return Redirect::to('mod/list')->with('notices', $notices);
 	}
 
 	public function getDelete($mod_id = null)
@@ -270,3 +340,8 @@ class ModController extends BaseController {
 		}
 	}
 }
+
+Validator::extend('csv', function($attribute, $value, $parameters)
+{
+	return (false !== strpos($value->getClientOriginalName(), '.csv') && 'application/octet-stream' === $value->getClientMimeType());
+});
