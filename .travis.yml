@@ -13,11 +13,11 @@ env:
   - DB=mysql
 sudo: false
 before_install:
-  - echo hostname
-  - php artisan env
+  - hostname
   - composer self-update
 install: travis_retry composer install --prefer-source --no-interaction
 before_script:
+  - php artisan env
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS solder;'; fi"
