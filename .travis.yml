@@ -9,7 +9,7 @@ php:
   - hhvm
 env:
   - DB=sqlite
-  - DB=postgres
+  - DB=pgsql
   - DB=mysql
 sudo: false
 before_install:
@@ -19,9 +19,10 @@ before_script:
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS solder;'; fi"
-  - php artisan migrate:refresh --force
-  - php artisan db:seed --class="TestSeeder" --force
+  - php artisan migrate:install
+  - php artisan migrate
+  - php artisan db:seed --class="TestSeeder"
 script: vendor/bin/phpunit --verbose
 addons:
   hosts:
-    - homestead
+    - travis-ci
