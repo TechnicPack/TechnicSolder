@@ -24,12 +24,11 @@ $app = new Illuminate\Foundation\Application;
 |
 */
 
-$env = $app->detectEnvironment(array(
+$env = $app->detectEnvironment(function() {
 
-	'local' => array('homestead'),
-	'testing' => array('travis-ci'),
+	return getenv('APP_ENV') ?: 'production';
 
-));
+});
 
 /*
 |--------------------------------------------------------------------------
