@@ -25,8 +25,8 @@
 			<label>Minecraft Version: <span class="label label-default">{{ $build->minecraft }}</span></label><br>
 		</div>
 		<div class="col-md-6">
-			<label>Java Version: <span class="label label-default">{{ $build->min_java }}</span></label><br>
-			<label>Memory (<i>in MB</i>): <span class="label label-default">{{ $build->min_memory }}</span></label>
+			<label>Java Version: <span class="label label-default">{{ !empty($build->min_java) ? $build->min_java : 'Not Required'  }}</span></label><br>
+			<label>Memory (<i>in MB</i>): <span class="label label-default">{{ $build->min_memory != 0 ? $build->min_memory : 'Not Required' }}</span></label>
 		</div>
 	</div>
 </div>

@@ -89,7 +89,7 @@ class ModpackController extends BaseController {
 
 				$minecraft = Input::get('minecraft');
 
-				$build->minecraft = $minecraft[0];
+				$build->minecraft = $minecraft;
 				$build->min_java = Input::get('java-version');
 				$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
 				$build->save();
@@ -143,9 +143,9 @@ class ModpackController extends BaseController {
 
 		$minecraft = Input::get('minecraft');
 
-		$build->minecraft = $minecraft[0];
+		$build->minecraft = $minecraft;
 		$build->min_java = Input::get('java-version');
-		$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
+		$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : 0;
 		$build->save();
 		Cache::forget('modpack.' . $modpack->slug);
 		if (!empty($clone))
