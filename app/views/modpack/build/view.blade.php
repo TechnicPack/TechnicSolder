@@ -23,7 +23,6 @@
 		<div class="col-md-6">
 			<label>Build Version: <span class="label label-default">{{ $build->version }}</span></label><br>
 			<label>Minecraft Version: <span class="label label-default">{{ $build->minecraft }}</span></label><br>
-			<label>Minecraft MD5: <span class="label label-default">{{ $build->md5 }}</span></label>
 		</div>
 		<div class="col-md-6">
 			<label>Java Version: <span class="label label-default">{{ $build->min_java }}</span></label><br>

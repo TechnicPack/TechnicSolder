@@ -101,7 +101,6 @@ class ApiTest extends TestCase {
 		$json = $response->getData(true);
 
 		$this->assertTrue(array_key_exists('minecraft', $json));
-		$this->assertTrue(array_key_exists('minecraft_md5', $json));
 		$this->assertTrue(array_key_exists('forge', $json));
 		$this->assertTrue(array_key_exists('java', $json));
 		$this->assertTrue(array_key_exists('memory', $json));

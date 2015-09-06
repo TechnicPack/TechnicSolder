@@ -46,7 +46,7 @@ class APIController extends BaseController {
 	public function getIndex()
 	{
 		return Response::json(array(
-				'api'     => 'TechnicSolder', 
+				'api'     => 'TechnicSolder',
 				'version' => SOLDER_VERSION,
 				'stream' => SOLDER_STREAM
 				));
@@ -172,7 +172,7 @@ class APIController extends BaseController {
 			if (empty($this->client) && empty($this->key)) {
 				Cache::put('modpacks', $modpacks, 5);
 			}
-			
+
 		}
 
 		$response = array();
@@ -212,7 +212,7 @@ class APIController extends BaseController {
 			if (empty($this->client) && empty($this->key))
 				Cache::put('modpack.'.$slug,$modpack,5);
 		}
-		
+
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
 
@@ -262,7 +262,7 @@ class APIController extends BaseController {
 
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
-			
+
 		$buildpass = $build;
 		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client) && empty($this->key))
 		{
@@ -279,7 +279,6 @@ class APIController extends BaseController {
 			return array("error" => "Build does not exist");
 
 		$response['minecraft'] = $build->minecraft;
-		$response['minecraft_md5'] = $build->minecraft_md5;
 		$response['java'] = $build->min_java;
 		$response['memory'] = $build->min_memory;
 		$response['forge'] = $build->forge;

@@ -34,7 +34,7 @@
 		            <label for="version">Minecraft Version</label>
 		            <select class="form-control" name="minecraft">
 						@foreach ($minecraft as $version)
-						<option value="{{ $version['version'] }}:{{ $version['md5'] }}" {{ ($build->minecraft == $version['version'] ? ' selected' : '') }}>{{ $version['version'] }}</option>
+						<option value="{{ $version['version'] }}" {{ ($build->minecraft == $version['version'] ? ' selected' : '') }}>{{ $version['version'] }}</option>
 						@endforeach
 					</select>
 		        </div>
@@ -54,7 +54,7 @@
 		        </div>
 		        <div class="form-group">
 		            <label for="memory">Minimum Memory (<i>in MB</i>)</label>
-		            <div class="input-group">  
+		            <div class="input-group">
 						<span class="input-group-addon">
 							<input type="checkbox" id="memory-enabled" name="memory-enabled" aria-label="mb"{{ $build->min_memory ? ' checked' : '' }}>
 						</span>

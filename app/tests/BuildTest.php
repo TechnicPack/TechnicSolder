@@ -7,7 +7,7 @@ class BuildTest extends TestCase {
 		parent::setUp();
 
 		Route::enableFilters();
-		
+
 		$user = User::find(1);
 		$this->be($user);
 	}
@@ -26,11 +26,11 @@ class BuildTest extends TestCase {
 		$this->assertResponseOk();
 	}
 
-	public function testBuildAddPost() 
+	public function testBuildAddPost()
 	{
 		$data = array(
 			'version' => '1.1.0',
-			'minecraft' => '1.7.10:e6b7a531b95d0c172acb704d1f54d1b3',
+			'minecraft' => '1.7.10',
 			'java-version' => '1.7',
 			'memory' => '1536',
 			'memory-enabled' => 1
@@ -60,7 +60,7 @@ class BuildTest extends TestCase {
 		$data = array(
 			'confirm-edit' => '1',
 			'version' => '1.1.0',
-			'minecraft' => '1.7.10:e6b7a531b95d0c172acb704d1f54d1b3',
+			'minecraft' => '1.7.10',
 			'java-version' => '1.8',
 			'memory' => '1024',
 			'memory-enabled' => '1'
@@ -76,7 +76,7 @@ class BuildTest extends TestCase {
 	}
 
 
-	public function testBuildDeleteGet() 
+	public function testBuildDeleteGet()
 	{
 		$build = Build::find(2);
 
