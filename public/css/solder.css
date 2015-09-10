@@ -132,3 +132,7 @@ input[type=file] {
 	border-bottom: none;
 	margin: 0;
 }
+
+.panel-body {
+	overflow: auto;
+}
