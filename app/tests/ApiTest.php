@@ -29,7 +29,7 @@ class ApiTest extends TestCase {
 		$this->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
 		$json = $response->getData(true);
 
-		$this->assertTrue(array_key_exists('error', $json));
+		$this->assertTrue(array_key_exists('mods', $json));
 	}
 
 	public function testInvalidModpack()
