@@ -101,8 +101,8 @@ class APIController extends BaseController {
 				}
 				//usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
 				Cache::put('modlist',$response['mods'],5);
-				return Response::json($response);
 			}
+			return Response::json($response);
 		} else {
 			if (Cache::has('mod.'.$mod))
 			{
