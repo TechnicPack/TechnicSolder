@@ -606,10 +606,10 @@ class ModpackController extends BaseController {
 							));
 				break;
 			case "target":
-			$affected = DB::table('build_modversion')
-						->where('build_id','=', Input::get('build_id'))
-						->where('modversion_id', '=', Input::get('modversion_id'))
-						->update(array('target' => Input::get('target')));
+				$affected = DB::table('build_modversion')
+							->where('build_id','=', Input::get('build_id'))
+							->where('modversion_id', '=', Input::get('modversion_id'))
+							->update(array('target' => Input::get('target')));
 				$status = 'success';
 				if ($affected == 0){
 					$status = 'failed';

@@ -62,13 +62,13 @@
 					<select class="form-control" name="mod-version" id="mod-version" placeholder="Select a Modversion...">
 					</select>
 				</td>
-        <td>
-          <select class="form-control" name="target" id="target" placeholder="Select a Modversion...">
-            <option value="0" selected>Universal</option>
-            <option value="1">Client</option>
-            <option value="2">Server</option>
-          </select>
-        </td>
+				<td>
+					<select class="form-control" name="target" id="target" placeholder="Select a Modversion...">
+						<option value="0" selected>Universal</option>
+						<option value="1">Client</option>
+						<option value="2">Server</option>
+					</select>
+				</td>
 				<td>
 					<button type="submit" class="btn btn-success btn-small">Add Mod</button>
 				</td>
@@ -89,7 +89,7 @@
 			<thead>
 				<th id="mod-header" style="width: 50%">Mod Name</th>
 				<th>Version</th>
-        <th>Target</th>
+				<th>Target</th>
 				<th></th>
 			</thead>
 			<tbody>
@@ -121,8 +121,8 @@
 							<div class="form-group input-group">
 								<select class="form-control" name="target">
 									<option value="0"{{ $selected = ($ver->pivot->target == 0 ? 'selected' : '') }}>Universal</option>
-                  <option value="1"{{ $selected = ($ver->pivot->target == 1 ? 'selected' : '') }}>Client</option>
-                  <option value="2"{{ $selected = ($ver->pivot->target == 2 ? 'selected' : '') }}>Server</option>
+									<option value="1"{{ $selected = ($ver->pivot->target == 1 ? 'selected' : '') }}>Client</option>
+									<option value="2"{{ $selected = ($ver->pivot->target == 2 ? 'selected' : '') }}>Server</option>
 								</select>
 								<span class="input-group-btn">
 									<button type="submit" class="btn btn-primary">Change</button>
@@ -288,7 +288,7 @@ $( document ).ready(function() {
     	"columnDefs": [
 			{ "width": "50%", "targets": 0 },
 			{ "width": "20%", "targets": 1 },
-      { "width": "20%", "targets": 2 }
+			{ "width": "20%", "targets": 2 }
 		]
     });
     refreshModVersions();
