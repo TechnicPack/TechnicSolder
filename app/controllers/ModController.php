@@ -19,7 +19,14 @@ class ModController extends BaseController {
 
 	public function getList()
 	{
-		$mods = Mod::all();
+		$mods = Mod::with(
+				array(
+					'versions' => function($query){
+						$query->orderBy('modversions.updated_at', 'desc');
+					}
+				)
+			)
+			->get();
 		return View::make('mod.list')->with(array('mods' => $mods));
 	}
 
