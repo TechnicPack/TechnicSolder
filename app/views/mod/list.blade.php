@@ -49,7 +49,6 @@
 						<br/>
 						<b>Latest Version:</b> {{ !empty($mod->versions) ? $mod->versions->first()->version : "N/A" }}
 					</td>
-					<td>{{ !empty($mod->versions) ? $mod->versions->first()->version : "N/A" }}</td>
 					<td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
 					<td>{{ !empty($mod->link) ? HTML::link($mod->link, $mod->link, array("target" => "_blank")) : "N/A" }}</td>
 					<td>{{ HTML::link('mod/view/'.$mod->id,'Manage', array("class" => "btn btn-xs btn-primary")) }}</td>
