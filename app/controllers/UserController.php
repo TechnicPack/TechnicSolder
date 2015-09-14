@@ -184,7 +184,7 @@ class UserController extends BaseController {
 			return Redirect::to('dashboard')
 				->with('permission','You do not have permission to access this area.');
 
-		if (empty($user_id) || $user_id == 1)
+		if (empty($user_id))
 			return Redirect::to('user/list')
 				->withErrors(new MessageBag(array('User ID not provided')));
 
@@ -192,13 +192,24 @@ class UserController extends BaseController {
 		if (empty($user))
 			return Redirect::to('user/list')
 				->withErrors(new MessageBag(array('User not found')));
+
+		if($user->permission->solder_full){
+			$numOfOtherSuperUsers = DB::table('user_permissions')
+				->where('solder_full', TRUE)
+				->whereNotIn('user_id', array($user_id))
+				->count();
+
+			if($numOfOtherSuperUsers <= 0)
+				return Redirect::to('user/list')
+					->withErrors(new MessageBag(array('Cannot delete the only remaining super user.')));
+		}
 
 		return View::make('user.delete')->with(array('user' => $user));
 	}
 
 	public function postDelete($user_id = null)
 	{
-		if (empty($user_id) || $user_id == 1)
+		if (empty($user_id))
 			return Redirect::to('user/list')
 				->withErrors(new MessageBag(array('User ID not provided')));
 
@@ -206,6 +217,17 @@ class UserController extends BaseController {
 		if (empty($user))
 			return Redirect::to('user/list')
 				->withErrors(new MessageBag(array('User not found')));
+
+		if($user->permission->solder_full){
+			$numOfOtherSuperUsers = DB::table('user_permissions')
+				->where('solder_full', TRUE)
+				->whereNotIn('user_id', array($user_id))
+				->count();
+
+			if($numOfOtherSuperUsers <= 0)
+				return Redirect::to('user/list')
+					->withErrors(new MessageBag(array('Cannot delete the only remaining super user.')));
+		}
 
 		$user->permission()->delete();
 		$user->delete();
