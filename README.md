@@ -5,6 +5,8 @@ TechnicSolder
 [![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=master)](https://travis-ci.org/TechnicPack/TechnicSolder)   
 [![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=dev)](https://travis-ci.org/TechnicPack/TechnicSolder)   
 
+Join us on [Discord](https://discord.gg/0Ehm7p0AD3PdYLT1)!
+
 What is Solder?
 --------------
 
@@ -17,7 +19,7 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP 5.4+ 
+* PHP 5.5+
 * PHP MCrypt Extension
 * PHP Curl Extension
 * PHP GD Extension
@@ -36,6 +38,8 @@ Changes
 
 Changes are now displayed within the application itself.
 
+Also see the [Technic News](http://www.technicpack.net/article/category/10) feed for solder updates
+
 
 Troubleshooting
 ---------------
@@ -43,4 +47,3 @@ Troubleshooting
 [@GenPage](http://twitter.com/gen_page)
 
 If you are having issues and can't seem to figure out what's going on, come ask GenPage in IRC @ **irc.synirc.net #technic** or open an issue here on GitHub.
-

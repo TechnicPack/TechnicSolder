@@ -172,7 +172,7 @@ $('.rehash').click(function(e) {
 	console.log($("#rehash").serialize());
 	$.ajax({
 		type: "POST",
-		url: "{{ URL::to('mod/rehash/') }}/",
+		url: "{{ URL::to('mod/rehash/') }}",
 		data: $("#rehash").serialize(),
 		success: function (data) {
 			if (data.status == "success") {
@@ -195,7 +195,7 @@ $('.delete').click(function(e) {
 	e.preventDefault();
 	$.ajax({
 		type: "GET",
-		url: "{{ URL::to('mod/delete-version/') }}/" + $(this).attr('rel'),
+		url: "{{ URL::to('mod/delete-version/') }}" + $(this).attr('rel'),
 		success: function (data) {
 			if (data.status == "success") {
 				$('.version[rel=' + data.version_id + ']').fadeOut();

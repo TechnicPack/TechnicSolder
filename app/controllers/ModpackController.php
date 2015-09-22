@@ -75,6 +75,7 @@ class ModpackController extends BaseController {
 			{
 				$rules = array(
 					"version" => "required",
+					"minecraft" => "required",
 					"memory" => "numeric"
 					);
 
@@ -91,7 +92,7 @@ class ModpackController extends BaseController {
 
 				$build->minecraft = $minecraft;
 				$build->min_java = Input::get('java-version');
-				$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
+				$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : 0;
 				$build->save();
 				Cache::forget('modpack.' . $build->modpack->slug . '.build.' . $build->version);
 				return Redirect::to('modpack/build/'.$build->id);
@@ -126,6 +127,7 @@ class ModpackController extends BaseController {
 
 		$rules = array(
 					"version" => "required",
+					"minecraft" => "required",
 					"memory" => "numeric"
 					);
 
@@ -134,7 +136,7 @@ class ModpackController extends BaseController {
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::to('modpack/add-build/'.$modpack_id)->withErrors($validation->messages());
 
 		$clone = Input::get('clone');
 		$build = new Build();
@@ -276,7 +278,7 @@ class ModpackController extends BaseController {
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::to('modpack/edit/'.$modpack_id)->withErrors($validation->messages());
 
 		$modpack->name = Input::get('name');
 		$oldSlug = $modpack->slug;
@@ -351,10 +353,10 @@ class ModpackController extends BaseController {
 				} else if (!$success && !$modpack->icon) {
 					$modpack->icon_md5 = md5_file(public_path() . '/resources/default/icon.png');
 					$modpack->icon_url = URL::asset('/resources/default/icon.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
 				} else {
 					Log::error('Failed to save new image to ' . $resourcePath . '/icon.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
 				}
 			}
 		} else {
@@ -418,10 +420,10 @@ class ModpackController extends BaseController {
 				} else if (!$success && !$modpack->logo) {
 					$modpack->logo_md5 = md5_file(public_path() . '/resources/default/logo.png');
 					$modpack->logo_url = URL::asset('/resources/default/logo.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
 				} else {
 					Log::error('Failed to save new image to ' . $resourcePath . '/logo.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
 				}
 			}
 		} else {
@@ -485,10 +487,10 @@ class ModpackController extends BaseController {
 				} else if (!$success && !$modpack->background) {
 					$modpack->background_md5 = md5_file(public_path() . '/resources/default/background.jpg');
 					$modpack->background_url = URL::asset('/resources/default/background.jpg');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
 				} else {
 					Log::error('Failed to save new image to ' . $resourcePath . '/background.jpg');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
 				}
 			}
 		} else {
