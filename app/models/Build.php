@@ -10,7 +10,7 @@ class Build extends Eloquent {
 
 	public function modversions()
 	{
-		return $this->belongsToMany('Modversion')->withTimestamps();
+		return $this->belongsToMany('Modversion')->withPivot('target')->withTimestamps();
 	}
 }
 

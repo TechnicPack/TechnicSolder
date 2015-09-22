@@ -105,6 +105,24 @@ class ApiTest extends TestCase {
 		$this->assertTrue(array_key_exists('java', $json));
 		$this->assertTrue(array_key_exists('memory', $json));
 		$this->assertTrue(array_key_exists('mods', $json));
+		$this->assertTrue(count($json['mods']) == 1);
+	}
+
+	public function testModpackBuildServer()
+	{
+		$modpack = Modpack::find(1);
+		$build = $modpack->builds->first();
+		$response = $this->call('GET', 'api/modpack/'.$modpack->slug.'/'.$build->version.'/server');
+		$this->assertResponseOk();
+		$this->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
+		$json = $response->getData(true);
+
+		$this->assertTrue(array_key_exists('minecraft', $json));
+		$this->assertTrue(array_key_exists('forge', $json));
+		$this->assertTrue(array_key_exists('java', $json));
+		$this->assertTrue(array_key_exists('memory', $json));
+		$this->assertTrue(array_key_exists('mods', $json));
+		$this->assertTrue(count($json['mods']) == 0);
 	}
 
 	public function testModVersion()

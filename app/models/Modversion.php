@@ -11,7 +11,7 @@ class Modversion extends Eloquent {
 
 	public function builds()
 	{
-		return $this->belongsToMany('Build')->withTimestamps();
+		return $this->belongsToMany('Build')->withPivot('target')->withTimestamps();
 	}
 }
 
