@@ -9,3 +9,4 @@ public/vendor
 app/database/*.sqlite
 site/
 bootstrap/compiled.php
+.env.testing.php
