@@ -22,7 +22,7 @@
 		"patricktalmadge/bootstrapper": "5.5.*",
 		"intervention/image": "2.1.*",
         "doctrine/dbal": "2.5.*",
-        "composer/composer": "1.0.0-alpha9",
+        "composer/composer": "1.0.0-alpha10",
         "knplabs/github-api": "1.4.*",
         "guzzlehttp/guzzle": "5.2.*",
         "aws/aws-sdk-php": "2.7.*"
@@ -56,10 +56,13 @@
 			"php artisan clear-compiled",
 			"php artisan optimize"
 		],
-		"tests": [
+		"pre-tests": [
 			"php artisan migrate:refresh --force",
-			"php artisan db:seed --class=\"TestSeeder\" --force",
-			"vendor/bin/phpunit --verbose"
+			"php artisan db:seed --class=\"TestSeeder\" --force"
+		],
+		"tests": [
+			"composer pre-tests",
+			"phpunit --verbose"
 		]
 	},
 	"config": {
