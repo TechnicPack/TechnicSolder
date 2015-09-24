@@ -165,6 +165,51 @@ class ModpackController extends BaseController {
 		return Redirect::to('modpack/build/'.$build->id);
 	}
 
+	public function getClone()
+	{
+		$modpacks = Modpack::all();
+		return View::make('modpack.clone')->with('modpacks', $modpacks);
+	}
+
+	public function postClone()
+	{
+		$source = Modpack::where('slug', '=', Input::get('source'))->first();
+
+		if(empty($source)){
+			return Redirect::to('modpack/clone')->withErrors("Cannot find source modpack to clone from");
+		}
+
+		$destination = Modpack::where('slug', '=', Input::get('destination'))->first();
+		if(empty($destination)){
+			$destination = new Modpack();
+			$destination->name = Input::get('destination');
+			$destination->slug = Str::slug(Input::get('destination'));
+			$destination->save();
+		} else {
+			// Destroy any existing builds for the destination modpack.
+			foreach($destination->builds() as $build){
+				foreach($build->modversions() as $modversion){
+					$modversion->delete();
+				}
+				$build->delete();
+			}
+		}
+
+		foreach ($source->builds as $build) {
+			$newBuild = new Build();
+			$newBuild->modpack_id = $destination->id;
+			$newBuild->version = $build->version;
+			$newBuild->minecraft = $build->minecraft;
+			$newBuild->min_java = $build->min_java;
+			$newBuild->min_memory = $build->min_meory;
+			$newBuild->save();
+		}
+
+		$destination->save();
+
+		return Redirect::to('modpack/view/'.$destination->id);
+	}
+
 	public function getCreate()
 	{
 		return View::make('modpack.create');

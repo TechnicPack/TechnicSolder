@@ -89,6 +89,7 @@
                       @endforeach
                       <li><a href="{{ URL::to('modpack/list') }}">Modpack List</a></li>
                       <li><a href="{{ URL::to('modpack/create') }}">Add Modpack</a></li>
+                      <li><a href="{{ URL::to('modpack/clone') }}">Clone Modpack</a></li>
                   </ul>
                   <!-- /.nav-second-level -->
               </li>
