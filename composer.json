@@ -55,6 +55,11 @@
 		"post-update-cmd": [
 			"php artisan clear-compiled",
 			"php artisan optimize"
+		],
+		"tests": [
+			"php artisan migrate:refresh --force",
+			"php artisan db:seed --class=\"TestSeeder\" --force",
+			"vendor/bin/phpunit --verbose"
 		]
 	},
 	"config": {

@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}">
     <script src="{{{ asset('js/jquery-1.11.1.min.js') }}}"></script>
     <script src="{{{ asset('js/bootstrap.min.js') }}}"></script>
+    <script src="{{{ asset('js/jquery.jgrowl.min.js') }}}"></script>
     <link href="{{{ asset('css/style.min.css') }}}" rel="stylesheet">
 <!--     <link href="{{{ asset('font-awesome/css/font-awesome.css') }}}" rel="stylesheet"> -->
 <!--     <link href="{{{ asset('css/sb-admin.css') }}}" rel="stylesheet"> -->
@@ -220,25 +221,35 @@
         </div>
       </div>
     </div>
-    @yield('bottom')
-    <script src="{{{ asset('js/menu/classie.js') }}}"></script>
-    <script src="{{{ asset('js/menu/mlpushmenu.js') }}}"></script>
-    <script>
-      new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'menu-toggle' ) );
-
-      function resize()
-      {
-        var heights = window.innerHeight;
-        var widths = window.innerHeight;
-        document.getElementById("modpacks").style.height = heights - 189 + "px";
-        document.getElementById("mods").style.height = heights - 189 + "px";
-      }
-
-      resize();
-
-      window.onresize = function() {
-        resize();
-      };
+    <!-- /.row -->
+</div>
+<!-- /#page-wrapper -->
+<script type="text/javascript">
+    (function($){
+        $(function(){
+            $.jGrowl.defaults.closerTemplate = '<div class="alert alert-info">Close All</div>';
+        });
+    })(jQuery);
     </script>
+@yield('bottom')
+<script src="{{{ asset('js/menu/classie.js') }}}"></script>
+<script src="{{{ asset('js/menu/mlpushmenu.js') }}}"></script>
+<script>
+  new mlPushMenu( document.getElementById( 'mp-menu' ), document.getElementById( 'menu-toggle' ) );
+
+  function resize()
+  {
+    var heights = window.innerHeight;
+    var widths = window.innerHeight;
+    document.getElementById("modpacks").style.height = heights - 189 + "px";
+    document.getElementById("mods").style.height = heights - 189 + "px";
+  }
+
+  resize();
+
+  window.onresize = function() {
+    resize();
+  };
+</script>
   </body>
 </html>

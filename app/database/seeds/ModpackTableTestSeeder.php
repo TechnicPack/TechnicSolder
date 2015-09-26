@@ -29,7 +29,6 @@ class ModpackTableTestSeeder extends Seeder {
 		$testbuild = Build::create(array('modpack_id' => $testmodpack->id,
 							'version' => '1.0.0',
 							'minecraft' => '1.7.10',
-							'minecraft_md5' => 'e6b7a531b95d0c172acb704d1f54d1b3',
 							'min_java' => '1.7',
 							'min_memory' => '1024',
 							'is_published' => true

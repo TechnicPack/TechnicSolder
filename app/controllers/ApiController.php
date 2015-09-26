@@ -46,7 +46,7 @@ class APIController extends BaseController {
 	public function getIndex()
 	{
 		return Response::json(array(
-				'api'     => 'TechnicSolder', 
+				'api'     => 'TechnicSolder',
 				'version' => SOLDER_VERSION,
 				'stream' => SOLDER_STREAM
 				));
@@ -90,16 +90,28 @@ class APIController extends BaseController {
 	public function getMod($mod = null, $version = null)
 	{
 		if (empty($mod))
-			return Response::json(array("error" => "No mod requested"));
-
-		if (Cache::has('mod.'.$mod))
 		{
-			$mod = Cache::get('mod.'.$mod);
+			if (Cache::has('modlist') && empty($this->client) && empty($this->key))
+			{
+				$response['mods'] = Cache::get('modlist');
+			} else {
+				foreach (Mod::all() as $mod)
+				{
+					$response['mods'][$mod->name] = $mod-> pretty_name;
+				}
+				//usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+				Cache::put('modlist',$response['mods'],5);
+			}
+			return Response::json($response);
 		} else {
-			$modname = $mod;
-			$mod = Mod::where('name', '=', $mod)->first();
-			Cache::put('mod.'.$modname,$mod,5);
-		}
+			if (Cache::has('mod.'.$mod))
+			{
+				$mod = Cache::get('mod.'.$mod);
+			} else {
+				$modname = $mod;
+				$mod = Mod::where('name', '=', $mod)->first();
+				Cache::put('mod.'.$modname,$mod,5);
+			}
 
 		if (empty($mod))
 			return Response::json(array('error' => 'Mod does not exist'));
@@ -108,6 +120,7 @@ class APIController extends BaseController {
 			return Response::json($this->fetchMod($mod));
 
 		return Response::json($this->fetchModversion($mod,$version));
+		}
 	}
 
 	public function getVerify($key = null)
@@ -172,7 +185,7 @@ class APIController extends BaseController {
 			if (empty($this->client) && empty($this->key)) {
 				Cache::put('modpacks', $modpacks, 5);
 			}
-			
+
 		}
 
 		$response = array();
@@ -212,7 +225,7 @@ class APIController extends BaseController {
 			if (empty($this->client) && empty($this->key))
 				Cache::put('modpack.'.$slug,$modpack,5);
 		}
-		
+
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
 
@@ -262,7 +275,7 @@ class APIController extends BaseController {
 
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
-			
+
 		$buildpass = $build;
 		if (Cache::has('modpack.'.$slug.'.build.'.$build) && empty($this->client) && empty($this->key))
 		{
@@ -279,7 +292,6 @@ class APIController extends BaseController {
 			return array("error" => "Build does not exist");
 
 		$response['minecraft'] = $build->minecraft;
-		$response['minecraft_md5'] = $build->minecraft_md5;
 		$response['java'] = $build->min_java;
 		$response['memory'] = $build->min_memory;
 		$response['forge'] = $build->forge;

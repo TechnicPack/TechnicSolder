@@ -23,17 +23,13 @@
 		<div class="col-md-6">
 			<label>Build Version: <span class="label label-default">{{ $build->version }}</span></label><br>
 			<label>Minecraft Version: <span class="label label-default">{{ $build->minecraft }}</span></label><br>
-			<label>Minecraft MD5: <span class="label label-default">{{ $build->md5 }}</span></label>
 		</div>
 		<div class="col-md-6">
-			<label>Java Version: <span class="label label-default">{{ $build->min_java }}</span></label><br>
-			<label>Memory (<i>in MB</i>): <span class="label label-default">{{ $build->min_memory }}</span></label>
+			<label>Java Version: <span class="label label-default">{{ !empty($build->min_java) ? $build->min_java : 'Not Required'  }}</span></label><br>
+			<label>Memory (<i>in MB</i>): <span class="label label-default">{{ $build->min_memory != 0 ? $build->min_memory : 'Not Required' }}</span></label>
 		</div>
 	</div>
 </div>
-<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
-<div class="alert alert-warning" id="warning-ajax" style="width: 100%;display: none"></div>
-<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 <div class="panel panel-default">
 	<div class="panel-heading">
 	Build Management: {{ $build->modpack->name }} - Build {{ $build->version }}
@@ -152,13 +148,15 @@ $(".mod-version").submit(function(e) {
 		success: function (data) {
 			console.log(data.reason);
 			if(data.status == 'success'){
-				$("#success-ajax").stop(true, true).html("Modversion Updated").fadeIn().delay(2000).fadeOut();
+				$.jGrowl("Modversion Updated", { group: 'alert-success' });
 			} else if(data.status == 'failed') {
-				$("#warning-ajax").stop(true, true).html("Unable to update modversion").fadeIn().delay(2000).fadeOut();
+				$.jGrowl("Unable to update modversion", { group: 'alert-warning' });
+			} else if(data.status == 'aborted') {
+				$.jGrowl("Mod was already set to that version", { group: 'alert-success' });
 			}
 		},
 		error: function (xhr, textStatus, errorThrown) {
-			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 		}
 	});
 });
@@ -172,13 +170,13 @@ $(".mod-delete").submit(function(e) {
 		success: function (data) {
 			console.log(data.reason);
 			if(data.status == 'success'){
-				$("#success-ajax").stop(true, true).html("Modversion Deleted").fadeIn().delay(2000).fadeOut();
+				$.jGrowl("Modversion Deleted", { group: 'alert-success' });
 			} else {
-				$("#warning-ajax").stop(true, true).html("Unable to delete modversion").fadeIn().delay(2000).fadeOut();
+				$.jGrowl("Unable to delete modversion", { group: 'alert-warning' });
 			}
 		},
 		error: function (xhr, textStatus, errorThrown) {
-			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 		}
 	});
 	$(this).parent().parent().fadeOut();
@@ -194,17 +192,17 @@ $(".mod-add").submit(function(e) {
 			success: function (data) {
 				if(data.status == 'success'){
 					$("#mod-list-add").after('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td></td></tr>');
-					//$("#success-ajax").stop(true, true).html("Mod " + data.pretty_name + " added at " + data.version).fadeIn().delay(2000).fadeOut();
+					$.jGrowl("Mod " + data.pretty_name + " added at " + data.version, { group: 'alert-success' });
 				} else {
-					$("#warning-ajax").stop(true, true).html("Unable to add mod. Reason: " + data.reason).fadeIn().delay(2000).fadeOut();
+					$.jGrowl("Unable to add mod. Reason: " + data.reason, { group: 'alert-warning' });
 				}
 			},
 			error: function (xhr, textStatus, errorThrown) {
-				$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+				$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 			}
 		});
 	} else {
-		$("#warning-ajax").stop(true, true).html("Please select a Modversion").fadeIn().delay(2000).fadeOut();
+		$.jGrowl("Please select a Modversion", { group: 'alert-warning'});
 	}
 });
 
@@ -216,7 +214,7 @@ function refreshModVersions() {
 		url: "{{ URL::to('api/mod/') }}/" + mod.getValue(),
 		success: function (data) {
 			if (data.versions.length === 0){
-				$("#warning-ajax").stop(true, true).html("No Modversions found for " + data.pretty_name).fadeIn().delay(2000).fadeOut();
+				$.jGrowl("No Modversions found for " + data.pretty_name, { group: 'alert-warning' });
 				$("#mod-version").attr("placeholder", "No Modversions found...");
 			} else {
 				$(data.versions).each(function(e, m) {
@@ -227,7 +225,7 @@ function refreshModVersions() {
 			}
 		},
 		error: function (xhr, textStatus, errorThrown) {
-			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
 		}
 	});
 	modversion.enable();

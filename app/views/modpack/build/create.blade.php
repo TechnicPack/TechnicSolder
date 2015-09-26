@@ -32,7 +32,7 @@
 					<label for="version">Minecraft Version</label>
 					<select class="form-control" name="minecraft">
 						@foreach ($minecraft as $version)
-						<option value="{{ $version['version'] }}:{{ $version['md5'] }}">{{ $version['version'] }}</option>
+						<option value="{{ $version['version'] }}">{{ $version['version'] }}</option>
 						@endforeach
 					</select>
 				</div>

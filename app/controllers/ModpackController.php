@@ -75,6 +75,7 @@ class ModpackController extends BaseController {
 			{
 				$rules = array(
 					"version" => "required",
+					"minecraft" => "required",
 					"memory" => "numeric"
 					);
 
@@ -87,12 +88,11 @@ class ModpackController extends BaseController {
 
 				$build->version = Input::get('version');
 
-				$minecraft = explode(':', Input::get('minecraft'));
+				$minecraft = Input::get('minecraft');
 
-				$build->minecraft = $minecraft[0];
-				$build->minecraft_md5 = $minecraft[1];
+				$build->minecraft = $minecraft;
 				$build->min_java = Input::get('java-version');
-				$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
+				$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : 0;
 				$build->save();
 				Cache::forget('modpack.' . $build->modpack->slug . '.build.' . $build->version);
 				return Redirect::to('modpack/build/'.$build->id);
@@ -127,6 +127,7 @@ class ModpackController extends BaseController {
 
 		$rules = array(
 					"version" => "required",
+					"minecraft" => "required",
 					"memory" => "numeric"
 					);
 
@@ -135,19 +136,18 @@ class ModpackController extends BaseController {
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::to('modpack/add-build/'.$modpack_id)->withErrors($validation->messages());
 
 		$clone = Input::get('clone');
 		$build = new Build();
 		$build->modpack_id = $modpack->id;
 		$build->version = Input::get('version');
 
-		$minecraft = explode(':', Input::get('minecraft'));
+		$minecraft = Input::get('minecraft');
 
-		$build->minecraft = $minecraft[0];
-		$build->minecraft_md5 = $minecraft[1];
+		$build->minecraft = $minecraft;
 		$build->min_java = Input::get('java-version');
-		$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : '';
+		$build->min_memory = Input::get('memory-enabled') ? Input::get('memory') : 0;
 		$build->save();
 		Cache::forget('modpack.' . $modpack->slug);
 		if (!empty($clone))
@@ -278,7 +278,7 @@ class ModpackController extends BaseController {
 
 		$validation = Validator::make(Input::all(), $rules, $messages);
 		if ($validation->fails())
-			return Redirect::back()->withErrors($validation->messages());
+			return Redirect::to('modpack/edit/'.$modpack_id)->withErrors($validation->messages());
 
 		$modpack->name = Input::get('name');
 		$oldSlug = $modpack->slug;
@@ -353,10 +353,10 @@ class ModpackController extends BaseController {
 				} else if (!$success && !$modpack->icon) {
 					$modpack->icon_md5 = md5_file(public_path() . '/resources/default/icon.png');
 					$modpack->icon_url = URL::asset('/resources/default/icon.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
 				} else {
 					Log::error('Failed to save new image to ' . $resourcePath . '/icon.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/icon.png')));
 				}
 			}
 		} else {
@@ -388,7 +388,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $logoimg->save($resourcePath . '/logo.png', 100)) {
 					$modpack->logo = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -420,10 +420,10 @@ class ModpackController extends BaseController {
 				} else if (!$success && !$modpack->logo) {
 					$modpack->logo_md5 = md5_file(public_path() . '/resources/default/logo.png');
 					$modpack->logo_url = URL::asset('/resources/default/logo.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
 				} else {
 					Log::error('Failed to save new image to ' . $resourcePath . '/logo.png');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/logo.png')));
 				}
 			}
 		} else {
@@ -455,7 +455,7 @@ class ModpackController extends BaseController {
 
 				if ($success = $backgroundimg->save($resourcePath . '/background.jpg', 100)) {
 					$modpack->background = true;
-					
+
 					if ($useS3) {
 						$result = $client->putObject(array(
 									'Bucket' => $S3bucket,
@@ -487,10 +487,10 @@ class ModpackController extends BaseController {
 				} else if (!$success && !$modpack->background) {
 					$modpack->background_md5 = md5_file(public_path() . '/resources/default/background.jpg');
 					$modpack->background_url = URL::asset('/resources/default/background.jpg');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
 				} else {
 					Log::error('Failed to save new image to ' . $resourcePath . '/background.jpg');
-					return Redirect::back()->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
+					return Redirect::to('modpack/edit/'.$modpack_id)->withErrors(new MessageBag(array('Failed to save new image to ' . $resourcePath . '/background.jpg')));
 				}
 			}
 		} else {
@@ -579,10 +579,10 @@ class ModpackController extends BaseController {
 	public function anyModify($action = null)
 	{
 		if (!Request::ajax())
-			return App::abort('404');
+			return Response::view('errors.missing', array(), 404);
 
 		if (empty($action))
-			return Response::error('500');
+			return Response::view('errors.500', array(), 500);
 
 		switch ($action)
 		{
@@ -593,11 +593,14 @@ class ModpackController extends BaseController {
 							->where('build_id','=', Input::get('build_id'))
 							->where('modversion_id', '=', $modversion_id)
 							->update(array('modversion_id' => $version_id));
-				$status = 'success';
-				if ($affected == 0 && ($modversion_id != $version_id)){
-					$status = 'failed';
+				if ($affected == 0) {
+					if ($modversion_id != $version_id) {
+						$status = 'failed';
+					} else {
+						$status = 'aborted';
+					}
 				} else {
-					$status = 'aborted';
+					$status = 'success';
 				}
 				return Response::json(array(
 							'status' => $status,
@@ -649,6 +652,8 @@ class ModpackController extends BaseController {
 				$modpack->recommended = $new_version;
 				$modpack->save();
 
+				Cache::forget('modpack.' . $modpack->slug);
+
 				return Response::json(array(
 						"success" => "Updated ".$modpack->name."'s recommended  build to ".$new_version,
 						"version" => $new_version
@@ -659,6 +664,8 @@ class ModpackController extends BaseController {
 				$new_version = Input::get('latest');
 				$modpack->latest = $new_version;
 				$modpack->save();
+
+				Cache::forget('modpack.' . $modpack->slug);
 
 				return Response::json(array(
 						"success" => "Updated ".$modpack->name."'s latest  build to ".$new_version,

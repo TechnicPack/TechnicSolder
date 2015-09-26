@@ -37,7 +37,7 @@ class RemindersController extends Controller {
 	 */
 	public function getReset($token = null)
 	{
-		if (is_null($token)) App::abort(404);
+		if (is_null($token)) return Response::view('errors.missing', array(), 404);
 
 		return View::make('password.reset')->with('token', $token);
 	}

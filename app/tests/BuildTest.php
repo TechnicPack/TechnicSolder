@@ -7,7 +7,7 @@ class BuildTest extends TestCase {
 		parent::setUp();
 
 		Route::enableFilters();
-		
+
 		$user = User::find(1);
 		$this->be($user);
 	}
@@ -26,11 +26,11 @@ class BuildTest extends TestCase {
 		$this->assertResponseOk();
 	}
 
-	public function testBuildAddPost() 
+	public function testBuildAddPost()
 	{
 		$data = array(
 			'version' => '1.1.0',
-			'minecraft' => '1.7.10:e6b7a531b95d0c172acb704d1f54d1b3',
+			'minecraft' => '1.7.10',
 			'java-version' => '1.7',
 			'memory' => '1536',
 			'memory-enabled' => 1
@@ -41,7 +41,81 @@ class BuildTest extends TestCase {
 
 		$build = Build::find(2);
 
+		$this->assertEquals($build->version, '1.1.0');
+		$this->assertEquals($build->minecraft, '1.7.10');
 		$this->assertEquals($build->min_memory, '1536');
+		$this->assertEquals($build->min_java, '1.7');
+	}
+
+	public function testBuildAddPostEmptyVersion()
+	{
+		$data = array(
+			'version' => '',
+			'minecraft' => '1.7.10',
+			'java-version' => '1.7',
+			'memory' => '1536',
+			'memory-enabled' => 1
+		);
+
+		$response = $this->call('POST', '/modpack/add-build/1', $data);
+		$this->assertRedirectedTo('/modpack/add-build/1');
+		$this->assertSessionHasErrors('version');
+	}
+
+	public function testBuildAddPostEmptyMinecraft()
+	{
+		$data = array(
+			'version' => '1.1.0',
+			'minecraft' => '',
+			'java-version' => '1.7',
+			'memory' => '1536',
+			'memory-enabled' => 1
+		);
+
+		$response = $this->call('POST', '/modpack/add-build/1', $data);
+		$this->assertRedirectedTo('/modpack/add-build/1');
+		$this->assertSessionHasErrors('minecraft');
+	}
+
+	public function testBuildAddPostEmptyJava()
+	{
+		$data = array(
+			'version' => '1.1.0',
+			'minecraft' => '1.7.10',
+			'java-version' => '',
+			'memory' => '1536',
+			'memory-enabled' => 1
+		);
+
+		$response = $this->call('POST', '/modpack/add-build/1', $data);
+		$this->assertRedirectedTo('/modpack/build/3');
+
+		$build = Build::find(3);
+
+		$this->assertEquals($build->version, '1.1.0');
+		$this->assertEquals($build->minecraft, '1.7.10');
+		$this->assertEquals($build->min_memory, '1536');
+		$this->assertEquals($build->min_java, '');
+	}
+
+	public function testBuildAddPostNoMemory()
+	{
+		$data = array(
+			'version' => '1.1.0',
+			'minecraft' => '1.7.10',
+			'java-version' => '1.7',
+			'memory' => 0,
+			'memory-enabled' => 0
+		);
+
+		$response = $this->call('POST', '/modpack/add-build/1', $data);
+		$this->assertRedirectedTo('/modpack/build/4');
+
+		$build = Build::find(4);
+
+		$this->assertEquals($build->version, '1.1.0');
+		$this->assertEquals($build->minecraft, '1.7.10');
+		$this->assertEquals($build->min_memory, '0');
 		$this->assertEquals($build->min_java, '1.7');
 	}
 
@@ -60,7 +134,7 @@ class BuildTest extends TestCase {
 		$data = array(
 			'confirm-edit' => '1',
 			'version' => '1.1.0',
-			'minecraft' => '1.7.10:e6b7a531b95d0c172acb704d1f54d1b3',
+			'minecraft' => '1.7.10',
 			'java-version' => '1.8',
 			'memory' => '1024',
 			'memory-enabled' => '1'
@@ -76,7 +150,7 @@ class BuildTest extends TestCase {
 	}
 
 
-	public function testBuildDeleteGet() 
+	public function testBuildDeleteGet()
 	{
 		$build = Build::find(2);
 

@@ -8,7 +8,7 @@ class BaseController extends Controller {
 			define('SOLDER_STREAM', 'DEV');
 		}
 		if(!defined('SOLDER_VERSION')) {
-			define('SOLDER_VERSION', 'v0.7.2.1');
+			define('SOLDER_VERSION', 'v0.7.2.2');
 		}
 
 		UpdateUtils::init();
@@ -31,7 +31,7 @@ class BaseController extends Controller {
 			);
 
 		if ( Auth::attempt($credentials, $remember)) {
-		
+
 			Auth::user()->last_ip = Request::ip();
 			Auth::user()->save();
 
