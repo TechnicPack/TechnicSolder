@@ -38,7 +38,14 @@
 					</div>
 					<div class="form-group">
 						<label for="destination">Destination Modpack</label>
-						<input type="text" class="form-control" name="destination" id="destination">
+						<select class="form-control" name="destination" id="destination" placeholder="Select a modpack...">
+							<option value="">Select a modpack...</option>
+							@foreach($modpacks as $modpack)
+								<option value="{{ $modpack->slug }}">
+									{{ $modpack->name }}
+								</option>
+							@endforeach
+						</select>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -56,11 +63,10 @@
 		var $select = $("#source").selectize({
 			persist: false,
 			maxItems: 1,
-			create: true,
 			sortField: {
 				field: 'text',
 				direction: 'asc'
-			},
+			}
 		});
 		var source = $select[0].selectize;
 
@@ -71,41 +77,8 @@
 			sortField: {
 				field: 'text',
 				direction: 'asc'
-			},
+			}
 		});
 		var destination = $select[0].selectize;
-
-		source.on('change', refreshDestinations);
-
-		$( document ).ready(function() {
-			refreshDestinations();
-		});
-
-		function refreshDestinations() {
-			destination.disable();
-			destination.clearOptions();
-			$.ajax({
-				type: "GET",
-				url: "{{ URL::to('api/modpack') }}/",
-				success: function (data) {
-					if (data.modpacks.length === 0){
-						$.jGrowl("No modpacks found.", { group: 'alert-warning' });
-						$("#destination").attr("placeholder", "No modpacks found...");
-					} else {
-						$.each(data.modpacks, function(slug, name) {
-							if ($("#source").val() != slug){
-								destination.addOption({value: slug, text: name});
-								destination.refreshOptions(false);
-							}
-						});
-						$("#destination").attr("placeholder", "Select a modpack...");
-					}
-				},
-				error: function (xhr, textStatus, errorThrown) {
-					$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
-				}
-			});
-			destination.enable();
-		}
 	</script>
 @endsection
