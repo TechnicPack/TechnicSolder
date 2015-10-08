@@ -11,6 +11,28 @@ class ApiTest extends TestCase {
 		$this->assertEquals('{"api":"TechnicSolder","version":"'.SOLDER_VERSION.'","stream":"'.SOLDER_STREAM.'"}', $response->getContent());
 	}
 
+	public function testAuthorizedLogin()
+	{
+		$credentials = array(
+			'email' => 'admin@admin.com',
+			'password' => 'admin'
+		);
+
+		$this->call('POST', '/api/login', $credentials);
+		$this->assertResponseOk();
+	}
+
+	public function testUnauthorizedLogin()
+	{
+		$credentials = array(
+			'email' => 'test@admin.com',
+			'password' => 'ifail'
+		);
+
+		$this->call('POST', '/api/login', $credentials);
+		$this->assertResponseStatus(403);
+	}
+
 	public function testModpack()
 	{
 		$response = $this->call('GET', 'api/modpack/');
