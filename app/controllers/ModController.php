@@ -286,33 +286,36 @@ class ModController extends BaseController {
 
 	private function mod_md5($mod, $version)
 	{
-		$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+		$location = Config::get('solder.repo_location');
+		$URI = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-		if (file_exists($location)) {
-			Log::info('Found \'' . $location . '\'');
-			return md5_file($location);
+		if (file_exists($URI)) {
+			Log::info('Found \'' . $URI . '\'');
+			try {
+				$filesize = filesize($URI);
+				$md5 = md5_file($URI);
+				return array('success' => true, 'md5' => $md5, 'filesize' => $filesize);
+			} catch (Exception $e) {
+				Log::error("Error attempting to md5 the file: " . $URI);
+				return array('success' => false, 'error' => $e->getMessage());
+			}
 		} else {
-			Log::warning('File \'' . $location . '\' was not found.');
-			return $this->remote_mod_md5($mod, $version);
+			Log::warning('File \'' . $URI . '\' was not found.');
+			return $this->remote_mod_md5($mod, $version, $location);
 		}
 	}
 
-	private function remote_mod_md5($mod, $version, $attempts = 0)
+	private function remote_mod_md5($mod, $version, $location, $attempts = 0)
 	{
-		$url = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
-		if ($attempts >= 3)
-		{
-			Log::error("Exceeded maximum number of attempts for remote MD5 on mod ". $mod->name ." version ".$version." located at ". $url);
-			return "";
-		}
+		$URL = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-		$hash = UrlUtils::get_remote_md5($url);
+		$hash = UrlUtils::get_remote_md5($URL);
 
-		if ($hash != "")
-			return $hash;
-		else {
-			Log::warning("Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
+		if (!($hash['success']) && $attempts < 3) {
+			Log::warning("Errpr attempting to remote MD5 file " . $mod->name . " version " . $version . " located at " . $URL .".");
 			return $this->remote_mod_md5($mod, $version, $attempts + 1);
 		}
+
+		return $hash;
 	}
 }
