@@ -159,33 +159,40 @@ class ModController extends BaseController {
 
 			if (empty($md5)) {
 				$file_md5 = $this->mod_md5($ver->mod,$ver->version);
-				$md5 = $file_md5;
+				if($file_md5['success'])
+					$md5 = $file_md5['md5'];
 			} else {
 				$file_md5 = $this->mod_md5($ver->mod,$ver->version);
-				$pfile_md5 = empty($file_md5) ? "Null" : $file_md5;
+				$pfile_md5 = !$file_md5['success'] ? "Null" : $file_md5['md5'];
 			}
 
-			if ($md5 == $file_md5 && !empty($md5)) {
-				$ver->md5 = $md5;
-				$ver->save();
-				return Response::json(array(
-							'status' => 'success',
-							'version_id' => $ver->id,
-							'md5' => $ver->md5,
-							));
-			} else if ($md5 != $file_md5 && !empty($md5)) {
-				$ver->md5 = $md5;
-				$ver->save();
-				return Response::json(array(
-							'status' => 'warning',
-							'version_id' => $ver->id,
-							'md5' => $ver->md5,
-							'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5
-							));
+			if ($file_md5['success'] && !empty($md5)) {
+				if($md5 == $file_md5['md5']) {
+					$ver->filesize = $file_md5['filesize'];
+					$ver->md5 = $md5;
+					$ver->save();
+					return Response::json(array(
+								'status' => 'success',
+								'version_id' => $ver->id,
+								'md5' => $ver->md5,
+								'filesize' => $ver->humanFilesize("MB"),
+								));
+				} else {
+					$ver->filesize = $file_md5['filesize'];
+					$ver->md5 = $md5;
+					$ver->save();
+					return Response::json(array(
+								'status' => 'warning',
+								'version_id' => $ver->id,
+								'md5' => $ver->md5,
+								'filesize' => $ver->humanFilesize("MB"),
+								'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
+								));
+				}
 			} else {
 				return Response::json(array(
 							'status' => 'error',
-							'reason' => 'Remote MD5 failed. See app/storage/logs for more details'
+							'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
 							));
 			}
 		}
@@ -215,38 +222,44 @@ class ModController extends BaseController {
 
 			if (empty($md5)) {
 				$file_md5 = $this->mod_md5($mod,$version);
-				$md5 = $file_md5;
+				if($file_md5['success'])
+					$md5 = $file_md5['md5'];
 			} else {
 				$file_md5 = $this->mod_md5($mod,$version);
-				$pfile_md5 = empty($file_md5) ? "Null" : $file_md5;
+				$pfile_md5 = !$file_md5['success'] ? "Null" : $file_md5['md5'];
 			}
 
 			$ver = new Modversion();
 			$ver->mod_id = $mod->id;
-			$ver->md5 = $md5;
 			$ver->version = $version;
 
-			if ($md5 == $file_md5 && !empty($md5)) {
-				$ver->md5 = $md5;
-				$ver->save();
-				return Response::json(array(
-							'status' => 'success',
-							'version' => $ver->version,
-							'md5' => $ver->md5,
-							));
-			} else if ($md5 != $file_md5 && !empty($md5)) {
-				$ver->md5 = $md5;
-				$ver->save();
-				return Response::json(array(
-							'status' => 'warning',
-							'version' => $ver->version,
-							'md5' => $ver->md5,
-							'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5
-							));
+			if ($file_md5['success'] && !empty($md5)) {
+				if($md5 == $file_md5['md5']) {
+					$ver->filesize = $file_md5['filesize'];
+					$ver->md5 = $md5;
+					$ver->save();
+					return Response::json(array(
+								'status' => 'success',
+								'version' => $ver->version,
+								'md5' => $ver->md5,
+								'filesize' => $ver->humanFilesize("MB"),
+								));
+				} else {
+					$ver->filesize = $file_md5['filesize'];
+					$ver->md5 = $md5;
+					$ver->save();
+					return Response::json(array(
+								'status' => 'warning',
+								'version' => $ver->version,
+								'md5' => $ver->md5,
+								'filesize' => $ver->humanFilesize("MB"),
+								'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
+								));
+				}
 			} else {
 				return Response::json(array(
 							'status' => 'error',
-							'reason' => 'Remote MD5 failed. See app/storage/logs for more details'
+							'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
 							));
 			}
 		}
@@ -286,33 +299,42 @@ class ModController extends BaseController {
 
 	private function mod_md5($mod, $version)
 	{
-		$location = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+		$location = Config::get('solder.repo_location');
+		$URI = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-		if (file_exists($location)) {
-			Log::info('Found \'' . $location . '\'');
-			return md5_file($location);
+		if(filter_var($URI, FILTER_VALIDATE_URL)) {
+			if (file_exists($URI)) {
+				Log::info('Found \'' . $URI . '\'');
+				try {
+					$filesize = filesize($URI);
+					$md5 = md5_file($URI);
+					return array('success' => true, 'md5' => $md5, 'filesize' => $filesize);
+				} catch (Exception $e) {
+					Log::error("Error attempting to md5 the file: " . $URI);
+					return array('success' => false, 'message' => $e->getMessage());
+				}
+			} else {
+				Log::warning('File \'' . $URI . '\' was not found.');
+				return $this->remote_mod_md5($mod, $version, $location);
+			}
 		} else {
-			Log::warning('File \'' . $location . '\' was not found.');
-			return $this->remote_mod_md5($mod, $version);
+			$error = $URI . ' is not a valid URI';
+			Log::error($error);
+			return array('success' => false, 'message' => $error);
 		}
 	}
 
-	private function remote_mod_md5($mod, $version, $attempts = 0)
+	private function remote_mod_md5($mod, $version, $location, $attempts = 0)
 	{
-		$url = Config::get('solder.repo_location').'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
-		if ($attempts >= 3)
-		{
-			Log::error("Exceeded maximum number of attempts for remote MD5 on mod ". $mod->name ." version ".$version." located at ". $url);
-			return "";
+		$URL = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
+
+		$hash = UrlUtils::get_remote_md5($URL);
+
+		if (!($hash['success']) && $attempts <= 3) {
+			Log::warning("Error attempting to remote MD5 file " . $mod->name . " version " . $version . " located at " . $URL .".");
+			return $this->remote_mod_md5($mod, $version, $location, $attempts + 1);
 		}
 
-		$hash = UrlUtils::get_remote_md5($url);
-
-		if ($hash != "")
-			return $hash;
-		else {
-			Log::warning("Attempted to remote MD5 mod " . $mod->name . " version " . $version . " located at " . $url ." but curl response did not return 200!");
-			return $this->remote_mod_md5($mod, $version, $attempts + 1);
-		}
+		return $hash;
 	}
 }

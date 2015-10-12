@@ -8,7 +8,7 @@ return array(
 	 * This can be a URL or an absolute file location.
 	 *
 	 **/
-	'repo_location' => '',
+	'repo_location' => 'http://mirror.technicpack.net/Technic/',
 
 	/**
 	 * Mirror Location
@@ -17,7 +17,16 @@ return array(
 	 * repo location is already a URL you can use the same location here.
 	 *
 	 **/
-	'mirror_url' => '',
+	'mirror_url' => 'http://mirror.technicpack.net/Technic/',
+
+	/**
+	 * MD5 Connect Timeout
+	 *
+	 * This is the amount of time Solder will wait before giving up trying to
+	 * connect to a URL to perform a MD5 checksum.
+	 *
+	 **/
+	'md5_connect_timeout' => 5,
 
 	/**
 	 * MD5 Hashing Timeout
@@ -26,7 +35,7 @@ return array(
 	 * calculate the MD5 checksum.
 	 *
 	 **/
-	'md5filetimeout' => 1,
+	'md5_file_timeout' => 30,
 
 	/**
 	 * Amazon S3 Integration
