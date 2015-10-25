@@ -117,6 +117,7 @@ class ApiTest extends TestCase {
 		$json = $response->getData(true);
 
 		$this->assertTrue(array_key_exists('md5', $json));
+		$this->assertTrue(array_key_exists('filesize', $json));
 		$this->assertTrue(array_key_exists('url', $json));
 	}
 }

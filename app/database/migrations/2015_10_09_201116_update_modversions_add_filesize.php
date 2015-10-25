@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModsAddFilesize extends Migration {
+class UpdateModversionsAddFilesize extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class UpdateModsAddFilesize extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('mods', function($table) {
+		Schema::table('modversions', function($table) {
 			$table->integer('filesize')->nullable();
 		});
 	}
@@ -24,7 +24,7 @@ class UpdateModsAddFilesize extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('mods', function($table) {
+		Schema::table('modversions', function($table) {
 			$table->dropColumn('filesize');
 		});
 	}
