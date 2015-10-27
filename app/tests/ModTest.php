@@ -375,7 +375,7 @@ class ModTest extends TestCase {
 
 	public function testModDeletePost()
 	{
-		$modpack = Mod::where('name', '=', 'Backtools')->firstOrFail();
+		$modpack = Mod::where('name', '=', 'backtools')->firstOrFail();
 
 		$this->call('POST', '/mod/delete/'.$modpack->id);
 		$this->assertRedirectedTo('/mod/list');
