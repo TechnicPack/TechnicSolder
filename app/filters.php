@@ -203,11 +203,11 @@ Route::filter('build', function()
 {
 	$buildId = Request::segment(3);
 	$build = Build::find($buildId);
-	$modpack = $build->modpack;
-
 
 	if (empty($build))
 		return Redirect::to('dashboard');
+
+	$modpack = $build->modpack;
 
 	$perm = Auth::user()->permission;
 

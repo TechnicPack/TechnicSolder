@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}">
     <script src="{{{ asset('js/jquery-1.11.1.min.js') }}}"></script>
     <script src="{{{ asset('js/bootstrap.min.js') }}}"></script>
+    <script src="{{{ asset('js/jquery.jgrowl.min.js') }}}"></script>
     <link href="{{{ asset('css/bootstrap.min.css') }}}" rel="stylesheet">
     <link href="{{{ asset('font-awesome/css/font-awesome.css') }}}" rel="stylesheet">
     <link href="{{{ asset('css/sb-admin.css') }}}" rel="stylesheet">
@@ -133,6 +134,13 @@
     <!-- /.row -->
 </div>
 <!-- /#page-wrapper -->
+<script type="text/javascript">
+    (function($){
+        $(function(){
+            $.jGrowl.defaults.closerTemplate = '<div class="alert alert-info">Close All</div>';
+        });
+    })(jQuery);
+    </script>
 @yield('bottom')
   </body>
 </html>

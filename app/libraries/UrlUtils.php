@@ -8,18 +8,38 @@ class UrlUtils {
 	 * @param  int $timeout
 	 * @return resource
 	 */
-	private static function curl_init($url, $timeout)
+	private static function curl_init($url)
 	{
 		$ch = curl_init($url);
+
+		if (Config::has('solder.md5_connect_timeout'))
+		{
+			$timeout = Config::get('solder.md5_connect_timeout');
+			if(is_int($timeout)){
+				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+			}
+		}
+		else {
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		}
+
+		if (Config::has('solder.md5_file_timeout'))
+		{
+			$timeout = Config::get('solder.md5_file_timeout');
+			if(is_int($timeout)){
+				curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+			}
+		}
+		else {
+			curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+		}
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'TechnicSolder/0.7 (https://github.com/TechnicPack/TechnicSolder)');
 		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 
 		return $ch;
 	}
@@ -29,27 +49,41 @@ class UrlUtils {
 	 * @param  String $url
 	 * @return String
 	 */
-	public static function get_url_contents($url, $timeout)
+	public static function get_url_contents($url)
 	{
-		$ch = self::curl_init($url, $timeout);
+		$ch = self::curl_init($url);
 
 		$data = curl_exec($ch);
+		$info = curl_getinfo($ch);
 
 		if(!curl_errno($ch)){
 			//check HTTP return code
-			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
-			if ($retcode == 200 || $retcode == 405)
-				return $data;
-			else {
-				return false;
+			if ($info['http_code'] == 200) {
+				return array(
+					'success' => true,
+					'data' => $data,
+					'info' => $info
+				);
+			} else {
+				Log::error('Curl error for ' . $url . ': URL returned status code - ' . $info['http_code']);
+				return array(
+					'success' => false,
+					'message' => 'URL returned status code - ' . $info['http_code'],
+					'info' => $info
+				);
 			}
 		}
 
+		$errors = curl_error($ch);
 		//log the string return of the errors
-		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
+		Log::error('Curl error for ' . $url . ': ' . $errors);
 		curl_close($ch);
-		return false;
+		return array(
+			'success' => false,
+			'message' => $errors,
+			'info' => $info
+		);
 	}
 
 	/**
@@ -59,79 +93,98 @@ class UrlUtils {
 	 */
 	public static function get_remote_md5($url)
 	{
-		if (Config::has('solder.md5filetimeout'))
-		{
-			$timeout = Config::get('solder.md5filetimeout');
-		}
-		else {
-			$timeout = 30;
-		}
+		$checkFile = self::checkRemoteFile($url);
 
-		if(self::checkRemoteFile($url, $timeout)){
-			$content = self::get_url_contents($url, $timeout);
-			if($content){
-				return md5($content);
+		if($checkFile['success']){
+			$content = self::get_url_contents($url);
+			if($content['success']){
+				try {
+					$md5 = md5($content['data']);
+					return array(
+						'success' => true,
+						'md5' => $md5,
+						'filesize' => $content['info']['download_content_length']
+					);
+				} catch (Exception $e) {
+					Log::error('Error hashing remote md5: '. $e->getMessage());
+					return array(
+						'success' => false,
+						'message' => $e->getMessage(),
+						'info' => $content['info'],
+					);
+				}
+			} else {
+				return array(
+					'success' => false,
+					'message' => $content['message'],
+					'info' => $content['info'],
+				);
 			}
 		}
-		return "";
+
+		return array(
+			'success' => false,
+			'message' => $checkFile['message'],
+			'info' => $checkFile['info']
+		);
 	}
 
-	public static function checkRemoteFile($url, $timeout)
+	public static function checkRemoteFile($url)
 	{
-		$ch = self::curl_init($url, $timeout);
+		$ch = self::curl_init($url);
 
 		curl_setopt($ch, CURLOPT_NOBODY, true);
 
 		curl_exec($ch);
 
+		$info = curl_getinfo($ch);
+
 		//check if there are any errors
 		if(!curl_errno($ch)){
 			//check HTTP return code
-			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
-			if ($retcode == 200 || $retcode == 405)
-				return true;
+			if ($info['http_code'] == 200 || $info['http_code'] == 405)
+				return array('success' => true, 'info' => $info);
 			else {
-				return false;
+				return array(
+					'success' => false,
+					'message' =>'URL returned status code - ' . $info['http_code'],
+					'info' => $info
+				);
 			}
 		}
 
 		//log the string return of the errors
-		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
+		$errors = curl_error($ch);
+		Log::error('Curl error for ' . $url . ': ' . $errors);
 		curl_close($ch);
-		return false;
+		return array('success' => false, 'message' => $errors, 'info' => $info);
 	}
 
-	public static function getHeaders($url, $timeout){
-		$ch = curl_init($url);
+	public static function getHeaders($url){
+		$ch = self::curl_init($url);
 
 		curl_setopt($ch, CURLOPT_NOBODY, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
-		curl_setopt($ch, CURLOPT_USERAGENT, 'TechnicSolder/0.7 (www.techincpack.net)');
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 
 		$data = curl_exec($ch);
+		$info = curl_getinfo($ch);
 
 		if(!curl_errno($ch)){
 			//check HTTP return code
-			$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
-			if ($retcode == 200 || $retcode == 405)
-				return $data;
+			if ($info['http_code'] == 200 || $info['http_code'] == 405)
+				return array('success' => true, 'headers' => $data, 'info' => $info);
 			else {
-				return false;
+				return array('success' => false, 'message' =>
+				'Remote server did not return 200', 'info' => $info);
 			}
 		}
 
 		//log the string return of the errors
-		Log::error('Curl error for ' . $url . ': ' . curl_error($ch));
+		$errors = curl_error($ch);
+		Log::error('Curl error for ' . $url . ': ' . $errors);
 		curl_close($ch);
-		return false;
+		return array('success' => false, 'message' => $errors, 'info' => $info);
 	}
 }

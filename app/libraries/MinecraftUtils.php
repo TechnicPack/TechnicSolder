@@ -3,39 +3,36 @@
 class MinecraftUtils {
 
 	public static function getMinecraft($manual = false) {
-		$response = '';
+		$response = array();
 
 		if ($manual) {
 			Cache::forget('minecraftversions');
+		} else if (!$manual && Cache::has('minecraftversions')) {
+			$response = Cache::get('minecraftversions');
 		}
 
-		if (Cache::has('minecraftversions')) {
-			$response = Cache::get('minecraftversions');
-		} else {
-			$response = self::getVersions();
-		}
+		$response = self::getVersions();
 
 		return $response;
 	}
 
 	public static function getVersions() {
-		$response = '';
+		$response = array();
 
-		/*if ($success = UrlUtils::checkRemoteFile('http://www.technicpack.net/api/minecraft', 15)) {
+		if (UrlUtils::checkRemoteFile('http://www.technicpack.net/api/minecraft', 15)['success']) {
 			$response = UrlUtils::get_url_contents('http://www.technicpack.net/api/minecraft', 15);
-			if(!empty($response)) {
-				$response = json_decode($response, true);
+			if($response['success']) {
+				$response = json_decode($response['data'], true);
 				krsort($response);
 				Cache::put('minecraftversions', $response, 180);
 				return $response;
 			}
-		}*/
+		}
 
-		if ($success = UrlUtils::checkRemoteFile('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15)) {
+		if (UrlUtils::checkRemoteFile('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15)['success']) {
 			$response = UrlUtils::get_url_contents('https://s3.amazonaws.com/Minecraft.Download/versions/versions.json', 15);
-			if(!empty($response)) {
-				$mojangResponse = json_decode($response, true);
-
+			if($response['success']) {
+				$mojangResponse = json_decode($response['data'], true);
 				$versions = array();
 
 				foreach ($mojangResponse['versions'] as $versionEntry) {
@@ -43,9 +40,7 @@ class MinecraftUtils {
 						continue;
 					}
 					$mcVersion = $versionEntry['id'];
-					$md5 = self::getMojangMD5($mcVersion);
-
-					$versions[$mcVersion] = array('version' => $mcVersion, 'md5' => $md5);
+					$versions[$mcVersion] = array('version' => $mcVersion);
 				}
 
 				krsort($versions);
@@ -55,16 +50,5 @@ class MinecraftUtils {
 		}
 
 		return $response;
-	}
-
-	private static function getMojangMD5($MCVersion) {
-
-		$url = 'https://s3.amazonaws.com/Minecraft.Download/versions/'.$MCVersion.'/'.$MCVersion.'.jar';
-
-		$response = get_headers($url, 1);
-		if(!empty($response)) {
-				return str_replace('"', '', $response['ETag']);
-		}
-		return '';
 	}
 }
