@@ -16,6 +16,7 @@ class TestSeeder extends Seeder {
 		$this->call('ModTableTestSeeder');
 		$this->call('ClientTableTestSeeder');
 		$this->call('KeyTableTestSeeder');
+		$this->call('TagTableTestSeeder');
 
 		DB::table('build_modversion')->delete();
 
