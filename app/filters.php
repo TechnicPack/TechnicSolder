@@ -162,7 +162,7 @@ Route::filter('solder_mods', function()
 		case 'delete':
 		$check = 'mods_delete';
 		break;
-		case 'edit':
+		case 'modify':
 		$check = 'mods_manage';
 		break;
 		case 'view':
@@ -172,7 +172,7 @@ Route::filter('solder_mods', function()
 		$check = 'mods_manage';
 		break;
 		default:
-		return Redirect::to('mods/list');
+		return Redirect::to('mod/list');
 		break;
 	}
 	$perm = Auth::user()->permission;
