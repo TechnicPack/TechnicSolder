@@ -7,6 +7,11 @@ class Mod extends Eloquent {
 	{
 		return $this->hasMany('Modversion');
 	}
+
+	public function tags()
+	{
+		return $this->belongsToMany('Tag');
+	}
 }
 
 ?>

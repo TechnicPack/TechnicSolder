@@ -156,6 +156,11 @@ class APIController extends BaseController {
 			array_push($response['versions'], $version->version);
 		}
 
+		$response['tags'] = array();
+		foreach ($mod->tags as $tag) {
+			array_push($response['tags'], $tag->name);
+		}
+
 		return $response;
 	}
 

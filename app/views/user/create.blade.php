@@ -59,6 +59,14 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label>Tag Library</label>
+                    <div class="controls">
+                        <label for="tag-create" class="checkbox-inline"><input type="checkbox" name="tag-create" id="tag-create" value="1"> Create Tags</label>
+                        <label for="tag-manage" class="checkbox-inline"><input type="checkbox" name="tag-manage" id="tag-manage" value="1"> Manage Tags</label>
+                        <label for="tag-delete" class="checkbox-inline"><input type="checkbox" name="tag-delete" id="tag-delete" value="1"> Delete Tags</label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="control-label">General Modpack Access</label>
                     <p>General Modpack Access permissions are required before granting access to a specific modpack. Users without these permission will not be able to perform stated actions even if the specfic modpack is selected.</p>
                     <div class="controls">

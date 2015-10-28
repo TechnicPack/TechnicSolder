@@ -62,6 +62,14 @@
 													<input type="text" class="form-control" name="donatelink" id="donatelink" value="{{ $mod->donatelink }}">
 													<span class="help-block">This is only in use by the official Technic Solder</span>
 											</div>
+											<div class="form-group">
+													<label for="tags">Tags</label>
+													<select multiple class="form-control" name="tags[]" id="tags">
+															@foreach ($tags as $tag)
+																	<option value="{{ $tag->id }}"{{ $mod->tags->contains($tag->id) ? ' selected' : '' }}>{{ $tag->name }}</option>
+															@endforeach
+													</select>
+											</div>
 						</div>
 					</div>
 					{{ Form::submit('Save Changes', array('class' => 'btn btn-success')) }}

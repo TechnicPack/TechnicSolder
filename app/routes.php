@@ -11,6 +11,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::controller('mod', 'ModController');
 	Route::controller('modpack', 'ModpackController');
 	Route::controller('solder', 'SolderController');
+	Route::controller('tag', 'TagController');
 	Route::controller('user', 'UserController');
 	Route::controller('reminders', 'RemindersController');
 });
