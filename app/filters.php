@@ -163,12 +163,11 @@ Route::filter('solder_mods', function()
 		$check = 'mods_delete';
 		break;
 		case 'modify':
-		$check = 'mods_manage';
-		break;
 		case 'view':
-		$check = 'mods_manage';
-		break;
 		case 'list':
+		case 'add-version':
+		case 'rehash':
+		case 'delete-version':
 		$check = 'mods_manage';
 		break;
 		default:
