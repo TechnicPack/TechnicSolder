@@ -143,6 +143,7 @@ class APIController extends BaseController {
 	{
 		$response = array();
 
+		$response['id'] = $mod->id;
 		$response['name'] = $mod->name;
 		$response['pretty_name'] = $mod->pretty_name;
 		$response['author'] = $mod->author;
@@ -169,6 +170,7 @@ class APIController extends BaseController {
 		if (empty($version))
 			return array("error" => "Mod version does not exist");
 
+		$response['id'] = $version->id;
 		$response['md5'] = $version->md5;
 		$response['url'] = Config::get('solder.mirror_url').'mods/'.$version->mod->name.'/'.$version->mod->name.'-'.$version->version.'.zip';
 
@@ -229,6 +231,7 @@ class APIController extends BaseController {
 		if (empty($modpack))
 			return array("error" => "Modpack does not exist");
 
+		$response['id']		    = $modpack->id;
 		$response['name']           = $modpack->slug;
 		$response['display_name']   = $modpack->name;
 		$response['url']            = $modpack->url;
@@ -291,6 +294,7 @@ class APIController extends BaseController {
 		if (empty($build))
 			return array("error" => "Build does not exist");
 
+		$response['id'] = $build->id;
 		$response['minecraft'] = $build->minecraft;
 		$response['java'] = $build->min_java;
 		$response['memory'] = $build->min_memory;
@@ -306,6 +310,7 @@ class APIController extends BaseController {
 				foreach ($build->modversions as $modversion)
 				{
 					$response['mods'][] = array(
+												"id" => $modversion->id,
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
@@ -323,6 +328,7 @@ class APIController extends BaseController {
 				foreach ($build->modversions as $modversion)
 				{
 					$response['mods'][] = array(
+												"id" => $modversion->id;
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
@@ -346,6 +352,7 @@ class APIController extends BaseController {
 				foreach ($build->modversions as $modversion)
 				{
 					$data = array(
+												"id" => $modversion->id,
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
