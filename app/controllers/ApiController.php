@@ -328,7 +328,7 @@ class APIController extends BaseController {
 				foreach ($build->modversions as $modversion)
 				{
 					$response['mods'][] = array(
-												"id" => $modversion->id;
+												"id" => $modversion->id,
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
