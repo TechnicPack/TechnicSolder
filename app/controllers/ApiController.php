@@ -170,6 +170,7 @@ class APIController extends BaseController {
 			return array("error" => "Mod version does not exist");
 
 		$response['md5'] = $version->md5;
+		$response['filesize'] = $version->filesize;
 		$response['url'] = Config::get('solder.mirror_url').'mods/'.$version->mod->name.'/'.$version->mod->name.'-'.$version->version.'.zip';
 
 		return $response;
@@ -309,6 +310,7 @@ class APIController extends BaseController {
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
+												"filesize" => $modversion->filesize,
 												"url" => Config::get('solder.mirror_url').'mods/'.$modversion->mod->name.'/'.$modversion->mod->name.'-'.$modversion->version.'.zip'
 												);
 				}
@@ -326,6 +328,7 @@ class APIController extends BaseController {
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
+												"filesize" => $modversion->filesize,
 												"pretty_name" => $modversion->mod->pretty_name,
 												"author" => $modversion->mod->author,
 												"description" => $modversion->mod->description,
@@ -349,6 +352,7 @@ class APIController extends BaseController {
 												"name" => $modversion->mod->name,
 												"version" => $modversion->version,
 												"md5" => $modversion->md5,
+												"filesize" => $modversion->filesize,
 												);
 					$mod = (array)$modversion->mod;
 					$mod = $mod['attributes'];

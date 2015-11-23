@@ -22,7 +22,8 @@ class ModTableTestSeeder extends Seeder {
 
 		$testmodversion = Modversion::create(array('mod_id' => $testmod->id,
 							'version' => '0.1',
-							'md5' => 'fb6582e4d9c9bc208181907ecc108eb1'
+							'md5' => 'fb6582e4d9c9bc208181907ecc108eb1',
+							'filesize' => '1131456'
 							));
 
 	}
