@@ -191,6 +191,7 @@ class ModpackController extends BaseController {
 		$modpack = new Modpack();
 		$modpack->name = Input::get('name');
 		$modpack->slug = Str::slug(Input::get('slug'));
+		$modpack->hidden = Input::get('hidden') ? false : true;
 		$modpack->icon_md5 = md5_file(public_path() . '/resources/default/icon.png');
 		$modpack->icon_url = URL::asset('/resources/default/icon.png');
 		$modpack->logo_md5 = md5_file(public_path() . '/resources/default/logo.png');
