@@ -5,13 +5,13 @@ We will always have a need for developers to help us improve Solder. There is no
 General steps
 =============
 
-1. Setup your workspace as described in `Getting Started <http://docs.solder.io/v0.7/docs/getting-started>`_.
+1. Setup your workspace as described in [Getting Started](http://docs.solder.io/v0.7/docs/getting-started).
 
-2. Check for existing issues in the `TechnicSolder <https://github.com/TechnicPack/TechnicSolder/issues>`_ repository. There is possibly someone else already working on the same thing. 
+2. Check for existing issues in the [TechnicSolder](https://github.com/TechnicPack/TechnicSolder/issues) repository. There is possibly someone else already working on the same thing. 
 
 3. If the issue requires a bigger change you may want to submit the issues without the necessary changes first, so we can confirm the issue and know that you're working on fixing it. You should also create a WIP (work in process) pull request prefixed with ``[WIP]`` early so we can already start reviewing them.
 
-4. Fork the project, clone it and make your changes in an extra branch with a proper branch name ``bugfix-``, ``patch-``, ``feature-`.
+4. Fork the project, clone it and make your changes in an extra branch with a proper branch name ``bugfix-``, ``patch-``, ``feature-``.
 
 5. Test your changes using phpunit, commit and push them to your fork.
 
