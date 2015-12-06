@@ -39,7 +39,16 @@
 					<td>{{ $user->id }}</td>
 					<td>{{ $user->email }}</td>
 					<td>{{ $user->username }}</td>
-					<td>{{ empty($user->updated_by_user_id) ? "N/A" : User::find($user->updated_by_user_id)->username }} - {{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}</td>
+					<td>
+					@if(!empty($user->updated_by_user_id))
+						@if(User::find($user->updated_by_user_id))
+							{{ User::find($user->updated_by_user_id)->username }}
+						@else
+							N/A
+						@endif
+					@endif
+					 - {{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}
+					</td>
 					<td>{{ date_format($user->updated_at, 'M-d-Y g:ia') }}</td>
 					<td>{{ HTML::link('user/edit/'.$user->id,'Edit', array('class' => 'btn btn-xs btn-warning')) }} {{ HTML::link('user/delete/'.$user->id, 'Delete', array('class' => 'btn btn-xs btn-danger')) }}</td>
 				</tr>
