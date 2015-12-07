@@ -302,21 +302,19 @@ class ModController extends BaseController {
 		$location = Config::get('solder.repo_location');
 		$URI = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-		if(filter_var($URI, FILTER_VALIDATE_URL)) {
-			if (file_exists($URI)) {
-				Log::info('Found \'' . $URI . '\'');
-				try {
-					$filesize = filesize($URI);
-					$md5 = md5_file($URI);
-					return array('success' => true, 'md5' => $md5, 'filesize' => $filesize);
-				} catch (Exception $e) {
-					Log::error("Error attempting to md5 the file: " . $URI);
-					return array('success' => false, 'message' => $e->getMessage());
-				}
-			} else {
-				Log::warning('File \'' . $URI . '\' was not found.');
-				return $this->remote_mod_md5($mod, $version, $location);
+		if (file_exists($URI)) {
+			Log::info('Found \'' . $URI . '\'');
+			try {
+				$filesize = filesize($URI);
+				$md5 = md5_file($URI);
+				return array('success' => true, 'md5' => $md5, 'filesize' => $filesize);
+			} catch (Exception $e) {
+				Log::error("Error attempting to md5 the file: " . $URI);
+				return array('success' => false, 'message' => $e->getMessage());
 			}
+		} else if(filter_var($URI, FILTER_VALIDATE_URL)) {
+			Log::warning('File \'' . $URI . '\' was not found.');
+			return $this->remote_mod_md5($mod, $version, $location);
 		} else {
 			$error = $URI . ' is not a valid URI';
 			Log::error($error);
