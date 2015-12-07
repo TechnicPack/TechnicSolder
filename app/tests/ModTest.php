@@ -196,7 +196,7 @@ class ModTest extends TestCase {
 		if(getenv('REPO_TYPE') == 'remote') {
 			$this->assertEquals('Remote MD5 failed. URL returned status code - 404', $json['reason']);
 		} else {
-			$this->assertEquals('Remote MD5 failed. /home/vagrant/Code/Technic/TechnicSolder/public/resources/default/mods/backtools/backtools-v1.5.2.1.zip is not a valid URI', $json['reason']);
+			$this->assertEquals('Remote MD5 failed. ' . getenv('REPO') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI', $json['reason']);
 		}
 	}
 
