@@ -12,10 +12,10 @@ env:
   global:
     - APP_ENV='testing'
   matrix:
-    #- DB="pgsql" REPO=$TRAVIS_BUILD_DIR/"public/resources/default/" REPO_TYPE="remote" needs more testing
-    #- DB="mysql" REPO=$TRAVIS_BUILD_DIR/"public/resources/default/" REPO_TYPE="remote" needs more testing
-    - DB="pgsql" REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="local"
-    - DB="mysql" REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="local"
+    - DB="pgsql" REPO=$TRAVIS_BUILD_DIR/"public/resources/default/" REPO_TYPE="local"
+    - DB="mysql" REPO=$TRAVIS_BUILD_DIR/"public/resources/default/" REPO_TYPE="local"
+    - DB="pgsql" REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="remote"
+    - DB="mysql" REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="remote"
 matrix:
   exclude:
     - php: hhvm
@@ -23,7 +23,7 @@ matrix:
 sudo: false
 before_install:
   - pwd
-  - echo $TRAVIS_BUILD_DIR
+  - echo $REPO
   - composer self-update
 install: travis_retry composer install --prefer-source --no-interaction
 before_script:
