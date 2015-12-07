@@ -17,21 +17,20 @@ env:
   matrix:
     - DB="pgsql" REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local"
     - DB="mysql" REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local"
-    - DB="pgsql" REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="remote"
-    - DB="mysql" REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="remote"
+    - DB="pgsql" REPO="http://technic.pagefortress.com/" REPO_TYPE="remote"
+    - DB="mysql" REPO="http://technic.pagefortress.com/" REPO_TYPE="remote"
 matrix:
   fast_finish: true
   exclude:
     - php: hhvm
-      env: DB=pgsql REPO="http://technic.pagefortress.com/mods/" REPO_TYPE="remote" # driver for PostgreSQL currently unsupported by HHVM, requires 3rd party dependency
-      env: DB=pgsql REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local" # driver for PostgreSQL currently unsupported by HHVM, requires 3rd party dependency
+      env: DB="pgsql" # driver for PostgreSQL currently unsupported by HHVM, requires 3rd party dependency
 sudo: false
 before_install:
   - echo $REPO
+  - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer self-update
 install: travis_retry composer install --prefer-source --no-interaction
 before_script:
-  - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - php artisan env
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database solder;' -U postgres; fi"
