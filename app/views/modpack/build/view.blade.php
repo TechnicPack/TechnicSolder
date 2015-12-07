@@ -121,6 +121,7 @@
 @section('bottom')
 <script type="text/javascript">
 var $select = $("#mod").selectize({
+			dropdownParent: "body",
 			persist: false,
 			maxItems: 1,
 			sortField: {
@@ -130,6 +131,7 @@ var $select = $("#mod").selectize({
 		});
 var mod = $select[0].selectize;
 var $select = $("#mod-version").selectize({
+			dropdownParent: "body",
 			persist: false,
 			maxItems: 1,
 			sortField: {
