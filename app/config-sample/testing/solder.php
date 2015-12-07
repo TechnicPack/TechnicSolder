@@ -8,7 +8,7 @@ return array(
 	 * This can be a URL or an absolute file location.
 	 *
 	 **/
-	'repo_location' => 'http://mirror.technicpack.net/Technic/',
+	'repo_location' => getenv('REPO'),
 
 	/**
 	 * Mirror Location

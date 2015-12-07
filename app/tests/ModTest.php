@@ -141,7 +141,7 @@ class ModTest extends TestCase {
 	public function testModVersionAddPost()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"v1.5.2.v01","add-md5"=>"9ece64de3e11a0f15f55ef34f2194760","mod-id"=>"2"),
+		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.7.10-4.0.0","add-md5"=>"0925fb5cca71b6e8dd81fac9b257c6d4","mod-id"=>"2"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -153,15 +153,15 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('filesize', $json));
 		$this->assertTrue(array_key_exists('md5', $json));
 		$this->assertEquals('success', $json['status']);
-		$this->assertEquals('v1.5.2.v01', $json['version']);
-		$this->assertEquals('9ece64de3e11a0f15f55ef34f2194760', $json['md5']);
-		$this->assertEquals('0.02 MB', $json['filesize']);
+		$this->assertEquals('1.7.10-4.0.0', $json['version']);
+		$this->assertEquals('0925fb5cca71b6e8dd81fac9b257c6d4', $json['md5']);
+		$this->assertEquals('0.01 MB', $json['filesize']);
 	}
 
 	public function testModVersionAddPostManualMD5()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"v2.0.1","add-md5"=>"butts","mod-id"=>"2"),
+		$response = $this->call('POST', '/mod/add-version/', array("add-version"=>"1.7.10-4.0.0","add-md5"=>"butts","mod-id"=>"2"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -174,10 +174,10 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('md5', $json));
 		$this->assertTrue(array_key_exists('reason', $json));
 		$this->assertEquals('warning', $json['status']);
-		$this->assertEquals('v2.0.1', $json['version']);
+		$this->assertEquals('1.7.10-4.0.0', $json['version']);
 		$this->assertEquals('butts', $json['md5']);
 		$this->assertEquals('0.01 MB', $json['filesize']);
-		$this->assertEquals('MD5 provided does not match file MD5: de40f0fbd51ac178c6dd96e45a14a1f7', $json['reason']);
+		$this->assertEquals('MD5 provided does not match file MD5: 0925fb5cca71b6e8dd81fac9b257c6d4', $json['reason']);
 	}
 
 	public function testModVersionAddPostMD5Fail()
@@ -193,7 +193,11 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('status', $json));
 		$this->assertTrue(array_key_exists('reason', $json));
 		$this->assertEquals('error', $json['status']);
-		$this->assertEquals('Remote MD5 failed. URL returned status code - 404', $json['reason']);
+		if(getenv('REPO_TYPE') == 'remote') {
+			$this->assertEquals('Remote MD5 failed. URL returned status code - 404', $json['reason']);
+		} else {
+			$this->assertEquals('Remote MD5 failed. ' . getenv('REPO') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI', $json['reason']);
+		}
 	}
 
 	public function testModVersionRehashPostNonAjax()
@@ -237,7 +241,7 @@ class ModTest extends TestCase {
 	public function testModVersionRehashPost()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"3","md5"=>"de40f0fbd51ac178c6dd96e45a14a1f7"),
+		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"1","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -249,15 +253,15 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('filesize', $json));
 		$this->assertTrue(array_key_exists('md5', $json));
 		$this->assertEquals('success', $json['status']);
-		$this->assertEquals('3', $json['version_id']);
-		$this->assertEquals('de40f0fbd51ac178c6dd96e45a14a1f7', $json['md5']);
-		$this->assertEquals('0.01 MB', $json['filesize']);
+		$this->assertEquals('1', $json['version_id']);
+		$this->assertEquals('bdbc6c6cc48c7b037e4aef64b58258a3', $json['md5']);
+		$this->assertEquals('0.00 MB', $json['filesize']);
 	}
 
 	public function testModVersionRehashPostMD5Manual()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"3","md5"=>"butts"),
+		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"1","md5"=>"butts"),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -270,16 +274,16 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('md5', $json));
 		$this->assertTrue(array_key_exists('reason', $json));
 		$this->assertEquals('warning', $json['status']);
-		$this->assertEquals('3', $json['version_id']);
+		$this->assertEquals('1', $json['version_id']);
 		$this->assertEquals('butts', $json['md5']);
-		$this->assertEquals('0.01 MB', $json['filesize']);
-		$this->assertEquals('MD5 provided does not match file MD5: de40f0fbd51ac178c6dd96e45a14a1f7', $json['reason']);
+		$this->assertEquals('0.00 MB', $json['filesize']);
+		$this->assertEquals('MD5 provided does not match file MD5: bdbc6c6cc48c7b037e4aef64b58258a3', $json['reason']);
 	}
 
 	public function testModVersionRehashPostMD5Empty()
 	{
 		//Fake an AJAX call.
-		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"3","md5"=>""),
+		$response = $this->call('POST', '/mod/rehash/', array("version-id"=>"1","md5"=>""),
 						array(), array("HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"));
 
 		$this->assertResponseOk();
@@ -291,9 +295,9 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('filesize', $json));
 		$this->assertTrue(array_key_exists('md5', $json));
 		$this->assertEquals('success', $json['status']);
-		$this->assertEquals('3', $json['version_id']);
-		$this->assertEquals('de40f0fbd51ac178c6dd96e45a14a1f7', $json['md5']);
-		$this->assertEquals('0.01 MB', $json['filesize']);
+		$this->assertEquals('1', $json['version_id']);
+		$this->assertEquals('bdbc6c6cc48c7b037e4aef64b58258a3', $json['md5']);
+		$this->assertEquals('0.00 MB', $json['filesize']);
 	}
 
 	public function testModVersionDeleteNonAjax()
@@ -349,7 +353,7 @@ class ModTest extends TestCase {
 		$this->assertTrue(array_key_exists('version', $json));
 		$this->assertEquals('success', $json['status']);
 		$this->assertEquals('3', $json['version_id']);
-		$this->assertEquals('v2.0.1', $json['version']);
+		$this->assertEquals('1.7.10-4.0.0', $json['version']);
 	}
 
 	public function testModDeleteGet()
