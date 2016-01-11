@@ -49,7 +49,7 @@ class APIController extends BaseController {
 				'api'     => 'TechnicSolder',
 				'version' => SOLDER_VERSION,
 				'stream' => SOLDER_STREAM
-				));
+				))->header('Access-Control-Allow-Origin', '*');
 	}
 
 	public function getModpack($modpack = null, $build = null)
@@ -72,18 +72,18 @@ class APIController extends BaseController {
 						$response = array();
 						$response['modpacks'] = $m_array;
 						$response['mirror_url'] = $modpacks['mirror_url'];
-						return Response::json($response);
+						return Response::json($response)->header('Access-Control-Allow-Origin', '*');
 						break;
 				}
 			} else {
-				return Response::json($this->fetchModpacks());
+				return Response::json($this->fetchModpacks())->header('Access-Control-Allow-Origin', '*');
 			}
 		}
 		else {
 			if (empty($build))
-				return Response::json($this->fetchModpack($modpack));
+				return Response::json($this->fetchModpack($modpack))->header('Access-Control-Allow-Origin', '*');
 			else
-				return Response::json($this->fetchBuild($modpack, $build));
+				return Response::json($this->fetchBuild($modpack, $build))->header('Access-Control-Allow-Origin', '*');
 		}
 	}
 
@@ -102,7 +102,7 @@ class APIController extends BaseController {
 				//usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
 				Cache::put('modlist',$response['mods'],5);
 			}
-			return Response::json($response);
+			return Response::json($response)->header('Access-Control-Allow-Origin', '*');
 		} else {
 			if (Cache::has('mod.'.$mod))
 			{
@@ -114,26 +114,26 @@ class APIController extends BaseController {
 			}
 
 		if (empty($mod))
-			return Response::json(array('error' => 'Mod does not exist'));
+			return Response::json(array('error' => 'Mod does not exist'))->header('Access-Control-Allow-Origin', '*');
 
 		if (empty($version))
-			return Response::json($this->fetchMod($mod));
+			return Response::json($this->fetchMod($mod))->header('Access-Control-Allow-Origin', '*');
 
-		return Response::json($this->fetchModversion($mod,$version));
+		return Response::json($this->fetchModversion($mod,$version))->header('Access-Control-Allow-Origin', '*');
 		}
 	}
 
 	public function getVerify($key = null)
 	{
 		if (empty($key))
-			return Response::json(array("error" => "No API key provided."));
+			return Response::json(array("error" => "No API key provided."))->header('Access-Control-Allow-Origin', '*');
 
 		$key = Key::where('api_key', '=', $key)->first();
 
 		if (empty($key))
-			return Response::json(array("error" => "Invalid key provided."));
+			return Response::json(array("error" => "Invalid key provided."))->header('Access-Control-Allow-Origin', '*');
 		else
-			return Response::json(array("valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at));
+			return Response::json(array("valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at))->header('Access-Control-Allow-Origin', '*');
 	}
 
 
