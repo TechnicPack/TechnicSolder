@@ -217,3 +217,8 @@ Route::filter('build', function()
 			->with('permission','You do not have permission to access this area.');
 	}
 });
+
+Route::filter('cors', function($route, $request, $response)
+{
+    return $response->header('Access-Control-Allow-Origin', '*');
+});
