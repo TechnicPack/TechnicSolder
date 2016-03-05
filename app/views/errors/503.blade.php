@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}">
     <link href="{{ URL::to('css/errors.css') }}" rel="stylesheet" type='text/css'>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,100|Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,100|Open+Sans:400,700' rel='stylesheet' type='text/css'>
   </head>
 
   <body>
