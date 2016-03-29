@@ -89,6 +89,8 @@ class APIController extends BaseController {
 
 	public function getMod($mod = null, $version = null)
 	{
+		$response = array();
+		
 		if (empty($mod))
 		{
 			if (Cache::has('modlist') && empty($this->client) && empty($this->key))
