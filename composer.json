@@ -44,7 +44,7 @@
 	},
 	"scripts": {
 		"post-install-cmd": [
-			"php -r \"shell_exec((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'mkdir app\\config && copy app\\config-sample app\\config' : 'cp -r app/config-sample app/config');\"",
+			"php -r \"shell_exec((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ? 'mkdir app\\config && copy app\\config-sample app\\config' : 'cp -nr app/config-sample/. app/config');\"",
 			"php -r \"copy('app/database-sample/production.sqlite', 'app/database/production.sqlite');\"",
 			"php -r \"chmod('app/storage', 0775);\"",
 			"php -r \"chmod('public/resources', 0775);\"",
