@@ -5,7 +5,7 @@ TechnicSolder
 [![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=master)](https://travis-ci.org/TechnicPack/TechnicSolder)   
 [![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=dev)](https://travis-ci.org/TechnicPack/TechnicSolder)   
 
-Join us on [Discord](https://discord.gg/0Ehm7p0AD3PdYLT1)!
+Join us on [Discord](https://discord.gg/6JAgp6w)!
 
 What is Solder?
 --------------
