@@ -9,11 +9,14 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<div class="pull-right">
+		<a href="#" class="btn btn-xs btn-success rehash">Rehash All</a>
 		<a href="{{ URL::to('mod/create') }}" class="btn btn-xs btn-success">Add Mod</a>
 	</div>
 	Mod List
 	</div>
 	<div class="panel-body">
+		<div class="alert alert-success" id="success-ajax" style="width: 100%;display: none"></div>
+				<div class="alert alert-danger" id="danger-ajax" style="width: 100%;display: none"></div>
 		@if (Session::has('success'))
 		<div class="alert alert-success">
 			{{ Session::get('success') }}
@@ -65,6 +68,22 @@ $(document).ready(function() {
 		"order": [[ 1, "asc" ]]
 	});
 
+});
+
+$('.rehash').click(function(e) {
+	e.preventDefault();
+	$.ajax({
+		type: "GET",
+		url: "{{ URL::to('mod/rehashall/') }}/",
+		success: function (data) {
+			if (data.status == "success") {
+				$("#success-ajax").stop(true, true).html('Rehashing complete.').fadeIn().delay(3000).fadeOut();
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$("#danger-ajax").stop(true, true).html(textStatus + ': ' + errorThrown).fadeIn().delay(3000).fadeOut();
+		}
+	});
 });
 </script>
 @endsection
