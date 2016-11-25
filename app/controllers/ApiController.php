@@ -52,6 +52,16 @@ class APIController extends BaseController {
 				));
 	}
 
+	public function postLogin(){
+		$credentials['email'] = Input::get('email');
+		$credentials['password'] = Input::get('password');
+		if ( Auth::attempt($credentials, true)) {
+			return Response::make('Login success', 200);
+		} else {
+			return Response::make('Login fail', 403);
+		}
+	}
+
 	public function getModpack($modpack = null, $build = null)
 	{
 		if (empty($modpack))
