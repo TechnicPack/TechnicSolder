@@ -51,7 +51,9 @@
 					<i class="icon-plus"></i>
 					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
 						@foreach (Mod::all() as $mod)
+						@if(!$mod->builds->contains($build->id))
 						<option value="{{ $mod->name }}">{{ $mod->pretty_name }}</option>
+						@endif
 						@endforeach
 					</select>
 				</td>
