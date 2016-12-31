@@ -40,9 +40,9 @@ class BaseController extends Controller {
 				Cache::put('update', true, 60);
 			}
 
-			return Redirect::to('dashboard/');
+			return Redirect::to('dashboard/', 200);
 		} else {
-			return Redirect::to('login')->with('login_failed',"Invalid Username/Password");
+			return Redirect::to('login', 403)->with('login_failed',"Invalid Username/Password");
 		}
 	}
 

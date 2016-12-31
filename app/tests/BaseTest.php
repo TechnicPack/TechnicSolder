@@ -29,6 +29,7 @@ class BaseTest extends TestCase {
 		$response = $this->call('POST', '/login', $credentials);
 		$this->assertRedirectedTo('/login');
 		$this->assertSessionHas('login_failed');
+		$this->assertResponseStatus(403);
 	}
 
 	public function testAuthorizedLogin()
@@ -41,6 +42,7 @@ class BaseTest extends TestCase {
 
 		$response = $this->call('POST', '/login', $credentials);
 		$this->assertRedirectedTo('/dashboard');
+		$this->assertResponseStatus(200);
 	}
 
 	public function testIndex()
