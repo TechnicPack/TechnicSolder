@@ -2,34 +2,47 @@
 	"name": "solder/solder",
 	"type": "application",
 	"description": "Technic Solder API using Laravel Framework",
-	"keywords": ["technic", "solder", "api"],
+	"keywords": [
+		"technic",
+		"solder",
+		"api"
+	],
 	"homepage": "https://github.com/TechnicPack/TechnicSolder",
 	"license": "MIT",
-	"authors": [{
-               "name": "Ryan Cohen",
-               "email": "sctsnipe@gmail.com",
-               "homepage": "http://www.sctgaming.com",
-               "role": "Developer"
-               },
-               {
-               "name": "Dylan Page",
-               "email": "dylandcpage@gmail.com",
-               "homepage": "http://www.pagefortress.com",
-               "role": "Developer"
-               	}],
+	"authors": [
+		{
+			"name": "Ryan Cohen",
+			"email": "sctsnipe@gmail.com",
+			"homepage": "http://www.sctgaming.com",
+			"role": "Developer"
+		},
+		{
+			"name": "Dylan Page",
+			"email": "dylandcpage@gmail.com",
+			"homepage": "http://www.pagefortress.com",
+			"role": "Developer"
+		}
+	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/borisrepl/boris",
+			"vendor-alias": "d11wtq"
+		}
+	],
 	"require": {
 		"laravel/framework": "4.2.*",
 		"patricktalmadge/bootstrapper": "5.5.*",
 		"intervention/image": "2.1.*",
-        "doctrine/dbal": "2.5.*",
-        "composer/composer": "1.0.0-alpha9",
-        "knplabs/github-api": "1.4.*",
-        "guzzlehttp/guzzle": "5.2.*",
-        "aws/aws-sdk-php": "2.7.*"
+		"doctrine/dbal": "2.5.*",
+		"composer/composer": "1.0.0-alpha9",
+		"knplabs/github-api": "1.4.*",
+		"guzzlehttp/guzzle": "5.2.*",
+		"aws/aws-sdk-php": "2.7.*"
 	},
 	"require-dev": {
 		"barryvdh/laravel-debugbar": "~1.8@dev",
-        "mockery/mockery": "master@dev",
+		"mockery/mockery": "master@dev",
 		"phpunit/phpunit": "~4.0"
 	},
 	"autoload": {
