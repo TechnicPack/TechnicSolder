@@ -17,8 +17,8 @@ env:
   matrix:
     - DB="pgsql" REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local"
     - DB="mysql" REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local"
-    - DB="pgsql" REPO="http://technic.pagefortress.com/" REPO_TYPE="remote"
-    - DB="mysql" REPO="http://technic.pagefortress.com/" REPO_TYPE="remote"
+    - DB="pgsql" REPO="http://mirror.technicpack.net/Technic/" REPO_TYPE="remote"
+    - DB="mysql" REPO="http://mirror.technicpack.net/Technic/" REPO_TYPE="remote"
 matrix:
   fast_finish: true
   exclude:
