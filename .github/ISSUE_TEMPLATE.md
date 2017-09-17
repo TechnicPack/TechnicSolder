@@ -43,7 +43,7 @@ Please fill out all other information to the best of your knowledge.
 <!-- Are you using MySQL, or Sqlite? -->
   Type of hosting:
 
-<!-- Shared? VPS? Deti? Cloud? -->
+<!-- Shared? VPS? Dedi? Cloud? -->
   Link to the affected install's public url:
 
 <!-- The URL to your Solder's public folder -->
