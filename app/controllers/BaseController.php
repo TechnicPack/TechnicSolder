@@ -16,6 +16,25 @@ class BaseController extends Controller {
 
 	public function showLogin()
 	{
+		if (isset($_SERVER['HTTP_AUTH_USER'])) {
+			$username = $_SERVER['HTTP_AUTH_USER'];
+			$user = User::where('username', $username)->first();
+			if ($user) {
+				Auth::login($user);
+				Auth::user()->last_ip = Request::ip();
+                                Auth::user()->save();
+
+                                //Check for update on login
+                                if(UpdateUtils::getUpdateCheck()){
+                                        Cache::put('update', true, 60);
+                                }
+
+                                return Redirect::to('dashboard/');
+                        } else {
+				throw new Exception("Login failed. Invalid Username/Password");
+                        }
+		}
+
 		return View::make('dashboard.login');
 	}
 
