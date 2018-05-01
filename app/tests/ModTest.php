@@ -77,7 +77,8 @@ class ModTest extends TestCase {
 			'pretty_name' => 'Backtools',
 			'name' => 'backtools',
 			'link' => 'http://solder.io',
-			'donatelink' => 'http://solder.io'
+			'donatelink' => 'http://solder.io',
+			'tags' => array()
 		);
 
 		$response = $this->call('POST', '/mod/create', $data);

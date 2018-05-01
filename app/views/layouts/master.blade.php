@@ -100,6 +100,13 @@
                   </ul>
               </li>
               <li>
+                  <a href="#"><i class="fa fa-tag fa-fw"></i> Tag Library<span class="fa arrow"></span></a></a>
+                  <ul class="nav nav-second-level">
+                      <li><a href="{{ URL::to('tag/list') }}">Tag List</a></li>
+                      <li><a href="{{ URL::to('tag/create') }}">Add a Tag</a></li>
+                  </ul>
+              </li>
+              <li>
                   <a href="#"><i class="fa fa-wrench fa-fw"></i> Configure Solder<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                       <li>

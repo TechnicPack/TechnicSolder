@@ -46,6 +46,14 @@
                     <input type="text" class="form-control" name="donatelink" id="donatelink">
                     <span class="help-block">This is only in use by the official Technic Solder</span>
                 </div>
+                <div class="form-group">
+                    <label for="tags">Tags</label>
+                    <select multiple class="form-control" name="tags[]" id="tags">
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 			</div>
 			<div class="col-md-6">
 				<p>Because Solder doesn't do any file handling yet you will need to manually manage your set of mods in your repository. The mod repository structure is very strict and must match your Solder data exact. An example of your mod directory structure will be listed below:</p>

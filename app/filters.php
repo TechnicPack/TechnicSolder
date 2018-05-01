@@ -184,6 +184,37 @@ Route::filter('solder_mods', function()
 	}
 });
 
+Route::filter('solder_tags', function() {
+	$check = '';
+	switch(Request::segment(2)){
+		case 'create':
+			$check = 'tags_create';
+			break;
+		case 'delete':
+			$check = 'tags_delete';
+			break;
+		case 'modify':
+			$check = 'tags_manage';
+			break;
+		case 'view':
+			$check = 'tags_manage';
+			break;
+		case 'list':
+			$check = 'tags_manage';
+			break;
+		default:
+			return Redirect::to('tag/list');
+			break;
+	}
+	$perm = Auth::user()->permission;
+	$perm = $perm['attributes'];
+	if (!$perm['solder_full'] && !$perm[$check])
+	{
+		return Redirect::to('dashboard')
+			->with('permission','You do not have permission to access this area.');
+	}
+});
+
 Route::filter('modpack', function()
 {
 	$modpack = Request::segment(3);

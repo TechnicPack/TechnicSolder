@@ -89,6 +89,7 @@ class ApiTest extends TestCase {
 		$this->assertTrue(array_key_exists('link', $json));
 		$this->assertTrue(array_key_exists('donate', $json));
 		$this->assertTrue(array_key_exists('versions', $json));
+		$this->assertTrue(array_key_exists('tags', $json));
 	}
 
 	public function testModpackBuild()

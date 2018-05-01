@@ -92,6 +92,11 @@ class UserController extends BaseController {
 			$perm->mods_manage = Input::get('mod-manage') ? true : false;
 			$perm->mods_delete = Input::get('mod-delete') ? true : false;
 
+			/* Tag Perms */
+			$perm->tags_create = Input::get('tag-create') ? true : false;
+			$perm->tags_manage = Input::get('tag-manage') ? true : false;
+			$perm->tags_delete = Input::get('tag-delete') ? true : false;
+
 			/* Modpack Perms */
 			$perm->modpacks_create = Input::get('modpack-create') ? true : false;
 			$perm->modpacks_manage = Input::get('modpack-manage') ? true : false;
@@ -161,6 +166,11 @@ class UserController extends BaseController {
 		$perm->mods_create = Input::get('mod-create') ? true : false;
 		$perm->mods_manage = Input::get('mod-manage') ? true : false;
 		$perm->mods_delete = Input::get('mod-delete') ? true : false;
+
+		/* Tag Perms */
+		$perm->tags_create = Input::get('tag-create') ? true : false;
+		$perm->tags_manage = Input::get('tag-manage') ? true : false;
+		$perm->tags_delete = Input::get('tag-delete') ? true : false;
 
 		/* Modpack Perms */
 		$perm->modpacks_create = Input::get('modpack-create') ? true : false;

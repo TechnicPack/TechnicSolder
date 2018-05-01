@@ -36,12 +36,15 @@ class ModController extends BaseController {
 		if (empty($mod))
 			return Redirect::to('mod/list')->withErrors(new MessageBag(array('Mod not found')));
 
-		return View::make('mod.view')->with(array('mod' => $mod));
+		$tags = Tag::all();
+
+		return View::make('mod.view')->with(array('mod' => $mod, 'tags' => $tags));
 	}
 
 	public function getCreate()
 	{
-		return View::make('mod.create');
+		$tags = Tag::all();
+		return View::make('mod.create')->with(array('tags' => $tags));
 	}
 
 	public function postCreate()
@@ -72,6 +75,7 @@ class ModController extends BaseController {
 		$mod->link = Input::get('link');
 		$mod->donatelink = Input::get('donatelink');
 		$mod->save();
+		$mod->tags()->sync(Input::get('tags'));
 		return Redirect::to('mod/view/'.$mod->id);
 	}
 
@@ -116,6 +120,7 @@ class ModController extends BaseController {
 		$mod->link = Input::get('link');
 		$mod->donatelink = Input::get('donatelink');
 		$mod->save();
+		$mod->tags()->sync(Input::get('tags'));
 		Cache::forget('mod.'.$mod->name);
 
 		return Redirect::to('mod/view/'.$mod->id)->with('success','Mod successfully edited.');
