@@ -58,26 +58,12 @@ class ModTest extends TestCase {
 		$this->assertSessionHasErrors('link');
 	}
 
-	public function testModCreatePostInvalidDonateURL()
-	{
-		$data = array(
-			'pretty_name' => 'TestMod',
-			'name' => 'testmod2',
-			'donatelink' => 'solder/io'
-		);
-
-		$response = $this->call('POST', '/mod/create', $data);
-		$this->assertRedirectedTo('/mod/create');
-		$this->assertSessionHasErrors('donatelink');
-	}
-
 	public function testModCreatePost()
 	{
 		$data = array(
 			'pretty_name' => 'Backtools',
 			'name' => 'backtools',
 			'link' => 'http://solder.io',
-			'donatelink' => 'http://solder.io'
 		);
 
 		$response = $this->call('POST', '/mod/create', $data);

@@ -87,7 +87,6 @@ class ApiTest extends TestCase {
 		$this->assertTrue(array_key_exists('author', $json));
 		$this->assertTrue(array_key_exists('description', $json));
 		$this->assertTrue(array_key_exists('link', $json));
-		$this->assertTrue(array_key_exists('donate', $json));
 		$this->assertTrue(array_key_exists('versions', $json));
 	}
 
