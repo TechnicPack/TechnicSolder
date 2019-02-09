@@ -76,7 +76,7 @@
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
 
-                       @foreach (Modpack::all() as $modpack)
+                       @foreach (Modpack::all()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE) as $modpack)
                         @if ($modpack->icon)
                           @if (Config::get('solder.use_s3'))
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $hidden = ($modpack->hidden ? " (Hidden)" : "") }}</a></li>
