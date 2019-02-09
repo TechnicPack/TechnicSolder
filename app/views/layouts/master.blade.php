@@ -7,7 +7,8 @@
     @show
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{{ asset('favicon.ico') }}}">
-    <script src="{{{ asset('js/jquery-1.11.1.min.js') }}}"></script>
+    <script src="{{{ asset('js/jquery-3.3.1.min.js') }}}"></script>
+    <script src="{{{ asset('js/jquery-migrate-3.0.0.min.js') }}}"></script>
     <script src="{{{ asset('js/bootstrap.min.js') }}}"></script>
     <script src="{{{ asset('js/jquery.jgrowl.min.js') }}}"></script>
     <link href="{{{ asset('css/bootstrap.min.css') }}}" rel="stylesheet">
@@ -17,6 +18,7 @@
     <script src="{{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}}"></script>
     <script src="{{{ asset('js/sb-admin.js') }}}"></script>
     <script src="{{{ asset('js/datatables.min.js') }}}"></script>
+    <link href="{{{ asset('css/jquery.jgrowl.min.css') }}}" rel="stylesheet">
     <link href="{{{ asset('css/datatables.min.css') }}}" rel="stylesheet">
     <script src="{{{ asset('js/jquery.slugify.js') }}}"></script>
     <script src="{{{ asset('js/nav-float.js') }}}"></script>
