@@ -15,11 +15,12 @@
     <link href="{{{ asset('font-awesome/css/font-awesome.css') }}}" rel="stylesheet">
     <link href="{{{ asset('css/sb-admin.css') }}}" rel="stylesheet">
     <link href="{{{ asset('css/solder.css') }}}" rel="stylesheet">
-    <script src="{{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}}"></script>
+    <script src="{{{ asset('js/metisMenu.min.js') }}}"></script>
     <script src="{{{ asset('js/sb-admin.js') }}}"></script>
     <script src="{{{ asset('js/datatables.min.js') }}}"></script>
     <link href="{{{ asset('css/jquery.jgrowl.min.css') }}}" rel="stylesheet">
     <link href="{{{ asset('css/datatables.min.css') }}}" rel="stylesheet">
+    <link href="{{{ asset('css/metisMenu.min.css') }}}" rel="stylesheet">
     <script src="{{{ asset('js/jquery.slugify.js') }}}"></script>
     <script src="{{{ asset('js/nav-float.js') }}}"></script>
     <link href="{{{ asset('css/OpenSansfont.css') }}}" rel="stylesheet">
@@ -71,7 +72,7 @@
       <div class="sidebar-collapse">
           <ul class="nav side-menu" id="side-menu">
               <li>
-                  <a href="{{ URL::to('dashboard') }}" {{ Request::is('dashboard') ? ' class="active"' : '' }}><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                  <a href="{{ URL::to('dashboard') }}" {{ Request::is('dashboard') ? ' class="mm-active"' : '' }}><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
               </li>
               <li>
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
