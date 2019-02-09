@@ -16,9 +16,8 @@
     <link href="{{{ asset('css/solder.css') }}}" rel="stylesheet">
     <script src="{{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}}"></script>
     <script src="{{{ asset('js/sb-admin.js') }}}"></script>
-    <script src="{{{ asset('js/plugins/dataTables/jquery.dataTables.js') }}}"></script>
-    <script src="{{{ asset('js/plugins/dataTables/dataTables.bootstrap.js') }}}"></script>
-    <link href="{{{ asset('css/dataTables.bootstrap.css') }}}" rel="stylesheet">
+    <script src="{{{ asset('js/datatables.min.js') }}}"></script>
+    <link href="{{{ asset('css/datatables.min.css') }}}" rel="stylesheet">
     <script src="{{{ asset('js/jquery.slugify.js') }}}"></script>
     <script src="{{{ asset('js/nav-float.js') }}}"></script>
     <link href="{{{ asset('css/OpenSansfont.css') }}}" rel="stylesheet">
