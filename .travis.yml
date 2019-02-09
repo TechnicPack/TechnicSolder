@@ -29,7 +29,7 @@ before_install:
   - echo $REPO
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
   - composer self-update
-install: travis_retry composer install --prefer-source --no-interaction
+install: COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
 before_script:
   - php artisan env
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS solder;' -U postgres; fi"
