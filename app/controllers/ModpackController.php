@@ -100,7 +100,20 @@ class ModpackController extends BaseController {
 			$minecraft = MinecraftUtils::getMinecraft();
 			return View::make('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
 		} else {
-			return View::make('modpack.build.view')->with('build', $build);
+			$mods = Mod::all();
+			$modversions = $build->modversions()->get();
+			$modsInBuild = array();
+			foreach ($modversions as $i => $modversion) {
+				$modsInBuild[] = $modversion->mod()->get()[0];
+			}
+
+			$listMods = array();
+			foreach ($mods as $i => $mod) {
+				if(!in_array($mod, $modsInBuild)) {
+					$listMods[] = $mod;
+				}
+			}
+			return View::make('modpack.build.view')->with('build', $build)->with('listMods', $listMods);
 		}
 	}
 
