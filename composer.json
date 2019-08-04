@@ -29,7 +29,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "~1.8@dev",
         "mockery/mockery": "master@dev",
-        "phpunit/phpunit": "~5.7"
+        "phpunit/phpunit": "~8.3"
     },
     "autoload": {
         "classmap": [
