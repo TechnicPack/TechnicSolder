@@ -23,7 +23,7 @@
         "intervention/image": "2.1.*",
         "doctrine/dbal": "~2.3",
         "knplabs/github-api": "1.4.*",
-        "guzzlehttp/guzzle": "5.2.*",
+        "guzzlehttp/guzzle": "6.3.*",
         "aws/aws-sdk-php": "2.7.*"
     },
     "require-dev": {
