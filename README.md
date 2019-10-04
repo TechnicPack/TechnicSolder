@@ -5,7 +5,7 @@ TechnicSolder
 [![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=master)](https://travis-ci.org/TechnicPack/TechnicSolder)
 [![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=dev)](https://travis-ci.org/TechnicPack/TechnicSolder)
 
-Join us on [Discord](https://discord.gg/0Ehm7p0AD3PdYLT1)!
+Join us on [Discord][discord]!
 
 What is Solder?
 --------------
@@ -20,16 +20,16 @@ Requirements
 -------------
 
 * PHP 5.6 up to 7.0 (PHP 7.1 and 7.2 **are not** supported)
-* PHP MCrypt Extension
-* PHP Curl Extension
-* PHP GD Extension
-* A sqllite, mysql, pgsql, or sqlsrv database
-* Composer - PHP Dependency Manager - http://getcomposer.org
+* PHP MCrypt extension
+* PHP curl extension
+* PHP GD extension
+* A SQLite, MySQL, PostgreSQL, or MSSQL database
+* Composer - PHP Dependency Manager - <https://getcomposer.org/>
 
 Installation/Updating Solder
 -------------
 
-Refer to our documentation here: http://docs.solder.io/
+Refer to our documentation here: <https://docs.solder.io/>
 
 If there is any missing/incorrect info, please post an issue on our [issue tracker](https://github.com/TechnicPack/TechnicSolder/issues)
 
@@ -38,12 +38,12 @@ Changes
 
 Changes are now displayed within the application itself.
 
-Also see the [Technic News](http://www.technicpack.net/article/category/10) feed for solder updates
+Also see the [Technic News](https://www.technicpack.net/article/category/10) feed for solder updates
 
 
 Troubleshooting
 ---------------
 
-[@GenPage](http://twitter.com/gen_page)
+If you are having issues and can't seem to figure out what's going on, join our [development Discord server][discord].
 
-If you are having issues and can't seem to figure out what's going on, come ask GenPage in IRC @ **irc.synirc.net #technic** or open an issue here on GitHub.
+[discord]: https://discord.gg/0XSjZibQg6yguy1x
