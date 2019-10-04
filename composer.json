@@ -24,7 +24,7 @@
         "doctrine/dbal": "~2.3",
         "knplabs/github-api": "1.4.*",
         "guzzlehttp/guzzle": "5.2.*",
-        "aws/aws-sdk-php": "2.7.*"
+        "aws/aws-sdk-php": "3.0.*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "~1.8@dev",
