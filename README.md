@@ -14,12 +14,12 @@ TechnicSolder is an API that sits between a modpack repository and the launcher.
 
 Using Solder also means your packs will download each mod individually. This means the launcher can check MD5's against each version of a mod and if it hasn't changed, use the cached version of the mod instead. What does this mean? Small incremental updates to your modpack doesn't mean redownloading the whole thing every time!
 
-Solder also interfaces with the Technic Platform using an API key you can generate through your account there. When Solder has this key it can directly interact with your Platform account. When creating new modpacks you will be able to import any packs you have registered in your Solder install. It will also create detailed mod lists on your Platform page! (assuming you have the respective data filled out in Solder) Neat huh?
+Solder also interfaces with the Technic Platform using an API key you can generate through your account there. When Solder has this key it can directly interact with your Platform account. When creating new modpacks you will be able to import any packs you have registered in your Solder install. It will also create detailed mod lists on your Platform page! (assuming you have the respective data filled out in Solder). Neat huh?
 
 Requirements
 -------------
 
-* PHP 5.6 up to 7.0 (PHP 7.1 and 7.2 **are not** supported)
+* PHP 5.6 up to 7.0 (PHP 7.1+ **are not** supported)
 * PHP MCrypt extension
 * PHP curl extension
 * PHP GD extension
@@ -38,7 +38,7 @@ Changes
 
 Changes are now displayed within the application itself.
 
-Also see the [Technic News](https://www.technicpack.net/article/category/10) feed for solder updates
+Also see the [Technic News](https://www.technicpack.net/article/category/10) feed for Solder updates
 
 
 Troubleshooting
