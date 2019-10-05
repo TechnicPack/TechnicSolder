@@ -27,7 +27,7 @@
     ],
     "require": {
         "laravel/framework": "4.2.*",
-        "patricktalmadge/bootstrapper": "5.5.*",
+        "patricktalmadge/bootstrapper": "5.9.*",
         "intervention/image": "2.5.*",
         "doctrine/dbal": "~2.3",
         "knplabs/github-api": "1.7.*"
