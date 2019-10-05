@@ -1,7 +1,7 @@
 <?php
 
-use Aws\S3\S3Client;
 use Illuminate\Support\MessageBag;
+
 class ModpackController extends BaseController {
 
 	public function __construct()
@@ -216,13 +216,7 @@ class ModpackController extends BaseController {
 		$perm->save();
 
 		try {
-			$useS3 = Config::get('solder.use_s3');
-
-			if ($useS3) {
-				$resourcePath = storage_path() . '/resources/' . $modpack->slug;
-			} else {
-				$resourcePath = public_path() . '/resources/' . $modpack->slug;
-			}
+			$resourcePath = public_path() . '/resources/' . $modpack->slug;
 
 			/* Create new resources directory for modpack */
 			if (!file_exists($resourcePath)) {
@@ -288,27 +282,10 @@ class ModpackController extends BaseController {
 		$modpack->private = Input::get('private') ? true : false;
 		$modpack->save();
 
-		$useS3 = Config::get('solder.use_s3') ? true : false;
-		$S3bucket = Config::get('solder.bucket');
 		$newSlug = (bool)($oldSlug != $modpack->slug);
 
-		if ($useS3) {
-			$resourcePath = storage_path() . '/resources/' . $modpack->slug;
-			$oldPath = storage_path() . '/resources/' . $oldSlug;
-			$client = S3Client::factory(array(
-                        'key' => Config::get('solder.access_key'),
-                        'secret' => Config::get('solder.secret_key')
-                    ));
-			if(!$client->doesBucketExist($S3bucket)) {
-				Log::error('Amazon S3 error, Bucket '. $S3bucket . ' does not exist.');
-				$useS3 = false;
-			}
-		}
-
-		if (!$useS3){
-			$resourcePath = public_path() . '/resources/' . $modpack->slug;
-			$oldPath = public_path() . '/resources/' . $oldSlug;
-		}
+		$resourcePath = public_path() . '/resources/' . $modpack->slug;
+		$oldPath = public_path() . '/resources/' . $oldSlug;
 
 		/* Create new resources directory for modpack */
 		if (!file_exists($resourcePath)) {
@@ -323,30 +300,10 @@ class ModpackController extends BaseController {
 				if ($success = $iconimg->save($resourcePath . '/icon.png', 100)) {
 					$modpack->icon = true;
 
-					if ($useS3) {
-						$result = $client->putObject(array(
-									'Bucket' => $S3bucket,
-									'Key' => '/resources/'.$modpack->slug.'/icon.png',
-									'Body' => $iconimg,
-									'ACL' => 'public-read',
-									'ContentType' => 'image/png'
-								));
-
-						$modpack->icon_url = $result['ObjectURL'];
-						$modpack->icon_md5 = $result['ETag'];
-					} else {
-						$modpack->icon_url = URL::asset('/resources/' . $modpack->slug . '/icon.png');
-						$modpack->icon_md5 = md5_file($resourcePath . "/icon.png");
-					}
+					$modpack->icon_url = URL::asset('/resources/' . $modpack->slug . '/icon.png');
+					$modpack->icon_md5 = md5_file($resourcePath . "/icon.png");
 
 					if($newSlug) {
-						if ($useS3) {
-							$client->deleteObject(array(
-								'Bucket' => $S3bucket,
-								'Key' => '/resources/'.$modpack->slug.'/icon.png'
-							));
-						}
-
 						if (file_exists($oldPath . "/icon.png")) {
 							unlink($oldPath . "/icon.png");
 						}
@@ -362,20 +319,6 @@ class ModpackController extends BaseController {
 			}
 		} else {
 			if($newSlug) {
-				if ($useS3) {
-					$client->copyObject(array(
-						'Bucket' => $S3bucket,
-						'Key' => '/resources/'.$modpack->slug.'/icon.png',
-						'CopySource' => '/resources/'.$oldSlug.'/icon.png',
-						'ACL' => 'public-read',
-						'ContentType' => 'image/png'
-					));
-					$client->deleteObject(array(
-						'Bucket' => $S3bucket,
-						'Key' => '/resources/'.$modpack->slug.'/icon.png'
-					));
-				}
-
 				if (file_exists($oldPath . "/icon.png")) {
 					copy($oldPath . "/icon.png", $resourcePath . "/icon.png");
 					unlink($oldPath . "/icon.png");
@@ -390,30 +333,10 @@ class ModpackController extends BaseController {
 				if ($success = $logoimg->save($resourcePath . '/logo.png', 100)) {
 					$modpack->logo = true;
 
-					if ($useS3) {
-						$result = $client->putObject(array(
-									'Bucket' => $S3bucket,
-									'Key' => '/resources/'.$modpack->slug.'/logo.png',
-									'Body' => $logoimg,
-									'ACL' => 'public-read',
-									'ContentType' => 'image/png'
-								));
-
-						$modpack->logo_url = $result['ObjectURL'];
-						$modpack->logo_md5 = $result['ETag'];
-					} else {
-						$modpack->logo_url = URL::asset('/resources/' . $modpack->slug . '/logo.png');
-						$modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
-					}
+					$modpack->logo_url = URL::asset('/resources/' . $modpack->slug . '/logo.png');
+					$modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
 
 					if($newSlug) {
-						if ($useS3) {
-							$client->deleteObject(array(
-								'Bucket' => $S3bucket,
-								'Key' => '/resources/'.$modpack->slug.'/logo.png'
-							));
-						}
-
 						if (file_exists($oldPath . "/logo.png")) {
 							unlink($oldPath . "/logo.png");
 						}
@@ -429,20 +352,6 @@ class ModpackController extends BaseController {
 			}
 		} else {
 			if($newSlug) {
-				if ($useS3) {
-					$client->copyObject(array(
-						'Bucket' => $S3bucket,
-						'Key' => '/resources/'.$modpack->slug.'/logo.png',
-						'CopySource' => '/resources/'.$oldSlug.'/logo.png',
-						'ACL' => 'public-read',
-						'ContentType' => 'image/png'
-					));
-					$client->deleteObject(array(
-						'Bucket' => $S3bucket,
-						'Key' => '/resources/'.$modpack->slug.'/logo.png'
-					));
-				}
-
 				if (file_exists($oldPath . "/logo.png")) {
 					copy($oldPath . "/logo.png", $resourcePath . "/logo.png");
 					unlink($oldPath . "/logo.png");
@@ -457,30 +366,10 @@ class ModpackController extends BaseController {
 				if ($success = $backgroundimg->save($resourcePath . '/background.jpg', 100)) {
 					$modpack->background = true;
 
-					if ($useS3) {
-						$result = $client->putObject(array(
-									'Bucket' => $S3bucket,
-									'Key' => '/resources/'.$modpack->slug.'/background.jpg',
-									'Body' => $backgroundimg,
-									'ACL' => 'public-read',
-									'ContentType' => 'image/jpg'
-								));
-
-						$modpack->background_url = $result['ObjectURL'];
-						$modpack->background_md5 = $result['ETag'];
-					} else {
-						$modpack->background_url = URL::asset('/resources/' . $modpack->slug . '/background.jpg');
-						$modpack->background_md5 = md5_file($resourcePath . "/background.jpg");
-					}
+					$modpack->background_url = URL::asset('/resources/' . $modpack->slug . '/background.jpg');
+					$modpack->background_md5 = md5_file($resourcePath . "/background.jpg");
 
 					if($newSlug) {
-						if ($useS3) {
-							$client->deleteObject(array(
-								'Bucket' => $S3bucket,
-								'Key' => '/resources/'.$modpack->slug.'/background.jpg'
-							));
-						}
-
 						if (file_exists($oldPath . "/background.jpg")) {
 							unlink($oldPath . "/background.jpg");
 						}
@@ -496,20 +385,6 @@ class ModpackController extends BaseController {
 			}
 		} else {
 			if($newSlug) {
-				if ($useS3) {
-					$client->copyObject(array(
-						'Bucket' => $S3bucket,
-						'Key' => '/resources/'.$modpack->slug.'/background.jpg',
-						'CopySource' => '/resources/'.$oldSlug.'/background.jpg',
-						'ACL' => 'public-read',
-						'ContentType' => 'image/jpg'
-					));
-					$client->deleteObject(array(
-						'Bucket' => $S3bucket,
-						'Key' => '/resources/'.$modpack->slug.'/background.jpg'
-					));
-				}
-
 				if (file_exists($oldPath . "/background.jpg")) {
 					copy($oldPath . "/background.jpg", $resourcePath . "/background.jpg");
 					unlink($oldPath . "/background.jpg");

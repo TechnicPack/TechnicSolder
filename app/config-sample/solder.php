@@ -36,31 +36,6 @@ return array(
 	 *
 	 **/
 	'md5_file_timeout' => 30,
-
-	/**
-	 * Amazon S3 Integration
-	 *
-	 * If you would like to use Amazon S3 for serving your pack resources set this to
-	 * true and fill in your AWS information below.
-	 */
-	'use_s3' => false,
-
-	/**
-	 * Amazon AWS Access Key
-	 */
-	'access_key' => '',
-
-	/**
-	 * Amazon AWS Secret Key
-	 */
-	'secret_key' => '',
-
-	/**
-	 * Amazon S3 Bucket
-	 *
-	 * This is the bucket that will be used to store your pack resources
-	 */
-	'bucket' => 'solder',
 );
 
 ?>

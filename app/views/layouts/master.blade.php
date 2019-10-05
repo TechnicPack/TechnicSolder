@@ -80,11 +80,7 @@
 
                        @foreach (Modpack::all()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE) as $modpack)
                         @if ($modpack->icon)
-                          @if (Config::get('solder.use_s3'))
-                          <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ Config::get('solder.s3_url') }}resources/{{ $modpack->slug }}/icon.png" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $modpack->hidden ? " (Hidden)" : "" }}</a></li>
-                          @else
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $modpack->hidden ? " (Hidden)" : "" }}</a></li>
-                          @endif
                         @else
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $modpack->hidden ? " (Hidden)" : "" }}</a></li>
                         @endif
