@@ -5,6 +5,8 @@ class APIController extends BaseController {
 	public function __construct()
 	{
 		parent::__construct();
+		
+		$this->afterFilter('cors');
 
 		/* This checks the client list for the CID. If a matching CID is found, all caching will be ignored
 		   for this request */
