@@ -22,7 +22,7 @@
         "patricktalmadge/bootstrapper": "5.5.*",
         "intervention/image": "2.1.*",
         "doctrine/dbal": "~2.3",
-        "knplabs/github-api": "1.4.*"
+        "knplabs/github-api": "1.7.*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "~1.8@dev",
