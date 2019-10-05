@@ -8,7 +8,6 @@
 </div>
 <ul class="nav nav-tabs">
     <li class="active"><a href="#main" data-toggle="tab">Solder</a></li>
-    <li><a href="#amazon" data-toggle="tab">Amazon S3</a></li>
 </ul>
  <div class="tab-content">
     <div class="tab-pane fade in active" id="main">
@@ -64,40 +63,6 @@
             @endif
             </div>
         </div>
-    </div>
-    <div class="tab-pane fade" id="amazon">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Amazon S3
-            </div>
-            <div class="panel-body">
-                @if (Session::has('success'))
-                <div class="alert alert-success">
-                    {{ Session::get('success') }}
-                </div>
-                @endif
-
-                <label>Use Amazon S3: {{ Config::get('solder.use_s3') ? "<span class='label label-success'> Yes" : "<span class='label label-danger'> No" }}</span></label><br><br>
-
-                <div class="form-group">
-                    <label for="access_key">Amazon AWS Access Key</label>
-                    <input type="text" class="form-control" name="access_key" id="access_key" value="{{ Config::get('solder.access_key') }}" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label for="secret_key">Amazon AWS Secret Key</label>
-                    <input type="text" class="form-control" name="secret_key" id="secret_key" value="{{ Config::get('solder.secret_key') }}" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label for="bucket">Amazon S3 Bucket</label>
-                    <input type="text" class="form-control" name="bucket" id="bucket" value="{{ Config::get('solder.bucket') }}" disabled>
-                    <span class="help-block">This is the bucket that will be used to store your pack resources.</span>
-                </div>
-
-                <p>You can change these settings in <strong>app/config/solder.php</strong></p>
-            </div>
-        </span>
     </div>
 @endsection
 @section('bottom')

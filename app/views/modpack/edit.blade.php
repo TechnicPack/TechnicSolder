@@ -62,57 +62,8 @@
 			</div>
 			<div class="col-md-6">
 				<h3>Image Management</h3>
-				<p>Upload your modpacks resources here. These images are what will be served to the launcher. If your modpack already has images on your mirror, they will remain working until the first time you upload them here.</p>
-				<hr>
-				@if(!$resourcesWritable)
-				<div class="alert alert-warning">Unable to write to <code>'public/resources/{{$modpack->slug}}'</code>. Please check your file/folder permissions.</div>
-				@endif
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group" style="border-bottom:1px solid #ddd;">
-							<label class="control-label" for="background">Modpack Background</label>
-							<div class="controls">
-								@if ($modpack->background)
-								<div class="modpack-background">
-									<img src="{{ $modpack->background_url }}" class="img-thumbnail">
-								</div>
-								@endif
-								<input type="file" name="background" id="background">
-								<span class="help-block">Required Size: 900x600</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<div class="control-group" style="padding-top:10px;">
-							<label class="control-label" for="icon">Modpack Icon</label>
-							<div class="controls">
-								@if ($modpack->icon)
-								<div class="modpack-icon">
-									<img src="{{ $modpack->icon_url }}" class="img-thumbnail">
-								</div>
-								@endif
-								<input type="file" name="icon" id="icon">
-								<span class="help-block">Recommended Size: 50x50</span>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="control-group">
-							<label class="control-label" for="logo">Modpack Logo</label>
-							<div class="controls">
-								@if ($modpack->logo)
-								<div class="modpack-logo">
-									<img src="{{ $modpack->logo_url }}" class="img-thumbnail">
-								</div>
-								@endif
-								<input type="file" name="logo" id="logo">
-								<span class="help-block">Required Size: 370x220</span>
-							</div>
-						</div>
-					</div>
-				</div>
+				<p>Modpack art (logo, icon and background images) are handled entirely by the <a href="https://www.technicpack.net/" target="_blank" rel="noopener">Technic Platform</a>.</p>
+				<p>To change your modpack art you should go to your modpack settings in Platform and choose the "Resources" section.</p>
 			</div>
 		</div>
 		<div class="row">
