@@ -13,8 +13,9 @@ return array(
 	/**
 	 * Mirror Location
 	 *
-	 * This is where the launcher will be told to search for your files. If your
-	 * repo location is already a URL you can use the same location here.
+	 * This is where the launcher will be told to search for your files.
+	 * INCLUDE a trailing slash! If your repo location is already a URL you
+	 * can use the same location here.
 	 *
 	 **/
 	'mirror_url' => '',
