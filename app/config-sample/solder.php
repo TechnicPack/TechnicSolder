@@ -8,7 +8,7 @@ return array(
 	 * This can be a URL or an absolute file location.
 	 *
 	 **/
-	'repo_location' => '',
+	'repo_location' => '/var/www/mods.solder.test/',
 
 	/**
 	 * Mirror Location
@@ -18,7 +18,7 @@ return array(
 	 * can use the same location here.
 	 *
 	 **/
-	'mirror_url' => '',
+	'mirror_url' => 'http://mods.solder.test/',
 
 	/**
 	 * MD5 Connect Timeout
