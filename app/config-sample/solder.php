@@ -23,7 +23,7 @@ return array(
 	/**
 	 * MD5 Connect Timeout
 	 *
-	 * This is the amount of time Solder will wait before giving up trying to
+	 * This is the amount of time (in seconds) Solder will wait before giving up trying to
 	 * connect to a URL to perform a MD5 checksum.
 	 *
 	 **/
@@ -32,7 +32,7 @@ return array(
 	/**
 	 * MD5 Hashing Timeout
 	 *
-	 * This is the amount of time Solder will wait before giving up trying to
+	 * This is the amount of time (in seconds) Solder will wait before giving up trying to
 	 * calculate the MD5 checksum.
 	 *
 	 **/
