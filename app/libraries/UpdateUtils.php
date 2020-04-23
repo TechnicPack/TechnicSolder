@@ -1,70 +1,83 @@
 <?php
 
-class UpdateUtils {
+namespace App\Libraries;
 
-	public static $githubclient;
+use RuntimeException;
 
-	public static function init() {
-	
-		self::$githubclient = new \Github\Client(new \Github\HttpClient\CachedHttpClient(array('cache_dir' => storage_path() . '/github-api-cache')));
+class UpdateUtils
+{
 
-	}
+    public static $githubclient;
 
-	public static function getUpdateCheck() {
+    public static function init()
+    {
+        $client = new \Github\Client();
+        // TODO: Re-add caching (it got removed upstream)
+        self::$githubclient = $client;
 
-		$allVersions = self::getAllVersions();
+    }
 
-		if(!array_key_exists('error', $allVersions)) {
-			if (version_compare(self::getLatestVersion()['name'], SOLDER_VERSION, '>')) {
-				return true;
-			}
-		}
-		
-		return false;
-		
-	}
+    public static function getUpdateCheck()
+    {
 
-	public static function getLatestVersion() {
+        $allVersions = self::getAllVersions();
 
-		$allVersions = self::getAllVersions();
-		if(array_key_exists('error', $allVersions)) {
-			return $allVersions;
-		}
-		return $allVersions[0];
+        if (!array_key_exists('error', $allVersions)) {
+            if (version_compare(self::getLatestVersion()['name'], SOLDER_VERSION, '>')) {
+                return true;
+            }
+        }
 
-	}
+        return false;
 
-	public static function getAllVersions() {
+    }
 
-		try {
-			return self::$githubclient->api('repo')->tags('technicpack', 'technicsolder');
-		} catch (RuntimeException $e){
-			return array('error' => 'Unable to pull version from Github - ' . $e->getMessage());
-		}
+    public static function getLatestVersion()
+    {
 
-	}
+        $allVersions = self::getAllVersions();
+        if (array_key_exists('error', $allVersions)) {
+            return $allVersions;
+        }
+        return $allVersions[0];
 
-	public static function getCommitInfo($commit = null) {
+    }
 
-		if (is_null($commit)) {
-			$commit = self::getLatestVersion()['commit']['sha'];		
-		}
+    public static function getAllVersions()
+    {
 
-		try {
-			return self::$githubclient->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
-		} catch (RuntimeException $e){
-			return array('error' => 'Unable to pull commit info from Github - ' . $e->getMessage());
-		}
+        try {
+            return self::$githubclient->api('repo')->tags('technicpack', 'technicsolder');
+        } catch (RuntimeException $e) {
+            return array('error' => 'Unable to pull version from Github - '.$e->getMessage());
+        }
 
-	}
+    }
 
-	public static function getLatestChangeLog($branch = 'master') {
+    public static function getCommitInfo($commit = null)
+    {
 
-		try {
-			return self::$githubclient->api('repo')->commits()->all('technicpack', 'technicsolder', array('sha' => $branch));
-		} catch(RuntimeException $e){
-			return array('error' => 'Unable to pull changelog from Github - ' . $e->getMessage());
-		}
+        if (is_null($commit)) {
+            $commit = self::getLatestVersion()['commit']['sha'];
+        }
 
-	}
+        try {
+            return self::$githubclient->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
+        } catch (RuntimeException $e) {
+            return array('error' => 'Unable to pull commit info from Github - '.$e->getMessage());
+        }
+
+    }
+
+    public static function getLatestChangeLog($branch = 'master')
+    {
+
+        try {
+            return self::$githubclient->api('repo')->commits()->all('technicpack', 'technicsolder',
+                array('sha' => $branch));
+        } catch (RuntimeException $e) {
+            return array('error' => 'Unable to pull changelog from Github - '.$e->getMessage());
+        }
+
+    }
 }
