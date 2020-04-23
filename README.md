@@ -19,12 +19,18 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP 5.6 up to 7.0 (PHP 7.1+ **are not** supported)
-* PHP MCrypt extension
-* PHP curl extension
-* PHP GD extension
-* A SQLite, MySQL, PostgreSQL, or MSSQL database
-* Composer - PHP Dependency Manager - <https://getcomposer.org/>
+* PHP >= 7.2.0
+* Composer - <https://getcomposer.org/>
+* BCMath PHP Extension
+* Ctype PHP Extension
+* Fileinfo PHP extension
+* JSON PHP Extension
+* Mbstring PHP Extension
+* OpenSSL PHP Extension
+* PDO PHP Extension
+* Tokenizer PHP Extension
+* XML PHP Extension
+* A MySQL or PostgreSQL database
 
 Installation/Updating Solder
 -------------
