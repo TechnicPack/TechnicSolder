@@ -2,6 +2,7 @@
 
 namespace App\Libraries;
 
+use Github\Client;
 use RuntimeException;
 
 class UpdateUtils
@@ -11,7 +12,7 @@ class UpdateUtils
 
     public static function init()
     {
-        $client = new \Github\Client();
+        $client = new Client();
         // TODO: Re-add caching (it got removed upstream)
         self::$githubclient = $client;
 
@@ -49,7 +50,7 @@ class UpdateUtils
         try {
             return self::$githubclient->api('repo')->tags('technicpack', 'technicsolder');
         } catch (RuntimeException $e) {
-            return array('error' => 'Unable to pull version from Github - '.$e->getMessage());
+            return array('error' => 'Unable to pull version from Github - ' . $e->getMessage());
         }
 
     }
@@ -64,7 +65,7 @@ class UpdateUtils
         try {
             return self::$githubclient->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
         } catch (RuntimeException $e) {
-            return array('error' => 'Unable to pull commit info from Github - '.$e->getMessage());
+            return array('error' => 'Unable to pull commit info from Github - ' . $e->getMessage());
         }
 
     }
@@ -76,7 +77,7 @@ class UpdateUtils
             return self::$githubclient->api('repo')->commits()->all('technicpack', 'technicsolder',
                 array('sha' => $branch));
         } catch (RuntimeException $e) {
-            return array('error' => 'Unable to pull changelog from Github - '.$e->getMessage());
+            return array('error' => 'Unable to pull changelog from Github - ' . $e->getMessage());
         }
 
     }

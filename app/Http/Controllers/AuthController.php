@@ -1,12 +1,12 @@
 <?php namespace App\Http\Controllers;
 
+use App\Libraries\UpdateUtils;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
-use App\Libraries\UpdateUtils;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
 
     public function showLogin()
     {

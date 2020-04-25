@@ -2,4 +2,6 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Key extends Model {}
+class Key extends Model
+{
+}

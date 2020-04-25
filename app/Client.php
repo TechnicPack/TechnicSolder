@@ -2,12 +2,13 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Client extends Model {
-	public $timestamps = true;
+class Client extends Model
+{
+    public $timestamps = true;
 
-	public function modpacks()
-	{
-		return $this->belongsToMany('App\Modpack')->withTimestamps();
-	}
+    public function modpacks()
+    {
+        return $this->belongsToMany('App\Modpack')->withTimestamps();
+    }
 
 }
