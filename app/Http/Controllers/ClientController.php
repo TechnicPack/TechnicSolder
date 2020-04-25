@@ -33,10 +33,10 @@ class ClientController extends Controller
 
     public function postCreate()
     {
-        $rules = array(
+        $rules = [
             'name' => 'required|unique:clients',
             'uuid' => 'required|unique:clients'
-        );
+        ];
 
         $validation = Validator::make(Request::all(), $rules);
         if ($validation->fails()) {
@@ -59,7 +59,7 @@ class ClientController extends Controller
         $client = Client::find($client_id);
 
         if (empty($client)) {
-            return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
+            return Redirect::to('client/list')->withErrors(new MessageBag(['Client UUID not found']));
         }
 
         return view('client.delete')->with('client', $client);
@@ -70,10 +70,10 @@ class ClientController extends Controller
         $client = Client::find($client_id);
 
         if (empty($client)) {
-            return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
+            return Redirect::to('client/list')->withErrors(new MessageBag(['Client UUID not found']));
         }
 
-        $client->modpacks()->sync(array());
+        $client->modpacks()->sync([]);
         $client->delete();
 
         Cache::forget('clients');

@@ -30,24 +30,24 @@ class ModController extends Controller
     public function getList()
     {
         $mods = Mod::with(
-            array(
+            [
                 'versions' => function ($query) {
                     $query->orderBy('modversions.updated_at', 'desc');
                 }
-            )
+            ]
         )
             ->get();
-        return view('mod.list')->with(array('mods' => $mods));
+        return view('mod.list')->with(['mods' => $mods]);
     }
 
     public function getView($mod_id = null)
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(array('Mod not found')));
+            return Redirect::to('mod/list')->withErrors(new MessageBag(['Mod not found']));
         }
 
-        return view('mod.view')->with(array('mod' => $mod));
+        return view('mod.view')->with(['mod' => $mod]);
     }
 
     public function getCreate()
@@ -57,17 +57,17 @@ class ModController extends Controller
 
     public function postCreate()
     {
-        $rules = array(
+        $rules = [
             'name' => 'required|unique:mods',
             'pretty_name' => 'required',
             'link' => 'nullable|url',
-        );
-        $messages = array(
+        ];
+        $messages = [
             'name.required' => 'You must fill in a mod slug name.',
             'name.unique' => 'The slug you entered is already taken',
             'pretty_name.required' => 'You must enter in a mod name',
             'link.url' => 'You must enter a properly formatted Website',
-        );
+        ];
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
@@ -88,31 +88,31 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(array('Mod not found')));
+            return Redirect::to('mod/list')->withErrors(new MessageBag(['Mod not found']));
         }
 
-        return view('mod.delete')->with(array('mod' => $mod));
+        return view('mod.delete')->with(['mod' => $mod]);
     }
 
     public function postModify($mod_id = null)
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(array('Error modifying mod - Mod not found')));
+            return Redirect::to('mod/list')->withErrors(new MessageBag(['Error modifying mod - Mod not found']));
         }
 
-        $rules = array(
+        $rules = [
             'pretty_name' => 'required',
             'name' => 'required|unique:mods,name,' . $mod->id,
             'link' => 'nullable|url',
-        );
+        ];
 
-        $messages = array(
+        $messages = [
             'name.required' => 'You must fill in a mod slug name.',
             'name.unique' => 'The slug you entered is already in use by another mod',
             'pretty_name.required' => 'You must enter in a mod name',
             'link.url' => 'You must enter a properly formatted Website',
-        );
+        ];
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
@@ -134,11 +134,11 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(array('Error deleting mod - Mod not found')));
+            return Redirect::to('mod/list')->withErrors(new MessageBag(['Error deleting mod - Mod not found']));
         }
 
         foreach ($mod->versions as $ver) {
-            $ver->builds()->sync(array());
+            $ver->builds()->sync([]);
             $ver->delete();
         }
         $mod->delete();
@@ -153,18 +153,18 @@ class ModController extends Controller
             $md5 = Request::input('md5');
             $ver_id = Request::input('version-id');
             if (empty($ver_id)) {
-                return Response::json(array(
+                return Response::json([
                     'status' => 'error',
                     'reason' => 'Missing Post Data',
-                ));
+                ]);
             }
 
             $ver = Modversion::find($ver_id);
             if (empty($ver)) {
-                return Response::json(array(
+                return Response::json([
                     'status' => 'error',
                     'reason' => 'Could not pull mod version from database',
-                ));
+                ]);
             }
 
             if (empty($md5)) {
@@ -182,33 +182,33 @@ class ModController extends Controller
                     $ver->filesize = $file_md5['filesize'];
                     $ver->md5 = $md5;
                     $ver->save();
-                    return Response::json(array(
+                    return Response::json([
                         'status' => 'success',
                         'version_id' => $ver->id,
                         'md5' => $ver->md5,
                         'filesize' => $ver->humanFilesize("MB"),
-                    ));
+                    ]);
                 } else {
                     $ver->filesize = $file_md5['filesize'];
                     $ver->md5 = $md5;
                     $ver->save();
-                    return Response::json(array(
+                    return Response::json([
                         'status' => 'warning',
                         'version_id' => $ver->id,
                         'md5' => $ver->md5,
                         'filesize' => $ver->humanFilesize("MB"),
                         'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
-                    ));
+                    ]);
                 }
             } else {
-                return Response::json(array(
+                return Response::json([
                     'status' => 'error',
                     'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
-                ));
+                ]);
             }
         }
 
-        return Response::view('errors.missing', array(), 404);
+        return Response::view('errors.missing', [], 404);
     }
 
     public function anyAddVersion()
@@ -221,18 +221,18 @@ class ModController extends Controller
         $md5 = Request::input('add-md5');
         $version = Request::input('add-version');
         if (empty($mod_id) || empty($version)) {
-            return Response::json(array(
+            return Response::json([
                 'status' => 'error',
                 'reason' => 'Missing Post Data'
-            ));
+            ]);
         }
 
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Response::json(array(
+            return Response::json([
                 'status' => 'error',
                 'reason' => 'Could not pull mod from database'
-            ));
+            ]);
         }
 
         if (Modversion::where([
@@ -264,29 +264,29 @@ class ModController extends Controller
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
-                return Response::json(array(
+                return Response::json([
                     'status' => 'success',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
                     'filesize' => $ver->humanFilesize("MB"),
-                ));
+                ]);
             } else {
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
-                return Response::json(array(
+                return Response::json([
                     'status' => 'warning',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
                     'filesize' => $ver->humanFilesize("MB"),
                     'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
-                ));
+                ]);
             }
         } else {
-            return Response::json(array(
+            return Response::json([
                 'status' => 'error',
                 'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
-            ));
+            ]);
         }
     }
 
@@ -294,31 +294,31 @@ class ModController extends Controller
     {
         if (Request::ajax()) {
             if (empty($ver_id)) {
-                return Response::json(array(
+                return Response::json([
                     'status' => 'error',
                     'reason' => 'Missing Post Data'
-                ));
+                ]);
             }
 
             $ver = Modversion::find($ver_id);
             if (empty($ver)) {
-                return Response::json(array(
+                return Response::json([
                     'status' => 'error',
                     'reason' => 'Could not pull mod version from database'
-                ));
+                ]);
             }
 
             $old_id = $ver->id;
             $old_version = $ver->version;
             $ver->delete();
-            return Response::json(array(
+            return Response::json([
                 'status' => 'success',
                 'version' => $old_version,
                 'version_id' => $old_id
-            ));
+            ]);
         }
 
-        return Response::view('errors.missing', array(), 404);
+        return Response::view('errors.missing', [], 404);
     }
 
     private function mod_md5($mod, $version)
@@ -331,10 +331,10 @@ class ModController extends Controller
             try {
                 $filesize = filesize($URI);
                 $md5 = md5_file($URI);
-                return array('success' => true, 'md5' => $md5, 'filesize' => $filesize);
+                return ['success' => true, 'md5' => $md5, 'filesize' => $filesize];
             } catch (Exception $e) {
                 Log::error("Error attempting to md5 the file: " . $URI);
-                return array('success' => false, 'message' => $e->getMessage());
+                return ['success' => false, 'message' => $e->getMessage()];
             }
         } else {
             if (filter_var($URI, FILTER_VALIDATE_URL)) {
@@ -343,7 +343,7 @@ class ModController extends Controller
             } else {
                 $error = $URI . ' is not a valid URI';
                 Log::error($error);
-                return array('success' => false, 'message' => $error);
+                return ['success' => false, 'message' => $error];
             }
         }
     }

@@ -33,14 +33,14 @@ class UserController extends Controller
     {
         if (empty($user_id)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User ID not provided')));
+                ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         $user = User::find($user_id);
 
         if (empty($user)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User not found')));
+                ->withErrors(new MessageBag(['User not found']));
         }
 
         return view('user.edit')->with('user', $user);
@@ -50,7 +50,7 @@ class UserController extends Controller
     {
         if (empty($user_id)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User ID not provided')));
+                ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users && $user_id != Auth::user()->id) {
@@ -62,13 +62,13 @@ class UserController extends Controller
 
         if (empty($user)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User not found')));
+                ->withErrors(new MessageBag(['User not found']));
         }
 
-        $rules = array(
+        $rules = [
             'email' => 'required|email|unique:users,email,' . $user_id,
             'username' => 'required|min:3|max:30|unique:users,username,' . $user_id
-        );
+        ];
 
         if (Request::input('password1')) {
             $rules['password1'] = "min:3|same:password2";
@@ -141,11 +141,11 @@ class UserController extends Controller
 
     public function postCreate()
     {
-        $rules = array(
+        $rules = [
             'email' => 'required|email|unique:users',
             'username' => 'required|min:3|max:30|unique:users',
             'password' => 'required|min:3'
-        );
+        ];
 
         $validation = Validator::make(Request::all(), $rules);
         if ($validation->fails()) {
@@ -204,52 +204,52 @@ class UserController extends Controller
 
         if (empty($user_id)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User ID not provided')));
+                ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         $user = User::find($user_id);
         if (empty($user)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User not found')));
+                ->withErrors(new MessageBag(['User not found']));
         }
 
         if ($user->permission->solder_full) {
             $numOfOtherSuperUsers = DB::table('user_permissions')
                 ->where('solder_full', true)
-                ->whereNotIn('user_id', array($user_id))
+                ->whereNotIn('user_id', [$user_id])
                 ->count();
 
             if ($numOfOtherSuperUsers <= 0) {
                 return Redirect::to('user/list')
-                    ->withErrors(new MessageBag(array('Cannot delete the only remaining super user.')));
+                    ->withErrors(new MessageBag(['Cannot delete the only remaining super user.']));
             }
         }
 
-        return view('user.delete')->with(array('user' => $user));
+        return view('user.delete')->with(['user' => $user]);
     }
 
     public function postDelete($user_id = null)
     {
         if (empty($user_id)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User ID not provided')));
+                ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         $user = User::find($user_id);
         if (empty($user)) {
             return Redirect::to('user/list')
-                ->withErrors(new MessageBag(array('User not found')));
+                ->withErrors(new MessageBag(['User not found']));
         }
 
         if ($user->permission->solder_full) {
             $numOfOtherSuperUsers = DB::table('user_permissions')
                 ->where('solder_full', true)
-                ->whereNotIn('user_id', array($user_id))
+                ->whereNotIn('user_id', [$user_id])
                 ->count();
 
             if ($numOfOtherSuperUsers <= 0) {
                 return Redirect::to('user/list')
-                    ->withErrors(new MessageBag(array('Cannot delete the only remaining super user.')));
+                    ->withErrors(new MessageBag(['Cannot delete the only remaining super user.']));
             }
         }
 
