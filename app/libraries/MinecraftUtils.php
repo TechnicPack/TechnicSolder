@@ -9,7 +9,7 @@ class MinecraftUtils
 
     public static function getMinecraft($manual = false)
     {
-        $response = array();
+        $response = [];
 
         if ($manual) {
             Cache::forget('minecraftversions');
@@ -26,7 +26,7 @@ class MinecraftUtils
 
     public static function getVersions()
     {
-        $response = array();
+        $response = [];
 
         if (UrlUtils::checkRemoteFile('https://www.technicpack.net/api/minecraft', 15)['success']) {
             $response = UrlUtils::get_url_contents('https://www.technicpack.net/api/minecraft', 15);
@@ -42,14 +42,14 @@ class MinecraftUtils
             $response = UrlUtils::get_url_contents('https://launchermeta.mojang.com/mc/game/version_manifest.json', 15);
             if ($response['success']) {
                 $mojangResponse = json_decode($response['data'], true);
-                $versions = array();
+                $versions = [];
 
                 foreach ($mojangResponse['versions'] as $mojangVersion) {
                     if ($mojangVersion['type'] !== 'release') {
                         continue;
                     }
                     $mcVersion = $mojangVersion['id'];
-                    $versions[$mcVersion] = array('version' => $mcVersion);
+                    $versions[$mcVersion] = ['version' => $mcVersion];
                 }
 
                 krsort($versions, SORT_NATURAL);

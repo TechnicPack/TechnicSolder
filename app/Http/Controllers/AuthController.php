@@ -19,10 +19,10 @@ class AuthController extends Controller
         $password = Request::input('password');
         $remember = Request::input('remember') ? true : false;
 
-        $credentials = array(
+        $credentials = [
             'email' => $email,
             'password' => $password,
-        );
+        ];
 
         if (Auth::attempt($credentials, $remember)) {
 

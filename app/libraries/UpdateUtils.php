@@ -50,7 +50,7 @@ class UpdateUtils
         try {
             return self::$githubclient->api('repo')->tags('technicpack', 'technicsolder');
         } catch (RuntimeException $e) {
-            return array('error' => 'Unable to pull version from Github - ' . $e->getMessage());
+            return ['error' => 'Unable to pull version from Github - ' . $e->getMessage()];
         }
 
     }
@@ -65,7 +65,7 @@ class UpdateUtils
         try {
             return self::$githubclient->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
         } catch (RuntimeException $e) {
-            return array('error' => 'Unable to pull commit info from Github - ' . $e->getMessage());
+            return ['error' => 'Unable to pull commit info from Github - ' . $e->getMessage()];
         }
 
     }
@@ -75,9 +75,9 @@ class UpdateUtils
 
         try {
             return self::$githubclient->api('repo')->commits()->all('technicpack', 'technicsolder',
-                array('sha' => $branch));
+                ['sha' => $branch]);
         } catch (RuntimeException $e) {
-            return array('error' => 'Unable to pull changelog from Github - ' . $e->getMessage());
+            return ['error' => 'Unable to pull changelog from Github - ' . $e->getMessage()];
         }
 
     }

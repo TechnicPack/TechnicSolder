@@ -57,11 +57,11 @@ class ApiController extends Controller
 
     public function getIndex()
     {
-        return Response::json(array(
+        return Response::json([
             'api' => 'TechnicSolder',
             'version' => SOLDER_VERSION,
             'stream' => SOLDER_STREAM
-        ));
+        ]);
     }
 
     public function getModpack($modpack = null, $build = null)
@@ -72,12 +72,12 @@ class ApiController extends Controller
                 switch ($include) {
                     case "full":
                         $modpacks = $this->fetchModpacks();
-                        $m_array = array();
+                        $m_array = [];
                         foreach ($modpacks['modpacks'] as $slug => $name) {
                             $modpack = $this->fetchModpack($slug);
                             $m_array[$slug] = $modpack;
                         }
-                        $response = array();
+                        $response = [];
                         $response['modpacks'] = $m_array;
                         $response['mirror_url'] = $modpacks['mirror_url'];
                         return Response::json($response);
@@ -120,7 +120,7 @@ class ApiController extends Controller
             }
 
             if (empty($mod)) {
-                return Response::json(array('error' => 'Mod does not exist'));
+                return Response::json(['error' => 'Mod does not exist']);
             }
 
             if (empty($version)) {
@@ -134,15 +134,15 @@ class ApiController extends Controller
     public function getVerify($key = null)
     {
         if (empty($key)) {
-            return Response::json(array("error" => "No API key provided."));
+            return Response::json(["error" => "No API key provided."]);
         }
 
         $key = Key::where('api_key', '=', $key)->first();
 
         if (empty($key)) {
-            return Response::json(array("error" => "Invalid key provided."));
+            return Response::json(["error" => "Invalid key provided."]);
         } else {
-            return Response::json(array("valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at));
+            return Response::json(["valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at]);
         }
     }
 
@@ -151,7 +151,7 @@ class ApiController extends Controller
 
     private function fetchMod($mod)
     {
-        $response = array();
+        $response = [];
 
         $response['id'] = $mod->id;
         $response['name'] = $mod->name;
@@ -159,7 +159,7 @@ class ApiController extends Controller
         $response['author'] = $mod->author;
         $response['description'] = $mod->description;
         $response['link'] = $mod->link;
-        $response['versions'] = array();
+        $response['versions'] = [];
 
         foreach ($mod->versions as $version) {
             array_push($response['versions'], $version->version);
@@ -170,13 +170,13 @@ class ApiController extends Controller
 
     private function fetchModversion($mod, $version)
     {
-        $response = array();
+        $response = [];
 
         $version = Modversion::where("mod_id", "=", $mod->id)
             ->where("version", "=", $version)->first();
 
         if (empty($version)) {
-            return array("error" => "Mod version does not exist");
+            return ["error" => "Mod version does not exist"];
         }
 
         $response['id'] = $version->id;
@@ -199,8 +199,8 @@ class ApiController extends Controller
 
         }
 
-        $response = array();
-        $response['modpacks'] = array();
+        $response = [];
+        $response['modpacks'] = [];
         foreach ($modpacks as $modpack) {
             if ($modpack->private == 1 || $modpack->hidden == 1) {
                 if (isset($this->client)) {
@@ -226,7 +226,7 @@ class ApiController extends Controller
 
     private function fetchModpack($slug)
     {
-        $response = array();
+        $response = [];
 
         if (Cache::has('modpack.' . $slug) && empty($this->client) && empty($this->key)) {
             $modpack = Cache::get('modpack.' . $slug);
@@ -239,7 +239,7 @@ class ApiController extends Controller
         }
 
         if (empty($modpack)) {
-            return array("error" => "Modpack does not exist");
+            return ["error" => "Modpack does not exist"];
         }
 
         $response['id'] = $modpack->id;
@@ -254,7 +254,7 @@ class ApiController extends Controller
         $response['background_md5'] = $modpack->background_md5;
         $response['recommended'] = $modpack->recommended;
         $response['latest'] = $modpack->latest;
-        $response['builds'] = array();
+        $response['builds'] = [];
 
         foreach ($modpack->builds as $build) {
             if ($build->is_published) {
@@ -277,7 +277,7 @@ class ApiController extends Controller
 
     private function fetchBuild($slug, $build)
     {
-        $response = array();
+        $response = [];
 
         if (Cache::has('modpack.' . $slug) && empty($this->client) && empty($this->key)) {
             $modpack = Cache::Get('modpack.' . $slug);
@@ -289,7 +289,7 @@ class ApiController extends Controller
         }
 
         if (empty($modpack)) {
-            return array("error" => "Modpack does not exist");
+            return ["error" => "Modpack does not exist"];
         }
 
         $buildpass = $build;
@@ -305,7 +305,7 @@ class ApiController extends Controller
         }
 
         if (empty($build)) {
-            return array("error" => "Build does not exist");
+            return ["error" => "Build does not exist"];
         }
 
         $response['id'] = $build->id;
@@ -313,21 +313,21 @@ class ApiController extends Controller
         $response['java'] = $build->min_java;
         $response['memory'] = $build->min_memory;
         $response['forge'] = $build->forge;
-        $response['mods'] = array();
+        $response['mods'] = [];
 
         if (!Request::has('include')) {
             if (Cache::has('modpack.' . $slug . '.build.' . $buildpass . 'modversion') && empty($this->client) && empty($this->key)) {
                 $response['mods'] = Cache::get('modpack.' . $slug . '.build.' . $buildpass . 'modversion');
             } else {
                 foreach ($build->modversions as $modversion) {
-                    $response['mods'][] = array(
+                    $response['mods'][] = [
                         "id" => $modversion->id,
                         "name" => $modversion->mod->name,
                         "version" => $modversion->version,
                         "md5" => $modversion->md5,
                         "filesize" => $modversion->filesize,
                         "url" => Config::get('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
-                    );
+                    ];
                 }
                 usort($response['mods'], function ($a, $b) {
                     return strcasecmp($a['name'], $b['name']);
@@ -340,7 +340,7 @@ class ApiController extends Controller
                     $response['mods'] = Cache::get('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.mods');
                 } else {
                     foreach ($build->modversions as $modversion) {
-                        $response['mods'][] = array(
+                        $response['mods'][] = [
                             "id" => $modversion->id,
                             "name" => $modversion->mod->name,
                             "version" => $modversion->version,
@@ -351,7 +351,7 @@ class ApiController extends Controller
                             "description" => $modversion->mod->description,
                             "link" => $modversion->mod->link,
                             "url" => Config::get('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
-                        );
+                        ];
                     }
                     usort($response['mods'], function ($a, $b) {
                         return strcasecmp($a['name'], $b['name']);
@@ -364,13 +364,13 @@ class ApiController extends Controller
                     $response['mods'] = Cache::get('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.' . $request);
                 } else {
                     foreach ($build->modversions as $modversion) {
-                        $data = array(
+                        $data = [
                             "id" => $modversion->id,
                             "name" => $modversion->mod->name,
                             "version" => $modversion->version,
                             "md5" => $modversion->md5,
                             "filesize" => $modversion->filesize,
-                        );
+                        ];
                         $mod = (array) $modversion->mod;
                         $mod = $mod['attributes'];
                         foreach ($request as $type) {

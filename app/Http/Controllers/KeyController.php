@@ -33,10 +33,10 @@ class KeyController extends Controller
 
     public function postCreate()
     {
-        $rules = array(
+        $rules = [
             'name' => 'required|unique:keys',
             'api_key' => 'required|unique:keys'
-        );
+        ];
 
         $validation = Validator::make(Request::all(), $rules);
         if ($validation->fails()) {
@@ -57,7 +57,7 @@ class KeyController extends Controller
         $key = Key::find($key_id);
 
         if (empty($key)) {
-            return Redirect::to('key/list')->withErrors(new MessageBag(array('Platform Key not found')));
+            return Redirect::to('key/list')->withErrors(new MessageBag(['Platform Key not found']));
         }
 
         return view('key.delete')->with('key', $key);
@@ -68,7 +68,7 @@ class KeyController extends Controller
         $key = Key::find($key_id);
 
         if (empty($key)) {
-            return Redirect::to('key/list')->withErrors(new MessageBag(array('Platform Key not found')));
+            return Redirect::to('key/list')->withErrors(new MessageBag(['Platform Key not found']));
         }
 
         $key->delete();
