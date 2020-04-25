@@ -2,8 +2,8 @@
 
 namespace App\Libraries;
 
-use Illuminate\Support\Facades\Config;
 use Exception;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class UrlUtils
@@ -69,10 +69,10 @@ class UrlUtils
                     'info' => $info
                 );
             } else {
-                Log::error('Curl error for '.$url.': URL returned status code - '.$info['http_code']);
+                Log::error('Curl error for ' . $url . ': URL returned status code - ' . $info['http_code']);
                 return array(
                     'success' => false,
-                    'message' => 'URL returned status code - '.$info['http_code'],
+                    'message' => 'URL returned status code - ' . $info['http_code'],
                     'info' => $info
                 );
             }
@@ -80,7 +80,7 @@ class UrlUtils
 
         $errors = curl_error($ch);
         //log the string return of the errors
-        Log::error('Curl error for '.$url.': '.$errors);
+        Log::error('Curl error for ' . $url . ': ' . $errors);
         curl_close($ch);
         return array(
             'success' => false,
@@ -109,7 +109,7 @@ class UrlUtils
                         'filesize' => $content['info']['download_content_length']
                     );
                 } catch (Exception $e) {
-                    Log::error('Error hashing remote md5: '.$e->getMessage());
+                    Log::error('Error hashing remote md5: ' . $e->getMessage());
                     return array(
                         'success' => false,
                         'message' => $e->getMessage(),
@@ -151,7 +151,7 @@ class UrlUtils
             } else {
                 return array(
                     'success' => false,
-                    'message' => 'URL returned status code - '.$info['http_code'],
+                    'message' => 'URL returned status code - ' . $info['http_code'],
                     'info' => $info
                 );
             }
@@ -159,7 +159,7 @@ class UrlUtils
 
         //log the string return of the errors
         $errors = curl_error($ch);
-        Log::error('Curl error for '.$url.': '.$errors);
+        Log::error('Curl error for ' . $url . ': ' . $errors);
         curl_close($ch);
         return array('success' => false, 'message' => $errors, 'info' => $info);
     }
@@ -189,7 +189,7 @@ class UrlUtils
 
         //log the string return of the errors
         $errors = curl_error($ch);
-        Log::error('Curl error for '.$url.': '.$errors);
+        Log::error('Curl error for ' . $url . ': ' . $errors);
         curl_close($ch);
         return array('success' => false, 'message' => $errors, 'info' => $info);
     }

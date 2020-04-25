@@ -1,80 +1,84 @@
 <?php namespace App\Http\Controllers;
 
 use App\Client;
-
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
-class ClientController extends Controller {
 
-	public function __construct()
-	{
-		$this->middleware('solder_clients');
-	}
+class ClientController extends Controller
+{
 
-	public function getIndex()
-	{
-		return Redirect::to('client/list');
-	}
+    public function __construct()
+    {
+        $this->middleware('solder_clients');
+    }
 
-	public function getList()
-	{
-		$clients = Client::all();
-		return view('client.list')->with('clients', $clients);
-	}
+    public function getIndex()
+    {
+        return Redirect::to('client/list');
+    }
 
-	public function getCreate()
-	{
-		return view('client.create');
-	}
+    public function getList()
+    {
+        $clients = Client::all();
+        return view('client.list')->with('clients', $clients);
+    }
 
-	public function postCreate()
-	{
-		$rules = array(
-			'name' => 'required|unique:clients',
-			'uuid' => 'required|unique:clients'
-			);
+    public function getCreate()
+    {
+        return view('client.create');
+    }
 
-		$validation = Validator::make(Request::all(), $rules);
-		if ($validation->fails())
-			return Redirect::to('client/create')->withErrors($validation->messages());
+    public function postCreate()
+    {
+        $rules = array(
+            'name' => 'required|unique:clients',
+            'uuid' => 'required|unique:clients'
+        );
 
-		$client = new Client();
-		$client->name = Request::input('name');
-		$client->uuid = Request::input('uuid');
-		$client->save();
+        $validation = Validator::make(Request::all(), $rules);
+        if ($validation->fails()) {
+            return Redirect::to('client/create')->withErrors($validation->messages());
+        }
 
-		/* Immediately clear the cache */
-		Cache::forget('clients');
+        $client = new Client();
+        $client->name = Request::input('name');
+        $client->uuid = Request::input('uuid');
+        $client->save();
 
-		return Redirect::to('client/list')->with('success','Client added!');
-	}
+        /* Immediately clear the cache */
+        Cache::forget('clients');
 
-	public function getDelete($client_id)
-	{
-		$client = Client::find($client_id);
+        return Redirect::to('client/list')->with('success', 'Client added!');
+    }
 
-		if (empty($client))
-			return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
+    public function getDelete($client_id)
+    {
+        $client = Client::find($client_id);
 
-		return view('client.delete')->with('client', $client);
-	}
+        if (empty($client)) {
+            return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
+        }
 
-	public function postDelete($client_id)
-	{
-		$client = Client::find($client_id);
+        return view('client.delete')->with('client', $client);
+    }
 
-		if (empty($client))
-			return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
+    public function postDelete($client_id)
+    {
+        $client = Client::find($client_id);
 
-		$client->modpacks()->sync(array());
-		$client->delete();
+        if (empty($client)) {
+            return Redirect::to('client/list')->withErrors(new MessageBag(array('Client UUID not found')));
+        }
 
-		Cache::forget('clients');
+        $client->modpacks()->sync(array());
+        $client->delete();
 
-		return Redirect::to('client/list')->with('success', 'Client deleted!');
-	}
+        Cache::forget('clients');
+
+        return Redirect::to('client/list')->with('success', 'Client deleted!');
+    }
 
 }

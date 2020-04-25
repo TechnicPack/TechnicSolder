@@ -3,7 +3,6 @@
 namespace App\Libraries;
 
 use Illuminate\Support\Facades\Cache;
-use App\Libraries\UrlUtils;
 
 class MinecraftUtils
 {

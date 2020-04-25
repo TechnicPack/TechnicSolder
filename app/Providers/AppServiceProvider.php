@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\Libraries\UpdateUtils;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,10 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if(!defined('SOLDER_STREAM')) {
+        if (!defined('SOLDER_STREAM')) {
             define('SOLDER_STREAM', 'DEV');
         }
-        if(!defined('SOLDER_VERSION')) {
+        if (!defined('SOLDER_VERSION')) {
             define('SOLDER_VERSION', 'v0.7.6');
         }
 
