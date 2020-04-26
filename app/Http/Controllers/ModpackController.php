@@ -366,7 +366,7 @@ class ModpackController extends Controller
                 } else {
                     $status = 'success';
                 }
-                return Response::json([
+                return response()->json([
                     'status' => $status,
                     'reason' => 'Rows Affected: ' . $affected
                 ]);
@@ -380,7 +380,7 @@ class ModpackController extends Controller
                 if ($affected == 0) {
                     $status = 'failed';
                 }
-                return Response::json([
+                return response()->json([
                     'status' => $status,
                     'reason' => 'Rows Affected: ' . $affected
                 ]);
@@ -396,13 +396,13 @@ class ModpackController extends Controller
                         ->where('modversion_id', '=', $ver->id)
                         ->count() > 0;
                 if ($duplicate) {
-                    return Response::json([
+                    return response()->json([
                         'status' => 'failed',
                         'reason' => 'Duplicate Modversion found'
                     ]);
                 } else {
                     $build->modversions()->attach($ver->id);
-                    return Response::json([
+                    return response()->json([
                         'status' => 'success',
                         'pretty_name' => $mod->pretty_name,
                         'version' => $ver->version
@@ -417,7 +417,7 @@ class ModpackController extends Controller
 
                 Cache::forget('modpack.' . $modpack->slug);
 
-                return Response::json([
+                return response()->json([
                     "success" => "Updated " . $modpack->name . "'s recommended  build to " . $new_version,
                     "version" => $new_version
                 ]);
@@ -430,7 +430,7 @@ class ModpackController extends Controller
 
                 Cache::forget('modpack.' . $modpack->slug);
 
-                return Response::json([
+                return response()->json([
                     "success" => "Updated " . $modpack->name . "'s latest  build to " . $new_version,
                     "version" => $new_version
                 ]);
@@ -442,7 +442,7 @@ class ModpackController extends Controller
                 $build->is_published = ($published ? true : false);
                 $build->save();
 
-                return Response::json([
+                return response()->json([
                     "success" => "Updated build " . $build->version . "'s published status.",
                 ]);
             case "private":
@@ -452,7 +452,7 @@ class ModpackController extends Controller
                 $build->private = ($private ? true : false);
                 $build->save();
 
-                return Response::json([
+                return response()->json([
                     "success" => "Updated build " . $build->version . "'s private status.",
                 ]);
         }

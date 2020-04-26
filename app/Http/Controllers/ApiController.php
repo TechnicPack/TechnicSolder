@@ -57,7 +57,7 @@ class ApiController extends Controller
 
     public function getIndex()
     {
-        return Response::json([
+        return response()->json([
             'api' => 'TechnicSolder',
             'version' => SOLDER_VERSION,
             'stream' => SOLDER_STREAM
@@ -80,17 +80,17 @@ class ApiController extends Controller
                         $response = [];
                         $response['modpacks'] = $m_array;
                         $response['mirror_url'] = $modpacks['mirror_url'];
-                        return Response::json($response);
+                        return response()->json($response);
                         break;
                 }
             } else {
-                return Response::json($this->fetchModpacks());
+                return response()->json($this->fetchModpacks());
             }
         } else {
             if (empty($build)) {
-                return Response::json($this->fetchModpack($modpack));
+                return response()->json($this->fetchModpack($modpack));
             } else {
-                return Response::json($this->fetchBuild($modpack, $build));
+                return response()->json($this->fetchBuild($modpack, $build));
             }
         }
     }
@@ -109,7 +109,7 @@ class ApiController extends Controller
                 //usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
                 Cache::put('modlist', $response['mods'], now()->addMinutes(5));
             }
-            return Response::json($response);
+            return response()->json($response);
         } else {
             if (Cache::has('mod.' . $mod)) {
                 $mod = Cache::get('mod.' . $mod);
@@ -120,29 +120,29 @@ class ApiController extends Controller
             }
 
             if (empty($mod)) {
-                return Response::json(['error' => 'Mod does not exist']);
+                return response()->json(['error' => 'Mod does not exist']);
             }
 
             if (empty($version)) {
-                return Response::json($this->fetchMod($mod));
+                return response()->json($this->fetchMod($mod));
             }
 
-            return Response::json($this->fetchModversion($mod, $version));
+            return response()->json($this->fetchModversion($mod, $version));
         }
     }
 
     public function getVerify($key = null)
     {
         if (empty($key)) {
-            return Response::json(["error" => "No API key provided."]);
+            return response()->json(["error" => "No API key provided."]);
         }
 
         $key = Key::where('api_key', '=', $key)->first();
 
         if (empty($key)) {
-            return Response::json(["error" => "Invalid key provided."]);
+            return response()->json(["error" => "Invalid key provided."]);
         } else {
-            return Response::json(["valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at]);
+            return response()->json(["valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at]);
         }
     }
 
