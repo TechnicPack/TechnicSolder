@@ -17,7 +17,7 @@ class ClientController extends Controller
 
     public function getIndex()
     {
-        return Redirect::to('client/list');
+        return redirect('client/list');
     }
 
     public function getList()
@@ -40,7 +40,7 @@ class ClientController extends Controller
 
         $validation = Validator::make(Request::all(), $rules);
         if ($validation->fails()) {
-            return Redirect::to('client/create')->withErrors($validation->messages());
+            return redirect('client/create')->withErrors($validation->messages());
         }
 
         $client = new Client();
@@ -51,7 +51,7 @@ class ClientController extends Controller
         /* Immediately clear the cache */
         Cache::forget('clients');
 
-        return Redirect::to('client/list')->with('success', 'Client added!');
+        return redirect('client/list')->with('success', 'Client added!');
     }
 
     public function getDelete($client_id)
@@ -59,7 +59,7 @@ class ClientController extends Controller
         $client = Client::find($client_id);
 
         if (empty($client)) {
-            return Redirect::to('client/list')->withErrors(new MessageBag(['Client UUID not found']));
+            return redirect('client/list')->withErrors(new MessageBag(['Client UUID not found']));
         }
 
         return view('client.delete')->with('client', $client);
@@ -70,7 +70,7 @@ class ClientController extends Controller
         $client = Client::find($client_id);
 
         if (empty($client)) {
-            return Redirect::to('client/list')->withErrors(new MessageBag(['Client UUID not found']));
+            return redirect('client/list')->withErrors(new MessageBag(['Client UUID not found']));
         }
 
         $client->modpacks()->sync([]);
@@ -78,7 +78,7 @@ class ClientController extends Controller
 
         Cache::forget('clients');
 
-        return Redirect::to('client/list')->with('success', 'Client deleted!');
+        return redirect('client/list')->with('success', 'Client deleted!');
     }
 
 }

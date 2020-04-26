@@ -18,7 +18,7 @@ class SolderController extends Controller
             Config::set('solder.mirror_url', Request::input('mirror_url'));
             Config::set('solder.repo_location', Request::input('repo_location'));
             Config::set('solder.platform_key', Request::input('platform_key'));
-            return Redirect::to('solder/configure')
+            return redirect('solder/configure')
                 ->with('success', 'Your solder configuration has been updated.');
         }
         return view('solder.configure');

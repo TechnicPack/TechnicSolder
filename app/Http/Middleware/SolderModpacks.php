@@ -32,12 +32,12 @@ class SolderModpacks
         }
         $user = Auth::user();
         if (!$user) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
         $perms = $user->permission;
         if (!$perms->solder_full && !$perms->{$check}) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 

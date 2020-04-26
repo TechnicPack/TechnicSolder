@@ -24,7 +24,7 @@ class ModController extends Controller
 
     public function getIndex()
     {
-        return Redirect::to('mod/list');
+        return redirect('mod/list');
     }
 
     public function getList()
@@ -44,7 +44,7 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(['Mod not found']));
+            return redirect('mod/list')->withErrors(new MessageBag(['Mod not found']));
         }
 
         return view('mod.view')->with(['mod' => $mod]);
@@ -71,7 +71,7 @@ class ModController extends Controller
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return Redirect::to('mod/create')->withErrors($validation->messages());
+            return redirect('mod/create')->withErrors($validation->messages());
         }
 
         $mod = new Mod();
@@ -81,14 +81,14 @@ class ModController extends Controller
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
         $mod->save();
-        return Redirect::to('mod/view/' . $mod->id);
+        return redirect('mod/view/' . $mod->id);
     }
 
     public function getDelete($mod_id = null)
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(['Mod not found']));
+            return redirect('mod/list')->withErrors(new MessageBag(['Mod not found']));
         }
 
         return view('mod.delete')->with(['mod' => $mod]);
@@ -98,7 +98,7 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(['Error modifying mod - Mod not found']));
+            return redirect('mod/list')->withErrors(new MessageBag(['Error modifying mod - Mod not found']));
         }
 
         $rules = [
@@ -116,7 +116,7 @@ class ModController extends Controller
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return Redirect::to('mod/view/' . $mod->id)->withErrors($validation->messages());
+            return redirect('mod/view/' . $mod->id)->withErrors($validation->messages());
         }
 
         $mod->pretty_name = Request::input('pretty_name');
@@ -127,14 +127,14 @@ class ModController extends Controller
         $mod->save();
         Cache::forget('mod.' . $mod->name);
 
-        return Redirect::to('mod/view/' . $mod->id)->with('success', 'Mod successfully edited.');
+        return redirect('mod/view/' . $mod->id)->with('success', 'Mod successfully edited.');
     }
 
     public function postDelete($mod_id = null)
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Redirect::to('mod/list')->withErrors(new MessageBag(['Error deleting mod - Mod not found']));
+            return redirect('mod/list')->withErrors(new MessageBag(['Error deleting mod - Mod not found']));
         }
 
         foreach ($mod->versions as $ver) {
@@ -144,7 +144,7 @@ class ModController extends Controller
         $mod->delete();
         Cache::forget('mod.' . $mod->name);
 
-        return Redirect::to('mod/list')->with('success', 'Mod deleted!');
+        return redirect('mod/list')->with('success', 'Mod deleted!');
     }
 
     public function anyRehash()

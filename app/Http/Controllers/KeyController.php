@@ -17,7 +17,7 @@ class KeyController extends Controller
 
     public function getIndex()
     {
-        return Redirect::to('key/list');
+        return redirect('key/list');
     }
 
     public function getList()
@@ -40,7 +40,7 @@ class KeyController extends Controller
 
         $validation = Validator::make(Request::all(), $rules);
         if ($validation->fails()) {
-            return Redirect::to('key/create')->withErrors($validation->messages());
+            return redirect('key/create')->withErrors($validation->messages());
         }
 
         $key = new Key();
@@ -49,7 +49,7 @@ class KeyController extends Controller
         $key->save();
         Cache::forget('keys');
 
-        return Redirect::to('key/list')->with('success', 'API key added!');
+        return redirect('key/list')->with('success', 'API key added!');
     }
 
     public function getDelete($key_id)
@@ -57,7 +57,7 @@ class KeyController extends Controller
         $key = Key::find($key_id);
 
         if (empty($key)) {
-            return Redirect::to('key/list')->withErrors(new MessageBag(['Platform Key not found']));
+            return redirect('key/list')->withErrors(new MessageBag(['Platform Key not found']));
         }
 
         return view('key.delete')->with('key', $key);
@@ -68,12 +68,12 @@ class KeyController extends Controller
         $key = Key::find($key_id);
 
         if (empty($key)) {
-            return Redirect::to('key/list')->withErrors(new MessageBag(['Platform Key not found']));
+            return redirect('key/list')->withErrors(new MessageBag(['Platform Key not found']));
         }
 
         $key->delete();
         Cache::forget('keys');
 
-        return Redirect::to('key/list')->with('success', 'API Key deleted!');
+        return redirect('key/list')->with('success', 'API Key deleted!');
     }
 }

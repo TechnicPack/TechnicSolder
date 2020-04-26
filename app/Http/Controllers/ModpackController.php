@@ -32,7 +32,7 @@ class ModpackController extends Controller
 
     public function getIndex()
     {
-        return Redirect::to('modpack/list');
+        return redirect('modpack/list');
     }
 
     public function getList()
@@ -45,7 +45,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         return view('modpack.view')->with('modpack', $modpack);
@@ -55,7 +55,7 @@ class ModpackController extends Controller
     {
         $build = Build::find($build_id);
         if (empty($build)) {
-            return Redirect::to('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         if (Request::input('action') == "delete") {
@@ -84,7 +84,7 @@ class ModpackController extends Controller
                 }
                 $modpack->save();
                 Cache::forget('modpack.' . $modpack->slug);
-                return Redirect::to('modpack/view/' . $build->modpack->id)->with('deleted', 'Build deleted.');
+                return redirect('modpack/view/' . $build->modpack->id)->with('deleted', 'Build deleted.');
             }
 
             return view('modpack.build.delete')->with('build', $build);
@@ -104,7 +104,7 @@ class ModpackController extends Controller
 
                     $validation = Validator::make(Request::all(), $rules, $messages);
                     if ($validation->fails()) {
-                        return Redirect::to('modpack/build/' . $build->id . '?action=edit')->withErrors($validation->messages());
+                        return redirect('modpack/build/' . $build->id . '?action=edit')->withErrors($validation->messages());
                     }
 
                     $build->version = Request::input('version');
@@ -116,7 +116,7 @@ class ModpackController extends Controller
                     $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
                     $build->save();
                     Cache::forget('modpack.' . $build->modpack->slug . '.build.' . $build->version);
-                    return Redirect::to('modpack/build/' . $build->id);
+                    return redirect('modpack/build/' . $build->id);
                 }
                 $minecraft = MinecraftUtils::getMinecraft();
                 return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
@@ -130,7 +130,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         $minecraft = MinecraftUtils::getMinecraft();
@@ -146,7 +146,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         $rules = [
@@ -162,7 +162,7 @@ class ModpackController extends Controller
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return Redirect::to('modpack/add-build/' . $modpack_id)->withErrors($validation->messages());
+            return redirect('modpack/add-build/' . $modpack_id)->withErrors($validation->messages());
         }
 
         $clone = Request::input('clone');
@@ -188,7 +188,7 @@ class ModpackController extends Controller
             $build->modversions()->sync($version_ids);
         }
 
-        return Redirect::to('modpack/build/' . $build->id);
+        return redirect('modpack/build/' . $build->id);
     }
 
     public function getCreate()
@@ -212,7 +212,7 @@ class ModpackController extends Controller
         $validation = Validator::make(Request::all(), $rules, $messages);
 
         if ($validation->fails()) {
-            return Redirect::to('modpack/create')->withErrors($validation->messages());
+            return redirect('modpack/create')->withErrors($validation->messages());
         }
 
         $modpack = new Modpack();
@@ -241,7 +241,7 @@ class ModpackController extends Controller
         }
         $perm->save();
 
-        return Redirect::to('modpack/view/' . $modpack->id);
+        return redirect('modpack/view/' . $modpack->id);
     }
 
     /**
@@ -253,7 +253,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('dashboard')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('dashboard')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         $clients = [];
@@ -268,7 +268,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         $rules = [
@@ -283,7 +283,7 @@ class ModpackController extends Controller
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return Redirect::to('modpack/edit/' . $modpack_id)->withErrors($validation->messages());
+            return redirect('modpack/edit/' . $modpack_id)->withErrors($validation->messages());
         }
 
         $modpack->name = Request::input('name');
@@ -303,14 +303,14 @@ class ModpackController extends Controller
             $modpack->clients()->sync([]);
         }
 
-        return Redirect::to('modpack/view/' . $modpack->id)->with('success', 'Modpack edited');
+        return redirect('modpack/view/' . $modpack->id)->with('success', 'Modpack edited');
     }
 
     public function getDelete($modpack_id)
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         return view('modpack.delete')->with(['modpack' => $modpack]);
@@ -320,7 +320,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return Redirect::to('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
         }
 
         foreach ($modpack->builds as $build) {
@@ -332,7 +332,7 @@ class ModpackController extends Controller
         $modpack->delete();
         Cache::forget('modpacks');
 
-        return Redirect::to('modpack/list/')->with('success', 'Modpack Deleted');
+        return redirect('modpack/list/')->with('success', 'Modpack Deleted');
     }
 
 

@@ -34,17 +34,17 @@ class SolderMods
                 $check = 'mods_manage';
                 break;
             default:
-                return Redirect::to('mod/list');
+                return redirect('mod/list');
                 break;
         }
         $user = Auth::user();
         if (!$user) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
         $perms = $user->permission;
         if (!$perms->solder_full && !$perms->{$check}) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
