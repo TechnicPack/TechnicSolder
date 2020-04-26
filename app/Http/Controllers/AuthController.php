@@ -17,7 +17,7 @@ class AuthController extends Controller
     {
         $email = Request::input('email');
         $password = Request::input('password');
-        $remember = Request::input('remember') ? true : false;
+        $remember = Request::boolean('remember');
 
         $credentials = [
             'email' => $email,
@@ -25,7 +25,6 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($credentials, $remember)) {
-
             Auth::user()->last_ip = Request::ip();
             Auth::user()->save();
 
