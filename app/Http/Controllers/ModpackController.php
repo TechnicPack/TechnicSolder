@@ -219,11 +219,11 @@ class ModpackController extends Controller
         $modpack->name = Request::input('name');
         $modpack->slug = Str::slug(Request::input('slug'));
         $modpack->hidden = Request::input('hidden') ? false : true;
-        $modpack->icon_md5 = md5_file(public_path() . '/resources/default/icon.png');
+        $modpack->icon_md5 = null;
         $modpack->icon_url = URL::asset('/resources/default/icon.png');
-        $modpack->logo_md5 = md5_file(public_path() . '/resources/default/logo.png');
+        $modpack->logo_md5 = null;
         $modpack->logo_url = URL::asset('/resources/default/logo.png');
-        $modpack->background_md5 = md5_file(public_path() . '/resources/default/background.jpg');
+        $modpack->background_md5 = null;
         $modpack->background_url = URL::asset('/resources/default/background.jpg');
         $modpack->save();
 
@@ -240,18 +240,6 @@ class ModpackController extends Controller
             $perm->modpacks = [$modpack->id];
         }
         $perm->save();
-
-        try {
-            $resourcePath = public_path() . '/resources/' . $modpack->slug;
-
-            /* Create new resources directory for modpack */
-            if (!file_exists($resourcePath)) {
-                mkdir($resourcePath, 0775, true);
-            }
-        } catch (Exception $e) {
-            Log::error($e);
-            return Redirect::to('modpack/create')->withErrors($e->getMessage());
-        }
 
         return Redirect::to('modpack/view/' . $modpack->id);
     }
@@ -273,9 +261,7 @@ class ModpackController extends Controller
             array_push($clients, $client->id);
         }
 
-        $resourcesWritable = is_writable(public_path() . '/resources/' . $modpack->slug);
-
-        return view('modpack.edit')->with(['modpack' => $modpack, 'clients' => $clients, 'resourcesWritable' => $resourcesWritable]);
+        return view('modpack.edit')->with(['modpack' => $modpack, 'clients' => $clients]);
     }
 
     public function postEdit($modpack_id)
@@ -301,135 +287,9 @@ class ModpackController extends Controller
         }
 
         $modpack->name = Request::input('name');
-        $oldSlug = $modpack->slug;
         $modpack->slug = Request::input('slug');
-        $modpack->hidden = Request::input('hidden') ? true : false;
-        $modpack->private = Request::input('private') ? true : false;
-        $modpack->save();
-
-        $newSlug = (bool) ($oldSlug != $modpack->slug);
-
-        $resourcePath = public_path() . '/resources/' . $modpack->slug;
-        $oldPath = public_path() . '/resources/' . $oldSlug;
-
-        /* Create new resources directory for modpack */
-        if (!file_exists($resourcePath)) {
-            mkdir($resourcePath, 0775, true);
-        }
-
-        /* Image dohickery */
-        if ($icon = Request::file('icon')) {
-            if ($icon->isValid()) {
-                $iconimg = Image::make(Request::file('icon')->getRealPath())->resize(50, 50)->encode('png', 100);
-
-                if ($success = $iconimg->save($resourcePath . '/icon.png', 100)) {
-                    $modpack->icon = true;
-
-                    $modpack->icon_url = URL::asset('/resources/' . $modpack->slug . '/icon.png');
-                    $modpack->icon_md5 = md5_file($resourcePath . "/icon.png");
-
-                    if ($newSlug) {
-                        if (file_exists($oldPath . "/icon.png")) {
-                            unlink($oldPath . "/icon.png");
-                        }
-                    }
-                } else {
-                    if (!$success && !$modpack->icon) {
-                        $modpack->icon_md5 = md5_file(public_path() . '/resources/default/icon.png');
-                        $modpack->icon_url = URL::asset('/resources/default/icon.png');
-                        return Redirect::to('modpack/edit/' . $modpack_id)->withErrors(new MessageBag(['Failed to save new image to ' . $resourcePath . '/icon.png']));
-                    } else {
-                        Log::error('Failed to save new image to ' . $resourcePath . '/icon.png');
-                        return Redirect::to('modpack/edit/' . $modpack_id)->withErrors(new MessageBag(['Failed to save new image to ' . $resourcePath . '/icon.png']));
-                    }
-                }
-            }
-        } else {
-            if ($newSlug) {
-                if (file_exists($oldPath . "/icon.png")) {
-                    copy($oldPath . "/icon.png", $resourcePath . "/icon.png");
-                    unlink($oldPath . "/icon.png");
-                }
-            }
-        }
-
-        if ($logo = Request::file('logo')) {
-            if ($logo->isValid()) {
-                $logoimg = Image::make(Request::file('logo')->getRealPath())->resize(370, 220)->encode('png', 100);
-
-                if ($success = $logoimg->save($resourcePath . '/logo.png', 100)) {
-                    $modpack->logo = true;
-
-                    $modpack->logo_url = URL::asset('/resources/' . $modpack->slug . '/logo.png');
-                    $modpack->logo_md5 = md5_file($resourcePath . "/logo.png");
-
-                    if ($newSlug) {
-                        if (file_exists($oldPath . "/logo.png")) {
-                            unlink($oldPath . "/logo.png");
-                        }
-                    }
-                } else {
-                    if (!$success && !$modpack->logo) {
-                        $modpack->logo_md5 = md5_file(public_path() . '/resources/default/logo.png');
-                        $modpack->logo_url = URL::asset('/resources/default/logo.png');
-                        return Redirect::to('modpack/edit/' . $modpack_id)->withErrors(new MessageBag(['Failed to save new image to ' . $resourcePath . '/logo.png']));
-                    } else {
-                        Log::error('Failed to save new image to ' . $resourcePath . '/logo.png');
-                        return Redirect::to('modpack/edit/' . $modpack_id)->withErrors(new MessageBag(['Failed to save new image to ' . $resourcePath . '/logo.png']));
-                    }
-                }
-            }
-        } else {
-            if ($newSlug) {
-                if (file_exists($oldPath . "/logo.png")) {
-                    copy($oldPath . "/logo.png", $resourcePath . "/logo.png");
-                    unlink($oldPath . "/logo.png");
-                }
-            }
-        }
-
-        if ($background = Request::file('background')) {
-            if ($background->isValid()) {
-                $backgroundimg = Image::make(Request::file('background')->getRealPath())->resize(900, 600)->encode('jpg', 100);
-
-                if ($success = $backgroundimg->save($resourcePath . '/background.jpg', 100)) {
-                    $modpack->background = true;
-
-                    $modpack->background_url = URL::asset('/resources/' . $modpack->slug . '/background.jpg');
-                    $modpack->background_md5 = md5_file($resourcePath . "/background.jpg");
-
-                    if ($newSlug) {
-                        if (file_exists($oldPath . "/background.jpg")) {
-                            unlink($oldPath . "/background.jpg");
-                        }
-                    }
-                } else {
-                    if (!$success && !$modpack->background) {
-                        $modpack->background_md5 = md5_file(public_path() . '/resources/default/background.jpg');
-                        $modpack->background_url = URL::asset('/resources/default/background.jpg');
-                        return Redirect::to('modpack/edit/' . $modpack_id)->withErrors(new MessageBag(['Failed to save new image to ' . $resourcePath . '/background.jpg']));
-                    } else {
-                        Log::error('Failed to save new image to ' . $resourcePath . '/background.jpg');
-                        return Redirect::to('modpack/edit/' . $modpack_id)->withErrors(new MessageBag(['Failed to save new image to ' . $resourcePath . '/background.jpg']));
-                    }
-                }
-            }
-        } else {
-            if ($newSlug) {
-                if (file_exists($oldPath . "/background.jpg")) {
-                    copy($oldPath . "/background.jpg", $resourcePath . "/background.jpg");
-                    unlink($oldPath . "/background.jpg");
-                }
-            }
-        }
-
-        /* If slug changed delete old slug directory */
-        if ($newSlug) {
-            if (file_exists($oldPath)) {
-                rmdir($oldPath);
-            }
-        }
-
+        $modpack->hidden = Request::boolean('hidden');
+        $modpack->private = Request::boolean('private');
         $modpack->save();
 
         Cache::forget('modpack.' . $modpack->slug);
