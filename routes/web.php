@@ -15,11 +15,6 @@ Route::get('/', function() {
     return Redirect::to('dashboard');
 });
 
-Route::get('api', 'ApiController@getIndex');
-Route::get('api/modpack/{modpack?}/{build?}', 'ApiController@getModpack');
-Route::get('api/mod/{mod?}/{version?}', 'ApiController@getMod');
-Route::get('api/verify/{key}', 'ApiController@getVerify');
-
 Route::group(['middleware' => 'auth'], function() {
     Route::get('client/list', 'ClientController@getList')->name('client.list');
     Route::get('client/create', 'ClientController@getCreate')->name('client.create');
