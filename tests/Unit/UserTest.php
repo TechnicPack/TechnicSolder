@@ -75,7 +75,7 @@ class UserTest extends TestCase {
 			'password' => 'B3sTp@ss'
         ];
 
-		$response = $response = $this->post('/user/create', $data);
+		$response = $this->post('/user/create', $data);
 		$response->assertRedirect('/user/edit/2');
 		$response->assertSessionHas('success');
 	}
@@ -98,7 +98,7 @@ class UserTest extends TestCase {
 			'username' => 'test'
         ];
 
-		$response = $response = $this->post('/user/edit/' . $user->id, $data);
+		$response = $this->post('/user/edit/' . $user->id, $data);
 		$response->assertRedirect('/user/edit/' . $user->id);
 		$response->assertSessionHasErrors('email');
 	}
@@ -112,7 +112,7 @@ class UserTest extends TestCase {
 			'username' => 'admin'
         ];
 
-		$response = $response = $this->post('/user/edit/' . $user->id, $data);
+		$response = $this->post('/user/edit/' . $user->id, $data);
 		$response->assertRedirect('/user/edit/' . $user->id);
 		$response->assertSessionHasErrors('username');
 	}
@@ -126,7 +126,7 @@ class UserTest extends TestCase {
 			'username' => 'test'
         ];
 
-		$response = $response = $this->post('/user/edit/' . $user->id, $data);
+		$response = $this->post('/user/edit/' . $user->id, $data);
 		$response->assertRedirect('/user/list');
 		$response->assertSessionHas('success');
 	}
@@ -176,7 +176,7 @@ class UserTest extends TestCase {
 			'solder-full' => '1'
         ];
 
-		$response = $response = $this->post('/user/create', $data);
+		$response = $this->post('/user/create', $data);
 		$response->assertRedirect('/user/edit/3');
 		$response->assertSessionHas('success');
 	}

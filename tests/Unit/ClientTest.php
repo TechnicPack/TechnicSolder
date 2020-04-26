@@ -42,7 +42,7 @@ class ClientTest extends TestCase {
 			'uuid' => '2ezf6f26-eb15-4ccb-9f0b-8z5ed2c72946'
         ];
 
-		$response = $response = $this->post('/client/create', $data);
+		$response = $this->post('/client/create', $data);
 		$response->assertRedirect('/client/create');
 		$response->assertSessionHasErrors('uuid');
 	}
@@ -54,7 +54,7 @@ class ClientTest extends TestCase {
 			'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
         ];
 
-		$response = $response = $this->post('/client/create', $data);
+		$response = $this->post('/client/create', $data);
 		$response->assertRedirect('/client/create');
 		$response->assertSessionHasErrors('name');
 	}
@@ -66,7 +66,7 @@ class ClientTest extends TestCase {
 			'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
         ];
 
-		$response = $response = $this->post('/client/create', $data);
+		$response = $this->post('/client/create', $data);
 		$response->assertRedirect('/client/list');
 		$response->assertSessionHas('success');
 	}
@@ -94,7 +94,7 @@ class ClientTest extends TestCase {
 
 	public function testClientDeletePost()
 	{
-		$client = Client::where('name', '=', 'TestClient2')->firstOrFail();
+		$client = Client::where('name', 'TestClient')->firstOrFail();
 
 		$response = $this->post('/client/delete/'.$client->id);
 		$response->assertRedirect('/client/list');

@@ -1,4 +1,4 @@
-dist: trusty
+dist: bionic
 branches:
   except:
     - /^legacy\/.*$/
@@ -8,14 +8,17 @@ cache:
   directories:
     - $HOME/.composer/cache
 php:
-  - 5.6
-  - 7.0
+  - 7.2
+  - 7.3
+  - 7.4
 env:
   global:
-    - APP_ENV='testing'
+    - SOLDER_REPO_LOCATION="$TRAVIS_BUILD_DIR/public/resources/default/"
+    - SOLDER_MIRROR_URL="http://mirror.technicpack.net/Technic/"
+    - REPO_TYPE="local"
   matrix:
-    - DB="pgsql" REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local"
-    - DB="mysql" REPO="$TRAVIS_BUILD_DIR/public/resources/default/" REPO_TYPE="local"
+    - DB_CONNECTION="pgsql" DB_USERNAME="postgres"
+    - DB_CONNECTION="mysql" DB_USERNAME="travis"
 matrix:
   fast_finish: true
 sudo: false
@@ -25,12 +28,9 @@ before_install:
   - composer self-update
 install: COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
 before_script:
-  - php artisan env
+  - cp .env.testing .env
+  - php artisan key:generate
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database solder;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS solder;'; fi"
-  - cp -R app/config-sample app/config
-  - php artisan migrate:install
-  - php artisan migrate
-  - php artisan db:seed --class="TestSeeder"
-script: vendor/bin/phpunit --verbose
+script: vendor/bin/phpunit

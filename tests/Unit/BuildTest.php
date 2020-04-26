@@ -45,7 +45,7 @@ class BuildTest extends TestCase {
 			'memory-enabled' => 1
         ];
 
-		$response = $response = $this->post('/modpack/add-build/1', $data);
+		$response = $this->post('/modpack/add-build/1', $data);
 		$response->assertRedirect('/modpack/build/2');
 
 		$build = Build::find(2);
@@ -66,7 +66,7 @@ class BuildTest extends TestCase {
 			'memory-enabled' => 1
         ];
 
-		$response = $response = $this->post('/modpack/add-build/1', $data);
+		$response = $this->post('/modpack/add-build/1', $data);
 		$response->assertRedirect('/modpack/add-build/1');
 		$response->assertSessionHasErrors('version');
 	}
@@ -81,7 +81,7 @@ class BuildTest extends TestCase {
 			'memory-enabled' => 1
         ];
 
-		$response = $response = $this->post('/modpack/add-build/1', $data);
+		$response = $this->post('/modpack/add-build/1', $data);
 		$response->assertRedirect('/modpack/add-build/1');
 		$response->assertSessionHasErrors('minecraft');
 	}
@@ -96,10 +96,10 @@ class BuildTest extends TestCase {
 			'memory-enabled' => 1
         ];
 
-		$response = $response = $this->post('/modpack/add-build/1', $data);
-		$response->assertRedirect('/modpack/build/3');
+		$response = $this->post('/modpack/add-build/1', $data);
+		$response->assertRedirect('/modpack/build/2');
 
-		$build = Build::find(3);
+		$build = Build::find(2);
 
         $this->assertEquals($build->version, '1.1.0');
         $this->assertEquals($build->minecraft, '1.7.10');
@@ -117,10 +117,10 @@ class BuildTest extends TestCase {
 			'memory-enabled' => 0
         ];
 
-		$response = $response = $this->post('/modpack/add-build/1', $data);
-		$response->assertRedirect('/modpack/build/4');
+		$response = $this->post('/modpack/add-build/1', $data);
+		$response->assertRedirect('/modpack/build/2');
 
-		$build = Build::find(4);
+		$build = Build::find(2);
 
         $this->assertEquals($build->version, '1.1.0');
         $this->assertEquals($build->minecraft, '1.7.10');
@@ -130,7 +130,7 @@ class BuildTest extends TestCase {
 
 	public function testBuildEditGet()
 	{
-		$build = Build::find(2);
+		$build = Build::find(1);
 
 		$response = $this->get('/modpack/build/'.$build->id.'?action=edit');
 		$response->assertOk();
@@ -138,7 +138,7 @@ class BuildTest extends TestCase {
 
 	public function testBuildEditPost()
 	{
-		$build = Build::find(2);
+		$build = Build::find(1);
 
 		$data = [
 			'confirm-edit' => '1',
@@ -149,10 +149,10 @@ class BuildTest extends TestCase {
 			'memory-enabled' => '1'
         ];
 
-		$response = $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
-		$response->assertRedirect('/modpack/build/2');
+		$response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
+		$response->assertRedirect('/modpack/build/1');
 
-		$build = Build::find(2);
+		$build = Build::find(1);
 
         $this->assertEquals($build->min_memory, '1024');
         $this->assertEquals($build->min_java, '1.8');
@@ -161,21 +161,21 @@ class BuildTest extends TestCase {
 
 	public function testBuildDeleteGet()
 	{
-		$build = Build::find(2);
+		$build = Build::find(1);
 
-		$response = $response = $this->get('/modpack/build/'.$build->id.'?action=delete');
+		$response = $this->get('/modpack/build/'.$build->id.'?action=delete');
 		$response->assertOk();
 	}
 
 	public function testBuildDeletePost()
 	{
-		$build = Build::find(2);
+		$build = Build::find(1);
 
 		$data = [
 			'confirm-delete' => '1'
         ];
 
-		$response = $response = $this->post('/modpack/build/'.$build->id.'?action=delete', $data);
+		$response = $this->post('/modpack/build/'.$build->id.'?action=delete', $data);
 		$response->assertRedirect('modpack/view/'.$build->modpack->id);
 	}
 }

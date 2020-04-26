@@ -34,6 +34,12 @@ class ModTableTestSeeder extends Seeder
             'filesize' => '295'
         ]);
 
+        Mod::create([
+            'pretty_name' => 'Backtools',
+            'name' => 'backtools',
+            'link' => 'http://ichun.us',
+        ]);
+
     }
 
 }
