@@ -22,20 +22,20 @@ class Build
         $build = \App\Build::find($buildId);
 
         if (empty($build)) {
-            return Redirect::to('dashboard');
+            return redirect('dashboard');
         }
 
         $modpack = $build->modpack;
 
         $user = Auth::user();
         if (!$user) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
         $perms = $user->permission;
 
         if (!$perms->solder_full && !in_array($modpack->id, $perms->modpacks)) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 

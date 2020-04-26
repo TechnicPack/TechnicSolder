@@ -22,7 +22,7 @@ class SolderUsers
         $action = $request->segment(2);
 
         if (!Auth::check()) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
@@ -33,11 +33,11 @@ class SolderUsers
             /* This allows the user to edit their own profile */
             if ($action == 'edit') {
                 if ($wantedUser != $user->id) {
-                    return Redirect::to('dashboard')
+                    return redirect('dashboard')
                         ->with('permission', 'You do not have permission to access this area.');
                 }
             } else {
-                return Redirect::to('dashboard')
+                return redirect('dashboard')
                     ->with('permission', 'You do not have permission to access this area.');
             }
         }

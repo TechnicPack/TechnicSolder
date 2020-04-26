@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function getIndex()
     {
-        return Redirect::to('user/list');
+        return redirect('user/list');
     }
 
     public function getList()
@@ -32,14 +32,14 @@ class UserController extends Controller
     public function getEdit($user_id = null)
     {
         if (empty($user_id)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         $user = User::find($user_id);
 
         if (empty($user)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User not found']));
         }
 
@@ -49,19 +49,19 @@ class UserController extends Controller
     public function postEdit($user_id = null)
     {
         if (empty($user_id)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users && $user_id != Auth::user()->id) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
         $user = User::find($user_id);
 
         if (empty($user)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User not found']));
         }
 
@@ -77,7 +77,7 @@ class UserController extends Controller
         $validation = Validator::make(Request::all(), $rules);
 
         if ($validation->fails()) {
-            return Redirect::to('user/edit/' . $user_id)->withErrors($validation->messages());
+            return redirect('user/edit/' . $user_id)->withErrors($validation->messages());
         }
 
         $user->email = Request::input('email');
@@ -126,13 +126,13 @@ class UserController extends Controller
 
         $user->save();
 
-        return Redirect::to('user/list')->with('success', 'User edited successfully!');
+        return redirect('user/list')->with('success', 'User edited successfully!');
     }
 
     public function getCreate()
     {
         if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
@@ -149,7 +149,7 @@ class UserController extends Controller
 
         $validation = Validator::make(Request::all(), $rules);
         if ($validation->fails()) {
-            return Redirect::to('user/create')->withErrors($validation->messages());
+            return redirect('user/create')->withErrors($validation->messages());
         }
 
         $creator = Auth::user()->id;
@@ -192,24 +192,24 @@ class UserController extends Controller
 
         $perm->save();
 
-        return Redirect::to('user/edit/' . $user->id)->with('success', 'User created!');
+        return redirect('user/edit/' . $user->id)->with('success', 'User created!');
     }
 
     public function getDelete($user_id = null)
     {
         if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
         if (empty($user_id)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         $user = User::find($user_id);
         if (empty($user)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User not found']));
         }
 
@@ -220,7 +220,7 @@ class UserController extends Controller
                 ->count();
 
             if ($numOfOtherSuperUsers <= 0) {
-                return Redirect::to('user/list')
+                return redirect('user/list')
                     ->withErrors(new MessageBag(['Cannot delete the only remaining super user.']));
             }
         }
@@ -231,13 +231,13 @@ class UserController extends Controller
     public function postDelete($user_id = null)
     {
         if (empty($user_id)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User ID not provided']));
         }
 
         $user = User::find($user_id);
         if (empty($user)) {
-            return Redirect::to('user/list')
+            return redirect('user/list')
                 ->withErrors(new MessageBag(['User not found']));
         }
 
@@ -248,7 +248,7 @@ class UserController extends Controller
                 ->count();
 
             if ($numOfOtherSuperUsers <= 0) {
-                return Redirect::to('user/list')
+                return redirect('user/list')
                     ->withErrors(new MessageBag(['Cannot delete the only remaining super user.']));
             }
         }
@@ -256,6 +256,6 @@ class UserController extends Controller
         $user->permission()->delete();
         $user->delete();
 
-        return Redirect::to('user/list')->with('success', 'User deleted!');
+        return redirect('user/list')->with('success', 'User deleted!');
     }
 }

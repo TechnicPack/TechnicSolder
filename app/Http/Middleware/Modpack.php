@@ -21,17 +21,17 @@ class Modpack
         $modpack = $request->segment(3);
         $user = Auth::user();
         if (!$user) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
         $perms = $user->permission;
 
         if (empty($modpack)) {
-            return Redirect::to('dashboard');
+            return redirect('dashboard');
         }
 
         if (!$perms->solder_full && !in_array($modpack, $perms->modpacks)) {
-            return Redirect::to('dashboard')
+            return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 

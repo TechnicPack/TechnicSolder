@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function() {
-    return Redirect::to('dashboard');
+    return redirect('dashboard');
 });
 
 Route::group(['middleware' => 'auth'], function() {
