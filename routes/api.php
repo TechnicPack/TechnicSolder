@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/', 'ApiController@getIndex');
+Route::get('modpack/{modpack?}/{build?}', 'ApiController@getModpack');
+Route::get('mod/{mod?}/{version?}', 'ApiController@getMod');
+Route::get('verify/{key}', 'ApiController@getVerify');
