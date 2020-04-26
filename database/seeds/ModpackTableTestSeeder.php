@@ -16,13 +16,13 @@ class ModpackTableTestSeeder extends Seeder {
 		$testmodpack = Modpack::create(array('name' => 'TestModpack',
 							'slug' => 'testmodpack',
 							'icon' => false,
-							'icon_md5' => md5_file(public_path() . '/resources/default/icon.png'),
+							'icon_md5' => null,
 							'icon_url' => URL::asset('/resources/default/icon.png'),
 							'logo' => false,
-							'logo_md5' => md5_file(public_path() . '/resources/default/logo.png'),
+							'logo_md5' => null,
 							'logo_url' => URL::asset('/resources/default/logo.png'),
 							'background' => false,
-							'background_md5' => md5_file(public_path() . '/resources/default/background.jpg'),
+							'background_md5' => null,
 							'background_url' => URL::asset('/resources/default/background.jpg')
 							));
 
