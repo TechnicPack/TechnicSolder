@@ -1,26 +1,31 @@
 <?php
 
-class TestSeeder extends Seeder {
+use App\Build;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-	/**
-	 * Run the database seeds.
-	 *
-	 * @return void
-	 */
-	public function run()
-	{
-		//$this->call('UserTableSeeder');
-		$this->call('ModpackTableTestSeeder');
-		$this->call('ModTableTestSeeder');
-		$this->call('ClientTableTestSeeder');
-		$this->call('KeyTableTestSeeder');
+class TestSeeder extends Seeder
+{
 
-		DB::table('build_modversion')->delete();
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        //$this->call('UserTableSeeder');
+        $this->call('ModpackTableTestSeeder');
+        $this->call('ModTableTestSeeder');
+        $this->call('ClientTableTestSeeder');
+        $this->call('KeyTableTestSeeder');
 
-		$testbuild = Build::find(1);
+        DB::table('build_modversion')->delete();
 
-		//Add testmodversion to testbuild
-		$testbuild->modversions()->attach(1);
-	}
+        $testbuild = Build::find(1);
+
+        //Add testmodversion to testbuild
+        $testbuild->modversions()->attach(1);
+    }
 
 }
