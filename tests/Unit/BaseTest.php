@@ -35,7 +35,7 @@ class BaseTest extends TestCase {
 			'remember' => false
         ];
 
-		$response = $response = $this->post('/login', $credentials);
+		$response = $this->post('/login', $credentials);
 		$response->assertRedirect('/login');
 		$response->assertSessionHas('login_failed');
 	}
@@ -48,7 +48,7 @@ class BaseTest extends TestCase {
 			'remember' => false
         ];
 
-		$response = $response = $this->post('/login', $credentials);
+		$response = $this->post('/login', $credentials);
 		$response->assertRedirect('/dashboard');
 	}
 

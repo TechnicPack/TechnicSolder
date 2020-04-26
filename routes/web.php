@@ -16,6 +16,7 @@ Route::get('/', function() {
 });
 
 Route::group(['middleware' => 'auth'], function() {
+    Route::redirect('client', 'client/list');
     Route::get('client/list', 'ClientController@getList')->name('client.list');
     Route::get('client/create', 'ClientController@getCreate')->name('client.create');
     Route::post('client/create', 'ClientController@postCreate');
@@ -24,12 +25,14 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::get('dashboard', 'DashboardController@getIndex')->name('dashboard');
 
+    Route::redirect('key', 'key/list');
     Route::get('key/list', 'KeyController@getList')->name('key.list');
     Route::get('key/create', 'KeyController@getCreate')->name('key.create');
     Route::post('key/create', 'KeyController@postCreate');
     Route::get('key/delete/{key_id}', 'KeyController@getDelete')->name('key.delete');
     Route::post('key/delete/{key_id}', 'KeyController@postDelete');
 
+    Route::redirect('mod', 'mod/list');
     Route::get('mod/list', 'ModController@getList')->name('mod.list');
     Route::get('mod/view/{mod_id}', 'ModController@getView')->name('mod.view');
     Route::get('mod/create', 'ModController@getCreate')->name('mod.create');
@@ -43,6 +46,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('mod/add-version', 'ModController@anyAddVersion');
     Route::get('mod/delete-version/{version_id}', 'ModController@anyDeleteVersion');
 
+    Route::redirect('modpack', 'modpack/list');
     Route::get('modpack/list', 'ModpackController@getList')->name('modpack.list');
     Route::get('modpack/view/{modpack_id}', 'ModpackController@getView')->name('modpack.view');
     Route::get('modpack/build/{build_id}', 'ModpackController@anyBuild')->name('modpack.build');
@@ -63,6 +67,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('solder/update-check', 'SolderController@getUpdateCheck')->name('solder.updateCheck');
     Route::get('solder/cache-minecraft', 'SolderController@getCacheMinecraft')->name('solder.cacheMinecraft');
 
+    Route::redirect('user', 'user/list');
     Route::get('user/list', 'UserController@getList')->name('user.list');
     Route::get('user/edit/{user_id}', 'UserController@getEdit')->name('user.edit');
     Route::post('user/edit/{user_id}', 'UserController@postEdit');

@@ -42,7 +42,7 @@ class KeyTest extends TestCase {
 			'api_key' => 'sfIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
         ];
 
-		$response = $response = $this->post('/key/create', $data);
+		$response = $this->post('/key/create', $data);
 		$response->assertRedirect('/key/create');
 		$response->assertSessionHasErrors('api_key');
 	}
@@ -54,7 +54,7 @@ class KeyTest extends TestCase {
 			'api_key' => 'abIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
         ];
 
-		$response = $response = $this->post('/key/create', $data);
+		$response = $this->post('/key/create', $data);
 		$response->assertRedirect('/key/create');
 		$response->assertSessionHasErrors('name');
 	}
@@ -66,7 +66,7 @@ class KeyTest extends TestCase {
 			'api_key' => 'abCvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
         ];
 
-		$response = $response = $this->post('/key/create', $data);
+		$response = $this->post('/key/create', $data);
 		$response->assertRedirect('/key/list');
 		$response->assertSessionHas('success');
 	}
@@ -94,7 +94,7 @@ class KeyTest extends TestCase {
 
 	public function testKeyDeletePost()
 	{
-		$key = Key::where('name', '=', 'TestKey2')->firstOrFail();
+		$key = Key::firstOrFail();
 
 		$response = $this->post('/key/delete/'.$key->id);
 		$response->assertRedirect('/key/list');

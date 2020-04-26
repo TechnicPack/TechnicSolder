@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Mod;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
 
 class ModTest extends TestCase {
@@ -49,7 +50,7 @@ class ModTest extends TestCase {
 			'name' => 'testmod'
         ];
 
-		$response = $response = $this->post('/mod/create', $data);
+		$response = $this->post('/mod/create', $data);
 		$response->assertRedirect('/mod/create');
 		$response->assertSessionHasErrors('name');
 	}
@@ -62,7 +63,7 @@ class ModTest extends TestCase {
 			'link' => 'solder/io'
         ];
 
-		$response = $response = $this->post('/mod/create', $data);
+		$response = $this->post('/mod/create', $data);
 		$response->assertRedirect('/mod/create');
 		$response->assertSessionHasErrors('link');
 	}
@@ -70,18 +71,22 @@ class ModTest extends TestCase {
 	public function testModCreatePost()
 	{
 		$data = [
-			'pretty_name' => 'Backtools',
-			'name' => 'backtools',
-			'link' => 'http://solder.io',
+			'pretty_name' => 'Random mod name',
+			'name' => 'random-mod-name',
+			'link' => 'http://technicpack.net',
         ];
 
-		$response = $response = $this->post('/mod/create', $data);
-		$response->assertRedirect('/mod/view/2');
+		$response = $this->post('/mod/create', $data);
+		$response->assertRedirect('/mod/view/3');
 	}
 
 	public function testModVersionAddPostNonAjax()
 	{
-		$response = $this->post('/mod/add-version/', ["add-version"=>"v1.5.2.v01","add-md5"=>"9ece64de3e11a0f15f55ef34f2194760","mod-id"=>"2"]);
+		$response = $this->post('/mod/add-version/', [
+		    "add-version"=>"v1.5.2.v01",
+            "add-md5"=>"9ece64de3e11a0f15f55ef34f2194760",
+            "mod-id"=>"2"
+        ]);
 		$response->assertNotFound();
 	}
 
@@ -105,251 +110,251 @@ class ModTest extends TestCase {
 	public function testModVersionAddPostEmptyModID()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/add-version/', ["add-version"=>"v1.5.2.v01","add-md5"=>"9ece64de3e11a0f15f55ef34f2194760"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/add-version/', [
+                "add-version"=>"v1.5.2.v01",
+                "add-md5"=>"9ece64de3e11a0f15f55ef34f2194760"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		$response->assertEquals('Missing Post Data', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'reason']);
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Missing Post Data',
+        ]);
 	}
 
 	public function testModVersionAddPostInvalidModID()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/add-version/', ["add-version"=>"v1.5.2.v01","add-md5"=>"9ece64de3e11a0f15f55ef34f2194760","mod-id"=>"1000000"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/add-version/', [
+                "add-version"=>"v1.5.2.v01",
+                "add-md5"=>"9ece64de3e11a0f15f55ef34f2194760",
+                "mod-id"=>"1000000"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		$response->assertEquals('Could not pull mod from database', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'reason']);
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Could not pull mod from database',
+        ]);
 	}
 
 	public function testModVersionAddPost()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/add-version/', ["add-version"=>"1.7.10-4.0.0","add-md5"=>"0925fb5cca71b6e8dd81fac9b257c6d4","mod-id"=>"2"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/add-version/', [
+                "add-version"=>"1.7.10-4.0.0",
+                "add-md5"=>"0925fb5cca71b6e8dd81fac9b257c6d4",
+                "mod-id"=>"2"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('version', $json));
-		$response->assertTrue(array_key_exists('filesize', $json));
-		$response->assertTrue(array_key_exists('md5', $json));
-		$response->assertEquals('success', $json['status']);
-		$response->assertEquals('1.7.10-4.0.0', $json['version']);
-		$response->assertEquals('0925fb5cca71b6e8dd81fac9b257c6d4', $json['md5']);
-		$response->assertEquals('0.01 MB', $json['filesize']);
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'success',
+            'version' => '1.7.10-4.0.0',
+            'md5' => '0925fb5cca71b6e8dd81fac9b257c6d4',
+            'filesize' => '0.01 MB',
+        ]);
 	}
 
 	public function testModVersionAddPostManualMD5()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/add-version/', ["add-version"=>"1.7.10-4.0.0","add-md5"=>"butts","mod-id"=>"2"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/add-version/', [
+                "add-version"=>"1.7.10-4.0.0",
+                "add-md5"=>"butts",
+                "mod-id"=>"2"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('version', $json));
-		$response->assertTrue(array_key_exists('filesize', $json));
-		$response->assertTrue(array_key_exists('md5', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('warning', $json['status']);
-		$response->assertEquals('1.7.10-4.0.0', $json['version']);
-		$response->assertEquals('butts', $json['md5']);
-		$response->assertEquals('0.01 MB', $json['filesize']);
-		$response->assertEquals('MD5 provided does not match file MD5: 0925fb5cca71b6e8dd81fac9b257c6d4', $json['reason']);
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'warning',
+            'version' => '1.7.10-4.0.0',
+            'md5' => 'butts',
+            'filesize' => '0.01 MB',
+            'reason' => 'MD5 provided does not match file MD5: 0925fb5cca71b6e8dd81fac9b257c6d4',
+        ]);
 	}
 
 	public function testModVersionAddPostMD5Fail()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/add-version/', ["add-version"=>"v1.5.2.1","add-md5"=>"","mod-id"=>"2"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/add-version/', [
+                "add-version"=>"v1.5.2.1",
+                "add-md5"=>"",
+                "mod-id"=>"2"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'error',
+        ]);
 
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		if(getenv('REPO_TYPE') == 'remote') {
-			$response->assertEquals('Remote MD5 failed. URL returned status code - 404', $json['reason']);
-		} else {
-			$response->assertEquals('Remote MD5 failed. ' . getenv('REPO') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI', $json['reason']);
-		}
+        if(getenv('REPO_TYPE') === 'remote') {
+            $response->assertJson([
+                'reason' => 'Remote MD5 failed. URL returned status code - 404'
+            ]);
+        } else {
+            $response->assertJson([
+                'reason' => 'Remote MD5 failed. ' . getenv('REPO') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI'
+            ]);
+        }
 	}
 
 	public function testModVersionRehashPostNonAjax()
 	{
-		$response = $this->post('/mod/rehash/', ["version-id"=>"2","md5"=>"9ece64de3e11a0f15f55ef34f2194760"]);
-		$response->assertResponseStatus(404);
+		$response = $this->post('/mod/rehash/', [
+		    "version-id"=>"2",
+            "md5"=>"9ece64de3e11a0f15f55ef34f2194760"
+        ]);
+		$response->assertNotFound();
 	}
 
 	public function testModVersionRehashPostEmptyID()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/rehash/', ["version-id"=>"","md5"=>"9ece64de3e11a0f15f55ef34f2194760"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/rehash/', [
+                "version-id"=>"",
+                "md5"=>"9ece64de3e11a0f15f55ef34f2194760"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		$response->assertEquals('Missing Post Data', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'reason']);
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Missing Post Data',
+        ]);
 	}
 
 	public function testModVersionRehashPostInvalidID()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/rehash/', ["version-id"=>"10000000","md5"=>"9ece64de3e11a0f15f55ef34f2194760"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/rehash/', [
+                "version-id"=>"10000000",
+                "md5"=>"9ece64de3e11a0f15f55ef34f2194760"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		$response->assertEquals('Could not pull mod version from database', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'reason']);
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Could not pull mod version from database',
+        ]);
 	}
 
 	public function testModVersionRehashPost()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/rehash/', ["version-id"=>"1","md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/rehash/', [
+                "version-id"=>"1",
+                "md5"=>"bdbc6c6cc48c7b037e4aef64b58258a3"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('version_id', $json));
-		$response->assertTrue(array_key_exists('filesize', $json));
-		$response->assertTrue(array_key_exists('md5', $json));
-		$response->assertEquals('success', $json['status']);
-		$response->assertEquals('1', $json['version_id']);
-		$response->assertEquals('bdbc6c6cc48c7b037e4aef64b58258a3', $json['md5']);
-		$response->assertEquals('0.00 MB', $json['filesize']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'version_id', 'filesize', 'md5']);
+        $response->assertJson([
+            'status' => 'success',
+            'version_id' => '1',
+            'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
+            'filesize' => '0.00 MB',
+        ]);
 	}
 
 	public function testModVersionRehashPostMD5Manual()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/rehash/', ["version-id"=>"1","md5"=>"butts"],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/rehash/', [
+                "version-id"=>"1",
+                "md5"=>"butts"
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('version_id', $json));
-		$response->assertTrue(array_key_exists('filesize', $json));
-		$response->assertTrue(array_key_exists('md5', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('warning', $json['status']);
-		$response->assertEquals('1', $json['version_id']);
-		$response->assertEquals('butts', $json['md5']);
-		$response->assertEquals('0.00 MB', $json['filesize']);
-		$response->assertEquals('MD5 provided does not match file MD5: bdbc6c6cc48c7b037e4aef64b58258a3', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'version_id', 'filesize', 'md5', 'reason']);
+        $response->assertJson([
+            'status' => 'warning',
+            'version_id' => '1',
+            'md5' => 'butts',
+            'filesize' => '0.00 MB',
+            'reason' => 'MD5 provided does not match file MD5: bdbc6c6cc48c7b037e4aef64b58258a3',
+        ]);
 	}
 
 	public function testModVersionRehashPostMD5Empty()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/rehash/', ["version-id"=>"1","md5"=>""],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/rehash/', [
+                "version-id"=>"1",
+                "md5"=>""
+            ]);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('version_id', $json));
-		$response->assertTrue(array_key_exists('filesize', $json));
-		$response->assertTrue(array_key_exists('md5', $json));
-		$response->assertEquals('success', $json['status']);
-		$response->assertEquals('1', $json['version_id']);
-		$response->assertEquals('bdbc6c6cc48c7b037e4aef64b58258a3', $json['md5']);
-		$response->assertEquals('0.00 MB', $json['filesize']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'version_id', 'filesize', 'md5']);
+        $response->assertJson([
+            'status' => 'success',
+            'version_id' => '1',
+            'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
+            'filesize' => '0.00 MB',
+        ]);
 	}
 
 	public function testModVersionDeleteNonAjax()
 	{
-		$response = $this->get('/mod/delete-version/3');
-		$response->assertResponseStatus(404);
+		$response = $this->get('/mod/delete-version/1');
+		$response->assertNotFound();
 	}
 
 	public function testModVersionDeleteEmptyID()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/delete-version/', [],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/delete-version/', []);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		$response->assertEquals('Missing Post Data', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'reason']);
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Missing Post Data',
+        ]);
 	}
 
 	public function testModVersionDeleteInvalidID()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->post('/mod/delete-version/10000000', [],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->post('/mod/delete-version/10000000', []);
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('reason', $json));
-		$response->assertEquals('error', $json['status']);
-		$response->assertEquals('Could not pull mod version from database', $json['reason']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'reason']);
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Could not pull mod version from database',
+        ]);
 	}
 
 	public function testModVersionDelete()
 	{
 		//Fake an AJAX call.
-		$response = $response = $this->get('/mod/delete-version/3', [],
-						[], ["HTTP_X_REQUESTED_WITH"=>"XMLHttpRequest"]);
+		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+            ->get('/mod/delete-version/3');
 
-		$response->assertOk();
-		$response->assertTrue(is_a($response,'Illuminate\Http\JsonResponse'));
-		$json = $response->getData(true);
-
-		$response->assertTrue(array_key_exists('status', $json));
-		$response->assertTrue(array_key_exists('version_id', $json));
-		$response->assertTrue(array_key_exists('version', $json));
-		$response->assertEquals('success', $json['status']);
-		$response->assertEquals('3', $json['version_id']);
-		$response->assertEquals('1.7.10-4.0.0', $json['version']);
+        $response->assertOk();
+        $response->assertJsonStructure(['status', 'version_id', 'version']);
+        $response->assertJson([
+            'status' => 'error',
+            'version_id' => '3',
+            'version' => '1.7.10-4.0.0',
+        ]);
 	}
 
 	public function testModDeleteGet()
@@ -375,7 +380,7 @@ class ModTest extends TestCase {
 
 	public function testModDeletePost()
 	{
-		$modpack = Mod::where('name', '=', 'backtools')->firstOrFail();
+		$modpack = Mod::where('name', 'backtools')->firstOrFail();
 
 		$response = $this->post('/mod/delete/'.$modpack->id);
 		$response->assertRedirect('/mod/list');
