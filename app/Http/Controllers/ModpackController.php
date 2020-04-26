@@ -342,11 +342,11 @@ class ModpackController extends Controller
     public function anyModify($action = null)
     {
         if (!Request::ajax()) {
-            return Response::view('errors.missing', [], 404);
+            abort(404);
         }
 
         if (empty($action)) {
-            return Response::view('errors.500', [], 500);
+            abort(400);
         }
 
         switch ($action) {

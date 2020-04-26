@@ -43,54 +43,53 @@ class SolderController extends Controller
 
     public function getUpdateCheck()
     {
-        if (Request::ajax()) {
-
-            if (UpdateUtils::getUpdateCheck()) {
-                Cache::put('update', true, now()->addMinutes(60));
-                return Response::json([
-                    'status' => 'success',
-                    'update' => true
-                ]);
-            } else {
-                if (Cache::get('update')) {
-                    Cache::forget('update');
-                }
-                return Response::json([
-                    'status' => 'success',
-                    'update' => false
-                ]);
-            }
+        if (!Request::ajax()) {
+            abort(404);
         }
 
-        return Response::view('errors.missing', [], 404);
+        if (UpdateUtils::getUpdateCheck()) {
+            Cache::put('update', true, now()->addMinutes(60));
+            return Response::json([
+                'status' => 'success',
+                'update' => true
+            ]);
+        } else {
+            if (Cache::get('update')) {
+                Cache::forget('update');
+            }
+            return Response::json([
+                'status' => 'success',
+                'update' => false
+            ]);
+        }
     }
 
     public function getCacheMinecraft()
     {
-        if (Request::ajax()) {
-            $reason = '';
-            try {
-                $reason = MinecraftUtils::getMinecraft(true);
-            } catch (Exception $e) {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => $e->getMessage()
-                ]);
-            }
-
-            if (Cache::has('minecraftversions')) {
-                return Response::json([
-                    'status' => 'success',
-                    'reason' => $reason
-                ]);
-            } else {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => 'An unknown error has occured.'
-                ]);
-            }
+        if (!Request::ajax()) {
+            abort(404);
         }
 
-        return Response::view('errors.missing', [], 404);
+        $reason = '';
+        try {
+            $reason = MinecraftUtils::getMinecraft(true);
+        } catch (Exception $e) {
+            return Response::json([
+                'status' => 'error',
+                'reason' => $e->getMessage()
+            ]);
+        }
+
+        if (Cache::has('minecraftversions')) {
+            return Response::json([
+                'status' => 'success',
+                'reason' => $reason
+            ]);
+        } else {
+            return Response::json([
+                'status' => 'error',
+                'reason' => 'An unknown error has occured.'
+            ]);
+        }
     }
 }
