@@ -49,7 +49,7 @@ class SolderController extends Controller
 
         if (UpdateUtils::getUpdateCheck()) {
             Cache::put('update', true, now()->addMinutes(60));
-            return Response::json([
+            return response()->json([
                 'status' => 'success',
                 'update' => true
             ]);
@@ -57,7 +57,7 @@ class SolderController extends Controller
             if (Cache::get('update')) {
                 Cache::forget('update');
             }
-            return Response::json([
+            return response()->json([
                 'status' => 'success',
                 'update' => false
             ]);
@@ -74,19 +74,19 @@ class SolderController extends Controller
         try {
             $reason = MinecraftUtils::getMinecraft(true);
         } catch (Exception $e) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => $e->getMessage()
             ]);
         }
 
         if (Cache::has('minecraftversions')) {
-            return Response::json([
+            return response()->json([
                 'status' => 'success',
                 'reason' => $reason
             ]);
         } else {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'An unknown error has occured.'
             ]);

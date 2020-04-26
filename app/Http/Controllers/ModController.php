@@ -156,7 +156,7 @@ class ModController extends Controller
         $md5 = Request::input('md5');
         $ver_id = Request::input('version-id');
         if (empty($ver_id)) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Missing Post Data',
             ]);
@@ -164,7 +164,7 @@ class ModController extends Controller
 
         $ver = Modversion::find($ver_id);
         if (empty($ver)) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Could not pull mod version from database',
             ]);
@@ -185,7 +185,7 @@ class ModController extends Controller
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
-                return Response::json([
+                return response()->json([
                     'status' => 'success',
                     'version_id' => $ver->id,
                     'md5' => $ver->md5,
@@ -195,7 +195,7 @@ class ModController extends Controller
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
-                return Response::json([
+                return response()->json([
                     'status' => 'warning',
                     'version_id' => $ver->id,
                     'md5' => $ver->md5,
@@ -204,7 +204,7 @@ class ModController extends Controller
                 ]);
             }
         } else {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
             ]);
@@ -221,7 +221,7 @@ class ModController extends Controller
         $md5 = Request::input('add-md5');
         $version = Request::input('add-version');
         if (empty($mod_id) || empty($version)) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Missing Post Data'
             ]);
@@ -229,7 +229,7 @@ class ModController extends Controller
 
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Could not pull mod from database'
             ]);
@@ -239,7 +239,7 @@ class ModController extends Controller
                 'mod_id' => $mod_id,
                 'version' => $version,
             ])->count() > 0) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'That mod version already exists',
             ]);
@@ -264,7 +264,7 @@ class ModController extends Controller
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
-                return Response::json([
+                return response()->json([
                     'status' => 'success',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
@@ -274,7 +274,7 @@ class ModController extends Controller
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
-                return Response::json([
+                return response()->json([
                     'status' => 'warning',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
@@ -283,7 +283,7 @@ class ModController extends Controller
                 ]);
             }
         } else {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
             ]);
@@ -297,7 +297,7 @@ class ModController extends Controller
         }
 
         if (empty($ver_id)) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Missing Post Data'
             ]);
@@ -305,7 +305,7 @@ class ModController extends Controller
 
         $ver = Modversion::find($ver_id);
         if (empty($ver)) {
-            return Response::json([
+            return response()->json([
                 'status' => 'error',
                 'reason' => 'Could not pull mod version from database'
             ]);
@@ -314,7 +314,7 @@ class ModController extends Controller
         $old_id = $ver->id;
         $old_version = $ver->version;
         $ver->delete();
-        return Response::json([
+        return response()->json([
             'status' => 'success',
             'version' => $old_version,
             'version_id' => $old_id
