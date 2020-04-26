@@ -149,66 +149,66 @@ class ModController extends Controller
 
     public function anyRehash()
     {
-        if (Request::ajax()) {
-            $md5 = Request::input('md5');
-            $ver_id = Request::input('version-id');
-            if (empty($ver_id)) {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => 'Missing Post Data',
-                ]);
-            }
-
-            $ver = Modversion::find($ver_id);
-            if (empty($ver)) {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => 'Could not pull mod version from database',
-                ]);
-            }
-
-            if (empty($md5)) {
-                $file_md5 = $this->mod_md5($ver->mod, $ver->version);
-                if ($file_md5['success']) {
-                    $md5 = $file_md5['md5'];
-                }
-            } else {
-                $file_md5 = $this->mod_md5($ver->mod, $ver->version);
-                $pfile_md5 = !$file_md5['success'] ? "Null" : $file_md5['md5'];
-            }
-
-            if ($file_md5['success'] && !empty($md5)) {
-                if ($md5 == $file_md5['md5']) {
-                    $ver->filesize = $file_md5['filesize'];
-                    $ver->md5 = $md5;
-                    $ver->save();
-                    return Response::json([
-                        'status' => 'success',
-                        'version_id' => $ver->id,
-                        'md5' => $ver->md5,
-                        'filesize' => $ver->humanFilesize("MB"),
-                    ]);
-                } else {
-                    $ver->filesize = $file_md5['filesize'];
-                    $ver->md5 = $md5;
-                    $ver->save();
-                    return Response::json([
-                        'status' => 'warning',
-                        'version_id' => $ver->id,
-                        'md5' => $ver->md5,
-                        'filesize' => $ver->humanFilesize("MB"),
-                        'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
-                    ]);
-                }
-            } else {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
-                ]);
-            }
+        if (!Request::ajax()) {
+            abort(404);
         }
 
-        return Response::view('errors.missing', [], 404);
+        $md5 = Request::input('md5');
+        $ver_id = Request::input('version-id');
+        if (empty($ver_id)) {
+            return Response::json([
+                'status' => 'error',
+                'reason' => 'Missing Post Data',
+            ]);
+        }
+
+        $ver = Modversion::find($ver_id);
+        if (empty($ver)) {
+            return Response::json([
+                'status' => 'error',
+                'reason' => 'Could not pull mod version from database',
+            ]);
+        }
+
+        if (empty($md5)) {
+            $file_md5 = $this->mod_md5($ver->mod, $ver->version);
+            if ($file_md5['success']) {
+                $md5 = $file_md5['md5'];
+            }
+        } else {
+            $file_md5 = $this->mod_md5($ver->mod, $ver->version);
+            $pfile_md5 = !$file_md5['success'] ? "Null" : $file_md5['md5'];
+        }
+
+        if ($file_md5['success'] && !empty($md5)) {
+            if ($md5 == $file_md5['md5']) {
+                $ver->filesize = $file_md5['filesize'];
+                $ver->md5 = $md5;
+                $ver->save();
+                return Response::json([
+                    'status' => 'success',
+                    'version_id' => $ver->id,
+                    'md5' => $ver->md5,
+                    'filesize' => $ver->humanFilesize("MB"),
+                ]);
+            } else {
+                $ver->filesize = $file_md5['filesize'];
+                $ver->md5 = $md5;
+                $ver->save();
+                return Response::json([
+                    'status' => 'warning',
+                    'version_id' => $ver->id,
+                    'md5' => $ver->md5,
+                    'filesize' => $ver->humanFilesize("MB"),
+                    'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
+                ]);
+            }
+        } else {
+            return Response::json([
+                'status' => 'error',
+                'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
+            ]);
+        }
     }
 
     public function anyAddVersion()
@@ -292,33 +292,33 @@ class ModController extends Controller
 
     public function anyDeleteVersion($ver_id = null)
     {
-        if (Request::ajax()) {
-            if (empty($ver_id)) {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => 'Missing Post Data'
-                ]);
-            }
+        if (!Request::ajax()) {
+            abort(404);
+        }
 
-            $ver = Modversion::find($ver_id);
-            if (empty($ver)) {
-                return Response::json([
-                    'status' => 'error',
-                    'reason' => 'Could not pull mod version from database'
-                ]);
-            }
-
-            $old_id = $ver->id;
-            $old_version = $ver->version;
-            $ver->delete();
+        if (empty($ver_id)) {
             return Response::json([
-                'status' => 'success',
-                'version' => $old_version,
-                'version_id' => $old_id
+                'status' => 'error',
+                'reason' => 'Missing Post Data'
             ]);
         }
 
-        return Response::view('errors.missing', [], 404);
+        $ver = Modversion::find($ver_id);
+        if (empty($ver)) {
+            return Response::json([
+                'status' => 'error',
+                'reason' => 'Could not pull mod version from database'
+            ]);
+        }
+
+        $old_id = $ver->id;
+        $old_version = $ver->version;
+        $ver->delete();
+        return Response::json([
+            'status' => 'success',
+            'version' => $old_version,
+            'version_id' => $old_id
+        ]);
     }
 
     private function mod_md5($mod, $version)
