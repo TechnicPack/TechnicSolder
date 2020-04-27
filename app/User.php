@@ -31,9 +31,21 @@ class User extends Model implements AuthenticatableContract
 
     public $timestamps = true;
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['permission'];
+
     public function permission()
     {
         return $this->hasOne('App\UserPermission');
+    }
+
+    public function updated_by_user()
+    {
+        return $this->hasOne('App\User', 'id', 'updated_by_user_id');
     }
 
     /**

@@ -70,7 +70,7 @@
                 <div class="form-group">
                     <label class="control-label">Specific Modpacks</label>
                     <div class="controls">
-                        @foreach (App\Modpack::all() as $modpack)
+                        @foreach ($allModpacks as $modpack)
                             <label for="{{ $modpack->slug }}" class="checkbox-inline"><input type="checkbox" name="modpack[]" id="{{ $modpack->slug }}" value="{{ $modpack->id }}"> {{ $modpack->name }}</label>
                         @endforeach
                     </div>

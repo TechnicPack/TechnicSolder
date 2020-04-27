@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Modpack;
 use App\User;
 use App\UserPermission;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,8 @@ class UserController extends Controller
 
     public function getList()
     {
-        $users = User::all();
+        $users = User::with('updated_by_user')->get();
+
         return view('user.list')->with('users', $users);
     }
 
@@ -43,7 +45,14 @@ class UserController extends Controller
                 ->withErrors(new MessageBag(['User not found']));
         }
 
-        return view('user.edit')->with('user', $user);
+        $allModpacks = Modpack::all();
+
+        $userUpdatedBy = User::find($user->updated_by_user_id);
+
+        return view('user.edit')
+            ->with('user', $user)
+            ->with('allModpacks', $allModpacks)
+            ->with('userUpdatedBy', $userUpdatedBy);
     }
 
     public function postEdit($user_id = null)
@@ -136,7 +145,10 @@ class UserController extends Controller
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
-        return view('user.create');
+        $allModpacks = Modpack::all();
+
+        return view('user.create')
+            ->with('allModpacks', $allModpacks);
     }
 
     public function postCreate()
