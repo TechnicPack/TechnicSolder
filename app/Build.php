@@ -1,11 +1,11 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Build extends Model
 {
-    public $timestamps = true;
-
     public function modpack()
     {
         return $this->belongsTo(Modpack::class);
