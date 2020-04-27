@@ -40,12 +40,12 @@ class User extends Model implements AuthenticatableContract
 
     public function permission()
     {
-        return $this->hasOne('App\UserPermission');
+        return $this->hasOne(UserPermission::class);
     }
 
     public function updated_by_user()
     {
-        return $this->hasOne('App\User', 'id', 'updated_by_user_id');
+        return $this->hasOne(User::class, 'id', 'updated_by_user_id');
     }
 
     /**

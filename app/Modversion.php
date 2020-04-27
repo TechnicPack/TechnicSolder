@@ -9,12 +9,12 @@ class Modversion extends Model
 
     public function mod()
     {
-        return $this->belongsTo('App\Mod');
+        return $this->belongsTo(Mod::class);
     }
 
     public function builds()
     {
-        return $this->belongsToMany('App\Build')->withTimestamps();
+        return $this->belongsToMany(Build::class)->withTimestamps();
     }
 
     public function humanFilesize($unit = "")

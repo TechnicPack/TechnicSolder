@@ -8,11 +8,11 @@ class Build extends Model
 
     public function modpack()
     {
-        return $this->belongsTo('App\Modpack');
+        return $this->belongsTo(Modpack::class);
     }
 
     public function modversions()
     {
-        return $this->belongsToMany('App\Modversion')->withTimestamps();
+        return $this->belongsToMany(Modversion::class)->withTimestamps();
     }
 }

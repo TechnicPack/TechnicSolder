@@ -8,12 +8,12 @@ class Modpack extends Model
 
     public function builds()
     {
-        return $this->hasMany('App\Build');
+        return $this->hasMany(Build::class);
     }
 
     public function clients()
     {
-        return $this->belongsToMany('App\Client')->withTimestamps();
+        return $this->belongsToMany(Client::class)->withTimestamps();
     }
 
     public function private_builds()
