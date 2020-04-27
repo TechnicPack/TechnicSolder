@@ -12,12 +12,10 @@
         <span style="float: right;">
             <i class="fa fa-bullhorn fa-1"></i>
             <strong>Last Updated By:</strong>
-            @if(!empty($user->updated_by_user_id))
-                @if(App\User::find($user->updated_by_user_id))
-                    {{ App\User::find($user->updated_by_user_id)->username }}
-                @else
-                    N/A
-                @endif
+            @if ($userUpdatedBy)
+                {{ $userUpdatedBy->username }}
+            @else
+                N/A
             @endif
              - <em>{{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}</em>
         </span>
@@ -95,7 +93,7 @@
                 <div class="form-group">
                     <label class="control-label">Specific Modpacks</label>
                     <div class="controls">
-                        @forelse (App\Modpack::all() as $modpack)
+                        @forelse ($allModpacks as $modpack)
                             <label for="{{ $modpack->slug }}" class="checkbox-inline"><input type="checkbox" name="modpack[]" id="{{ $modpack->slug }}" value="{{ $modpack->id }}"{{ $checked = (in_array($modpack->id, $user->permission->modpacks) ? " checked" : "") }}> {{ $modpack->name }}</label>
                         @empty
                             <p>No modpacks exist.</p>

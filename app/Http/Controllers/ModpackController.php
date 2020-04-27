@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Build;
+use App\Client;
 use App\Libraries\MinecraftUtils;
 use App\Mod;
 use App\Modpack;
@@ -121,7 +122,11 @@ class ModpackController extends Controller
                 $minecraft = MinecraftUtils::getMinecraft();
                 return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
             } else {
-                return view('modpack.build.view')->with('build', $build);
+                $mods = Mod::all();
+
+                return view('modpack.build.view')
+                    ->with('build', $build)
+                    ->with('mods', $mods);
             }
         }
     }
@@ -244,11 +249,6 @@ class ModpackController extends Controller
         return redirect('modpack/view/' . $modpack->id);
     }
 
-    /**
-     * Modpack Edit Interface
-     * @param  Integer  $modpack_id  Modpack ID
-     * @return View
-     */
     public function getEdit($modpack_id)
     {
         $modpack = Modpack::find($modpack_id);
@@ -256,12 +256,17 @@ class ModpackController extends Controller
             return redirect('dashboard')->withErrors(new MessageBag(['Modpack not found']));
         }
 
-        $clients = [];
+        $currentClients = [];
         foreach ($modpack->clients as $client) {
-            array_push($clients, $client->id);
+            array_push($currentClients, $client->id);
         }
 
-        return view('modpack.edit')->with(['modpack' => $modpack, 'clients' => $clients]);
+        $allClients = Client::all();
+
+        return view('modpack.edit')
+            ->with('modpack', $modpack)
+            ->with('currentClients', $currentClients)
+            ->with('allClients', $allClients);
     }
 
     public function postEdit($modpack_id)

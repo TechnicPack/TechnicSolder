@@ -40,12 +40,10 @@
 					<td>{{ $user->email }}</td>
 					<td>{{ $user->username }}</td>
 					<td>
-					@if(!empty($user->updated_by_user_id))
-						@if(App\User::find($user->updated_by_user_id))
-							{{ App\User::find($user->updated_by_user_id)->username }}
-						@else
-							N/A
-						@endif
+					@if ($user->updated_by_user)
+						{{ $user->updated_by_user->username }}
+					@else
+						N/A
 					@endif
 					 - {{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}
 					</td>

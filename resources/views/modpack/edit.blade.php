@@ -51,11 +51,11 @@
 				<hr>
 				<h3>Client Access</h3>
 				<p>Check the clients below you want to have access to this modpack if anything is set to private.</p>
-				@if (App\Client::all()->isEmpty())
+				@empty ($allClients)
 				<div class="alert alert-warning">No Clients to add</div>
 				@else
-				@foreach (App\Client::all() as $client)
-				<div style="display: inline-block; padding-right: 10px;"><input type="checkbox" name="clients[]" value="{{ $client->id }}"{{ (in_array($client->id, $clients) ? ' checked' : '') }}> {{ $client->name }}</div>
+				@foreach ($allClients as $client)
+				<div style="display: inline-block; padding-right: 10px;"><input type="checkbox" name="clients[]" value="{{ $client->id }}"{{ (in_array($client->id, $currentClients) ? ' checked' : '') }}> {{ $client->name }}</div>
 				@endforeach
 				@endif
 				@endif

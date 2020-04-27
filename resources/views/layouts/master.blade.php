@@ -78,7 +78,7 @@
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
 
-                       @foreach (App\Modpack::all()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE) as $modpack)
+                       @foreach ($allModpacks as $modpack)
                         @if ($modpack->icon)
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $modpack->hidden ? " (Hidden)" : "" }}</a></li>
                         @else
