@@ -14,8 +14,6 @@ class ApiController extends Controller
 
     public function __construct()
     {
-        $this->middleware('cors');
-
         /* This checks the client list for the CID. If a matching CID is found, all caching will be ignored
            for this request */
 
