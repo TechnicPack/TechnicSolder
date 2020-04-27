@@ -17,7 +17,7 @@ class Modversion extends Model
         return $this->belongsToMany(Build::class)->withTimestamps();
     }
 
-    public function humanFilesize($unit = "")
+    public function humanFilesize($unit = null)
     {
         $size = $this->filesize;
         if ((!$unit && $size >= 1 << 30) || $unit == "GB") {

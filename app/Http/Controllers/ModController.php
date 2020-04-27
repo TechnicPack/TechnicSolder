@@ -189,7 +189,7 @@ class ModController extends Controller
                     'status' => 'success',
                     'version_id' => $ver->id,
                     'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize("MB"),
+                    'filesize' => $ver->humanFilesize(),
                 ]);
             } else {
                 $ver->filesize = $file_md5['filesize'];
@@ -199,7 +199,7 @@ class ModController extends Controller
                     'status' => 'warning',
                     'version_id' => $ver->id,
                     'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize("MB"),
+                    'filesize' => $ver->humanFilesize(),
                     'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
                 ]);
             }
@@ -268,7 +268,7 @@ class ModController extends Controller
                     'status' => 'success',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize("MB"),
+                    'filesize' => $ver->humanFilesize(),
                 ]);
             } else {
                 $ver->filesize = $file_md5['filesize'];
@@ -278,7 +278,7 @@ class ModController extends Controller
                     'status' => 'warning',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize("MB"),
+                    'filesize' => $ver->humanFilesize(),
                     'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
                 ]);
             }

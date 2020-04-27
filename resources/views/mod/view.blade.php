@@ -100,7 +100,7 @@
 								<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
 								<td><input type="text" class="md5 form-control" name="md5" id="md5" placeholder="{{ $ver->md5 }}" rel="{{ $ver->id }}"></input></td>
 								<td class="url" rel="{{ $ver->id }}"><small><a href="{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
-								<td>{{ $ver->humanFilesize("MB") }}</td>
+								<td>{{ $ver->humanFilesize() }}</td>
 								<td><button type="submit" class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
 							</form>
 						</tr>
