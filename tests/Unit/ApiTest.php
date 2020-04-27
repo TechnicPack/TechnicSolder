@@ -7,7 +7,8 @@ use App\Modpack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ApiTest extends TestCase {
+class ApiTest extends TestCase
+{
 
     use RefreshDatabase;
 
@@ -18,43 +19,43 @@ class ApiTest extends TestCase {
         $this->seed();
     }
 
-	public function testBase()
-	{
-		$response = $this->get('api/');
-		$response->assertOk();
-		$response->assertJson([
-		        'api' => 'TechnicSolder',
-                'version' => SOLDER_VERSION,
-                'stream' => SOLDER_STREAM,
+    public function testBase()
+    {
+        $response = $this->get('api/');
+        $response->assertOk();
+        $response->assertJson([
+            'api' => 'TechnicSolder',
+            'version' => SOLDER_VERSION,
+            'stream' => SOLDER_STREAM,
         ]);
-	}
+    }
 
-	public function testModpack()
-	{
-		$response = $this->get('api/modpack');
-		$response->assertOk();
-		$response->assertJsonStructure(['modpacks', 'mirror_url']);
-	}
+    public function testModpack()
+    {
+        $response = $this->get('api/modpack');
+        $response->assertOk();
+        $response->assertJsonStructure(['modpacks', 'mirror_url']);
+    }
 
-	public function testMod()
-	{
-		$response = $this->get('api/mod');
-		$response->assertOk();
-		$response->assertJsonStructure(['mods']);
-	}
+    public function testMod()
+    {
+        $response = $this->get('api/mod');
+        $response->assertOk();
+        $response->assertJsonStructure(['mods']);
+    }
 
-	public function testInvalidModpack()
-	{
-		$response = $this->get('api/modpack/bob');
-		$response->assertOk();
+    public function testInvalidModpack()
+    {
+        $response = $this->get('api/modpack/bob');
+        $response->assertOk();
         $response->assertJsonStructure(['error']);
-	}
+    }
 
-	public function testModpackSlug()
-	{
-		$modpack = Modpack::find(1);
-		$response = $this->get('api/modpack/'.$modpack->slug);
-		$response->assertOk();
+    public function testModpackSlug()
+    {
+        $modpack = Modpack::find(1);
+        $response = $this->get('api/modpack/' . $modpack->slug);
+        $response->assertOk();
         $response->assertJsonStructure([
             'name',
             'display_name',
@@ -69,20 +70,20 @@ class ApiTest extends TestCase {
             'background_md5',
             'builds',
         ]);
-	}
+    }
 
-	public function testInvalidMod()
-	{
-		$response = $this->get('api/mod/bob');
-		$response->assertOk();
+    public function testInvalidMod()
+    {
+        $response = $this->get('api/mod/bob');
+        $response->assertOk();
         $response->assertJsonStructure(['error']);
-	}
+    }
 
-	public function testModSlug()
-	{
-		$mod = Mod::find(1);
-		$response = $this->get('api/mod/'.$mod->name);
-		$response->assertOk();
+    public function testModSlug()
+    {
+        $mod = Mod::find(1);
+        $response = $this->get('api/mod/' . $mod->name);
+        $response->assertOk();
         $response->assertJsonStructure([
             'name',
             'pretty_name',
@@ -91,14 +92,14 @@ class ApiTest extends TestCase {
             'link',
             'versions',
         ]);
-	}
+    }
 
-	public function testModpackBuild()
-	{
-		$modpack = Modpack::find(1);
-		$build = $modpack->builds->first();
-		$response = $this->get('api/modpack/'.$modpack->slug.'/'.$build->version);
-		$response->assertOk();
+    public function testModpackBuild()
+    {
+        $modpack = Modpack::find(1);
+        $build = $modpack->builds->first();
+        $response = $this->get('api/modpack/' . $modpack->slug . '/' . $build->version);
+        $response->assertOk();
         $response->assertJsonStructure([
             'minecraft',
             'forge',
@@ -106,18 +107,18 @@ class ApiTest extends TestCase {
             'memory',
             'mods',
         ]);
-	}
+    }
 
-	public function testModVersion()
-	{
-		$mod = Mod::find(1);
-		$modversion = $mod->versions->first();
-		$response = $this->get('api/mod/'.$mod->name.'/'.$modversion->version);
-		$response->assertOk();
+    public function testModVersion()
+    {
+        $mod = Mod::find(1);
+        $modversion = $mod->versions->first();
+        $response = $this->get('api/mod/' . $mod->name . '/' . $modversion->version);
+        $response->assertOk();
         $response->assertJsonStructure([
             'md5',
             'filesize',
             'url',
         ]);
-	}
+    }
 }
