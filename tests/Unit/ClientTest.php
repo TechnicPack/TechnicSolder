@@ -7,104 +7,105 @@ use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ClientTest extends TestCase {
+class ClientTest extends TestCase
+{
 
     use RefreshDatabase;
 
-	public function setUp(): void
-	{
-		parent::setUp();
+    public function setUp(): void
+    {
+        parent::setUp();
 
-		$this->seed();
-		
-		$user = User::find(1);
-		$this->be($user);
-	}
+        $this->seed();
 
-	public function testClientIndex()
-	{
-		$response = $this->get('/client');
+        $user = User::find(1);
+        $this->be($user);
+    }
 
-		$response->assertRedirect('/client/list');
-	}
+    public function testClientIndex()
+    {
+        $response = $this->get('/client');
 
-	public function testClientCreateGet()
-	{
-		$response = $this->get('/client/create');
+        $response->assertRedirect('/client/list');
+    }
 
-		$response->assertOk();
-	}
+    public function testClientCreateGet()
+    {
+        $response = $this->get('/client/create');
 
-	public function testClientCreatePostUnUniqueUUID()
-	{
-		$data = [
-			'name' => 'TestClient2', 
-			'uuid' => '2ezf6f26-eb15-4ccb-9f0b-8z5ed2c72946'
+        $response->assertOk();
+    }
+
+    public function testClientCreatePostUnUniqueUUID()
+    {
+        $data = [
+            'name' => 'TestClient2',
+            'uuid' => '2ezf6f26-eb15-4ccb-9f0b-8z5ed2c72946'
         ];
 
-		$response = $this->post('/client/create', $data);
-		$response->assertRedirect('/client/create');
-		$response->assertSessionHasErrors('uuid');
-	}
+        $response = $this->post('/client/create', $data);
+        $response->assertRedirect('/client/create');
+        $response->assertSessionHasErrors('uuid');
+    }
 
-	public function testClientCreatePostUnUniqueName()
-	{
-		$data = [
-			'name' => 'TestClient', 
-			'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
+    public function testClientCreatePostUnUniqueName()
+    {
+        $data = [
+            'name' => 'TestClient',
+            'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
         ];
 
-		$response = $this->post('/client/create', $data);
-		$response->assertRedirect('/client/create');
-		$response->assertSessionHasErrors('name');
-	}
+        $response = $this->post('/client/create', $data);
+        $response->assertRedirect('/client/create');
+        $response->assertSessionHasErrors('name');
+    }
 
-	public function testClientCreatePost() 
-	{
-		$data = [
-			'name' => 'TestClient2', 
-			'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
+    public function testClientCreatePost()
+    {
+        $data = [
+            'name' => 'TestClient2',
+            'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
         ];
 
-		$response = $this->post('/client/create', $data);
-		$response->assertRedirect('/client/list');
-		$response->assertSessionHas('success');
-	}
+        $response = $this->post('/client/create', $data);
+        $response->assertRedirect('/client/list');
+        $response->assertSessionHas('success');
+    }
 
-	public function testClientDeleteGet()
-	{
-		$client = Client::find(1);
+    public function testClientDeleteGet()
+    {
+        $client = Client::find(1);
 
-		$response = $this->get('/client/delete/'.$client->id);
+        $response = $this->get('/client/delete/' . $client->id);
 
-		$response->assertOk();
-	}
+        $response->assertOk();
+    }
 
-	public function testClientDeleteGetInvalidID()
-	{
-		$response = $this->get('/client/delete/100000');
-		$response->assertRedirect('/client/list');
-	}
+    public function testClientDeleteGetInvalidID()
+    {
+        $response = $this->get('/client/delete/100000');
+        $response->assertRedirect('/client/list');
+    }
 
-	public function testClientDeletePostInvalidID()
-	{
-		$response = $this->post('/client/delete/100000');
-		$response->assertRedirect('/client/list');
-	}
+    public function testClientDeletePostInvalidID()
+    {
+        $response = $this->post('/client/delete/100000');
+        $response->assertRedirect('/client/list');
+    }
 
-	public function testClientDeletePost()
-	{
-		$client = Client::where('name', 'TestClient')->firstOrFail();
+    public function testClientDeletePost()
+    {
+        $client = Client::where('name', 'TestClient')->firstOrFail();
 
-		$response = $this->post('/client/delete/'.$client->id);
-		$response->assertRedirect('/client/list');
-		$response->assertSessionHas('success');
-	}
+        $response = $this->post('/client/delete/' . $client->id);
+        $response->assertRedirect('/client/list');
+        $response->assertSessionHas('success');
+    }
 
-	public function testClientList()
-	{
-		$response = $this->get('/client/list');
+    public function testClientList()
+    {
+        $response = $this->get('/client/list');
 
-		$response->assertOk();
-	}
+        $response->assertOk();
+    }
 }
