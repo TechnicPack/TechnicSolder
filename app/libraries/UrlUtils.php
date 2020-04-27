@@ -20,7 +20,7 @@ class UrlUtils
         $ch = curl_init($url);
 
         if (Config::has('solder.md5_connect_timeout')) {
-            $timeout = Config::get('solder.md5_connect_timeout');
+            $timeout = config('solder.md5_connect_timeout');
             if (is_int($timeout)) {
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
             }
@@ -29,7 +29,7 @@ class UrlUtils
         }
 
         if (Config::has('solder.md5_file_timeout')) {
-            $timeout = Config::get('solder.md5_file_timeout');
+            $timeout = config('solder.md5_file_timeout');
             if (is_int($timeout)) {
                 curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
             }

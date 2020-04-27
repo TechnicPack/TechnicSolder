@@ -182,7 +182,7 @@ class ApiController extends Controller
         $response['id'] = $version->id;
         $response['md5'] = $version->md5;
         $response['filesize'] = $version->filesize;
-        $response['url'] = Config::get('solder.mirror_url') . 'mods/' . $version->mod->name . '/' . $version->mod->name . '-' . $version->version . '.zip';
+        $response['url'] = config('solder.mirror_url') . 'mods/' . $version->mod->name . '/' . $version->mod->name . '-' . $version->version . '.zip';
 
         return $response;
     }
@@ -219,7 +219,7 @@ class ApiController extends Controller
             }
         }
 
-        $response['mirror_url'] = Config::get('solder.mirror_url');
+        $response['mirror_url'] = config('solder.mirror_url');
 
         return $response;
     }
@@ -326,7 +326,7 @@ class ApiController extends Controller
                         "version" => $modversion->version,
                         "md5" => $modversion->md5,
                         "filesize" => $modversion->filesize,
-                        "url" => Config::get('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
+                        "url" => config('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
                     ];
                 }
                 usort($response['mods'], function ($a, $b) {
@@ -350,7 +350,7 @@ class ApiController extends Controller
                             "author" => $modversion->mod->author,
                             "description" => $modversion->mod->description,
                             "link" => $modversion->mod->link,
-                            "url" => Config::get('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
+                            "url" => config('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
                         ];
                     }
                     usort($response['mods'], function ($a, $b) {
