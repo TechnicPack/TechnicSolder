@@ -1,11 +1,11 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Modpack extends Model
 {
-    public $timestamps = true;
-
     public function builds()
     {
         return $this->hasMany(Build::class);

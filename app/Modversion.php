@@ -1,12 +1,11 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Modversion extends Model
 {
-    protected $table = 'modversions';
-    public $timestamps = true;
-
     public function mod()
     {
         return $this->belongsTo(Mod::class);

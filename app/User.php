@@ -20,7 +20,7 @@ class User extends Model implements AuthenticatableContract
      *
      * @var array
      */
-    protected $fillable = ['username', 'email', 'password', 'created_ip', 'last_ip', 'created_by_user_id'];
+    protected $guarded = [];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -28,8 +28,6 @@ class User extends Model implements AuthenticatableContract
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-
-    public $timestamps = true;
 
     /**
      * The relationships that should always be loaded.
