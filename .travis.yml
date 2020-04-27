@@ -16,9 +16,6 @@ env:
     - SOLDER_REPO_LOCATION="$TRAVIS_BUILD_DIR/public/resources/default/"
     - SOLDER_MIRROR_URL="http://mirror.technicpack.net/Technic/"
     - REPO_TYPE="local"
-  matrix:
-    - DB_CONNECTION="pgsql" DB_USERNAME="postgres"
-    - DB_CONNECTION="mysql" DB_USERNAME="travis"
 matrix:
   fast_finish: true
 sudo: false
@@ -30,7 +27,4 @@ install: COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source 
 before_script:
   - cp .env.testing .env
   - php artisan key:generate
-  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'DROP DATABASE IF EXISTS solder;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'pgsql' ]; then psql -c 'create database solder;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'create database IF NOT EXISTS solder;'; fi"
 script: vendor/bin/phpunit

@@ -192,7 +192,7 @@ $('.rehash').click(function(e) {
 $('.delete').click(function(e) {
 	e.preventDefault();
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: "{{ URL::to('mod/delete-version') }}/" + $(this).attr('rel'),
 		success: function (data) {
 			if (data.status == "success") {

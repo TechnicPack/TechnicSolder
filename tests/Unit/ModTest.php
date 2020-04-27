@@ -202,7 +202,7 @@ class ModTest extends TestCase {
             ]);
         } else {
             $response->assertJson([
-                'reason' => 'Remote MD5 failed. ' . getenv('REPO') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI'
+                'reason' => 'Remote MD5 failed. ' . config('solder.repo_location') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI'
             ]);
         }
 	}
@@ -260,7 +260,6 @@ class ModTest extends TestCase {
             ]);
 
         $response->assertOk();
-        $response->assertJsonStructure(['status', 'version_id', 'filesize', 'md5']);
         $response->assertJson([
             'status' => 'success',
             'version_id' => '1',
@@ -279,7 +278,6 @@ class ModTest extends TestCase {
             ]);
 
         $response->assertOk();
-        $response->assertJsonStructure(['status', 'version_id', 'filesize', 'md5', 'reason']);
         $response->assertJson([
             'status' => 'warning',
             'version_id' => '1',
@@ -299,7 +297,6 @@ class ModTest extends TestCase {
             ]);
 
         $response->assertOk();
-        $response->assertJsonStructure(['status', 'version_id', 'filesize', 'md5']);
         $response->assertJson([
             'status' => 'success',
             'version_id' => '1',
@@ -310,7 +307,7 @@ class ModTest extends TestCase {
 
 	public function testModVersionDeleteNonAjax()
 	{
-		$response = $this->get('/mod/delete-version/1');
+		$response = $this->post('/mod/delete-version/1');
 		$response->assertNotFound();
 	}
 
@@ -320,12 +317,7 @@ class ModTest extends TestCase {
 		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
             ->post('/mod/delete-version/', []);
 
-        $response->assertOk();
-        $response->assertJsonStructure(['status', 'reason']);
-        $response->assertJson([
-            'status' => 'error',
-            'reason' => 'Missing Post Data',
-        ]);
+		$response->assertNotFound();
 	}
 
 	public function testModVersionDeleteInvalidID()
@@ -335,7 +327,6 @@ class ModTest extends TestCase {
             ->post('/mod/delete-version/10000000', []);
 
         $response->assertOk();
-        $response->assertJsonStructure(['status', 'reason']);
         $response->assertJson([
             'status' => 'error',
             'reason' => 'Could not pull mod version from database',
@@ -346,14 +337,13 @@ class ModTest extends TestCase {
 	{
 		//Fake an AJAX call.
 		$response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
-            ->get('/mod/delete-version/3');
+            ->post('/mod/delete-version/1');
 
         $response->assertOk();
-        $response->assertJsonStructure(['status', 'version_id', 'version']);
         $response->assertJson([
-            'status' => 'error',
-            'version_id' => '3',
-            'version' => '1.7.10-4.0.0',
+            'status' => 'success',
+            'version_id' => '1',
+            'version' => '1.0',
         ]);
 	}
 

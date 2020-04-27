@@ -3,7 +3,9 @@
 namespace Tests\Unit;
 
 use App\User;
+use App\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserTest extends TestCase {
@@ -82,7 +84,7 @@ class UserTest extends TestCase {
 
 	public function testUserEditGet()
 	{
-		$user = User::where('username', 'test')->firstOrFail();
+		$user = User::firstOrFail();
 		
 		$response = $this->get('/user/edit/'. $user->id);
 
@@ -91,10 +93,20 @@ class UserTest extends TestCase {
 
 	public function testUserEditPostNonUniqueEmail()
 	{
-		$user = User::where('username', 'test')->firstOrFail();
+		$user = User::firstOrFail();
+
+        // Create second user
+        User::create([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => Hash::make('password'),
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1
+        ]);
 
 		$data = [
-			'email' => 'admin@admin.com',
+			'email' => 'test@test.com',
 			'username' => 'test'
         ];
 
@@ -105,7 +117,15 @@ class UserTest extends TestCase {
 
 	public function testUserEditPostNonUniqueUsername()
 	{
-		$user = User::where('username', 'test')->firstOrFail();
+        // Create second user
+        $user = User::create([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => Hash::make('password'),
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1
+        ]);
 
 		$data = [
 			'email' => 'test@test.com',
@@ -119,11 +139,11 @@ class UserTest extends TestCase {
 
 	public function testUserEditPost() 
 	{
-		$user = User::where('username', 'test')->firstOrFail();
+		$user = User::firstOrFail();
 
 		$data = [
-			'email' => 'test@test.com',
-			'username' => 'test'
+			'email' => 'admin2@admin.com',
+			'username' => 'admin2'
         ];
 
 		$response = $this->post('/user/edit/' . $user->id, $data);
@@ -133,10 +153,21 @@ class UserTest extends TestCase {
 
 	public function testUserDeleteGet()
 	{
-		$user = User::where('username', 'test')->firstOrFail();
+        // Create second user
+        $user = User::create([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => Hash::make('password'),
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1
+        ]);
+
+        $perm = new UserPermission();
+        $perm->user_id = $user->id;
+        $perm->save();
 
 		$response = $this->get('/user/delete/'.$user->id);
-
 		$response->assertOk();
 	}
 
@@ -154,19 +185,57 @@ class UserTest extends TestCase {
 
 	public function testUserDeletePost()
 	{
-		$user = User::where('username', 'test')->firstOrFail();
+        // Create second user
+        $user = User::create([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => Hash::make('password'),
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1
+        ]);
+
+        $perm = new UserPermission();
+        $perm->user_id = $user->id;
+        $perm->save();
 
 		$response = $this->post('/user/delete/'.$user->id);
 		$response->assertRedirect('/user/list');
 		$response->assertSessionHas('success');
 	}
 
-	public function testUserCanNotDeleteLastAdminPost()
+	public function testUserCannotDeleteLastAdminPost()
 	{
+        // Create second user
+        $user = User::create([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => Hash::make('password'),
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1
+        ]);
+
+        // Allow this user to manage users, but not be an admin
+        $perm = new UserPermission();
+        $perm->user_id = $user->id;
+        $perm->solder_users = 1;
+        $perm->save();
+
+        // Auth as the new user
+        $this->be($user);
+
 		$response = $this->post('/user/delete/1');
 		$response->assertRedirect('/user/list');
 		$response->assertSessionHasErrors();
 	}
+
+    public function testUserCannotDeleteSelf()
+    {
+        $response = $this->post('/user/delete/'.auth()->user()->id);
+        $response->assertRedirect('/user/list');
+        $response->assertSessionHasErrors();
+    }
 
 	public function testUserCreateMoreSuperAdminsPost(){
 		$data = [
@@ -177,19 +246,31 @@ class UserTest extends TestCase {
         ];
 
 		$response = $this->post('/user/create', $data);
-		$response->assertRedirect('/user/edit/3');
+		$response->assertRedirect('/user/edit/2');
 		$response->assertSessionHas('success');
-	}
-
-	public function testUserWarnDeleteSelfGet()
-	{
-		$crawler = $this->client->request('GET', '/user/delete/1');
-		$delete_warning = $crawler->filter('h3 > i:contains("That\'s you!")');
-		$this->assertCount(1, $delete_warning);
 	}
 
 	public function testUserDeleteFirstPost()
 	{
+        // Create second user
+        $user = User::create([
+            'email' => 'test@test.com',
+            'username' => 'test',
+            'password' => Hash::make('password'),
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1
+        ]);
+
+        $perm = new UserPermission();
+        $perm->user_id = $user->id;
+        $perm->solder_full = 1;
+        $perm->save();
+
+        $this->assertEquals(2, $user->id);
+
+        $this->be($user);
+
 		$response = $this->post('/user/delete/1');
 		$response->assertRedirect('/user/list');
         $response->assertSessionHas('success');

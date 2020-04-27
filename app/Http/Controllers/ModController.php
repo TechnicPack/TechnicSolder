@@ -260,7 +260,7 @@ class ModController extends Controller
         $ver->version = $version;
 
         if ($file_md5['success'] && !empty($md5)) {
-            if ($md5 == $file_md5['md5']) {
+            if ($md5 === $file_md5['md5']) {
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();

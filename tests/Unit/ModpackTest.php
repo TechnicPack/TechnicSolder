@@ -100,7 +100,7 @@ class ModpackTest extends TestCase {
 
 	public function testModpackDeletePost()
 	{
-		$modpack = Modpack::where('slug', '=', 'testmodpack2')->firstOrFail();
+		$modpack = Modpack::firstOrFail();
 
 		$response = $this->post('/modpack/delete/'.$modpack->id);
 		$response->assertRedirect('/modpack/list');
