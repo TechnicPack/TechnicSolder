@@ -18,7 +18,7 @@ class SolderClients
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::user();
+        $user = $request->user();
         if (!$user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');

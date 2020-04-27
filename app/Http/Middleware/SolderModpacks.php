@@ -30,7 +30,7 @@ class SolderModpacks
                 $check = 'modpacks_manage';
                 break;
         }
-        $user = Auth::user();
+        $user = $request->user();
         if (!$user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');

@@ -27,7 +27,7 @@ class Build
 
         $modpack = $build->modpack;
 
-        $user = Auth::user();
+        $user = $request->user();
         if (!$user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
