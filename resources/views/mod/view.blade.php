@@ -109,7 +109,7 @@
 								@if ($ver->builds->isEmpty())
 								<p>Not used in any builds</p>
 								@else
-								<h5>Builds used in:</h5>
+								<p>Builds used in:</p>
 								<ul>
 								@foreach ($ver->builds as $build)
 									<li>{!! Html::link('modpack/view/'.$build->modpack->id,$build->modpack->name) !!} - {!! Html::link('modpack/build/'.$build->id,$build->version) !!}</li>
