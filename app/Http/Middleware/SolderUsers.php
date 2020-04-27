@@ -21,12 +21,13 @@ class SolderUsers
         $wantedUser = $request->segment(3);
         $action = $request->segment(2);
 
-        if (!Auth::check()) {
+        $user = $request->user();
+
+        if (!$user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
-        $user = Auth::user();
         $perms = $user->permission;
 
         if (!$perms->solder_full && !$perms->solder_users) {
