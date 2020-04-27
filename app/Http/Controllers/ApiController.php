@@ -34,8 +34,9 @@ class ApiController extends Controller
         $input_cid = Request::input('cid');
         if (!empty($input_cid)) {
             foreach ($clients as $client) {
-                if ($client->uuid == $input_cid) {
+                if ($client->uuid === $input_cid) {
                     $this->client = $client;
+                    break;
                 }
             }
         }
@@ -43,12 +44,12 @@ class ApiController extends Controller
         $input_key = Request::input('k');
         if (!empty($input_key)) {
             foreach ($keys as $key) {
-                if ($key->api_key == $input_key) {
+                if ($key->api_key === $input_key) {
                     $this->key = $key;
+                    break;
                 }
             }
         }
-
     }
 
     public function getIndex()
