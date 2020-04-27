@@ -41,7 +41,7 @@
 					<td>{{ $build->id }}</td>
 					<td>{{ $build->version }}</td>
 					<td>{{ $build->minecraft }}</td>
-					<td>{{ count($build->modversions) }}</td>
+					<td>{{ $build->modversions_count }}</td>
 					<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
 					<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>
 					<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ ($build->is_published ? " checked" : "") }}></td>

@@ -6,19 +6,15 @@ use App\Libraries\MinecraftUtils;
 use App\Mod;
 use App\Modpack;
 use App\Modversion;
-use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class ModpackController extends Controller
 {
@@ -44,7 +40,13 @@ class ModpackController extends Controller
 
     public function getView($modpack_id = null)
     {
-        $modpack = Modpack::find($modpack_id);
+        $modpack = Modpack::with([
+            'builds' => function ($query) {
+                $query->withCount('modversions');
+            }
+        ])
+            ->find($modpack_id);
+
         if (empty($modpack)) {
             return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
@@ -54,7 +56,11 @@ class ModpackController extends Controller
 
     public function anyBuild($build_id = null)
     {
-        $build = Build::find($build_id);
+        $build = Build::with('modpack')
+            ->with('modversions')
+            ->with('modversions.mod')
+            ->with('modversions.mod.versions')
+            ->find($build_id);
         if (empty($build)) {
             return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
