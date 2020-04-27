@@ -157,7 +157,7 @@ class ModTest extends TestCase
             'status' => 'success',
             'version' => '1.7.10-4.0.0',
             'md5' => '0925fb5cca71b6e8dd81fac9b257c6d4',
-            'filesize' => '0.01 MB',
+            'filesize' => '8.89 KB',
         ]);
     }
 
@@ -176,7 +176,7 @@ class ModTest extends TestCase
             'status' => 'warning',
             'version' => '1.7.10-4.0.0',
             'md5' => 'butts',
-            'filesize' => '0.01 MB',
+            'filesize' => '8.89 KB',
             'reason' => 'MD5 provided does not match file MD5: 0925fb5cca71b6e8dd81fac9b257c6d4',
         ]);
     }
@@ -264,7 +264,7 @@ class ModTest extends TestCase
             'status' => 'success',
             'version_id' => '1',
             'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
-            'filesize' => '0.00 MB',
+            'filesize' => '295 bytes',
         ]);
     }
 
@@ -282,7 +282,7 @@ class ModTest extends TestCase
             'status' => 'warning',
             'version_id' => '1',
             'md5' => 'butts',
-            'filesize' => '0.00 MB',
+            'filesize' => '295 bytes',
             'reason' => 'MD5 provided does not match file MD5: bdbc6c6cc48c7b037e4aef64b58258a3',
         ]);
     }
@@ -301,7 +301,7 @@ class ModTest extends TestCase
             'status' => 'success',
             'version_id' => '1',
             'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
-            'filesize' => '0.00 MB',
+            'filesize' => '295 bytes',
         ]);
     }
 
