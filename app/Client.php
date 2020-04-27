@@ -8,7 +8,7 @@ class Client extends Model
 
     public function modpacks()
     {
-        return $this->belongsToMany('App\Modpack')->withTimestamps();
+        return $this->belongsToMany(Modpack::class)->withTimestamps();
     }
 
 }

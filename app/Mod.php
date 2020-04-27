@@ -8,6 +8,6 @@ class Mod extends Model
 
     public function versions()
     {
-        return $this->hasMany('App\Modversion');
+        return $this->hasMany(Modversion::class);
     }
 }
