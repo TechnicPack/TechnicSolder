@@ -42,7 +42,7 @@
 								<td>{{ $build->version }}</td>
 								<td>{{ $build->modpack->name }}
 								<td>{{ $build->minecraft }}</td>
-								<td>{{ count($build->modversions) }}</td>
+								<td>{{ $build->modversions_count }}</td>
 								<td>{{ $build->updated_at }}</td>
 								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', array('class' => 'btn btn-warning btn-xs')) !!}</td>
 							</tr>
