@@ -24,26 +24,26 @@
 
             	<div class="form-group">
                     <label for="mirror_url">Repository Mirror URL</label>
-                    <input type="text" class="form-control" name="mirror_url" id="mirror_url" value="{{ Config::get('solder.mirror_url') }}" disabled>
+                    <input type="text" class="form-control" name="mirror_url" id="mirror_url" value="{{ config('solder.mirror_url') }}" disabled>
                     <span class="help-block">This is the public facing URL for your repo. If your repository location is already a URL, you can use the same location here. Include a trailing slash!</span>
                 </div>
 
                 <div class="form-group">
                     <label for="repo_location">Repository Location</label>
-                    <input type="text" class="form-control" name="repo_location" id="repo_location" value="{{ Config::get('solder.repo_location') }}" disabled>
+                    <input type="text" class="form-control" name="repo_location" id="repo_location" value="{{ config('solder.repo_location') }}" disabled>
                     <span class="help-block">This is the location of your mod reposistory. This can be a URL or an absolute file location(faster). When an absolute file location is used, Solder will attempt to calculate the MD5 checksum internally instead of over the remote web request.</span>
                     <p class="alert alert-warning">The Repo Location is the prime suspect when MD5 hashing fails. Most cases are caused by improper file permissions when using an absolute file location</p>
                 </div>
 
                 <div class="form-group">
                     <label for="md5_connect_timeout">MD5 Connect Timeout</label>
-                    <input type="text" class="form-control" name="md5_connect_timeout" id="md5_connect_timeout" value="{{ Config::get('solder.md5_connect_timeout') }}" disabled>
+                    <input type="text" class="form-control" name="md5_connect_timeout" id="md5_connect_timeout" value="{{ config('solder.md5_connect_timeout') }}" disabled>
                     <span class="help-block">This is the amount of time (in seconds) Solder will wait before giving up trying to connect to a URL to hash a mod.</span>
                 </div>
 
                 <div class="form-group">
                     <label for="md5_file_timeout">MD5 Hashing Timeout</label>
-                    <input type="text" class="form-control" name="md5_file_timeout" id="md5_file_timeout" value="{{ Config::get('solder.md5_file_timeout') }}" disabled>
+                    <input type="text" class="form-control" name="md5_file_timeout" id="md5_file_timeout" value="{{ config('solder.md5_file_timeout') }}" disabled>
                     <span class="help-block">This is the amount of time (in seconds) Solder will attempt to hash a mod before timing out.</span>
                 </div>
 

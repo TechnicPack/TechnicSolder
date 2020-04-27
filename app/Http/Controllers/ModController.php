@@ -323,7 +323,7 @@ class ModController extends Controller
 
     private function mod_md5($mod, $version)
     {
-        $location = Config::get('solder.repo_location');
+        $location = config('solder.repo_location');
         $URI = $location . 'mods/' . $mod->name . '/' . $mod->name . '-' . $version . '.zip';
 
         if (file_exists($URI)) {
