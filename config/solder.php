@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 return [
     /**
      * Mod Repository Location
@@ -8,7 +10,7 @@ return [
      * This can be a URL or an absolute file location.
      *
      **/
-    'repo_location' => env('SOLDER_REPO_LOCATION', '/var/www/mods.solder.test/'),
+    'repo_location' => Str::finish(env('SOLDER_REPO_LOCATION', '/var/www/mods.solder.test/'), '/'),
 
     /**
      * Mirror Location
@@ -18,7 +20,7 @@ return [
      * can use the same location here.
      *
      **/
-    'mirror_url' => env('SOLDER_MIRROR_URL', 'http://mods.solder.test/'),
+    'mirror_url' => Str::finish(env('SOLDER_MIRROR_URL', 'http://mods.solder.test/'), '/'),
 
     /**
      * MD5 Connect Timeout
