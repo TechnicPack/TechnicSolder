@@ -42,7 +42,11 @@ class ModController extends Controller
 
     public function getView($mod_id = null)
     {
-        $mod = Mod::find($mod_id);
+        $mod = Mod::with('versions')
+            ->with('versions.builds')
+            ->with('versions.builds.modpack')
+            ->find($mod_id);
+
         if (empty($mod)) {
             return redirect('mod/list')->withErrors(new MessageBag(['Mod not found']));
         }

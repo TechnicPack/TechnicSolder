@@ -92,7 +92,7 @@
 								<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
 							</form>
 						</tr>
-						@foreach ($mod->versions()->orderBy('id', 'desc')->get() as $ver)
+						@foreach ($mod->versions->sortByDesc('id') as $ver)
 						<tr class="version" rel="{{ $ver->id }}">
 							<form method="post" id="rehash" action="{{ URL::to('mod/rehash/') }}">
 								<input type="hidden" name="version-id" value="{{ $ver->id }}">
@@ -106,12 +106,16 @@
 						</tr>
 						<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
 							<td colspan="5">
-								<h5>Builds Used In</h5>
+								@if ($ver->builds->isEmpty())
+								<p>Not used in any builds</p>
+								@else
+								<h5>Builds used in:</h5>
 								<ul>
 								@foreach ($ver->builds as $build)
 									<li>{!! Html::link('modpack/view/'.$build->modpack->id,$build->modpack->name) !!} - {!! Html::link('modpack/build/'.$build->id,$build->version) !!}</li>
 								@endforeach
 								</ul>
+								@endif
 							</td>
 						</tr>
 						@endforeach
