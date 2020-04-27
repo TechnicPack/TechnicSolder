@@ -40,11 +40,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('mod/delete/{mod_id}', 'ModController@getDelete')->name('mod.delete');
     Route::post('mod/delete/{mod_id}', 'ModController@postDelete');
     Route::post('mod/modify/{mod_id}', 'ModController@postModify');
-    Route::get('mod/rehash', 'ModController@anyRehash')->name('mod.rehash');
+//    Route::get('mod/rehash', 'ModController@anyRehash')->name('mod.rehash');
     Route::post('mod/rehash', 'ModController@anyRehash');
-    Route::get('mod/add-version', 'ModController@anyAddVersion')->name('mod.addVersion');
+//    Route::get('mod/add-version', 'ModController@anyAddVersion')->name('mod.addVersion');
     Route::post('mod/add-version', 'ModController@anyAddVersion');
-    Route::get('mod/delete-version/{version_id}', 'ModController@anyDeleteVersion');
+    Route::post('mod/delete-version/{version_id}', 'ModController@anyDeleteVersion');
 
     Route::redirect('modpack', 'modpack/list');
     Route::get('modpack/list', 'ModpackController@getList')->name('modpack.list');
@@ -59,7 +59,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('modpack/edit/{modpack_id}', 'ModpackController@postEdit');
     Route::get('modpack/delete/{modpack_id}', 'ModpackController@getDelete')->name('modpack.delete');
     Route::post('modpack/delete/{modpack_id}', 'ModpackController@postDelete');
-    Route::get('modpack/modify/{action}', 'ModpackController@anyModify')->name('modpack.modify');
+//    Route::get('modpack/modify/{action}', 'ModpackController@anyModify')->name('modpack.modify');
     Route::post('modpack/modify/{action}', 'ModpackController@anyModify');
 
     Route::get('solder/configure', 'SolderController@getConfigure')->name('solder.configure');
