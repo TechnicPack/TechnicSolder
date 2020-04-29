@@ -58,7 +58,7 @@
 						<span class="input-group-addon">
 							<input type="checkbox" id="memory-enabled" name="memory-enabled" aria-label="mb"{{ $build->min_memory ? ' checked' : '' }}>
 						</span>
-		            	<input type="text" class="form-control" name="memory" id="memory" aria-label="mb" aria-describedby="addon-mb" value="{{ $build->min_memory }}" {{ $build->min_memory ? '' : ' disabled' }}>
+		            	<input type="text" class="form-control" name="memory" id="memory" aria-label="mb" aria-describedby="addon-mb" value="{{ $build->min_memory ?: '' }}" {{ $build->min_memory ? '' : ' disabled' }}>
 		            	<span class="input-group-addon" id="addon-mb">MB</span>
 					</div>
 					<p class="help-block">Check the checkbox to enable the memory requirement.</p>
