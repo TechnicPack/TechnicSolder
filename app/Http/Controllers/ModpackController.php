@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ModpackController extends Controller
 {
@@ -161,7 +162,12 @@ class ModpackController extends Controller
         }
 
         $rules = [
-            "version" => "required",
+            "version" => [
+                "required",
+                Rule::unique('builds')->where(function ($query) use ($modpack) {
+                    return $query->where('modpack_id', $modpack->id);
+                })
+            ],
             "minecraft" => "required",
             "memory" => "numeric"
         ];
