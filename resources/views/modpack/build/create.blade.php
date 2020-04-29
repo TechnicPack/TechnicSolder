@@ -26,7 +26,7 @@
 				<hr>
 				<div class="form-group">
 					<label for="version">Build Number</label>
-					<input type="text" class="form-control" name="version" id="version">
+					<input type="text" class="form-control" name="version" id="version" autofocus>
 				</div>
 				<div class="form-group">
 					<label for="version">Minecraft Version</label>
@@ -57,7 +57,7 @@
 						<option value="1.8">Java 1.8</option>
 						<option value="1.7">Java 1.7</option>
 						<option value="1.6">Java 1.6</option>
-						<option value="">No Requirement</option>
+						<option value="" selected>No Requirement</option>
 					</select>
 				</div>
 				<div class="form-group">
