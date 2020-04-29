@@ -36,7 +36,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			@foreach ($modpack->builds as $build)
+			@foreach ($modpack->builds->sortByDesc('id') as $build)
 				<tr>
 					<td>{{ $build->id }}</td>
 					<td>{{ $build->version }}</td>
