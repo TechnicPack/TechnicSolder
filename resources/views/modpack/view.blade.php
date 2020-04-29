@@ -42,10 +42,10 @@
 					<td>{{ $build->version }}</td>
 					<td>{{ $build->minecraft }}</td>
 					<td>{{ $build->modversions_count }}</td>
-					<td><input type="radio" name="recommended" value="{{ $build->version }}"{{ $checked = ($modpack->recommended == $build->version ? " checked" : "") }}></td>
-					<td><input type="radio" name="latest" value="{{ $build->version }}"{{ $checked = ($modpack->latest == $build->version ? " checked" : "") }}></td>
-					<td><input type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ ($build->is_published ? " checked" : "") }}></td>
-					<td><input type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ ($build->private ? " checked" : "") }}></td>
+					<td><input autocomplete="off" type="radio" name="recommended" value="{{ $build->version }}"{{ $modpack->recommended === $build->version ? " checked" : "" }}></td>
+					<td><input autocomplete="off" type="radio" name="latest" value="{{ $build->version }}"{{ $modpack->latest === $build->version ? " checked" : "" }}></td>
+					<td><input autocomplete="off" type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ $build->is_published ? " checked" : "" }}></td>
+					<td><input autocomplete="off" type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ $build->private ? " checked" : "" }}></td>
 					<td>{{ $build->created_at }}</td>
 					<td>{!! Html::link('modpack/build/'.$build->id, "Manage",'class="btn btn-xs btn-primary"') !!} {!! Html::link('modpack/build/'.$build->id.'?action=edit', "Edit",'class="btn btn-xs btn-warning"') !!} {!! Html::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-xs btn-danger"') !!}</td>
 				</tr>
