@@ -61,20 +61,26 @@
 
 $("input[name=recommended]").change(function() {
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: "{{ URL::to('modpack/modify/recommended?modpack='.$modpack->id) }}&recommended=" + encodeURIComponent($(this).val()),
 		success: function (data) {
 			$.jGrowl(data.success, { group: 'alert-success' });
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$.jGrowl(errorThrown, { group: 'alert-danger' });
 		}
 	});
 });
 
 $("input[name=latest]").change(function() {
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: "{{ URL::to('modpack/modify/latest?modpack='.$modpack->id) }}&latest=" + encodeURIComponent($(this).val()),
 		success: function (data) {
 			$.jGrowl(data.success, { group: 'alert-success' });
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$.jGrowl(errorThrown, { group: 'alert-danger' });
 		}
 	});
 });
@@ -84,10 +90,13 @@ $(".published").change(function() {
 	if (this.checked)
 		checked = 1;
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: "{{ URL::to('modpack/modify/published') }}?build=" + $(this).attr("rel") + "&published=" + checked,
 		success: function (data) {
 			$.jGrowl(data.success, { group: 'alert-success' });
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$.jGrowl(errorThrown, { group: 'alert-danger' });
 		}
 	})
 });
@@ -97,10 +106,13 @@ $(".private").change(function() {
 	if (this.checked)
 		checked = 1;
 	$.ajax({
-		type: "GET",
+		type: "POST",
 		url: "{{ URL::to('modpack/modify/private') }}?build=" + $(this).attr("rel") + "&private=" + checked,
 		success: function (data) {
 			$.jGrowl(data.success, { group: 'alert-success' });
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$.jGrowl(errorThrown, { group: 'alert-danger' });
 		}
 	})
 });
