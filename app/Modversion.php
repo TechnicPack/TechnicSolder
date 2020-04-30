@@ -16,6 +16,14 @@ class Modversion extends Model
         return $this->belongsToMany(Build::class)->withTimestamps();
     }
 
+    public function getUrlAttribute() {
+        if (!empty($this->attributes['url'])) {
+            return $this->attributes['url'];
+        }
+
+        return config('solder.mirror_url') . 'mods/' . $this->mod->name . '/' . $this->mod->name . '-' . $this->version . '.zip';
+    }
+
     public function humanFilesize($unit = null)
     {
         $size = $this->filesize;

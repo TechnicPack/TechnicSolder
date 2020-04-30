@@ -12,6 +12,11 @@
 */
 
 Route::get('/', 'ApiController@getIndex');
-Route::get('modpack/{modpack?}/{build?}', 'ApiController@getModpack');
+
+Route::get('modpack', 'ApiController@getModpackIndex');
+Route::get('modpack/{modpack}', 'ApiController@getModpack');
+Route::get('modpack/{modpack}/{build}', 'ApiController@getModpackBuild');
+
 Route::get('mod/{mod?}/{version?}', 'ApiController@getMod');
+
 Route::get('verify/{key}', 'ApiController@getVerify');

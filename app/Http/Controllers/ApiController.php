@@ -11,44 +11,41 @@ use Illuminate\Support\Facades\Request;
 
 class ApiController extends Controller
 {
+    /**
+     * @var Client|null The Solder client associated with the request
+     */
+    private $client;
+
+    /**
+     * @var Key|null The Platform API key associated with the request
+     */
+    private $key;
 
     public function __construct()
     {
         /* This checks the client list for the CID. If a matching CID is found, all caching will be ignored
            for this request */
 
-        if (Cache::has('clients')) {
-            $clients = Cache::get('clients');
+        $clients = Cache::remember('clients', now()->addMinutes(1), function () {
+            return Client::all();
+        });
+
+        $keys = Cache::remember('keys', now()->addMinutes(1), function () {
+            return Key::all();
+        });
+
+        $inputClientId = Request::input('cid');
+        if ($inputClientId) {
+            $this->client = $clients->firstWhere('uuid', '===', $inputClientId);
         } else {
-            $clients = Client::all();
-            Cache::put('clients', $clients, now()->addMinutes(1));
+            $this->client = null;
         }
 
-        if (Cache::has('keys')) {
-            $keys = Cache::get('keys');
+        $inputKey = Request::input('k');
+        if ($inputKey) {
+            $this->key = $keys->firstWhere('api_key', '===', $inputKey);
         } else {
-            $keys = Key::all();
-            Cache::put('keys', $keys, now()->addMinutes(1));
-        }
-
-        $input_cid = Request::input('cid');
-        if (!empty($input_cid)) {
-            foreach ($clients as $client) {
-                if ($client->uuid === $input_cid) {
-                    $this->client = $client;
-                    break;
-                }
-            }
-        }
-
-        $input_key = Request::input('k');
-        if (!empty($input_key)) {
-            foreach ($keys as $key) {
-                if ($key->api_key === $input_key) {
-                    $this->key = $key;
-                    break;
-                }
-            }
+            $this->key = null;
         }
     }
 
@@ -61,164 +58,155 @@ class ApiController extends Controller
         ]);
     }
 
-    public function getModpack($modpack = null, $build = null)
+    public function getModpackIndex()
     {
-        if (empty($modpack)) {
-            if (Request::has('include')) {
-                $include = Request::input('include');
-                switch ($include) {
-                    case "full":
-                        $modpacks = $this->fetchModpacks();
-                        $m_array = [];
-                        foreach ($modpacks['modpacks'] as $slug => $name) {
-                            $modpack = $this->fetchModpack($slug);
-                            $m_array[$slug] = $modpack;
-                        }
-                        $response = [];
-                        $response['modpacks'] = $m_array;
-                        $response['mirror_url'] = $modpacks['mirror_url'];
-                        return response()->json($response);
-                        break;
-                }
-            } else {
-                return response()->json($this->fetchModpacks());
+        $includeFull = Request::input('include') === 'full';
+
+        $modpacks = $this->fetchModpacks();
+
+        $response = [];
+
+        if ($includeFull) {
+            $modpacks->load('builds');
+
+            $response['modpacks'] = [];
+
+            foreach ($modpacks as $modpack) {
+                $response['modpacks'][$modpack->slug] = $this->fetchModpack($modpack->slug);
             }
         } else {
-            if (empty($build)) {
-                return response()->json($this->fetchModpack($modpack));
-            } else {
-                return response()->json($this->fetchBuild($modpack, $build));
-            }
+            $response['modpacks'] = $modpacks->pluck('name', 'slug');
         }
+
+        $response['mirror_url'] = config('solder.mirror_url');
+
+        return response()->json($response);
     }
 
-    public function getMod($mod = null, $version = null)
+    public function getModpack($slug)
     {
-        if (empty($mod)) {
-            $response = [];
-            if (Cache::has('modlist') && empty($this->client) && empty($this->key)) {
-                $response['mods'] = Cache::get('modlist');
+        return response()->json($this->fetchModpack($slug));
+
+    }
+
+    public function getModpackBuild($modpackSlug, $buildName)
+    {
+        return response()->json($this->fetchBuild($modpackSlug, $buildName));
+    }
+
+    public function getMod($modSlug = null, $version = null)
+    {
+        if (empty($modSlug)) {
+            // For some reason, authenticated clients or Platform (with the Platform user API key) bypass cache
+            if ($this->client || $this->key) {
+                $mods = Mod::all([
+                    'name',
+                    'pretty_name',
+                ])->pluck('pretty_name', 'name');
             } else {
-                $response['mods'] = [];
-                foreach (Mod::all() as $mod) {
-                    $response['mods'][$mod->name] = $mod->pretty_name;
-                }
-                //usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
-                Cache::put('modlist', $response['mods'], now()->addMinutes(5));
-            }
-            return response()->json($response);
-        } else {
-            if (Cache::has('mod.' . $mod)) {
-                $mod = Cache::get('mod.' . $mod);
-            } else {
-                $modname = $mod;
-                $mod = Mod::where('name', '=', $mod)->first();
-                Cache::put('mod.' . $modname, $mod, now()->addMinutes(5));
+                $mods = Cache::remember('mods', now()->addMinutes(5), function () {
+                    return Mod::all([
+                        'name',
+                        'pretty_name',
+                    ])->pluck('pretty_name', 'name');
+                });
             }
 
-            if (empty($mod)) {
-                return response()->json(['error' => 'Mod does not exist']);
+            //usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+
+            return response()->json([
+                'mods' => $mods,
+            ]);
+        } else {
+            $mod = Cache::remember('mod:' . $modSlug, now()->addMinutes(5), function () use ($modSlug) {
+                return Mod::with('versions')->where('name', $modSlug)->first();
+            });
+
+            if (!$mod) {
+                return response()->json(['error' => 'Mod does not exist'], 404);
             }
 
             if (empty($version)) {
-                return response()->json($this->fetchMod($mod));
+                $response = $mod->only([
+                    'id',
+                    'name',
+                    'pretty_name',
+                    'author',
+                    'description',
+                    'link',
+                ]);
+
+                $response['versions'] = $mod->versions->pluck('version');
+
+                return response()->json($response);
             }
 
-            return response()->json($this->fetchModversion($mod, $version));
+            $modVersion = $mod->versions()->where('version', $version)->first();
+
+            if (!$modVersion) {
+                return response()->json(["error" => "Mod version does not exist"]);
+            }
+
+            $response = $modVersion->only([
+                'id',
+                'md5',
+                'filesize',
+                'url',
+            ]);
+
+            return response()->json($response);
         }
     }
 
     public function getVerify($key = null)
     {
-        if (empty($key)) {
+        if (!$key) {
             return response()->json(["error" => "No API key provided."]);
         }
 
-        $key = Key::where('api_key', '=', $key)->first();
+        $key = Key::where('api_key', $key)->first();
 
-        if (empty($key)) {
+        if (!$key) {
             return response()->json(["error" => "Invalid key provided."]);
-        } else {
-            return response()->json(["valid" => "Key validated.", "name" => $key->name, "created_at" => $key->created_at]);
         }
+
+        return response()->json([
+            "valid" => "Key validated.",
+            "name" => $key->name,
+            "created_at" => $key->created_at,
+        ]);
     }
 
 
     /* Private Functions */
 
-    private function fetchMod($mod)
-    {
-        $response = [];
-
-        $response['id'] = $mod->id;
-        $response['name'] = $mod->name;
-        $response['pretty_name'] = $mod->pretty_name;
-        $response['author'] = $mod->author;
-        $response['description'] = $mod->description;
-        $response['link'] = $mod->link;
-        $response['versions'] = [];
-
-        foreach ($mod->versions as $version) {
-            array_push($response['versions'], $version->version);
-        }
-
-        return $response;
-    }
-
-    private function fetchModversion($mod, $version)
-    {
-        $response = [];
-
-        $version = Modversion::where("mod_id", "=", $mod->id)
-            ->where("version", "=", $version)->first();
-
-        if (empty($version)) {
-            return ["error" => "Mod version does not exist"];
-        }
-
-        $response['id'] = $version->id;
-        $response['md5'] = $version->md5;
-        $response['filesize'] = $version->filesize;
-        $response['url'] = config('solder.mirror_url') . 'mods/' . $version->mod->name . '/' . $version->mod->name . '-' . $version->version . '.zip';
-
-        return $response;
-    }
-
     private function fetchModpacks()
     {
-        if (Cache::has('modpacks') && empty($this->client) && empty($this->key)) {
-            $modpacks = Cache::get('modpacks');
-        } else {
-            $modpacks = Modpack::all();
-            if (empty($this->client) && empty($this->key)) {
-                Cache::put('modpacks', $modpacks, now()->addMinutes(5));
-            }
+        $modpacks = Cache::remember('modpacks', now()->addMinutes(5), function () {
+            return Modpack::all();
+        });
 
+        if ($this->client) {
+            // Eager load client-specific modpacks
+            $this->client->load('modpacks');
         }
 
-        $response = [];
-        $response['modpacks'] = [];
-        foreach ($modpacks as $modpack) {
-            if ($modpack->private == 1 || $modpack->hidden == 1) {
-                if (isset($this->client)) {
-                    foreach ($this->client->modpacks as $pmodpack) {
-                        if ($pmodpack->id == $modpack->id) {
-                            $response['modpacks'][$modpack->slug] = $modpack->name;
-                        }
-                    }
-                } else {
-                    if (isset($this->key)) {
-                        $response['modpacks'][$modpack->slug] = $modpack->name;
-                    }
-                }
-            } else {
-                $response['modpacks'][$modpack->slug] = $modpack->name;
-            }
+        // Requests authenticated with a Platform key have access to all modpacks
+        if (!$this->key) {
+            // If a key isn't specified, we filter modpacks
+            $modpacks = $modpacks->filter(function ($modpack) {
+                // Allow non-private, non-hidden modpacks
+                if ($modpack->private == 0 && $modpack->hidden == 0) return true;
+
+                // Reject if this is a private or hidden modpack, and a client isn't set
+                if (!$this->client) return false;
+
+                // Allow if the current client has access to this modpack
+                return $this->client->modpacks->contains($modpack);
+            });
         }
 
-        $response['mirror_url'] = config('solder.mirror_url');
-
-        return $response;
+        return $modpacks;
     }
 
     private function fetchModpack($slug)

@@ -75,7 +75,7 @@ class ApiTest extends TestCase
     public function testInvalidMod()
     {
         $response = $this->get('api/mod/bob');
-        $response->assertOk();
+        $response->assertNotFound();
         $response->assertJsonStructure(['error']);
     }
 
