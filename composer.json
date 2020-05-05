@@ -34,7 +34,10 @@
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "^6.0",
-        "php-http/guzzle6-adapter": "^1.1"
+        "php-http/guzzle6-adapter": "^1.1",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",
