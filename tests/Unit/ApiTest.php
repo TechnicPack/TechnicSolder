@@ -70,6 +70,7 @@ class ApiTest extends TestCase
             'background_md5',
             'builds',
         ]);
+        $response->assertJsonPath('builds', ['1.0.0'], true);
     }
 
     public function testInvalidMod()

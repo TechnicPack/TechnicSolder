@@ -5,7 +5,6 @@ use App\Client;
 use App\Key;
 use App\Mod;
 use App\Modpack;
-use App\Modversion;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 
@@ -211,169 +210,82 @@ class ApiController extends Controller
 
     private function fetchModpack($slug)
     {
-        $response = [];
-
-        if (Cache::has('modpack.' . $slug) && empty($this->client) && empty($this->key)) {
-            $modpack = Cache::get('modpack.' . $slug);
+        // Authenticated requests bypass cache
+        if (!$this->client && !$this->key) {
+            $modpack = Cache::remember('modpack:' . $slug, now()->addMinutes(5), function () use ($slug) {
+                return Modpack::with('builds')
+                    ->where('slug', $slug)
+                    ->first();
+            });
         } else {
-            $modpack = Modpack::with('Builds')
-                ->where("slug", "=", $slug)->first();
-            if (empty($this->client) && empty($this->key)) {
-                Cache::put('modpack.' . $slug, $modpack, now()->addMinutes(5));
-            }
+            $modpack = Modpack::with('builds')
+                ->where('slug', $slug)
+                ->first();
         }
 
-        if (empty($modpack)) {
+        if (!$modpack) {
             return ["error" => "Modpack does not exist"];
         }
 
-        $response['id'] = $modpack->id;
-        $response['name'] = $modpack->slug;
-        $response['display_name'] = $modpack->name;
-        $response['url'] = $modpack->url;
-        $response['icon'] = $modpack->icon_url;
-        $response['icon_md5'] = $modpack->icon_md5;
-        $response['logo'] = $modpack->logo_url;
-        $response['logo_md5'] = $modpack->logo_md5;
-        $response['background'] = $modpack->background_url;
-        $response['background_md5'] = $modpack->background_md5;
-        $response['recommended'] = $modpack->recommended;
-        $response['latest'] = $modpack->latest;
-        $response['builds'] = [];
-
-        foreach ($modpack->builds as $build) {
-            if ($build->is_published) {
-                if (!$build->private || isset($this->key)) {
-                    array_push($response['builds'], $build->version);
-                } else {
-                    if (isset($this->client)) {
-                        foreach ($this->client->modpacks as $pmodpack) {
-                            if ($modpack->id == $pmodpack->id) {
-                                array_push($response['builds'], $build->version);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return $response;
+        return $modpack->toApiResponse($this->client, $this->key);
     }
 
-    private function fetchBuild($slug, $build)
+    private function fetchBuild($modpackSlug, $buildName)
     {
-        $response = [];
+        // Authenticated requests bypass cache
+        $bypassCache = $this->client || $this->key;
 
-        if (Cache::has('modpack.' . $slug) && empty($this->client) && empty($this->key)) {
-            $modpack = Cache::Get('modpack.' . $slug);
+        if ($bypassCache) {
+            $modpack = Modpack::with('builds')
+                ->where('slug', $modpackSlug)
+                ->first();
         } else {
-            $modpack = Modpack::where("slug", "=", $slug)->first();
-            if (empty($this->client) && empty($this->key)) {
-                Cache::put('modpack.' . $slug, $modpack, now()->addMinutes(5));
-            }
+            $modpack = Cache::remember('modpack:' . $modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
+                return Modpack::with('builds')
+                    ->where('slug', $modpackSlug)
+                    ->first();
+            });
         }
 
-        if (empty($modpack)) {
+        if (!$modpack) {
             return ["error" => "Modpack does not exist"];
         }
 
-        $buildpass = $build;
-        if (Cache::has('modpack.' . $slug . '.build.' . $build) && empty($this->client) && empty($this->key)) {
-            $build = Cache::get('modpack.' . $slug . '.build.' . $build);
+        if ($bypassCache) {
+            $build = $modpack->builds->firstWhere('version', '===', $buildName);
+
+            $build->load(['modversions', 'modversions.mod']);
         } else {
-            $build = Build::with('Modversions')
-                ->where("modpack_id", "=", $modpack->id)
-                ->where("version", "=", $build)->first();
-            if (empty($this->client) && empty($this->key)) {
-                Cache::put('modpack.' . $slug . '.build.' . $buildpass, $build, now()->addMinutes(5));
-            }
+            $build = Cache::remember('modpack:' . $modpackSlug . ':build:' . $buildName,
+                now()->addMinutes(5),
+                function () use ($modpack, $buildName) {
+                    $build = $modpack->builds->firstWhere('version', '===', $buildName);
+
+                    $build->load(['modversions', 'modversions.mod']);
+
+                    return $build;
+                });
         }
 
-        if (empty($build)) {
+        if (!$build) {
             return ["error" => "Build does not exist"];
         }
 
-        $response['id'] = $build->id;
-        $response['minecraft'] = $build->minecraft;
-        $response['java'] = $build->min_java;
-        $response['memory'] = $build->min_memory;
-        $response['forge'] = $build->forge;
-        $response['mods'] = [];
+        $response = [
+            'id' => $build->id,
+            'minecraft' => $build->minecraft,
+            'java' => $build->min_java,
+            'memory' => $build->min_memory,
+            'forge' => $build->forge,
+        ];
 
-        if (!Request::has('include')) {
-            if (Cache::has('modpack.' . $slug . '.build.' . $buildpass . 'modversion') && empty($this->client) && empty($this->key)) {
-                $response['mods'] = Cache::get('modpack.' . $slug . '.build.' . $buildpass . 'modversion');
-            } else {
-                foreach ($build->modversions as $modversion) {
-                    $response['mods'][] = [
-                        "id" => $modversion->id,
-                        "name" => $modversion->mod->name,
-                        "version" => $modversion->version,
-                        "md5" => $modversion->md5,
-                        "filesize" => $modversion->filesize,
-                        "url" => config('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
-                    ];
-                }
-                usort($response['mods'], function ($a, $b) {
-                    return strcasecmp($a['name'], $b['name']);
-                });
-                Cache::put('modpack.' . $slug . '.build.' . $buildpass . 'modversion', $response['mods'], now()->addMinutes(5));
-            }
-        } else {
-            if (Request::input('include') == "mods") {
-                if (Cache::has('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.mods') && empty($this->client) && empty($this->key)) {
-                    $response['mods'] = Cache::get('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.mods');
-                } else {
-                    foreach ($build->modversions as $modversion) {
-                        $response['mods'][] = [
-                            "id" => $modversion->id,
-                            "name" => $modversion->mod->name,
-                            "version" => $modversion->version,
-                            "md5" => $modversion->md5,
-                            "filesize" => $modversion->filesize,
-                            "pretty_name" => $modversion->mod->pretty_name,
-                            "author" => $modversion->mod->author,
-                            "description" => $modversion->mod->description,
-                            "link" => $modversion->mod->link,
-                            "url" => config('solder.mirror_url') . 'mods/' . $modversion->mod->name . '/' . $modversion->mod->name . '-' . $modversion->version . '.zip'
-                        ];
-                    }
-                    usort($response['mods'], function ($a, $b) {
-                        return strcasecmp($a['name'], $b['name']);
-                    });
-                    Cache::put('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.mods', $response['mods'], now()->addMinutes(5));
-                }
-            } else {
-                $request = explode(",", Request::input('include'));
-                if (Cache::has('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.' . $request) && empty($this->client) && empty($this->key)) {
-                    $response['mods'] = Cache::get('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.' . $request);
-                } else {
-                    foreach ($build->modversions as $modversion) {
-                        $data = [
-                            "id" => $modversion->id,
-                            "name" => $modversion->mod->name,
-                            "version" => $modversion->version,
-                            "md5" => $modversion->md5,
-                            "filesize" => $modversion->filesize,
-                        ];
-                        $mod = (array) $modversion->mod;
-                        $mod = $mod['attributes'];
-                        foreach ($request as $type) {
-                            if (isset($mod[$type])) {
-                                $data[$type] = $mod[$type];
-                            }
-                        }
+        $includeFullMods = Request::input('include') === 'mods';
 
-                        $response['mods'][] = $data;
-                    }
-                    usort($response['mods'], function ($a, $b) {
-                        return strcasecmp($a['name'], $b['name']);
-                    });
-                    Cache::put('modpack.' . $slug . '.build.' . $buildpass . 'modversion.include.' . $request, $response['mods'],
-                        now()->addMinutes(5));
-                }
-            }
-        }
+        $mods = $build->modversions->map(function ($modversion) use ($includeFullMods) {
+            return $modversion->toApiResponse($includeFullMods);
+        })->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE);
+
+        $response['mods'] = $mods;
 
         return $response;
     }

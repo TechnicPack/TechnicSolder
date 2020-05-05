@@ -38,4 +38,26 @@ class Modversion extends Model
         }
         return number_format($size) . " bytes";
     }
+
+    public function toApiResponse(bool $full) {
+        $response = [
+            "id" => $this->id,
+            "name" => $this->mod->name,
+            "version" => $this->version,
+            "md5" => $this->md5,
+            "filesize" => $this->filesize,
+            "url" => $this->url,
+        ];
+
+        if ($full) {
+            $response = array_merge($response, [
+                "pretty_name" => $this->mod->pretty_name,
+                "author" => $this->mod->author,
+                "description" => $this->mod->description,
+                "link" => $this->mod->link,
+            ]);
+        }
+
+        return $response;
+    }
 }
