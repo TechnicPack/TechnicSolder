@@ -34,7 +34,7 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
-                {!! Form::submit('Create User', array('class' => 'btn btn-success')) !!}
+                {!! Form::submit('Create User', ['class' => 'btn btn-success']) !!}
             </div>
             <div class="col-md-6">
                 <h3>Permissions</h3>

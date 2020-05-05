@@ -55,8 +55,8 @@
                     <label for="password2">Password Again</label>
                     <input type="password" class="form-control" name="password2" id="password2">
                 </div>
-                {!! Form::submit('Save User', array('class' => 'btn btn-success')) !!}
-                {!! Html::link('user/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+                {!! Form::submit('Save User', ['class' => 'btn btn-success']) !!}
+                {!! Html::link('user/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
             </div>
             <div class="col-md-6">
                 @if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users)

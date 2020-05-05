@@ -18,7 +18,7 @@
 			@endforeach
 			</div>
 		@endif
-		{!! Form::open(array('url' => URL::full() )) !!}
+		{!! Form::open(['url' => URL::full() ]) !!}
 		<input type="hidden" name="confirm-edit" value="1">
 		<div class="row">
 			<div class="col-md-6">
@@ -66,9 +66,9 @@
 			</div>
 		</div>
 		<hr>
-		{!! Form::submit('Update Build', array('class' => 'btn btn-success')) !!}
-		{!! Html::link('modpack/build/'.$build->id.'?action=delete', 'Delete Build', array('class' => 'btn btn-danger')) !!}
-		{!! Html::link('modpack/build/'.$build->id, 'Go Back', array('class' => 'btn btn-primary')) !!}
+		{!! Form::submit('Update Build', ['class' => 'btn btn-success']) !!}
+		{!! Html::link('modpack/build/'.$build->id.'?action=delete', 'Delete Build', ['class' => 'btn btn-danger']) !!}
+		{!! Html::link('modpack/build/'.$build->id, 'Go Back', ['class' => 'btn btn-primary']) !!}
 		{!! Form::close() !!}
 	</div>
 </div>

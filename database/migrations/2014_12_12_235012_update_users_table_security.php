@@ -26,7 +26,7 @@ class UpdateUsersTableSecurity extends Migration {
 	public function down()
 	{
 		Schema::table("users", function($table) {
-			$table->dropColumn(array('created_by_user_id', 'updated_by_ip', 'updated_by_user_id'));
+			$table->dropColumn(['created_by_user_id', 'updated_by_ip', 'updated_by_user_id']);
 		});
 	}
 

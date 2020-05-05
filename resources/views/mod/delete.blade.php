@@ -40,8 +40,8 @@
     </div>
     {!! Form::open() !!}
     <hr>
-    {!! Form::submit('Delete Mod', array('class' => 'btn btn-danger')) !!}
-    {!! Html::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+    {!! Form::submit('Delete Mod', ['class' => 'btn btn-danger']) !!}
+    {!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
     {!! Form::close() !!}
   </div>
 </div>

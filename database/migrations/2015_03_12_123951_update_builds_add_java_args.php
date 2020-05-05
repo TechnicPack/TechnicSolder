@@ -25,7 +25,7 @@ class UpdateBuildsAddJavaArgs extends Migration {
 	public function down()
 	{
 		Schema::table('builds', function($table) {
-			$table->dropColumn(array('min_java', 'min_memory'));
+			$table->dropColumn(['min_java', 'min_memory']);
 		});
 	}
 

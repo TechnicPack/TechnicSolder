@@ -13,8 +13,8 @@
 		<p>Are you sure you want to delete this build? This action is irreversible!</p>
 		<form method="post" action="{{ URL::full() }}">
 			<input type="hidden" name="confirm-delete" value="1">
-			{!! Form::submit('Delete Build', array('class' => 'btn btn-danger')) !!}
-			{!! Html::link('modpack/view/'.$build->modpack->id, 'Go Back', array('class' => 'btn btn-primary')) !!}
+			{!! Form::submit('Delete Build', ['class' => 'btn btn-danger']) !!}
+			{!! Html::link('modpack/view/'.$build->modpack->id, 'Go Back', ['class' => 'btn btn-primary']) !!}
 		</form>
 	</div>
 </div>

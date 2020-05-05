@@ -26,7 +26,7 @@ class AddImageFields extends Migration {
 	public function down()
 	{
 		Schema::table("modpacks", function($table) {
-			$table->dropColumn(array("icon", "logo", "background"));
+			$table->dropColumn(["icon", "logo", "background"]);
 		});
 	}
 

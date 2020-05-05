@@ -17,7 +17,7 @@
 		@endif
 		<form method="post" action="{{ URL::current() }}">
 			<button type="submit" class="btn btn-danger">Confirm Deletion</button> 
-			{!! Html::link('user/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+			{!! Html::link('user/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
 		</form>
 	</div>
 </div>

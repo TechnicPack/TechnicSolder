@@ -29,8 +29,8 @@
                     <label for="uuid">UUID</label>
                     <input type="text" class="form-control" name="uuid" id="uuid">
                 </div>
-				{!! Form::submit('Add Client', array('class' => 'btn btn-success')) !!}
-				{!! Html::link('client/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+				{!! Form::submit('Add Client', ['class' => 'btn btn-success']) !!}
+				{!! Html::link('client/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
 				{!! Form::close() !!}
 			</div>
 		</div>

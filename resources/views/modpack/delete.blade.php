@@ -14,7 +14,7 @@
 		<p>Deleting a modpack is irreversible. All associated builds will be immediately removed. This will remove them from your API. Users with this modpack already on their launcher will be able to continue to use it in "Offline Mode."</p>
 		{!! Form::open() !!}
 		<button type="submit" class="btn btn-danger">Confirm Deletion</button> 
-		{!! Html::link('modpack/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+		{!! Html::link('modpack/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
 		{!! Form::close() !!}
 	</div>
 </div>

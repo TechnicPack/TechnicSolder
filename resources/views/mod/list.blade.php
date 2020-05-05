@@ -50,8 +50,8 @@
 						<b>Latest Version:</b> {{ !$mod->versions->isEmpty() ? $mod->versions->first()->version : "N/A" }}
 					</td>
 					<td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
-					<td>{!! !empty($mod->link) ? Html::link($mod->link, $mod->link, array("target" => "_blank")) : "N/A" !!}</td>
-					<td>{!! Html::link('mod/view/'.$mod->id,'Manage', array("class" => "btn btn-xs btn-primary")) !!}</td>
+					<td>{!! !empty($mod->link) ? Html::link($mod->link, $mod->link, ["target" => "_blank"]) : "N/A" !!}</td>
+					<td>{!! Html::link('mod/view/'.$mod->id,'Manage', ["class" => "btn btn-xs btn-primary"]) !!}</td>
 				</tr>
 			@endforeach
 		</table>

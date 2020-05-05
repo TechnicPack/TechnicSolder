@@ -35,7 +35,7 @@
 					<td>{{ $client->id }}</td>
 					<td>{{ $client->name }}</td>
 					<td>{{ $client->uuid }}</td>
-					<td>{!! Html::link('client/delete/'.$client->id, 'Delete', array('class' => 'btn btn-danger btn-xs')) !!}</td>
+					<td>{!! Html::link('client/delete/'.$client->id, 'Delete', ['class' => 'btn btn-danger btn-xs']) !!}</td>
 				</tr>
 			@endforeach
 			</tbody>

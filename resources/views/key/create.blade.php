@@ -29,8 +29,8 @@
                     <label for="api_key">API Key</label>
                     <input type="text" class="form-control" name="api_key" id="api_key">
                 </div>
-				{!! Form::submit('Add Key', array('class' => 'btn btn-success')) !!}
-				{!! Html::link('key/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+				{!! Form::submit('Add Key', ['class' => 'btn btn-success']) !!}
+				{!! Html::link('key/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
 				{!! Form::close() !!}
 			</div>
 		</div>

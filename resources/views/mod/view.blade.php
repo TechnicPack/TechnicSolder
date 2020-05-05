@@ -59,9 +59,9 @@
 											</div>
 						</div>
 					</div>
-					{!! Form::submit('Save Changes', array('class' => 'btn btn-success')) !!}
-					{!! Html::link('mod/delete/'.$mod->id, 'Delete Mod', array('class' => 'btn btn-danger')) !!}
-					{!! Html::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+					{!! Form::submit('Save Changes', ['class' => 'btn btn-success']) !!}
+					{!! Html::link('mod/delete/'.$mod->id, 'Delete Mod', ['class' => 'btn btn-danger']) !!}
+					{!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
 				</form>
 			</div>
 			<div class="tab-pane fade in active" id="versions">

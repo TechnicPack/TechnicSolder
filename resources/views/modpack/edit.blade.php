@@ -69,9 +69,9 @@
 		<div class="row">
 			<div class="col-md-12">
 				<hr>
-				{!! Form::submit('Save Modpack', array('class' => 'btn btn-success')) !!}
-				{!! Html::link('modpack/delete/' . $modpack->id, 'Delete Modpack', array('class' => 'btn btn-danger')) !!}
-				{!! Html::link(URL::previous(), 'Go Back', array('class' => 'btn btn-primary')) !!}
+				{!! Form::submit('Save Modpack', ['class' => 'btn btn-success']) !!}
+				{!! Html::link('modpack/delete/' . $modpack->id, 'Delete Modpack', ['class' => 'btn btn-danger']) !!}
+				{!! Html::link(URL::previous(), 'Go Back', ['class' => 'btn btn-primary']) !!}
 			</div>
 		</div>
 		{!! Form::close() !!}

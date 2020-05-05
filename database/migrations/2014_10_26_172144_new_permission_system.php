@@ -40,11 +40,13 @@ class NewPermissionSystem extends Migration {
 	public function down()
 	{
 		Schema::table('user_permissions', function($table) {
-			$table->dropColumn(array('modpacks_delete', 
+			$table->dropColumn([
+                'modpacks_delete',
                                     'modpacks_manage', 
                                     'modpacks_create', 
                                     'solder_clients',
-                                    'solder_keys'));
+                                    'solder_keys'
+            ]);
         });
 
         Schema::table('user_permissions', function($table) {

@@ -74,8 +74,8 @@
 			</div>
 		</div>
 		<hr>
-		{!! Form::submit('Add Build', array('class' => 'btn btn-success')) !!}
-		{!! Html::link('modpack/view/'.$modpack->id, 'Go Back', array('class' => 'btn btn-primary')) !!}
+		{!! Form::submit('Add Build', ['class' => 'btn btn-success']) !!}
+		{!! Html::link('modpack/view/'.$modpack->id, 'Go Back', ['class' => 'btn btn-primary']) !!}
 		{!! Form::close() !!}
 	</div>
 </div>

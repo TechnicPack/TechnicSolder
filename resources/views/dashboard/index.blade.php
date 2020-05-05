@@ -44,7 +44,7 @@
 								<td>{{ $build->minecraft }}</td>
 								<td>{{ $build->modversions_count }}</td>
 								<td>{{ $build->updated_at }}</td>
-								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', array('class' => 'btn btn-warning btn-xs')) !!}</td>
+								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', ['class' => 'btn btn-warning btn-xs']) !!}</td>
 							</tr>
 						@endforeach
 					</tbody>
@@ -85,9 +85,9 @@
 								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->name) !!}</td>
 							@endif
 							<td>{{ !empty($modversion->mod->author) ? $modversion->mod->author : "N/A" }}</td>
-							<td>{!! !empty($modversion->mod->link) ? Html::link($modversion->mod->link, $modversion->mod->link, array("target" => "_blank")) : "N/A" !!}</td>
+							<td>{!! !empty($modversion->mod->link) ? Html::link($modversion->mod->link, $modversion->mod->link, ["target" => "_blank"]) : "N/A" !!}</td>
 							<td>{{ $modversion->created_at }}
-							<td>{!! Html::link('mod/view/'.$modversion->mod->id.'#versions','Manage', array("class" => "btn btn-xs btn-primary")) !!}</td>
+							<td>{!! Html::link('mod/view/'.$modversion->mod->id.'#versions','Manage', ["class" => "btn btn-xs btn-primary"]) !!}</td>
 						</tr>
 					@endforeach
 					</tbody>

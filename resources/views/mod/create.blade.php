@@ -49,8 +49,8 @@
 				</blockquote>
 			</div>
 		</div>
-		{!! Form::submit('Add Mod', array('class' => 'btn btn-success')) !!}
-		{!! Html::link('mod/list/', 'Go Back', array('class' => 'btn btn-primary')) !!}
+		{!! Form::submit('Add Mod', ['class' => 'btn btn-success']) !!}
+		{!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
 		</form>
 	</div>
 </div>
