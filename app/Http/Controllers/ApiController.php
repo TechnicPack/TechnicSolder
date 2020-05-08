@@ -287,7 +287,7 @@ class ApiController extends Controller
 
         $mods = $build->modversions->map(function ($modversion) use ($includeFullMods) {
             return $modversion->toApiResponse($includeFullMods);
-        })->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE);
+        })->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE)->values();
 
         $response['mods'] = $mods;
 
