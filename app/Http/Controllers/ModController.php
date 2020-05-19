@@ -126,7 +126,7 @@ class ModController extends Controller
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
         $mod->save();
-        Cache::forget('mod.' . $mod->name);
+        Cache::forget('mod:' . $mod->name);
 
         return redirect('mod/view/' . $mod->id)->with('success', 'Mod successfully edited.');
     }
@@ -143,7 +143,7 @@ class ModController extends Controller
             $ver->delete();
         }
         $mod->delete();
-        Cache::forget('mod.' . $mod->name);
+        Cache::forget('mod:' . $mod->name);
 
         return redirect('mod/list')->with('success', 'Mod deleted!');
     }
