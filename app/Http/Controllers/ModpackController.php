@@ -77,6 +77,7 @@ class ModpackController extends Controller
                 if ($build->version == $modpack->latest) {
                     $switchlat = 1;
                 }
+                $buildVersion = $build->version;
                 $build->modversions()->sync([]);
                 $build->delete();
                 if ($switchrec) {
@@ -91,7 +92,8 @@ class ModpackController extends Controller
                     $modpack->latest = $latbuild->version;
                 }
                 $modpack->save();
-                Cache::forget('modpack.' . $modpack->slug);
+                Cache::forget('modpack:' . $modpack->slug);
+                Cache::forget('modpack:' . $modpack->slug . ':build:' . $buildVersion);
                 return redirect('modpack/view/' . $build->modpack->id)->with('deleted', 'Build deleted.');
             }
 
@@ -123,7 +125,8 @@ class ModpackController extends Controller
                     $build->min_java = Request::input('java-version');
                     $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
                     $build->save();
-                    Cache::forget('modpack.' . $build->modpack->slug . '.build.' . $build->version);
+                    Cache::forget('modpack:' . $build->modpack->slug);
+                    Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
                     return redirect('modpack/build/' . $build->id);
                 }
                 $minecraft = MinecraftUtils::getMinecraft();
@@ -193,7 +196,7 @@ class ModpackController extends Controller
         $build->min_java = Request::input('java-version');
         $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
         $build->save();
-        Cache::forget('modpack.' . $modpack->slug);
+        Cache::forget('modpack:' . $modpack->slug);
         if (!empty($clone)) {
             $clone_build = Build::find($clone);
             $version_ids = [];
@@ -309,7 +312,7 @@ class ModpackController extends Controller
         $modpack->private = Request::boolean('private');
         $modpack->save();
 
-        Cache::forget('modpack.' . $modpack->slug);
+        Cache::forget('modpack:' . $modpack->slug);
         Cache::forget('modpacks');
 
         /* Client Syncing */
@@ -367,7 +370,7 @@ class ModpackController extends Controller
         }
 
         switch ($action) {
-            case "version":
+            case "version": // Change mod version in a build
                 $version_id = Request::input('version');
                 $modversion_id = Request::input('modversion_id');
                 $affected = DB::table('build_modversion')
@@ -388,7 +391,7 @@ class ModpackController extends Controller
                     'reason' => 'Rows Affected: ' . $affected
                 ]);
                 break;
-            case "delete":
+            case "delete": // Remove mod version from build
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', Request::input('build_id'))
                     ->where('modversion_id', '=', Request::input('modversion_id'))
@@ -402,7 +405,7 @@ class ModpackController extends Controller
                     'reason' => 'Rows Affected: ' . $affected
                 ]);
                 break;
-            case "add":
+            case "add": // Add mod version to build
                 $build = Build::find(Request::input('build'));
                 $mod = Mod::where('name', '=', Request::input('mod-name'))->first();
                 $ver = Modversion::where('mod_id', '=', $mod->id)
@@ -419,6 +422,10 @@ class ModpackController extends Controller
                     ]);
                 } else {
                     $build->modversions()->attach($ver->id);
+
+                    Cache::forget('modpack:' . $build->modpack->slug);
+                    Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
+
                     return response()->json([
                         'status' => 'success',
                         'pretty_name' => $mod->pretty_name,
@@ -426,48 +433,54 @@ class ModpackController extends Controller
                     ]);
                 }
                 break;
-            case "recommended":
+            case "recommended": // Set recommended build
                 $modpack = Modpack::find(Request::input('modpack'));
                 $new_version = Request::input('recommended');
                 $modpack->recommended = $new_version;
                 $modpack->save();
 
-                Cache::forget('modpack.' . $modpack->slug);
+                Cache::forget('modpack:' . $modpack->slug);
 
                 return response()->json([
                     "success" => "Updated " . $modpack->name . "'s recommended  build to " . $new_version,
                     "version" => $new_version
                 ]);
                 break;
-            case "latest":
+            case "latest": // Set latest build
                 $modpack = Modpack::find(Request::input('modpack'));
                 $new_version = Request::input('latest');
                 $modpack->latest = $new_version;
                 $modpack->save();
 
-                Cache::forget('modpack.' . $modpack->slug);
+                Cache::forget('modpack:' . $modpack->slug);
 
                 return response()->json([
                     "success" => "Updated " . $modpack->name . "'s latest  build to " . $new_version,
                     "version" => $new_version
                 ]);
                 break;
-            case "published":
-                $build = Build::find(Request::input('build'));
+            case "published": // Set build published status
+                $build = Build::with('modpack')->find(Request::input('build'));
                 $published = Request::input('published');
 
                 $build->is_published = ($published ? true : false);
                 $build->save();
 
+                Cache::forget('modpack:' . $build->modpack->slug);
+                Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
+
                 return response()->json([
                     "success" => "Updated build " . $build->version . "'s published status.",
                 ]);
             case "private":
-                $build = Build::find(Request::input('build'));
+                $build = Build::with('modpack')->find(Request::input('build'));
                 $private = Request::input('private');
 
                 $build->private = ($private ? true : false);
                 $build->save();
+
+                Cache::forget('modpack:' . $build->modpack->slug);
+                Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
 
                 return response()->json([
                     "success" => "Updated build " . $build->version . "'s private status.",
