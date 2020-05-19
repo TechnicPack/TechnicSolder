@@ -50,6 +50,7 @@
 				<td>
 					<i class="icon-plus"></i>
 					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
+						<option value=""></option>
 						@foreach ($mods as $mod)
 						<option value="{{ $mod->name }}">{{ $mod->pretty_name }}</option>
 						@endforeach
@@ -122,17 +123,52 @@
 <script type="text/javascript">
 var $select = $("#mod").selectize({
 			dropdownParent: "body",
-			persist: false,
+			create: false,
 			maxItems: 1,
 			sortField: {
 				field: 'text',
 				direction: 'asc'
 			},
+			onChange: function(value) {
+				if (!value.length) return;
+
+				modversion.disable();
+
+				// First clear the current selection and then clear all the options, otherwise
+				// the previously selected item will remain in the available options
+				modversion.clear();
+				modversion.clearOptions();
+
+				modversion.load(function(callback) {
+					$.ajax({
+						type: "GET",
+						url: "{{ URL::to('api/mod/') }}/" + mod.getValue(),
+						success: function (data) {
+							if (data.versions.length === 0) {
+								$.jGrowl("No Modversions found for " + data.pretty_name, {group: 'alert-warning'});
+								$("#mod-version").attr("placeholder", "No Modversions found...");
+								callback();
+							} else {
+								callback(data.versions.map(function (x) {
+									return {value: x, text: x}
+								}));
+								modversion.enable();
+								modversion.refreshOptions(true);
+								$("#mod-version").attr("placeholder", "Select a Modversion...");
+							}
+						},
+						error: function (xhr, textStatus, errorThrown) {
+							$.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
+							callback();
+						}
+					});
+				});
+			}
 		});
 var mod = $select[0].selectize;
 var $select = $("#mod-version").selectize({
 			dropdownParent: "body",
-			persist: false,
+			create: false,
 			maxItems: 1,
 			sortField: {
 					field: 'text',
@@ -208,33 +244,6 @@ $(".mod-add").submit(function(e) {
 	}
 });
 
-function refreshModVersions() {
-	modversion.disable();
-	modversion.clearOptions();
-	$.ajax({
-		type: "GET",
-		url: "{{ URL::to('api/mod/') }}/" + mod.getValue(),
-		success: function (data) {
-			if (data.versions.length === 0){
-				$.jGrowl("No Modversions found for " + data.pretty_name, { group: 'alert-warning' });
-				$("#mod-version").attr("placeholder", "No Modversions found...");
-			} else {
-				$(data.versions).each(function(e, m) {
-					modversion.addOption({value: m, text: m});
-					modversion.refreshOptions(false);
-					$("#mod-version").attr("placeholder", "Select a Modversion...");
-				});
-			}
-		},
-		error: function (xhr, textStatus, errorThrown) {
-			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
-		}
-	});
-	modversion.enable();
-}
-
-mod.on('change', refreshModVersions);
-
 $( document ).ready(function() {
 	$("#mod-list").dataTable({
     	"order": [[ 0, "asc" ]],
@@ -244,7 +253,10 @@ $( document ).ready(function() {
 			{ "width": "30%", "targets": 1 }
 		]
     });
-    refreshModVersions();
+
+	// Start with the mod versions dropdown disabled by default, since the user
+	// has to select a mod first, and then it updates all the versions
+	modversion.disable();
 });
 </script>
 @endsection
