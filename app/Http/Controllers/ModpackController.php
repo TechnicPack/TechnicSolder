@@ -411,6 +411,14 @@ class ModpackController extends Controller
                 $ver = Modversion::where('mod_id', '=', $mod->id)
                     ->where('version', '=', Request::input('mod-version'))
                     ->first();
+
+                if (!$ver) {
+                    return response()->json([
+                        'status' => 'failed',
+                        'reason' => 'No such mod version exists'
+                    ]);
+                }
+
                 $duplicate = DB::table('build_modversion')
                         ->where('build_id', '=', $build->id)
                         ->where('modversion_id', '=', $ver->id)
