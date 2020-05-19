@@ -52,7 +52,7 @@
 					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
 						<option value=""></option>
 						@foreach ($mods as $mod)
-						<option value="{{ $mod->name }}">{{ $mod->pretty_name }}</option>
+						<option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
 						@endforeach
 					</select>
 				</td>
