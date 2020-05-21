@@ -94,14 +94,14 @@
 						</tr>
 						@foreach ($mod->versions->sortByDesc('id') as $ver)
 						<tr class="version" rel="{{ $ver->id }}">
-							<form method="post" id="rehash" action="{{ URL::to('mod/rehash/') }}">
+							<form class="rehash-form" data-version-id="{{ $ver->id }}">
 								<input type="hidden" name="version-id" value="{{ $ver->id }}">
 								<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
 								<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
-								<td><input type="text" class="md5 form-control" name="md5" id="md5" placeholder="{{ $ver->md5 }}" rel="{{ $ver->id }}"></input></td>
+								<td><input type="text" class="md5 form-control" name="md5" rel="{{ $ver->id }}" placeholder="{{ $ver->md5 }}"></td>
 								<td class="url" rel="{{ $ver->id }}"><small><a href="{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
-								<td>{{ $ver->humanFilesize() }}</td>
-								<td><button type="submit" class="btn btn-primary btn-xs rehash" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
+								<td class="filesize" rel="{{ $ver->id }}">{{ $ver->humanFilesize() }}</td>
+								<td><button type="submit" class="btn btn-primary btn-xs" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
 							</form>
 						</tr>
 						<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
@@ -167,25 +167,32 @@ $('.version-icon').click(function() {
 	});
 });
 
-$('.rehash').click(function(e) {
+$('.rehash-form').submit(function(e) {
 	e.preventDefault();
-	$(".md5[rel=" + $(this).attr('rel') + "]").fadeOut();
 
-	console.log($("#rehash").serialize());
+	const versionId = this.dataset.versionId;
+
+	const md5Field = $('.md5[rel=' + versionId + ']');
+	const filesizeField = $('.filesize[rel=' + versionId + ']');
+
+	md5Field.fadeOut();
+	// md5Field.attr('placeholder', 'Rehashing...');
+
 	$.ajax({
 		type: "POST",
-		url: "{{ URL::to('mod/rehash/') }}",
-		data: $("#rehash").serialize(),
+		url: "{{ url('mod/rehash') }}",
+		data: $(this).serialize(),
 		success: function (data) {
-			if (data.status == "success") {
+			if (data.status === "success") {
 				$.jGrowl('MD5 hashing complete.', { group: 'alert-success' });
-			} else if (data.status == "warning") {
+			} else if (data.status === "warning") {
 				$.jGrowl('MD5 hashing complete. ' + data.reason, { group: 'alert-warning' });
 			} else {
 				$.jGrowl('Error: ' + data.reason, { group: 'alert-danger' });
 			}
-			$(".md5[rel=" + data.version_id + "]").attr('placeholder', data.md5);
-			$(".md5[rel=" + data.version_id + "]").fadeIn();
+			md5Field.attr('placeholder', data.md5);
+			filesizeField.html(data.filesize);
+			md5Field.fadeIn();
 		},
 		error: function (xhr, textStatus, errorThrown) {
 			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
