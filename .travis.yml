@@ -1,3 +1,4 @@
+os: linux
 dist: bionic
 branches:
   except:
@@ -16,12 +17,10 @@ env:
     - SOLDER_REPO_LOCATION="$TRAVIS_BUILD_DIR/public/resources/default/"
     - SOLDER_MIRROR_URL="http://mirror.technicpack.net/Technic/"
     - REPO_TYPE="local"
-matrix:
-  fast_finish: true
-sudo: false
 before_install:
   - echo $REPO
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
+  - pecl install redis
   - composer self-update
 install: COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
 before_script:
