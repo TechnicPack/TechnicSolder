@@ -20,7 +20,7 @@ env:
 before_install:
   - echo $REPO
   - rm -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-  - pecl install redis
+  - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
 install: COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install --prefer-source --no-interaction
 before_script:
