@@ -98,16 +98,10 @@ class ApiController extends Controller
         if (empty($modSlug)) {
             // For some reason, authenticated clients or Platform (with the Platform user API key) bypass cache
             if ($this->client || $this->key) {
-                $mods = Mod::all([
-                    'name',
-                    'pretty_name',
-                ])->pluck('pretty_name', 'name');
+                $mods = Mod::pluck('pretty_name', 'name');
             } else {
                 $mods = Cache::remember('mods', now()->addMinutes(5), function () {
-                    return Mod::all([
-                        'name',
-                        'pretty_name',
-                    ])->pluck('pretty_name', 'name');
+                    return Mod::pluck('pretty_name', 'name');
                 });
             }
 

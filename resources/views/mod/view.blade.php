@@ -66,8 +66,8 @@
 			</div>
 			<div class="tab-pane fade in active" id="versions">
 				<br>
-				<p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory stucture for mods is as follow:</p>
-					<blockquote><strong>/mods/[modslug]/[modslug]-[version].zip</strong></blockquote>
+				<p>Solder currently does not support uploading files directly to it. Your repository still needs to exist and follow a strict directory structure. When you add versions the URL will be verified to make sure the file exists before it is added to Solder. The directory structure for this mod is as follows:</p>
+					<blockquote><strong>/mods/{{ $mod->name }}/{{ $mod->name }}-[version].zip</strong></blockquote>
 				<table class="table">
 					<thead>
 						<th style="width: 1%"></th>

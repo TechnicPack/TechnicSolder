@@ -42,7 +42,7 @@
                 @else
                 <p id='solder-update-ajax' class="alert alert-success">Solder is up to date</p>
                 @endif
-                <a href="http://docs.solder.io/v0.7/docs/updating-solder" target="blank_"><button id='solder-wiki' class="btn btn-default">Updating Solder <i class="fa fa-question"></i></button></a>
+                <a href="https://docs.solder.io/docs/updating-solder" target="blank_"><button id='solder-wiki' class="btn btn-default">Updating Solder <i class="fa fa-question"></i></button></a>
                 <button id='solder-update' type="submit" class="btn btn-default">Check for update</button>
                 <span id="solder-checking" style="margin-left:10px;" class="hidden"><i class="fa fa-cog fa-spin"></i> Checking...</span>
             </div>

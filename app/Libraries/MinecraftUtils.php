@@ -28,8 +28,8 @@ class MinecraftUtils
     {
         $response = [];
 
-        if (UrlUtils::checkRemoteFile('https://www.technicpack.net/api/minecraft', 15)['success']) {
-            $response = UrlUtils::get_url_contents('https://www.technicpack.net/api/minecraft', 15);
+        if (UrlUtils::checkRemoteFile('https://www.technicpack.net/api/minecraft')['success']) {
+            $response = UrlUtils::get_url_contents('https://www.technicpack.net/api/minecraft');
             if ($response['success']) {
                 $response = json_decode($response['data'], true);
                 krsort($response, SORT_NATURAL);
@@ -38,8 +38,8 @@ class MinecraftUtils
             }
         }
 
-        if (UrlUtils::checkRemoteFile('https://launchermeta.mojang.com/mc/game/version_manifest.json', 15)['success']) {
-            $response = UrlUtils::get_url_contents('https://launchermeta.mojang.com/mc/game/version_manifest.json', 15);
+        if (UrlUtils::checkRemoteFile('https://launchermeta.mojang.com/mc/game/version_manifest.json')['success']) {
+            $response = UrlUtils::get_url_contents('https://launchermeta.mojang.com/mc/game/version_manifest.json');
             if ($response['success']) {
                 $mojangResponse = json_decode($response['data'], true);
                 $versions = [];

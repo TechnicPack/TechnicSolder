@@ -47,7 +47,7 @@
           @endif
         </ul>
         <ul class="nav navbar-top-links navbar-right">
-            <li><a href="http://docs.solder.io/" target="blank_">Help <i class="fa fa-question"></i></a></li>
+            <li><a href="https://docs.solder.io/" target="blank_">Help <i class="fa fa-question"></i></a></li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                   {{ Auth::user()->username }} <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>

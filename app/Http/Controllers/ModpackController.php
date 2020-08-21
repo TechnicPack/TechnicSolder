@@ -390,7 +390,6 @@ class ModpackController extends Controller
                     'status' => $status,
                     'reason' => 'Rows Affected: ' . $affected
                 ]);
-                break;
             case "delete": // Remove mod version from build
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', Request::input('build_id'))
@@ -404,7 +403,6 @@ class ModpackController extends Controller
                     'status' => $status,
                     'reason' => 'Rows Affected: ' . $affected
                 ]);
-                break;
             case "add": // Add mod version to build
                 $build = Build::find(Request::input('build'));
                 $mod = Mod::where('name', '=', Request::input('mod-name'))->first();
@@ -440,7 +438,6 @@ class ModpackController extends Controller
                         'version' => $ver->version
                     ]);
                 }
-                break;
             case "recommended": // Set recommended build
                 $modpack = Modpack::find(Request::input('modpack'));
                 $new_version = Request::input('recommended');
@@ -453,7 +450,6 @@ class ModpackController extends Controller
                     "success" => "Updated " . $modpack->name . "'s recommended  build to " . $new_version,
                     "version" => $new_version
                 ]);
-                break;
             case "latest": // Set latest build
                 $modpack = Modpack::find(Request::input('modpack'));
                 $new_version = Request::input('latest');
@@ -466,7 +462,6 @@ class ModpackController extends Controller
                     "success" => "Updated " . $modpack->name . "'s latest  build to " . $new_version,
                     "version" => $new_version
                 ]);
-                break;
             case "published": // Set build published status
                 $build = Build::with('modpack')->find(Request::input('build'));
                 $published = Request::input('published');

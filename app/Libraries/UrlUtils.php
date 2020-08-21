@@ -12,7 +12,6 @@ class UrlUtils
     /**
      * Initializes a cURL session with common options
      * @param  String  $url
-     * @param  int  $timeout
      * @return resource
      */
     private static function curl_init($url)
@@ -50,7 +49,7 @@ class UrlUtils
     /**
      * Gets URL contents and returns them
      * @param  String  $url
-     * @return String
+     * @return array
      */
     public static function get_url_contents($url)
     {
@@ -92,7 +91,7 @@ class UrlUtils
     /**
      * Uses Curl to get URL contents and returns hash
      * @param  String  $url  Url Location
-     * @return String      Hash of url contents
+     * @return array
      */
     public static function get_remote_md5($url)
     {

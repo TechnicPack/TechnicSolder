@@ -33,7 +33,6 @@ class SolderMods
                 break;
             default:
                 return redirect('mod/list');
-                break;
         }
         $user = $request->user();
         if (!$user) {
