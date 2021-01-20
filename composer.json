@@ -35,7 +35,7 @@
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",
         "knplabs/github-api": "^2.11",
-        "laravel/framework": "^6.2",
+        "laravel/framework": "^6.20.12",
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "^6.0",
         "php-http/guzzle6-adapter": "^1.1"
