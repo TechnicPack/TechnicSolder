@@ -165,6 +165,65 @@ class ModpackController extends BaseController {
 		return Redirect::to('modpack/build/'.$build->id);
 	}
 
+	public function getClone()
+	{
+		$modpacks = Modpack::all();
+		return View::make('modpack.clone')->with('modpacks', $modpacks);
+	}
+
+	public function postClone()
+	{
+		$rules = array(
+			'source' => 'required|exists:modpacks,slug',
+			'destination' => 'required|different:source'
+		);
+
+		$messages = array(
+			'source.required' => 'You must enter a modpack slug',
+			'source.exists' => 'The :attribute modpack must exist',
+			'destination.required' => 'You must enter a modpack slug',
+			'destination.different' => 'The :attribute must not be the same as the :other'
+		);
+
+		$validation = Validator::make(Input::all(), $rules, $messages);
+		if ($validation->fails())
+			return Redirect::to('modpack/clone')->withErrors($validation->messages());
+
+		$source = Modpack::where('slug', '=', Input::get('source'))->first();
+		$source->load('builds', 'builds.modversions');
+		$destination = Modpack::where('slug', '=', Input::get('destination'))->first();
+
+		if(empty($destination)){
+			$destination = $source->replicate();
+			$destination->name = Input::get('destination');
+			$destination->slug = Str::slug(Input::get('destination'));
+			$destination->push();
+		} else {
+			// Destroy any existing builds for the destination modpack.
+			foreach($destination->builds() as $build){
+				foreach($build->modversions() as $modversion){
+					$modversion->delete();
+				}
+				$build->delete();
+			}
+		}
+
+		foreach ($source->builds as $build) {
+			$newBuild = $build->replicate();
+			$newBuild->modpack_id = $destination->id;
+			$newBuild->push();
+			foreach ($build->modversions() as $modversion){
+				$newModversion = $modversion->replicate();
+				$newModversion->build_id = $newBuild->id;
+				$newModversion->save();
+			}
+			$newBuild->save();
+		}
+		$destination->save();
+
+		return Redirect::to('modpack/view/'.$destination->id);
+	}
+
 	public function getCreate()
 	{
 		return View::make('modpack.create');
