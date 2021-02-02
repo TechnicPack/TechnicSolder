@@ -60,8 +60,8 @@
                     @else
                 	@foreach ($changelog as $change)
                     <a href="{{ $change['html_url'] }}" target="blank_" class="list-group-item">
-                        <span class="badge" style="margin-left:5px;">{{  date_format(date_create($change['commit']['author']['date']), 'M, d, Y | g:i a') }}</span>
-                        <img src="{{ $change['author']['avatar_url']}}" alt="{{ $change['author']['login']}}" height="23" width="23"> {{ $change['commit']['message'] }}
+                        <span class="badge" style="margin-left:5px;">{{ date_format(date_create($change['commit']['author']['date']), 'M, d, Y | g:i a') }}</span>
+                        <img src="{{ $change['author']['avatar_url'] ?? $change['committer']['avatar_url'] }}" alt="{{ $change['author']['login'] ?? $change['commit']['author']['name'] ?? $change['committer']['login'] }}" height="23" width="23"> {{ $change['commit']['message'] }}
                     </a>
                     @endforeach
                     @endif               
