@@ -46,6 +46,7 @@
 				<div class="form-group">
 		            <label for="java-version">Minimum Java Version</label>
 		            <select class="form-control" name="java-version" id="java-version">
+						<option value="16"{{ ($build->min_java == '16' ? ' selected' : '') }}>Java 16</option>
 						<option value="1.8"{{ ($build->min_java == '1.8' ? ' selected' : '') }}>Java 1.8</option>
 						<option value="1.7"{{ ($build->min_java == '1.7' ? ' selected' : '') }}>Java 1.7</option>
 						<option value="1.6"{{ ($build->min_java == '1.6' ? ' selected' : '') }}>Java 1.6</option>

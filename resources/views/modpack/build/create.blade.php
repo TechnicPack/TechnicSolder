@@ -54,6 +54,7 @@
 				<div class="form-group">
 					<label for="java-version">Minimum Java Version</label>
 					<select class="form-control" name="java-version" id="java-version">
+						<option value="16">Java 16</option>
 						<option value="1.8">Java 1.8</option>
 						<option value="1.7">Java 1.7</option>
 						<option value="1.6">Java 1.6</option>
