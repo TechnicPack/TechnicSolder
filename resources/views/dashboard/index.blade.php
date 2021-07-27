@@ -44,7 +44,7 @@
 								<td>{{ $build->minecraft }}</td>
 								<td>{{ $build->modversions_count }}</td>
 								<td>{{ $build->updated_at }}</td>
-{{--								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', ['class' => 'btn btn-warning btn-xs']) !!}</td>--}}
+                                <a href="{{'/modpack/build/'.$build->id}}" class="btn btn-warning btn-xs">Manage Build</a>
 							</tr>
 						@endforeach
 					</tbody>

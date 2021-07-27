@@ -32,7 +32,6 @@ class ClientController extends Controller
 
     public function postCreate()
     {
-        error_log('here');
         $rules = [
             'name' => 'required|unique:clients',
             'uuid' => 'required|unique:clients'
@@ -56,7 +55,6 @@ class ClientController extends Controller
 
     public function getDelete($client_id)
     {
-        error_log('get req');
         $client = Client::find($client_id);
 
         if (empty($client)) {
