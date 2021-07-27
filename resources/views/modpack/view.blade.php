@@ -47,7 +47,7 @@
 					<td><input autocomplete="off" type="checkbox" name="published" value="1" class="published" rel="{{ $build->id }}"{{ $build->is_published ? " checked" : "" }}></td>
 					<td><input autocomplete="off" type="checkbox" name="private" value="1" class="private" rel="{{ $build->id }}"{{ $build->private ? " checked" : "" }}></td>
 					<td>{{ $build->created_at }}</td>
-					<td>{!! Html::link('modpack/build/'.$build->id, "Manage",'class="btn btn-xs btn-primary"') !!} {!! Html::link('modpack/build/'.$build->id.'?action=edit', "Edit",'class="btn btn-xs btn-warning"') !!} {!! Html::link('modpack/build/'.$build->id.'?action=delete', "Delete",'class="btn btn-xs btn-danger"') !!}</td>
+					<td><a href="{{'/modpack/build/'.$build->id}}" class="btn btn-xs btn-primary">Manage</a> <a href="{{'/modpack/build/'.$build->id.'?action=edit'}}" class="btn btn-xs btn-warning">Edit</a> <a href="{{'/modpack/build/'.$build->id.'?action=delete'}}" class="btn btn-xs btn-danger">Delete</a></td>
 				</tr>
 			@endforeach
 			</tbody>

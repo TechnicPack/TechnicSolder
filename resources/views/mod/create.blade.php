@@ -19,38 +19,39 @@
             </div>
         @endif
 		<form method="post" action="{{ URL::to('mod/create') }}">
-		<div class="row">
-			<div class="col-md-6">
-				<div class="form-group">
-                    <label for="pretty_name">Mod Name</label>
-                    <input type="text" class="form-control" name="pretty_name" id="pretty_name">
+            @csrf
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="pretty_name">Mod Name</label>
+                        <input type="text" class="form-control" name="pretty_name" id="pretty_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Mod Slug</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" name="author" id="author">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea name="description" id="description" class="form-control" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="link">Mod Website</label>
+                        <input type="text" class="form-control" name="link" id="link">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="name">Mod Slug</label>
-                    <input type="text" class="form-control" name="name" id="name">
+                <div class="col-md-6">
+                    <p>Because Solder doesn't do any file handling yet you will need to manually manage your set of mods in your repository. The mod repository structure is very strict and must match your Solder data exact. An example of your mod directory structure will be listed below:</p>
+                    <blockquote>/mods/<span class="modslug">[modslug]</span>/<br>
+                        /mods/<span class="modslug">[modslug]</span>/<span class="modslug">[modslug]</span>-[version].zip
+                    </blockquote>
                 </div>
-                <div class="form-group">
-                    <label for="author">Author</label>
-                    <input type="text" class="form-control" name="author" id="author">
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea name="description" id="description" class="form-control" rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="link">Mod Website</label>
-                    <input type="text" class="form-control" name="link" id="link">
-                </div>
-			</div>
-			<div class="col-md-6">
-				<p>Because Solder doesn't do any file handling yet you will need to manually manage your set of mods in your repository. The mod repository structure is very strict and must match your Solder data exact. An example of your mod directory structure will be listed below:</p>
-				<blockquote>/mods/<span class="modslug">[modslug]</span>/<br>
-					/mods/<span class="modslug">[modslug]</span>/<span class="modslug">[modslug]</span>-[version].zip
-				</blockquote>
-			</div>
-		</div>
-{{--		{!! Form::submit('Add Mod', ['class' => 'btn btn-success']) !!}--}}
-{{--		{!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}--}}
+            </div>
+            <button type="submit" class="btn btn-success">Add Mod</button>
+            <a href="/mod/list" class="btn btn-primary">Go Back</a>
 		</form>
 	</div>
 </div>

@@ -35,6 +35,7 @@
 					</div>
 				@endif
 				<form method="post" action="{{ URL::to('mod/modify/'.$mod->id) }}">
+                    @csrf
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
@@ -59,9 +60,9 @@
 											</div>
 						</div>
 					</div>
-					{!! Form::submit('Save Changes', ['class' => 'btn btn-success']) !!}
-					{!! Html::link('mod/delete/'.$mod->id, 'Delete Mod', ['class' => 'btn btn-danger']) !!}
-					{!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <a href="{{'mod/delete/'.$mod->id}}" class="btn btn-danger">Delete Mod</a>
+                    <a href="/mod/list" class="btn btn-primary">Go Back</a>
 				</form>
 			</div>
 			<div class="tab-pane fade in active" id="versions">
@@ -112,7 +113,7 @@
 								<p>Builds used in:</p>
 								<ul>
 								@foreach ($ver->builds as $build)
-									<li>{!! Html::link('modpack/view/'.$build->modpack->id,$build->modpack->name) !!} - {!! Html::link('modpack/build/'.$build->id,$build->version) !!}</li>
+									<li><a href="{{'/modpack/view/'.$build->modpack->id}}">{{$build->modpack->name}}</a> - <a href="{{'/modpack/build/'.$build->id}}">{{$build->version}}</a></li>
 								@endforeach
 								</ul>
 								@endif

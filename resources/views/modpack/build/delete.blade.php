@@ -12,9 +12,10 @@
 	<div class="panel-body">
 		<p>Are you sure you want to delete this build? This action is irreversible!</p>
 		<form method="post" action="{{ URL::full() }}">
+            @csrf
 			<input type="hidden" name="confirm-delete" value="1">
-			{!! Form::submit('Delete Build', ['class' => 'btn btn-danger']) !!}
-			{!! Html::link('modpack/view/'.$build->modpack->id, 'Go Back', ['class' => 'btn btn-primary']) !!}
+            <button type="submit" class="btn btn-danger">Delete Build</button>
+            <a href="{{'modpack/view/'.$build->modpack->id}}" class="btn btn-primary">Go Back</a>
 		</form>
 	</div>
 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Build;
 use App\Http\Middleware\Modpack;
 use App\Http\Middleware\SolderClients;
 use App\Http\Middleware\SolderKeys;
@@ -74,5 +75,6 @@ class Kernel extends HttpKernel
         'solder_modpacks' => SolderModpacks::class,
         'solder_mods' => SolderMods::class,
         'solder_users' => SolderUsers::class,
+        'build' => Build::class
     ];
 }

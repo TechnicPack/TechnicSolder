@@ -19,19 +19,21 @@
 		@endif
 		<div class="row">
 			<div class="col-md-6">
-				{!! Form::open() !!}
-				{!! Form::hidden("add-client", 1) !!}
-				<div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" name="name" id="name">
-                </div>
-                <div class="form-group">
-                    <label for="uuid">UUID</label>
-                    <input type="text" class="form-control" name="uuid" id="uuid">
-                </div>
-				{!! Form::submit('Add Client', ['class' => 'btn btn-success']) !!}
-				{!! Html::link('client/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
-				{!! Form::close() !!}
+                <form method="POST" action="/client/create">
+                    @csrf
+{{--                    {!! Form::hidden("add-client", 1) !!}--}}
+                    <input name="add-client" type="hidden" value="1">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="uuid">UUID</label>
+                        <input type="text" class="form-control" name="uuid" id="uuid">
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Client</button>
+                    <a href="client/list/" class="btn btn-primary">Go Back</a>
+                </form>
 			</div>
 		</div>
 	</div>

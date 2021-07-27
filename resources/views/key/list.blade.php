@@ -21,7 +21,7 @@
 		@endif
 		<div class="table-responsive">
 		<table class="table table-striped table-bordered table-hover" id="dataTables">
-			<thead>	
+			<thead>
 				<tr>
 					<th>#</th>
 					<th>Name</th>
@@ -35,7 +35,7 @@
 					<td>{{ $key->id }}</td>
 					<td>{{ $key->name }}</td>
 					<td>{{ $key->api_key }}</td>
-					<td>{!! Html::link('key/delete/'.$key->id, 'Delete', ['class' => 'btn btn-danger btn-xs']) !!}</td>
+					<td><a href="{{'/key/delete/'.$key->id}}" class="btn btn-danger">Delete</a></td>
 				</tr>
 			@endforeach
 			</tbody>

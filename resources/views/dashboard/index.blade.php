@@ -77,17 +77,18 @@
 					<tbody>
 						@foreach ($modversions as $modversion)
 						<tr>
-							<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->id) !!}</td>
+							<td><a href="{{'mod/view/'.$modversion->mod->id}}">{{$modversion->mod->id}}</a></td>
 							<td>{{ $modversion->version }}</td>
 							@if (!empty($modversion->mod->pretty_name))
-{{--								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->pretty_name) !!} ({{ $modversion->mod->name }})</td>--}}
+								<td><a href="{{'mod/view/'.$modversion->mod->id}}">{{$modversion->mod->pretty_name}}</a> ({{ $modversion->mod->name }})</td>
 							@else
-{{--								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->name) !!}</td>--}}
+                                <td><a href="{{'mod/view/'.$modversion->mod->id}}">{{$modversion->mod->name}}</a></td>
 							@endif
 							<td>{{ !empty($modversion->mod->author) ? $modversion->mod->author : "N/A" }}</td>
-							<td>{!! !empty($modversion->mod->link) ? Html::link($modversion->mod->link, $modversion->mod->link, ["target" => "_blank"]) : "N/A" !!}</td>
+
+							<td>{!! !empty($modversion->mod->link) ?  "<a target='_blank' href=".$modversion->mod->link.">".$modversion->mod->link."</a>" : "N/A" !!}</td>
 							<td>{{ $modversion->created_at }}
-							<td>{!! Html::link('mod/view/'.$modversion->mod->id.'#versions','Manage', ["class" => "btn btn-xs btn-primary"]) !!}</td>
+							<td><a class="btn btn-xs btn-primary" href="{{'mod/view/'.$modversion->mod->id.'#versions'}}">Manage</a></td>
 						</tr>
 					@endforeach
 					</tbody>
@@ -107,11 +108,11 @@
 			<div class="panel-body">
 				<p><strong>Your Solder version is {{SOLDER_VERSION}}</strong></p>
 				@if (array_key_exists('error',$changelog))
-				<div class="alert alert-warning">{{ $changelog['error'] }}</div>
+				    <div class="alert alert-warning">{{ $changelog['error'] }}</div>
 				@else
 				<ul>
 				@foreach ($changelog as $change)
-{{--				<li><code>{!! Html::link($change['html_url'], substr($change['sha'], 0, 7)) !!}</code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['commit']['message'] }} </li>--}}
+				    <li><code><a href="{{$change['html_url']}}">{{substr($change['sha'], 0, 7)}}</a></code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['commit']['message'] }} </li>
 				@endforeach
 				</ul>
 				@endif

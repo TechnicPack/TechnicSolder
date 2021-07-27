@@ -8,7 +8,8 @@
 <h2>Delete Client ({{ $client->name }})</h2>
 <p>This will immediately remove access to all modpacks this user has access to.</p>
 <form method="post" action="{{ URL::current() }}">
+    @csrf
 	<button type="submit" class="btn btn-danger">Confirm Deletion</button>
-	{!! Html::link('client/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
+    <a href="/client/list/" class="btn btn-primary">Go Back</a>
 </form>
 @endsection

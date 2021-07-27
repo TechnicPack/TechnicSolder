@@ -44,26 +44,27 @@
 			</thead>
 			<tbody>
 			<form method="post" action="{{ URL::to('modpack/build/modify') }}" class="mod-add">
-			<input type="hidden" name="build" value="{{ $build->id }}">
-			<input type="hidden" name="action" value="add">
-			<tr id="mod-list-add">
-				<td>
-					<i class="icon-plus"></i>
-					<select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
-						<option value=""></option>
-						@foreach ($mods as $mod)
-						<option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
-						@endforeach
-					</select>
-				</td>
-				<td>
-					<select class="form-control" name="mod-version" id="mod-version" placeholder="Select a Modversion...">
-					</select>
-				</td>
-				<td>
-					<button type="submit" class="btn btn-success btn-small">Add Mod</button>
-				</td>
-			</tr>
+                @csrf
+                <input type="hidden" name="build" value="{{ $build->id }}">
+                <input type="hidden" name="action" value="add">
+                <tr id="mod-list-add">
+                    <td>
+                        <i class="icon-plus"></i>
+                        <select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
+                            <option value=""></option>
+                            @foreach ($mods as $mod)
+                            <option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-control" name="mod-version" id="mod-version" placeholder="Select a Modversion...">
+                        </select>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-success btn-small">Add Mod</button>
+                    </td>
+                </tr>
 			</form>
 			</tbody>
 		</table>
@@ -85,9 +86,10 @@
 			<tbody>
 				@foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
 				<tr>
-					<td>{!! Html::link('mod/view/'.$ver->mod->id, $ver->mod->pretty_name) !!} ({{ $ver->mod->name }})</td>
+					<td><a href="{{'mod/view/'.$ver->mod->id}}">{{$ver->mod->pretty_name}}</a> ({{ $ver->mod->name }})</td>
 					<td>
 						<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-version">
+                            @csrf
 							<input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
 							<input type="hidden" class="modversion-id" name="modversion_id" value="{{ $ver->pivot->modversion_id }}">
 							<input type="hidden" name="action" value="version">
