@@ -15,6 +15,7 @@ class AuthController extends Controller
 
     public function postLogin()
     {
+        error_log('Got Request');
         $email = Request::input('email');
         $password = Request::input('password');
         $remember = Request::boolean('remember');

@@ -18,7 +18,7 @@
 			@endforeach
 			</div>
 		@endif
-		{!! Form::open() !!}
+{{--		{!! Form::open() !!}--}}
 		<div class="row">
 			<div class="col-md-6">
 				<div class="form-group">
@@ -35,9 +35,9 @@
 				<p>If you wish to link this modpack with an existing Technic Platform modpack, the slug must be identical to your slug on the Platform!</p>
 		   	</div>
 		</div>
-		{!! Form::submit('Add Modpack', ['class' => 'btn btn-success']) !!}
-		{!! Html::link('modpack/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
-		{!! Form::close() !!}
+{{--		{!! Form::submit('Add Modpack', ['class' => 'btn btn-success']) !!}--}}
+{{--		{!! Html::link('modpack/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}--}}
+{{--		{!! Form::close() !!}--}}
 	</div>
 </div>
 <script type="text/javascript">

@@ -44,7 +44,7 @@
 								<td>{{ $build->minecraft }}</td>
 								<td>{{ $build->modversions_count }}</td>
 								<td>{{ $build->updated_at }}</td>
-								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', ['class' => 'btn btn-warning btn-xs']) !!}</td>
+{{--								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', ['class' => 'btn btn-warning btn-xs']) !!}</td>--}}
 							</tr>
 						@endforeach
 					</tbody>
@@ -80,9 +80,9 @@
 							<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->id) !!}</td>
 							<td>{{ $modversion->version }}</td>
 							@if (!empty($modversion->mod->pretty_name))
-								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->pretty_name) !!} ({{ $modversion->mod->name }})</td>
+{{--								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->pretty_name) !!} ({{ $modversion->mod->name }})</td>--}}
 							@else
-								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->name) !!}</td>
+{{--								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->name) !!}</td>--}}
 							@endif
 							<td>{{ !empty($modversion->mod->author) ? $modversion->mod->author : "N/A" }}</td>
 							<td>{!! !empty($modversion->mod->link) ? Html::link($modversion->mod->link, $modversion->mod->link, ["target" => "_blank"]) : "N/A" !!}</td>
@@ -111,7 +111,7 @@
 				@else
 				<ul>
 				@foreach ($changelog as $change)
-				<li><code>{!! Html::link($change['html_url'], substr($change['sha'], 0, 7)) !!}</code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['commit']['message'] }} </li>
+{{--				<li><code>{!! Html::link($change['html_url'], substr($change['sha'], 0, 7)) !!}</code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['commit']['message'] }} </li>--}}
 				@endforeach
 				</ul>
 				@endif
