@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class BuildTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -43,7 +42,7 @@ class BuildTest extends TestCase
             'minecraft' => '1.7.10',
             'java-version' => '1.7',
             'memory' => '1536',
-            'memory-enabled' => 1
+            'memory-enabled' => 1,
         ];
 
         $response = $this->post('/modpack/add-build/1', $data);
@@ -64,7 +63,7 @@ class BuildTest extends TestCase
             'minecraft' => '1.7.10',
             'java-version' => '1.7',
             'memory' => '1536',
-            'memory-enabled' => 1
+            'memory-enabled' => 1,
         ];
 
         $response = $this->post('/modpack/add-build/1', $data);
@@ -79,7 +78,7 @@ class BuildTest extends TestCase
             'minecraft' => '',
             'java-version' => '1.7',
             'memory' => '1536',
-            'memory-enabled' => 1
+            'memory-enabled' => 1,
         ];
 
         $response = $this->post('/modpack/add-build/1', $data);
@@ -94,7 +93,7 @@ class BuildTest extends TestCase
             'minecraft' => '1.7.10',
             'java-version' => '',
             'memory' => '1536',
-            'memory-enabled' => 1
+            'memory-enabled' => 1,
         ];
 
         $response = $this->post('/modpack/add-build/1', $data);
@@ -115,7 +114,7 @@ class BuildTest extends TestCase
             'minecraft' => '1.7.10',
             'java-version' => '1.7',
             'memory' => 0,
-            'memory-enabled' => 0
+            'memory-enabled' => 0,
         ];
 
         $response = $this->post('/modpack/add-build/1', $data);
@@ -133,7 +132,7 @@ class BuildTest extends TestCase
     {
         $build = Build::find(1);
 
-        $response = $this->get('/modpack/build/' . $build->id . '?action=edit');
+        $response = $this->get('/modpack/build/'.$build->id.'?action=edit');
         $response->assertOk();
     }
 
@@ -147,10 +146,10 @@ class BuildTest extends TestCase
             'minecraft' => '1.7.10',
             'java-version' => '1.8',
             'memory' => '1024',
-            'memory-enabled' => '1'
+            'memory-enabled' => '1',
         ];
 
-        $response = $this->post('/modpack/build/' . $build->id . '?action=edit', $data);
+        $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
         $response->assertRedirect('/modpack/build/1');
 
         $build = Build::find(1);
@@ -159,12 +158,11 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.8');
     }
 
-
     public function testBuildDeleteGet()
     {
         $build = Build::find(1);
 
-        $response = $this->get('/modpack/build/' . $build->id . '?action=delete');
+        $response = $this->get('/modpack/build/'.$build->id.'?action=delete');
         $response->assertOk();
     }
 
@@ -173,10 +171,10 @@ class BuildTest extends TestCase
         $build = Build::find(1);
 
         $data = [
-            'confirm-delete' => '1'
+            'confirm-delete' => '1',
         ];
 
-        $response = $this->post('/modpack/build/' . $build->id . '?action=delete', $data);
-        $response->assertRedirect('modpack/view/' . $build->modpack->id);
+        $response = $this->post('/modpack/build/'.$build->id.'?action=delete', $data);
+        $response->assertRedirect('modpack/view/'.$build->modpack->id);
     }
 }

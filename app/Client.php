@@ -10,5 +10,4 @@ class Client extends Model
     {
         return $this->belongsToMany(Modpack::class)->withTimestamps();
     }
-
 }

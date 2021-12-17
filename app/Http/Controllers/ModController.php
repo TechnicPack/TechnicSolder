@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Libraries\UrlUtils;
 use App\Mod;
@@ -13,7 +15,6 @@ use Illuminate\Support\Str;
 
 class ModController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('solder_mods');
@@ -30,10 +31,11 @@ class ModController extends Controller
             [
                 'versions' => function ($query) {
                     $query->orderBy('modversions.updated_at', 'desc');
-                }
+                },
             ]
         )
             ->get();
+
         return view('mod.list')->with(['mods' => $mods]);
     }
 
@@ -82,7 +84,8 @@ class ModController extends Controller
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
         $mod->save();
-        return redirect('mod/view/' . $mod->id);
+
+        return redirect('mod/view/'.$mod->id);
     }
 
     public function getDelete($mod_id = null)
@@ -104,7 +107,7 @@ class ModController extends Controller
 
         $rules = [
             'pretty_name' => 'required',
-            'name' => 'required|unique:mods,name,' . $mod->id,
+            'name' => 'required|unique:mods,name,'.$mod->id,
             'link' => 'nullable|url',
         ];
 
@@ -117,7 +120,7 @@ class ModController extends Controller
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return redirect('mod/view/' . $mod->id)->withErrors($validation->messages());
+            return redirect('mod/view/'.$mod->id)->withErrors($validation->messages());
         }
 
         $mod->pretty_name = Request::input('pretty_name');
@@ -126,9 +129,9 @@ class ModController extends Controller
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
         $mod->save();
-        Cache::forget('mod:' . $mod->name);
+        Cache::forget('mod:'.$mod->name);
 
-        return redirect('mod/view/' . $mod->id)->with('success', 'Mod successfully edited.');
+        return redirect('mod/view/'.$mod->id)->with('success', 'Mod successfully edited.');
     }
 
     public function postDelete($mod_id = null)
@@ -143,14 +146,14 @@ class ModController extends Controller
             $ver->delete();
         }
         $mod->delete();
-        Cache::forget('mod:' . $mod->name);
+        Cache::forget('mod:'.$mod->name);
 
         return redirect('mod/list')->with('success', 'Mod deleted!');
     }
 
     public function anyRehash()
     {
-        if (!Request::ajax()) {
+        if (! Request::ajax()) {
             abort(404);
         }
 
@@ -178,14 +181,15 @@ class ModController extends Controller
             }
         } else {
             $md5Request = $this->mod_md5($ver->mod, $ver->version);
-            $providedfile_md5 = !$md5Request['success'] ? "Null" : $md5Request['md5'];
+            $providedfile_md5 = ! $md5Request['success'] ? 'Null' : $md5Request['md5'];
         }
 
-        if ($md5Request['success'] && !empty($md5)) {
+        if ($md5Request['success'] && ! empty($md5)) {
             if ($md5 == $md5Request['md5']) {
                 $ver->filesize = $md5Request['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
+
                 return response()->json([
                     'status' => 'success',
                     'version_id' => $ver->id,
@@ -196,25 +200,26 @@ class ModController extends Controller
                 $ver->filesize = $md5Request['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
+
                 return response()->json([
                     'status' => 'warning',
                     'version_id' => $ver->id,
                     'md5' => $ver->md5,
                     'filesize' => $ver->humanFilesize(),
-                    'reason' => 'MD5 provided does not match file MD5: ' . $providedfile_md5,
+                    'reason' => 'MD5 provided does not match file MD5: '.$providedfile_md5,
                 ]);
             }
         } else {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Remote MD5 failed. ' . $md5Request['message'],
+                'reason' => 'Remote MD5 failed. '.$md5Request['message'],
             ]);
         }
     }
 
     public function anyAddVersion()
     {
-        if (!Request::ajax()) {
+        if (! Request::ajax()) {
             abort(404);
         }
 
@@ -224,7 +229,7 @@ class ModController extends Controller
         if (empty($mod_id) || empty($version)) {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Missing Post Data'
+                'reason' => 'Missing Post Data',
             ]);
         }
 
@@ -232,14 +237,14 @@ class ModController extends Controller
         if (empty($mod)) {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Could not pull mod from database'
+                'reason' => 'Could not pull mod from database',
             ]);
         }
 
         if (Modversion::where([
-                'mod_id' => $mod_id,
-                'version' => $version,
-            ])->count() > 0) {
+            'mod_id' => $mod_id,
+            'version' => $version,
+        ])->count() > 0) {
             return response()->json([
                 'status' => 'error',
                 'reason' => 'That mod version already exists',
@@ -253,18 +258,19 @@ class ModController extends Controller
             }
         } else {
             $file_md5 = $this->mod_md5($mod, $version);
-            $pfile_md5 = !$file_md5['success'] ? "Null" : $file_md5['md5'];
+            $pfile_md5 = ! $file_md5['success'] ? 'Null' : $file_md5['md5'];
         }
 
         $ver = new Modversion();
         $ver->mod_id = $mod->id;
         $ver->version = $version;
 
-        if ($file_md5['success'] && !empty($md5)) {
+        if ($file_md5['success'] && ! empty($md5)) {
             if ($md5 === $file_md5['md5']) {
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
+
                 return response()->json([
                     'status' => 'success',
                     'version' => $ver->version,
@@ -275,32 +281,33 @@ class ModController extends Controller
                 $ver->filesize = $file_md5['filesize'];
                 $ver->md5 = $md5;
                 $ver->save();
+
                 return response()->json([
                     'status' => 'warning',
                     'version' => $ver->version,
                     'md5' => $ver->md5,
                     'filesize' => $ver->humanFilesize(),
-                    'reason' => 'MD5 provided does not match file MD5: ' . $pfile_md5,
+                    'reason' => 'MD5 provided does not match file MD5: '.$pfile_md5,
                 ]);
             }
         } else {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Remote MD5 failed. ' . $file_md5['message'],
+                'reason' => 'Remote MD5 failed. '.$file_md5['message'],
             ]);
         }
     }
 
     public function anyDeleteVersion($ver_id = null)
     {
-        if (!Request::ajax()) {
+        if (! Request::ajax()) {
             abort(404);
         }
 
         if (empty($ver_id)) {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Missing Post Data'
+                'reason' => 'Missing Post Data',
             ]);
         }
 
@@ -308,42 +315,47 @@ class ModController extends Controller
         if (empty($ver)) {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Could not pull mod version from database'
+                'reason' => 'Could not pull mod version from database',
             ]);
         }
 
         $old_id = $ver->id;
         $old_version = $ver->version;
         $ver->delete();
+
         return response()->json([
             'status' => 'success',
             'version' => $old_version,
-            'version_id' => $old_id
+            'version_id' => $old_id,
         ]);
     }
 
     private function mod_md5($mod, $version)
     {
         $location = config('solder.repo_location');
-        $URI = $location . 'mods/' . $mod->name . '/' . $mod->name . '-' . $version . '.zip';
+        $URI = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
         if (file_exists($URI)) {
-            Log::info('Found \'' . $URI . '\'');
+            Log::info('Found \''.$URI.'\'');
             try {
                 $filesize = filesize($URI);
                 $md5 = md5_file($URI);
+
                 return ['success' => true, 'md5' => $md5, 'filesize' => $filesize];
             } catch (Exception $e) {
-                Log::error("Error attempting to md5 the file: " . $URI);
+                Log::error('Error attempting to md5 the file: '.$URI);
+
                 return ['success' => false, 'message' => $e->getMessage()];
             }
         } else {
             if (filter_var($URI, FILTER_VALIDATE_URL)) {
-                Log::warning('File \'' . $URI . '\' was not found.');
+                Log::warning('File \''.$URI.'\' was not found.');
+
                 return $this->remote_mod_md5($mod, $version, $location);
             } else {
-                $error = $URI . ' is not a valid URI';
+                $error = $URI.' is not a valid URI';
                 Log::error($error);
+
                 return ['success' => false, 'message' => $error];
             }
         }
@@ -351,12 +363,13 @@ class ModController extends Controller
 
     private function remote_mod_md5($mod, $version, $location, $attempts = 0)
     {
-        $URL = $location . 'mods/' . $mod->name . '/' . $mod->name . '-' . $version . '.zip';
+        $URL = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
         $hash = UrlUtils::get_remote_md5($URL);
 
-        if (!($hash['success']) && $attempts <= 3) {
-            Log::warning("Error attempting to remote MD5 file " . $mod->name . " version " . $version . " located at " . $URL . ".");
+        if (! ($hash['success']) && $attempts <= 3) {
+            Log::warning('Error attempting to remote MD5 file '.$mod->name.' version '.$version.' located at '.$URL.'.');
+
             return $this->remote_mod_md5($mod, $version, $location, $attempts + 1);
         }
 

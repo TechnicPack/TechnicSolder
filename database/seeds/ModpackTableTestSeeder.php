@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class ModpackTableTestSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -28,7 +27,7 @@ class ModpackTableTestSeeder extends Seeder
             'logo_url' => URL::asset('/resources/default/logo.png'),
             'background' => false,
             'background_md5' => null,
-            'background_url' => URL::asset('/resources/default/background.jpg')
+            'background_url' => URL::asset('/resources/default/background.jpg'),
         ]);
 
         DB::table('builds')->delete();
@@ -39,9 +38,7 @@ class ModpackTableTestSeeder extends Seeder
             'minecraft' => '1.7.10',
             'min_java' => '1.7',
             'min_memory' => '1024',
-            'is_published' => true
+            'is_published' => true,
         ]);
-
     }
-
 }

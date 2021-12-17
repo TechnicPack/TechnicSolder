@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 class KeyTableTestSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -20,7 +19,5 @@ class KeyTableTestSeeder extends Seeder
             'name' => 'TestKey',
             'api_key' => 'sfIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ',
         ]);
-
     }
-
 }

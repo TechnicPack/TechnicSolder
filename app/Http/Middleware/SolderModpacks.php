@@ -29,12 +29,12 @@ class SolderModpacks
                 break;
         }
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
         $perms = $user->permission;
-        if (!$perms->solder_full && !$perms->{$check}) {
+        if (! $perms->solder_full && ! $perms->{$check}) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }

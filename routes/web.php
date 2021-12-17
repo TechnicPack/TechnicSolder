@@ -11,11 +11,11 @@
 |
 */
 
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect('dashboard');
 });
 
-Route::group(['middleware' => 'auth'], function() {
+Route::group(['middleware' => 'auth'], function () {
     Route::redirect('client', 'client/list');
     Route::get('client/list', 'ClientController@getList')->name('client.list');
     Route::get('client/create', 'ClientController@getCreate')->name('client.create');
@@ -82,7 +82,8 @@ Route::group(['middleware' => 'auth'], function() {
  **/
 Route::get('login', 'AuthController@showLogin')->name('login');
 Route::post('login', 'AuthController@postLogin');
-Route::get('logout', function() {
+Route::get('logout', function () {
     Auth::logout();
-    return Redirect::route('login')->with('logout','You have been logged out.');
+
+    return Redirect::route('login')->with('logout', 'You have been logged out.');
 })->name('logout');

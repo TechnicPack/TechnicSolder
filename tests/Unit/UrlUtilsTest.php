@@ -7,10 +7,9 @@ use Tests\TestCase;
 
 class UrlUtilsTest extends TestCase
 {
-
     public function testCheckRemoteFile()
     {
-        $json = UrlUtils::checkRemoteFile("https://httpbin.org/bytes/10", 5);
+        $json = UrlUtils::checkRemoteFile('https://httpbin.org/bytes/10', 5);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
@@ -21,7 +20,7 @@ class UrlUtilsTest extends TestCase
 
     public function testCheckRemoteFileNon200()
     {
-        $json = UrlUtils::checkRemoteFile("https://httpbin.org/status/404");
+        $json = UrlUtils::checkRemoteFile('https://httpbin.org/status/404');
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
@@ -33,7 +32,7 @@ class UrlUtilsTest extends TestCase
 
     public function testGetHeaders()
     {
-        $json = UrlUtils::getHeaders("https://httpbin.org/bytes/10", 5);
+        $json = UrlUtils::getHeaders('https://httpbin.org/bytes/10', 5);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
@@ -44,7 +43,7 @@ class UrlUtilsTest extends TestCase
 
     public function testGetHeadersNon200()
     {
-        $json = UrlUtils::getHeaders("https://httpbin.org/status/404", 5);
+        $json = UrlUtils::getHeaders('https://httpbin.org/status/404', 5);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
@@ -56,7 +55,7 @@ class UrlUtilsTest extends TestCase
 
     public function testGetRemoteMD5()
     {
-        $json = UrlUtils::get_remote_md5("https://httpbin.org/base64/dGVzdA==", 5);
+        $json = UrlUtils::get_remote_md5('https://httpbin.org/base64/dGVzdA==', 5);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
@@ -69,7 +68,7 @@ class UrlUtilsTest extends TestCase
 
     public function testGetRemoteMD5Non200()
     {
-        $json = UrlUtils::get_remote_md5("https://httpbin.org/status/404", 5);
+        $json = UrlUtils::get_remote_md5('https://httpbin.org/status/404', 5);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model implements AuthenticatableContract
 {
-
     /**
      * The database table used by the model.
      *
@@ -43,7 +42,7 @@ class User extends Model implements AuthenticatableContract
 
     public function updated_by_user()
     {
-        return $this->hasOne(User::class, 'id', 'updated_by_user_id');
+        return $this->hasOne(self::class, 'id', 'updated_by_user_id');
     }
 
     /**

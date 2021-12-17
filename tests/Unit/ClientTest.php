@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ClientTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -40,7 +39,7 @@ class ClientTest extends TestCase
     {
         $data = [
             'name' => 'TestClient2',
-            'uuid' => '2ezf6f26-eb15-4ccb-9f0b-8z5ed2c72946'
+            'uuid' => '2ezf6f26-eb15-4ccb-9f0b-8z5ed2c72946',
         ];
 
         $response = $this->post('/client/create', $data);
@@ -52,7 +51,7 @@ class ClientTest extends TestCase
     {
         $data = [
             'name' => 'TestClient',
-            'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
+            'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946',
         ];
 
         $response = $this->post('/client/create', $data);
@@ -64,7 +63,7 @@ class ClientTest extends TestCase
     {
         $data = [
             'name' => 'TestClient2',
-            'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946'
+            'uuid' => '3abf6f26-eb15-4ccb-9f0b-8z5ed3c72946',
         ];
 
         $response = $this->post('/client/create', $data);
@@ -76,7 +75,7 @@ class ClientTest extends TestCase
     {
         $client = Client::find(1);
 
-        $response = $this->get('/client/delete/' . $client->id);
+        $response = $this->get('/client/delete/'.$client->id);
 
         $response->assertOk();
     }
@@ -97,7 +96,7 @@ class ClientTest extends TestCase
     {
         $client = Client::where('name', 'TestClient')->firstOrFail();
 
-        $response = $this->post('/client/delete/' . $client->id);
+        $response = $this->post('/client/delete/'.$client->id);
         $response->assertRedirect('/client/list');
         $response->assertSessionHas('success');
     }

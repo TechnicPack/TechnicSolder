@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class ModTableTestSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -22,7 +21,7 @@ class ModTableTestSeeder extends Seeder
             'name' => 'testmod',
             'description' => 'This is a test mod for Solder',
             'author' => 'Technic',
-            'link' => 'http://solder.io'
+            'link' => 'http://solder.io',
         ]);
 
         DB::table('modversions')->delete();
@@ -31,7 +30,7 @@ class ModTableTestSeeder extends Seeder
             'mod_id' => $testmod->id,
             'version' => '1.0',
             'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
-            'filesize' => '295'
+            'filesize' => '295',
         ]);
 
         Mod::create([
@@ -39,7 +38,5 @@ class ModTableTestSeeder extends Seeder
             'name' => 'backtools',
             'link' => 'http://ichun.us',
         ]);
-
     }
-
 }

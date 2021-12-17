@@ -8,10 +8,9 @@ use Illuminate\Support\Facades\Log;
 
 class UrlUtils
 {
-
     /**
      * Initializes a cURL session with common options
-     * @param  String  $url
+     * @param  string  $url
      * @return resource
      */
     private static function curl_init($url)
@@ -48,7 +47,7 @@ class UrlUtils
 
     /**
      * Gets URL contents and returns them
-     * @param  String  $url
+     * @param  string  $url
      * @return array
      */
     public static function get_url_contents($url)
@@ -58,39 +57,41 @@ class UrlUtils
         $data = curl_exec($ch);
         $info = curl_getinfo($ch);
 
-        if (!curl_errno($ch)) {
+        if (! curl_errno($ch)) {
             //check HTTP return code
             curl_close($ch);
             if ($info['http_code'] == 200) {
                 return [
                     'success' => true,
                     'data' => $data,
-                    'info' => $info
+                    'info' => $info,
                 ];
             } else {
-                Log::error('Curl error for ' . $url . ': URL returned status code - ' . $info['http_code']);
+                Log::error('Curl error for '.$url.': URL returned status code - '.$info['http_code']);
+
                 return [
                     'success' => false,
-                    'message' => 'URL returned status code - ' . $info['http_code'],
-                    'info' => $info
+                    'message' => 'URL returned status code - '.$info['http_code'],
+                    'info' => $info,
                 ];
             }
         }
 
         $errors = curl_error($ch);
         //log the string return of the errors
-        Log::error('Curl error for ' . $url . ': ' . $errors);
+        Log::error('Curl error for '.$url.': '.$errors);
         curl_close($ch);
+
         return [
             'success' => false,
             'message' => $errors,
-            'info' => $info
+            'info' => $info,
         ];
     }
 
     /**
      * Uses Curl to get URL contents and returns hash
-     * @param  String  $url  Url Location
+     * @param  string  $url  Url Location
      * @return array
      */
     public static function get_remote_md5($url)
@@ -102,13 +103,15 @@ class UrlUtils
             if ($content['success']) {
                 try {
                     $md5 = md5($content['data']);
+
                     return [
                         'success' => true,
                         'md5' => $md5,
-                        'filesize' => $content['info']['download_content_length']
+                        'filesize' => $content['info']['download_content_length'],
                     ];
                 } catch (Exception $e) {
-                    Log::error('Error hashing remote md5: ' . $e->getMessage());
+                    Log::error('Error hashing remote md5: '.$e->getMessage());
+
                     return [
                         'success' => false,
                         'message' => $e->getMessage(),
@@ -127,7 +130,7 @@ class UrlUtils
         return [
             'success' => false,
             'message' => $checkFile['message'],
-            'info' => $checkFile['info']
+            'info' => $checkFile['info'],
         ];
     }
 
@@ -142,7 +145,7 @@ class UrlUtils
         $info = curl_getinfo($ch);
 
         //check if there are any errors
-        if (!curl_errno($ch)) {
+        if (! curl_errno($ch)) {
             //check HTTP return code
             curl_close($ch);
             if ($info['http_code'] == 200 || $info['http_code'] == 405) {
@@ -150,16 +153,17 @@ class UrlUtils
             } else {
                 return [
                     'success' => false,
-                    'message' => 'URL returned status code - ' . $info['http_code'],
-                    'info' => $info
+                    'message' => 'URL returned status code - '.$info['http_code'],
+                    'info' => $info,
                 ];
             }
         }
 
         //log the string return of the errors
         $errors = curl_error($ch);
-        Log::error('Curl error for ' . $url . ': ' . $errors);
+        Log::error('Curl error for '.$url.': '.$errors);
         curl_close($ch);
+
         return ['success' => false, 'message' => $errors, 'info' => $info];
     }
 
@@ -173,23 +177,23 @@ class UrlUtils
         $data = curl_exec($ch);
         $info = curl_getinfo($ch);
 
-        if (!curl_errno($ch)) {
+        if (! curl_errno($ch)) {
             //check HTTP return code
             curl_close($ch);
             if ($info['http_code'] == 200 || $info['http_code'] == 405) {
                 return ['success' => true, 'headers' => $data, 'info' => $info];
             } else {
                 return [
-                    'success' => false, 'message' =>
-                        'Remote server did not return 200', 'info' => $info
+                    'success' => false, 'message' => 'Remote server did not return 200', 'info' => $info,
                 ];
             }
         }
 
         //log the string return of the errors
         $errors = curl_error($ch);
-        Log::error('Curl error for ' . $url . ': ' . $errors);
+        Log::error('Curl error for '.$url.': '.$errors);
         curl_close($ch);
+
         return ['success' => false, 'message' => $errors, 'info' => $info];
     }
 }

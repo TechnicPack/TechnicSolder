@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Client;
 use Illuminate\Support\Facades\Cache;
@@ -8,7 +10,6 @@ use Illuminate\Support\MessageBag;
 
 class ClientController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('solder_clients');
@@ -22,6 +23,7 @@ class ClientController extends Controller
     public function getList()
     {
         $clients = Client::all();
+
         return view('client.list')->with('clients', $clients);
     }
 
@@ -34,7 +36,7 @@ class ClientController extends Controller
     {
         $rules = [
             'name' => 'required|unique:clients',
-            'uuid' => 'required|unique:clients'
+            'uuid' => 'required|unique:clients',
         ];
 
         $validation = Validator::make(Request::all(), $rules);
@@ -79,5 +81,4 @@ class ClientController extends Controller
 
         return redirect('client/list')->with('success', 'Client deleted!');
     }
-
 }

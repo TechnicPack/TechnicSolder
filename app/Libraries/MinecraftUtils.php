@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Cache;
 
 class MinecraftUtils
 {
-
     public static function getMinecraft($manual = false)
     {
         $response = [];
@@ -14,7 +13,7 @@ class MinecraftUtils
         if ($manual) {
             Cache::forget('minecraftversions');
         } else {
-            if (!$manual && Cache::has('minecraftversions')) {
+            if (! $manual && Cache::has('minecraftversions')) {
                 $response = Cache::get('minecraftversions');
             }
         }
@@ -34,6 +33,7 @@ class MinecraftUtils
                 $response = json_decode($response['data'], true);
                 krsort($response, SORT_NATURAL);
                 Cache::put('minecraftversions', $response, now()->addMinutes(180));
+
                 return $response;
             }
         }
@@ -54,6 +54,7 @@ class MinecraftUtils
 
                 krsort($versions, SORT_NATURAL);
                 Cache::put('minecraftversions', $versions, now()->addMinutes(180));
+
                 return $versions;
             }
         }

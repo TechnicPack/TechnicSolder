@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Build;
 use App\Libraries\UpdateUtils;
@@ -6,7 +8,6 @@ use App\Modversion;
 
 class DashboardController extends Controller
 {
-
     public function getIndex()
     {
         $builds = Build::with('modpack')
@@ -30,5 +31,4 @@ class DashboardController extends Controller
             ->with('builds', $builds)
             ->with('changelog', $changelogJson);
     }
-
 }

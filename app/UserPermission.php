@@ -18,7 +18,6 @@ class UserPermission extends Model
         } else {
             $this->attributes['modpacks'] = null;
         }
-
     }
 
     public function getModpacksAttribute($value)

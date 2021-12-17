@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ModpackTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -47,7 +46,7 @@ class ModpackTest extends TestCase
     {
         $data = [
             'name' => 'TestModpack2',
-            'slug' => 'testmodpack'
+            'slug' => 'testmodpack',
         ];
 
         $response = $this->post('/modpack/create', $data);
@@ -59,7 +58,7 @@ class ModpackTest extends TestCase
     {
         $data = [
             'name' => 'TestModpack',
-            'slug' => 'testmodpack2'
+            'slug' => 'testmodpack2',
         ];
 
         $response = $this->post('/modpack/create', $data);
@@ -71,7 +70,7 @@ class ModpackTest extends TestCase
     {
         $data = [
             'name' => 'TestModpack2',
-            'slug' => 'testmodpack2'
+            'slug' => 'testmodpack2',
         ];
 
         $response = $this->post('/modpack/create', $data);
@@ -82,7 +81,7 @@ class ModpackTest extends TestCase
     {
         $modpack = Modpack::find(1);
 
-        $response = $this->get('/modpack/delete/' . $modpack->id);
+        $response = $this->get('/modpack/delete/'.$modpack->id);
 
         $response->assertOk();
     }
@@ -103,7 +102,7 @@ class ModpackTest extends TestCase
     {
         $modpack = Modpack::firstOrFail();
 
-        $response = $this->post('/modpack/delete/' . $modpack->id);
+        $response = $this->post('/modpack/delete/'.$modpack->id);
         $response->assertRedirect('/modpack/list');
         $response->assertSessionHas('success');
     }
@@ -113,7 +112,7 @@ class ModpackTest extends TestCase
         $modpack = Modpack::find(1);
         $build = $modpack->builds()->first();
 
-        $response = $this->get('/modpack/build/' . $build->id);
+        $response = $this->get('/modpack/build/'.$build->id);
 
         $response->assertOk();
     }
@@ -122,7 +121,7 @@ class ModpackTest extends TestCase
     {
         $modpack = Modpack::find(1);
 
-        $response = $this->get('/modpack/edit/' . $modpack->id);
+        $response = $this->get('/modpack/edit/'.$modpack->id);
 
         $response->assertOk();
     }
@@ -135,11 +134,11 @@ class ModpackTest extends TestCase
             'name' => $modpack->name,
             'slug' => $modpack->slug,
             'hidden' => $modpack->hidden,
-            'private' => $modpack->private
+            'private' => $modpack->private,
         ];
 
-        $response = $this->post('/modpack/edit/' . $modpack->id, $data);
-        $response->assertRedirect('/modpack/view/' . $modpack->id);
+        $response = $this->post('/modpack/edit/'.$modpack->id, $data);
+        $response->assertRedirect('/modpack/view/'.$modpack->id);
     }
 
     public function testModpackEditPost()
@@ -150,16 +149,15 @@ class ModpackTest extends TestCase
             'name' => 'TestTest',
             'slug' => 'test-test',
             'hidden' => true,
-            'private' => true
+            'private' => true,
         ];
 
-        $response = $this->post('/modpack/edit/' . $modpack->id, $data);
-        $response->assertRedirect('/modpack/view/' . $modpack->id);
+        $response = $this->post('/modpack/edit/'.$modpack->id, $data);
+        $response->assertRedirect('/modpack/view/'.$modpack->id);
         $modpack = Modpack::find(1);
         $this->assertEquals('TestTest', $modpack->name);
         $this->assertEquals('test-test', $modpack->slug);
         $this->assertTrue((bool) ($modpack->hidden));
         $this->assertTrue((bool) ($modpack->private));
     }
-
 }

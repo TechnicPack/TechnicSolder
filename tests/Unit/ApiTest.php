@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ApiTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -54,7 +53,7 @@ class ApiTest extends TestCase
     public function testModpackSlug()
     {
         $modpack = Modpack::find(1);
-        $response = $this->get('api/modpack/' . $modpack->slug);
+        $response = $this->get('api/modpack/'.$modpack->slug);
         $response->assertOk();
         $response->assertJsonStructure([
             'name',
@@ -83,7 +82,7 @@ class ApiTest extends TestCase
     public function testModSlug()
     {
         $mod = Mod::find(1);
-        $response = $this->get('api/mod/' . $mod->name);
+        $response = $this->get('api/mod/'.$mod->name);
         $response->assertOk();
         $response->assertJsonStructure([
             'name',
@@ -99,7 +98,7 @@ class ApiTest extends TestCase
     {
         $modpack = Modpack::find(1);
         $build = $modpack->builds->first();
-        $response = $this->get('api/modpack/' . $modpack->slug . '/' . $build->version);
+        $response = $this->get('api/modpack/'.$modpack->slug.'/'.$build->version);
         $response->assertOk();
         $response->assertJsonStructure([
             'minecraft',
@@ -114,7 +113,7 @@ class ApiTest extends TestCase
     {
         $mod = Mod::find(1);
         $modversion = $mod->versions->first();
-        $response = $this->get('api/mod/' . $mod->name . '/' . $modversion->version);
+        $response = $this->get('api/mod/'.$mod->name.'/'.$modversion->version);
         $response->assertOk();
         $response->assertJsonStructure([
             'md5',

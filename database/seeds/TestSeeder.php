@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 class TestSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -27,5 +26,4 @@ class TestSeeder extends Seeder
         //Add testmodversion to testbuild
         $testbuild->modversions()->attach(1);
     }
-
 }

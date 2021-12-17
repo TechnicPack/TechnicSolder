@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class BaseTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -33,7 +32,7 @@ class BaseTest extends TestCase
         $credentials = [
             'email' => 'test@admin.com',
             'password' => 'ifail',
-            'remember' => false
+            'remember' => false,
         ];
 
         $response = $this->post('/login', $credentials);
@@ -46,7 +45,7 @@ class BaseTest extends TestCase
         $credentials = [
             'email' => 'admin@admin.com',
             'password' => 'admin',
-            'remember' => false
+            'remember' => false,
         ];
 
         $response = $this->post('/login', $credentials);

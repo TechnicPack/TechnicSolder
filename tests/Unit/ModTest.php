@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class ModTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -47,7 +46,7 @@ class ModTest extends TestCase
     {
         $data = [
             'pretty_name' => 'TestMod',
-            'name' => 'testmod'
+            'name' => 'testmod',
         ];
 
         $response = $this->post('/mod/create', $data);
@@ -60,7 +59,7 @@ class ModTest extends TestCase
         $data = [
             'pretty_name' => 'TestMod',
             'name' => 'testmod2',
-            'link' => 'solder/io'
+            'link' => 'solder/io',
         ];
 
         $response = $this->post('/mod/create', $data);
@@ -83,9 +82,9 @@ class ModTest extends TestCase
     public function testModVersionAddPostNonAjax()
     {
         $response = $this->post('/mod/add-version/', [
-            "add-version" => "v1.5.2.v01",
-            "add-md5" => "9ece64de3e11a0f15f55ef34f2194760",
-            "mod-id" => "2"
+            'add-version' => 'v1.5.2.v01',
+            'add-md5' => '9ece64de3e11a0f15f55ef34f2194760',
+            'mod-id' => '2',
         ]);
         $response->assertNotFound();
     }
@@ -93,10 +92,10 @@ class ModTest extends TestCase
     public function testModVersionAddPostEmptyVersion()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
-                "md5" => "9ece64de3e11a0f15f55ef34f2194760",
-                "mod-id" => "2"
+                'md5' => '9ece64de3e11a0f15f55ef34f2194760',
+                'mod-id' => '2',
             ]);
 
         $response->assertOk();
@@ -112,8 +111,8 @@ class ModTest extends TestCase
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
-                "add-version" => "v1.5.2.v01",
-                "add-md5" => "9ece64de3e11a0f15f55ef34f2194760"
+                'add-version' => 'v1.5.2.v01',
+                'add-md5' => '9ece64de3e11a0f15f55ef34f2194760',
             ]);
 
         $response->assertOk();
@@ -127,11 +126,11 @@ class ModTest extends TestCase
     public function testModVersionAddPostInvalidModID()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
-                "add-version" => "v1.5.2.v01",
-                "add-md5" => "9ece64de3e11a0f15f55ef34f2194760",
-                "mod-id" => "1000000"
+                'add-version' => 'v1.5.2.v01',
+                'add-md5' => '9ece64de3e11a0f15f55ef34f2194760',
+                'mod-id' => '1000000',
             ]);
 
         $response->assertOk();
@@ -145,11 +144,11 @@ class ModTest extends TestCase
     public function testModVersionAddPost()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
-                "add-version" => "1.7.10-4.0.0",
-                "add-md5" => "0925fb5cca71b6e8dd81fac9b257c6d4",
-                "mod-id" => "2"
+                'add-version' => '1.7.10-4.0.0',
+                'add-md5' => '0925fb5cca71b6e8dd81fac9b257c6d4',
+                'mod-id' => '2',
             ]);
 
         $response->assertOk();
@@ -164,11 +163,11 @@ class ModTest extends TestCase
     public function testModVersionAddPostManualMD5()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
-                "add-version" => "1.7.10-4.0.0",
-                "add-md5" => "butts",
-                "mod-id" => "2"
+                'add-version' => '1.7.10-4.0.0',
+                'add-md5' => 'butts',
+                'mod-id' => '2',
             ]);
 
         $response->assertOk();
@@ -184,11 +183,11 @@ class ModTest extends TestCase
     public function testModVersionAddPostMD5Fail()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
-                "add-version" => "v1.5.2.1",
-                "add-md5" => "",
-                "mod-id" => "2"
+                'add-version' => 'v1.5.2.1',
+                'add-md5' => '',
+                'mod-id' => '2',
             ]);
 
         $response->assertOk();
@@ -198,11 +197,11 @@ class ModTest extends TestCase
 
         if (getenv('REPO_TYPE') === 'remote') {
             $response->assertJson([
-                'reason' => 'Remote MD5 failed. URL returned status code - 404'
+                'reason' => 'Remote MD5 failed. URL returned status code - 404',
             ]);
         } else {
             $response->assertJson([
-                'reason' => 'Remote MD5 failed. ' . config('solder.repo_location') . 'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI'
+                'reason' => 'Remote MD5 failed. '.config('solder.repo_location').'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI',
             ]);
         }
     }
@@ -210,8 +209,8 @@ class ModTest extends TestCase
     public function testModVersionRehashPostNonAjax()
     {
         $response = $this->post('/mod/rehash/', [
-            "version-id" => "2",
-            "md5" => "9ece64de3e11a0f15f55ef34f2194760"
+            'version-id' => '2',
+            'md5' => '9ece64de3e11a0f15f55ef34f2194760',
         ]);
         $response->assertNotFound();
     }
@@ -219,10 +218,10 @@ class ModTest extends TestCase
     public function testModVersionRehashPostEmptyID()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
-                "version-id" => "",
-                "md5" => "9ece64de3e11a0f15f55ef34f2194760"
+                'version-id' => '',
+                'md5' => '9ece64de3e11a0f15f55ef34f2194760',
             ]);
 
         $response->assertOk();
@@ -236,10 +235,10 @@ class ModTest extends TestCase
     public function testModVersionRehashPostInvalidID()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
-                "version-id" => "10000000",
-                "md5" => "9ece64de3e11a0f15f55ef34f2194760"
+                'version-id' => '10000000',
+                'md5' => '9ece64de3e11a0f15f55ef34f2194760',
             ]);
 
         $response->assertOk();
@@ -253,10 +252,10 @@ class ModTest extends TestCase
     public function testModVersionRehashPost()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
-                "version-id" => "1",
-                "md5" => "bdbc6c6cc48c7b037e4aef64b58258a3"
+                'version-id' => '1',
+                'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
             ]);
 
         $response->assertOk();
@@ -271,10 +270,10 @@ class ModTest extends TestCase
     public function testModVersionRehashPostMD5Manual()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
-                "version-id" => "1",
-                "md5" => "butts"
+                'version-id' => '1',
+                'md5' => 'butts',
             ]);
 
         $response->assertOk();
@@ -290,10 +289,10 @@ class ModTest extends TestCase
     public function testModVersionRehashPostMD5Empty()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
-                "version-id" => "1",
-                "md5" => ""
+                'version-id' => '1',
+                'md5' => '',
             ]);
 
         $response->assertOk();
@@ -314,7 +313,7 @@ class ModTest extends TestCase
     public function testModVersionDeleteEmptyID()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/', []);
 
         $response->assertNotFound();
@@ -323,7 +322,7 @@ class ModTest extends TestCase
     public function testModVersionDeleteInvalidID()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/10000000', []);
 
         $response->assertOk();
@@ -336,7 +335,7 @@ class ModTest extends TestCase
     public function testModVersionDelete()
     {
         //Fake an AJAX call.
-        $response = $this->withHeaders(["X-Requested-With" => "XMLHttpRequest"])
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/1');
 
         $response->assertOk();
@@ -351,7 +350,7 @@ class ModTest extends TestCase
     {
         $mod = Mod::find(1);
 
-        $response = $this->get('/mod/delete/' . $mod->id);
+        $response = $this->get('/mod/delete/'.$mod->id);
 
         $response->assertOk();
     }
@@ -372,7 +371,7 @@ class ModTest extends TestCase
     {
         $modpack = Mod::where('name', 'backtools')->firstOrFail();
 
-        $response = $this->post('/mod/delete/' . $modpack->id);
+        $response = $this->post('/mod/delete/'.$modpack->id);
         $response->assertRedirect('/mod/list');
         $response->assertSessionHas('success');
     }

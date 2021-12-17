@@ -18,7 +18,7 @@ class Modpack
     {
         $modpack = $request->segment(3);
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
@@ -28,7 +28,7 @@ class Modpack
             return redirect('dashboard');
         }
 
-        if (!$perms->solder_full && !in_array($modpack, $perms->modpacks)) {
+        if (! $perms->solder_full && ! in_array($modpack, $perms->modpacks)) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }

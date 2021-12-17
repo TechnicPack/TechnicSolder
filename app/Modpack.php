@@ -25,6 +25,7 @@ class Modpack extends Model
                 break;
             }
         }
+
         return $private;
     }
 
@@ -47,12 +48,12 @@ class Modpack extends Model
 
         $response['builds'] = $this->builds->filter(function ($build) use ($client, $key) {
             // Don't return unpublished builds
-            if (!$build->is_published) {
+            if (! $build->is_published) {
                 return false;
             }
 
             // If this build isn't private, return it
-            if (!$build->private) {
+            if (! $build->private) {
                 return true;
             }
 

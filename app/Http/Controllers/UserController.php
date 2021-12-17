@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Modpack;
 use App\User;
@@ -12,7 +14,6 @@ use Illuminate\Support\MessageBag;
 
 class UserController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('solder_users');
@@ -61,7 +62,7 @@ class UserController extends Controller
                 ->withErrors(new MessageBag(['User ID not provided']));
         }
 
-        if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users && $user_id != Auth::user()->id) {
+        if (! Auth::user()->permission->solder_full && ! Auth::user()->permission->solder_users && $user_id != Auth::user()->id) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
@@ -74,18 +75,18 @@ class UserController extends Controller
         }
 
         $rules = [
-            'email' => 'required|email|unique:users,email,' . $user_id,
-            'username' => 'required|min:3|max:30|unique:users,username,' . $user_id
+            'email' => 'required|email|unique:users,email,'.$user_id,
+            'username' => 'required|min:3|max:30|unique:users,username,'.$user_id,
         ];
 
         if (Request::input('password1')) {
-            $rules['password1'] = "min:3|same:password2";
+            $rules['password1'] = 'min:3|same:password2';
         }
 
         $validation = Validator::make(Request::all(), $rules);
 
         if ($validation->fails()) {
-            return redirect('user/edit/' . $user_id)->withErrors($validation->messages());
+            return redirect('user/edit/'.$user_id)->withErrors($validation->messages());
         }
 
         $user->email = Request::input('email');
@@ -119,7 +120,7 @@ class UserController extends Controller
             $perm->modpacks_delete = Request::input('modpack-delete') ? true : false;
             $modpack = Request::input('modpack');
 
-            if (!empty($modpack)) {
+            if (! empty($modpack)) {
                 $perm->modpacks = $modpack;
             } else {
                 $perm->modpacks = null;
@@ -139,7 +140,7 @@ class UserController extends Controller
 
     public function getCreate()
     {
-        if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users) {
+        if (! Auth::user()->permission->solder_full && ! Auth::user()->permission->solder_users) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
@@ -155,7 +156,7 @@ class UserController extends Controller
         $rules = [
             'email' => 'required|email|unique:users',
             'username' => 'required|min:3|max:30|unique:users',
-            'password' => 'required|min:3'
+            'password' => 'required|min:3',
         ];
 
         $validation = Validator::make(Request::all(), $rules);
@@ -195,7 +196,7 @@ class UserController extends Controller
         $perm->modpacks_delete = Request::input('modpack-delete') ? true : false;
         $modpack = Request::input('modpack');
 
-        if (!empty($modpack)) {
+        if (! empty($modpack)) {
             $perm->modpacks = $modpack;
         } else {
             $perm->modpacks = null;
@@ -203,12 +204,12 @@ class UserController extends Controller
 
         $perm->save();
 
-        return redirect('user/edit/' . $user->id)->with('success', 'User created!');
+        return redirect('user/edit/'.$user->id)->with('success', 'User created!');
     }
 
     public function getDelete($user_id = null)
     {
-        if (!Auth::user()->permission->solder_full && !Auth::user()->permission->solder_users) {
+        if (! Auth::user()->permission->solder_full && ! Auth::user()->permission->solder_users) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
