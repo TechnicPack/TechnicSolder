@@ -1,0 +1,23 @@
+FROM php:7.2-fpm-alpine
+
+RUN apk add curl-dev libzip-dev oniguruma-dev libxml2-dev
+
+RUN docker-php-ext-install bcmath curl json mbstring pdo pdo_mysql xml zip
+RUN docker-php-ext-enable zip curl json mbstring xml bcmath pdo pdo_mysql
+
+RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \
+  && pecl install redis \
+  && docker-php-ext-enable redis \
+  && apk del pcre-dev ${PHPIZE_DEPS} \
+  && rm -rf /tmp/pear
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer 
+
+VOLUME [ "/var/www/html" ]
+
+COPY . /var/www/html
+RUN composer install  --no-dev --no-interaction
+RUN ln -s /var/www/html/docker/setup.sh /bin/setup-artisan
+
+EXPOSE 9000
+CMD ["php-fpm"]
