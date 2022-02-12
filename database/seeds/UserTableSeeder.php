@@ -15,7 +15,7 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->delete();
+        DB::table('users')->truncate();
 
         $thisIP = gethostbyname(gethostname());
         $testuser = User::create([
@@ -27,7 +27,7 @@ class UserTableSeeder extends Seeder
             'created_by_user_id' => 1,
         ]);
 
-        DB::table('user_permissions')->delete();
+        DB::table('user_permissions')->truncate();
 
         UserPermission::create([
             'user_id' => $testuser->id,

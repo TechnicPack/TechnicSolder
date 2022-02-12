@@ -35,16 +35,16 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
-        "doctrine/dbal": "^3.2",
+        "doctrine/dbal": "^2.6",
         "fideloper/proxy": "^4.4",
+        "fruitcake/laravel-cors": "^2.0",
+        "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
         "intervention/image": "^2.7",
         "knplabs/github-api": "^2.11",
         "laravel/framework": "^7.29",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.2",
-        "php-http/guzzle6-adapter": "^2.0",
-        "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^6.3.1|^7.0.1"
+        "php-http/guzzle6-adapter": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
@@ -57,7 +57,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
     },
     "extra": {
         "laravel": {

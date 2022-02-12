@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modversion extends Model
 {
+    protected $guarded = [];
+
     public function mod()
     {
         return $this->belongsTo(Mod::class);

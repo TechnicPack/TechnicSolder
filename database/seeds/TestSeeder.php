@@ -19,7 +19,7 @@ class TestSeeder extends Seeder
         $this->call('ClientTableTestSeeder');
         $this->call('KeyTableTestSeeder');
 
-        DB::table('build_modversion')->delete();
+        DB::table('build_modversion')->truncate();
 
         $testbuild = Build::find(1);
 

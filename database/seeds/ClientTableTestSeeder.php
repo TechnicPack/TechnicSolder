@@ -13,7 +13,7 @@ class ClientTableTestSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('clients')->delete();
+        DB::table('clients')->truncate();
 
         $testmodpack = Client::create([
             'name' => 'TestClient',

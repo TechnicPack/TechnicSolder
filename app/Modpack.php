@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modpack extends Model
 {
+    protected $guarded = [];
+
     public function builds()
     {
         return $this->hasMany(Build::class);

@@ -13,7 +13,7 @@ class KeyTableTestSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('keys')->delete();
+        DB::table('keys')->truncate();
 
         $testmodpack = Key::create([
             'name' => 'TestKey',

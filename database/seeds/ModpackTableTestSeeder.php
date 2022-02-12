@@ -14,7 +14,7 @@ class ModpackTableTestSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('modpacks')->delete();
+        DB::table('modpacks')->truncate();
 
         $testmodpack = Modpack::create([
             'name' => 'TestModpack',
@@ -30,7 +30,7 @@ class ModpackTableTestSeeder extends Seeder
             'background_url' => URL::asset('/resources/default/background.jpg'),
         ]);
 
-        DB::table('builds')->delete();
+        DB::table('builds')->truncate();
 
         $testbuild = Build::create([
             'modpack_id' => $testmodpack->id,

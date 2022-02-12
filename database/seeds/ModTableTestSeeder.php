@@ -14,7 +14,7 @@ class ModTableTestSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('mods')->delete();
+        DB::table('mods')->truncate();
 
         $testmod = Mod::create([
             'pretty_name' => 'TestMod',
@@ -24,7 +24,7 @@ class ModTableTestSeeder extends Seeder
             'link' => 'http://solder.io',
         ]);
 
-        DB::table('modversions')->delete();
+        DB::table('modversions')->truncate();
 
         $testmodversion = Modversion::create([
             'mod_id' => $testmod->id,
