@@ -6,6 +6,7 @@ use App\Build;
 use App\Modpack;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 
 class ModpackTableTestSeeder extends Seeder
 {
