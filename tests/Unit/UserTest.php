@@ -10,7 +10,6 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -49,7 +48,7 @@ class UserTest extends TestCase
         $data = [
             'email' => 'admin@admin.com',
             'username' => 'test',
-            'password' => 'B3sTp@ss'
+            'password' => 'B3sTp@ss',
         ];
 
         $response = $this->post('/user/create', $data);
@@ -62,7 +61,7 @@ class UserTest extends TestCase
         $data = [
             'email' => 'test@test.com',
             'username' => 'admin',
-            'password' => 'B3sTp@ss'
+            'password' => 'B3sTp@ss',
         ];
 
         $response = $this->post('/user/create', $data);
@@ -75,7 +74,7 @@ class UserTest extends TestCase
         $data = [
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => 'B3sTp@ss'
+            'password' => 'B3sTp@ss',
         ];
 
         $response = $this->post('/user/create', $data);
@@ -87,7 +86,7 @@ class UserTest extends TestCase
     {
         $user = User::firstOrFail();
 
-        $response = $this->get('/user/edit/' . $user->id);
+        $response = $this->get('/user/edit/'.$user->id);
 
         $response->assertOk();
     }
@@ -103,16 +102,16 @@ class UserTest extends TestCase
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
         $data = [
             'email' => 'test@test.com',
-            'username' => 'test'
+            'username' => 'test',
         ];
 
-        $response = $this->post('/user/edit/' . $user->id, $data);
-        $response->assertRedirect('/user/edit/' . $user->id);
+        $response = $this->post('/user/edit/'.$user->id, $data);
+        $response->assertRedirect('/user/edit/'.$user->id);
         $response->assertSessionHasErrors('email');
     }
 
@@ -125,16 +124,16 @@ class UserTest extends TestCase
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
         $data = [
             'email' => 'test@test.com',
-            'username' => 'admin'
+            'username' => 'admin',
         ];
 
-        $response = $this->post('/user/edit/' . $user->id, $data);
-        $response->assertRedirect('/user/edit/' . $user->id);
+        $response = $this->post('/user/edit/'.$user->id, $data);
+        $response->assertRedirect('/user/edit/'.$user->id);
         $response->assertSessionHasErrors('username');
     }
 
@@ -144,10 +143,10 @@ class UserTest extends TestCase
 
         $data = [
             'email' => 'admin2@admin.com',
-            'username' => 'admin2'
+            'username' => 'admin2',
         ];
 
-        $response = $this->post('/user/edit/' . $user->id, $data);
+        $response = $this->post('/user/edit/'.$user->id, $data);
         $response->assertRedirect('/user/list');
         $response->assertSessionHas('success');
     }
@@ -161,14 +160,14 @@ class UserTest extends TestCase
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
         $perm = new UserPermission();
         $perm->user_id = $user->id;
         $perm->save();
 
-        $response = $this->get('/user/delete/' . $user->id);
+        $response = $this->get('/user/delete/'.$user->id);
         $response->assertOk();
     }
 
@@ -193,14 +192,14 @@ class UserTest extends TestCase
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
         $perm = new UserPermission();
         $perm->user_id = $user->id;
         $perm->save();
 
-        $response = $this->post('/user/delete/' . $user->id);
+        $response = $this->post('/user/delete/'.$user->id);
         $response->assertRedirect('/user/list');
         $response->assertSessionHas('success');
     }
@@ -214,7 +213,7 @@ class UserTest extends TestCase
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
         // Allow this user to manage users, but not be an admin
@@ -233,7 +232,7 @@ class UserTest extends TestCase
 
     public function testUserCannotDeleteSelf()
     {
-        $response = $this->post('/user/delete/' . auth()->user()->id);
+        $response = $this->post('/user/delete/'.auth()->user()->id);
         $response->assertRedirect('/user/list');
         $response->assertSessionHasErrors();
     }
@@ -244,7 +243,7 @@ class UserTest extends TestCase
             'email' => 'test-sadmin@test.com',
             'username' => 'sadmin',
             'password' => 'B3sT3Re4p@ss',
-            'solder-full' => '1'
+            'solder-full' => '1',
         ];
 
         $response = $this->post('/user/create', $data);
@@ -261,7 +260,7 @@ class UserTest extends TestCase
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
         $perm = new UserPermission();

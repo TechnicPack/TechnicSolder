@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Build;
 use App\Client;
@@ -19,7 +21,6 @@ use Illuminate\Validation\Rule;
 
 class ModpackController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('solder_modpacks');
@@ -36,6 +37,7 @@ class ModpackController extends Controller
     public function getList()
     {
         $modpacks = Modpack::all();
+
         return view('modpack.list')->with('modpacks', $modpacks);
     }
 
@@ -44,7 +46,7 @@ class ModpackController extends Controller
         $modpack = Modpack::with([
             'builds' => function ($query) {
                 $query->withCount('modversions');
-            }
+            },
         ])
             ->find($modpack_id);
 
@@ -66,7 +68,7 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
 
-        if (Request::input('action') == "delete") {
+        if (Request::input('action') == 'delete') {
             if (Request::input('confirm-delete')) {
                 $switchrec = 0;
                 $switchlat = 0;
@@ -92,29 +94,30 @@ class ModpackController extends Controller
                     $modpack->latest = $latbuild->version;
                 }
                 $modpack->save();
-                Cache::forget('modpack:' . $modpack->slug);
-                Cache::forget('modpack:' . $modpack->slug . ':build:' . $buildVersion);
-                return redirect('modpack/view/' . $build->modpack->id)->with('deleted', 'Build deleted.');
+                Cache::forget('modpack:'.$modpack->slug);
+                Cache::forget('modpack:'.$modpack->slug.':build:'.$buildVersion);
+
+                return redirect('modpack/view/'.$build->modpack->id)->with('deleted', 'Build deleted.');
             }
 
             return view('modpack.build.delete')->with('build', $build);
         } else {
-            if (Request::input('action') == "edit") {
+            if (Request::input('action') == 'edit') {
                 if (Request::input('confirm-edit')) {
                     $rules = [
-                        "version" => "required",
-                        "minecraft" => "required",
-                        "memory" => "numeric"
+                        'version' => 'required',
+                        'minecraft' => 'required',
+                        'memory' => 'numeric',
                     ];
 
                     $messages = [
-                        'version.required' => "You must enter in the build number.",
-                        'memory.numeric' => "You may enter in numbers only for the memory requirement"
+                        'version.required' => 'You must enter in the build number.',
+                        'memory.numeric' => 'You may enter in numbers only for the memory requirement',
                     ];
 
                     $validation = Validator::make(Request::all(), $rules, $messages);
                     if ($validation->fails()) {
-                        return redirect('modpack/build/' . $build->id . '?action=edit')->withErrors($validation->messages());
+                        return redirect('modpack/build/'.$build->id.'?action=edit')->withErrors($validation->messages());
                     }
 
                     $build->version = Request::input('version');
@@ -125,11 +128,13 @@ class ModpackController extends Controller
                     $build->min_java = Request::input('java-version');
                     $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
                     $build->save();
-                    Cache::forget('modpack:' . $build->modpack->slug);
-                    Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
-                    return redirect('modpack/build/' . $build->id);
+                    Cache::forget('modpack:'.$build->modpack->slug);
+                    Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
+
+                    return redirect('modpack/build/'.$build->id);
                 }
                 $minecraft = MinecraftUtils::getMinecraft();
+
                 return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
             } else {
                 $mods = Mod::all();
@@ -153,7 +158,7 @@ class ModpackController extends Controller
         return view('modpack.build.create')
             ->with([
                 'modpack' => $modpack,
-                'minecraft' => $minecraft
+                'minecraft' => $minecraft,
             ]);
     }
 
@@ -165,24 +170,24 @@ class ModpackController extends Controller
         }
 
         $rules = [
-            "version" => [
-                "required",
+            'version' => [
+                'required',
                 Rule::unique('builds')->where(function ($query) use ($modpack) {
                     return $query->where('modpack_id', $modpack->id);
-                })
+                }),
             ],
-            "minecraft" => "required",
-            "memory" => "numeric"
+            'minecraft' => 'required',
+            'memory' => 'numeric',
         ];
 
         $messages = [
-            'version.required' => "You must enter in the build number.",
-            'memory.numeric' => "You may enter in numbers only for the memory requirement"
+            'version.required' => 'You must enter in the build number.',
+            'memory.numeric' => 'You may enter in numbers only for the memory requirement',
         ];
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return redirect('modpack/add-build/' . $modpack_id)->withErrors($validation->messages());
+            return redirect('modpack/add-build/'.$modpack_id)->withErrors($validation->messages());
         }
 
         $clone = Request::input('clone');
@@ -196,19 +201,19 @@ class ModpackController extends Controller
         $build->min_java = Request::input('java-version');
         $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
         $build->save();
-        Cache::forget('modpack:' . $modpack->slug);
-        if (!empty($clone)) {
+        Cache::forget('modpack:'.$modpack->slug);
+        if (! empty($clone)) {
             $clone_build = Build::find($clone);
             $version_ids = [];
             foreach ($clone_build->modversions as $cver) {
-                if (!empty($cver)) {
+                if (! empty($cver)) {
                     array_push($version_ids, $cver->id);
                 }
             }
             $build->modversions()->sync($version_ids);
         }
 
-        return redirect('modpack/build/' . $build->id);
+        return redirect('modpack/build/'.$build->id);
     }
 
     public function getCreate()
@@ -218,15 +223,14 @@ class ModpackController extends Controller
 
     public function postCreate()
     {
-
         $rules = [
             'name' => 'required|unique:modpacks',
-            'slug' => 'required|unique:modpacks'
+            'slug' => 'required|unique:modpacks',
         ];
 
         $messages = [
             'name_required' => 'You must enter a modpack name.',
-            'slug_required' => 'You must enter a modpack slug'
+            'slug_required' => 'You must enter a modpack slug',
         ];
 
         $validation = Validator::make(Request::all(), $rules, $messages);
@@ -251,17 +255,17 @@ class ModpackController extends Controller
         $user = Auth::user();
         $perm = $user->permission;
         $modpacks = $perm->modpacks;
-        if (!empty($modpacks)) {
-            Log::info($modpack->name . ': Attempting to add modpack perm to user - ' . $user->username . ' - Modpack perm not empty');
+        if (! empty($modpacks)) {
+            Log::info($modpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm not empty');
             $newmodpacks = array_merge($modpacks, [$modpack->id]);
             $perm->modpacks = $newmodpacks;
         } else {
-            Log::info($modpack->name . ': Attempting to add modpack perm to user - ' . $user->username . ' - Modpack perm empty');
+            Log::info($modpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm empty');
             $perm->modpacks = [$modpack->id];
         }
         $perm->save();
 
-        return redirect('modpack/view/' . $modpack->id);
+        return redirect('modpack/view/'.$modpack->id);
     }
 
     public function getEdit($modpack_id)
@@ -292,18 +296,18 @@ class ModpackController extends Controller
         }
 
         $rules = [
-            'name' => 'required|unique:modpacks,name,' . $modpack->id,
-            'slug' => 'required|unique:modpacks,slug,' . $modpack->id
+            'name' => 'required|unique:modpacks,name,'.$modpack->id,
+            'slug' => 'required|unique:modpacks,slug,'.$modpack->id,
         ];
 
         $messages = [
             'name_required' => 'You must enter a modpack name.',
-            'slug_required' => 'You must enter a modpack slug'
+            'slug_required' => 'You must enter a modpack slug',
         ];
 
         $validation = Validator::make(Request::all(), $rules, $messages);
         if ($validation->fails()) {
-            return redirect('modpack/edit/' . $modpack_id)->withErrors($validation->messages());
+            return redirect('modpack/edit/'.$modpack_id)->withErrors($validation->messages());
         }
 
         $modpack->name = Request::input('name');
@@ -312,7 +316,7 @@ class ModpackController extends Controller
         $modpack->private = Request::boolean('private');
         $modpack->save();
 
-        Cache::forget('modpack:' . $modpack->slug);
+        Cache::forget('modpack:'.$modpack->slug);
         Cache::forget('modpacks');
 
         /* Client Syncing */
@@ -323,7 +327,7 @@ class ModpackController extends Controller
             $modpack->clients()->sync([]);
         }
 
-        return redirect('modpack/view/' . $modpack->id)->with('success', 'Modpack edited');
+        return redirect('modpack/view/'.$modpack->id)->with('success', 'Modpack edited');
     }
 
     public function getDelete($modpack_id)
@@ -355,13 +359,12 @@ class ModpackController extends Controller
         return redirect('modpack/list/')->with('success', 'Modpack Deleted');
     }
 
-
     /**
      * AJAX Methods for Modpack Manager
      **/
     public function anyModify($action = null)
     {
-        if (!Request::ajax()) {
+        if (! Request::ajax()) {
             abort(404);
         }
 
@@ -370,7 +373,7 @@ class ModpackController extends Controller
         }
 
         switch ($action) {
-            case "version": // Change mod version in a build
+            case 'version': // Change mod version in a build
                 $version_id = Request::input('version');
                 $modversion_id = Request::input('modversion_id');
                 $affected = DB::table('build_modversion')
@@ -386,11 +389,12 @@ class ModpackController extends Controller
                 } else {
                     $status = 'success';
                 }
+
                 return response()->json([
                     'status' => $status,
-                    'reason' => 'Rows Affected: ' . $affected
+                    'reason' => 'Rows Affected: '.$affected,
                 ]);
-            case "delete": // Remove mod version from build
+            case 'delete': // Remove mod version from build
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', Request::input('build_id'))
                     ->where('modversion_id', '=', Request::input('modversion_id'))
@@ -399,21 +403,22 @@ class ModpackController extends Controller
                 if ($affected == 0) {
                     $status = 'failed';
                 }
+
                 return response()->json([
                     'status' => $status,
-                    'reason' => 'Rows Affected: ' . $affected
+                    'reason' => 'Rows Affected: '.$affected,
                 ]);
-            case "add": // Add mod version to build
+            case 'add': // Add mod version to build
                 $build = Build::find(Request::input('build'));
                 $mod = Mod::where('name', '=', Request::input('mod-name'))->first();
                 $ver = Modversion::where('mod_id', '=', $mod->id)
                     ->where('version', '=', Request::input('mod-version'))
                     ->first();
 
-                if (!$ver) {
+                if (! $ver) {
                     return response()->json([
                         'status' => 'failed',
-                        'reason' => 'No such mod version exists'
+                        'reason' => 'No such mod version exists',
                     ]);
                 }
 
@@ -424,69 +429,69 @@ class ModpackController extends Controller
                 if ($duplicate) {
                     return response()->json([
                         'status' => 'failed',
-                        'reason' => 'Duplicate Modversion found'
+                        'reason' => 'Duplicate Modversion found',
                     ]);
                 } else {
                     $build->modversions()->attach($ver->id);
 
-                    Cache::forget('modpack:' . $build->modpack->slug);
-                    Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
+                    Cache::forget('modpack:'.$build->modpack->slug);
+                    Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 
                     return response()->json([
                         'status' => 'success',
                         'pretty_name' => $mod->pretty_name,
-                        'version' => $ver->version
+                        'version' => $ver->version,
                     ]);
                 }
-            case "recommended": // Set recommended build
+            case 'recommended': // Set recommended build
                 $modpack = Modpack::find(Request::input('modpack'));
                 $new_version = Request::input('recommended');
                 $modpack->recommended = $new_version;
                 $modpack->save();
 
-                Cache::forget('modpack:' . $modpack->slug);
+                Cache::forget('modpack:'.$modpack->slug);
 
                 return response()->json([
-                    "success" => "Updated " . $modpack->name . "'s recommended  build to " . $new_version,
-                    "version" => $new_version
+                    'success' => 'Updated '.$modpack->name."'s recommended  build to ".$new_version,
+                    'version' => $new_version,
                 ]);
-            case "latest": // Set latest build
+            case 'latest': // Set latest build
                 $modpack = Modpack::find(Request::input('modpack'));
                 $new_version = Request::input('latest');
                 $modpack->latest = $new_version;
                 $modpack->save();
 
-                Cache::forget('modpack:' . $modpack->slug);
+                Cache::forget('modpack:'.$modpack->slug);
 
                 return response()->json([
-                    "success" => "Updated " . $modpack->name . "'s latest  build to " . $new_version,
-                    "version" => $new_version
+                    'success' => 'Updated '.$modpack->name."'s latest  build to ".$new_version,
+                    'version' => $new_version,
                 ]);
-            case "published": // Set build published status
+            case 'published': // Set build published status
                 $build = Build::with('modpack')->find(Request::input('build'));
                 $published = Request::input('published');
 
                 $build->is_published = ($published ? true : false);
                 $build->save();
 
-                Cache::forget('modpack:' . $build->modpack->slug);
-                Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
+                Cache::forget('modpack:'.$build->modpack->slug);
+                Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 
                 return response()->json([
-                    "success" => "Updated build " . $build->version . "'s published status.",
+                    'success' => 'Updated build '.$build->version."'s published status.",
                 ]);
-            case "private":
+            case 'private':
                 $build = Build::with('modpack')->find(Request::input('build'));
                 $private = Request::input('private');
 
                 $build->private = ($private ? true : false);
                 $build->save();
 
-                Cache::forget('modpack:' . $build->modpack->slug);
-                Cache::forget('modpack:' . $build->modpack->slug . ':build:' . $build->version);
+                Cache::forget('modpack:'.$build->modpack->slug);
+                Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 
                 return response()->json([
-                    "success" => "Updated build " . $build->version . "'s private status.",
+                    'success' => 'Updated build '.$build->version."'s private status.",
                 ]);
         }
     }

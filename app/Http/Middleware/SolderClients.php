@@ -17,12 +17,12 @@ class SolderClients
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        if (!$user) {
+        if (! $user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
         $perms = $user->permission;
-        if (!$perms->solder_full && !$perms->solder_clients) {
+        if (! $perms->solder_full && ! $perms->solder_clients) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }

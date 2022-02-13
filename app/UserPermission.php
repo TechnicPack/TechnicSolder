@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserPermission extends Model
 {
+    protected $guarded = [];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -18,7 +20,6 @@ class UserPermission extends Model
         } else {
             $this->attributes['modpacks'] = null;
         }
-
     }
 
     public function getModpacksAttribute($value)

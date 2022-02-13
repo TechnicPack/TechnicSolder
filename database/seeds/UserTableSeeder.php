@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserTableSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -16,24 +15,23 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->delete();
+        DB::table('users')->truncate();
 
-        $thisIP = getHostByName(getHostName());
+        $thisIP = gethostbyname(gethostname());
         $testuser = User::create([
             'username' => 'admin',
             'email' => 'admin@admin.com',
             'password' => Hash::make('admin'),
             'created_ip' => $thisIP,
             'last_ip' => $thisIP,
-            'created_by_user_id' => 1
+            'created_by_user_id' => 1,
         ]);
 
-        DB::table('user_permissions')->delete();
+        DB::table('user_permissions')->truncate();
 
         UserPermission::create([
             'user_id' => $testuser->id,
-            'solder_full' => true
+            'solder_full' => true,
         ]);
     }
-
 }

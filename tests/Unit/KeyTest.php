@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class KeyTest extends TestCase
 {
-
     use RefreshDatabase;
 
     public function setUp(): void
@@ -40,7 +39,7 @@ class KeyTest extends TestCase
     {
         $data = [
             'name' => 'TestKey2',
-            'api_key' => 'sfIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
+            'api_key' => 'sfIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ',
         ];
 
         $response = $this->post('/key/create', $data);
@@ -52,7 +51,7 @@ class KeyTest extends TestCase
     {
         $data = [
             'name' => 'TestKey',
-            'api_key' => 'abIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
+            'api_key' => 'abIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ',
         ];
 
         $response = $this->post('/key/create', $data);
@@ -64,7 +63,7 @@ class KeyTest extends TestCase
     {
         $data = [
             'name' => 'TestKey2',
-            'api_key' => 'abCvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ'
+            'api_key' => 'abCvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ',
         ];
 
         $response = $this->post('/key/create', $data);
@@ -76,7 +75,7 @@ class KeyTest extends TestCase
     {
         $key = Key::find(1);
 
-        $response = $this->get('/key/delete/' . $key->id);
+        $response = $this->get('/key/delete/'.$key->id);
 
         $response->assertOk();
     }
@@ -97,7 +96,7 @@ class KeyTest extends TestCase
     {
         $key = Key::firstOrFail();
 
-        $response = $this->post('/key/delete/' . $key->id);
+        $response = $this->post('/key/delete/'.$key->id);
         $response->assertRedirect('/key/list');
         $response->assertSessionHas('success');
     }

@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Key;
 use Illuminate\Support\Facades\Cache;
@@ -8,7 +10,6 @@ use Illuminate\Support\MessageBag;
 
 class KeyController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('solder_keys');
@@ -22,6 +23,7 @@ class KeyController extends Controller
     public function getList()
     {
         $keys = Key::all();
+
         return view('key.list')->with('keys', $keys);
     }
 
@@ -34,7 +36,7 @@ class KeyController extends Controller
     {
         $rules = [
             'name' => 'required|unique:keys',
-            'api_key' => 'required|unique:keys'
+            'api_key' => 'required|unique:keys',
         ];
 
         $validation = Validator::make(Request::all(), $rules);

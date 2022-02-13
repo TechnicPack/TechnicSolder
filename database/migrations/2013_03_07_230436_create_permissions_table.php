@@ -3,16 +3,16 @@
 use App\UserPermission;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePermissionsTable extends Migration {
-
-	/**
-	 * Make changes to the database.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('user_permissions', function($table) {
+class CreatePermissionsTable extends Migration
+{
+    /**
+     * Make changes to the database.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('user_permissions', function ($table) {
             $table->increments('id');
             $table->integer('user_id');
             $table->boolean('solder_full')->default(0);
@@ -31,16 +31,15 @@ class CreatePermissionsTable extends Migration {
         $perm->user_id = 1;
         $perm->solder_full = true;
         $perm->save();
-	}
+    }
 
-	/**
-	 * Revert the changes to the database.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('user_permissions');
-	}
-
+    /**
+     * Revert the changes to the database.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('user_permissions');
+    }
 }

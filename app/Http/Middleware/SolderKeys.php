@@ -18,13 +18,13 @@ class SolderKeys
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }
 
         $perms = $user->permission;
-        if (!$perms->solder_full && !$perms->solder_keys) {
+        if (! $perms->solder_full && ! $perms->solder_keys) {
             return redirect('dashboard')
                 ->with('permission', 'You do not have permission to access this area.');
         }

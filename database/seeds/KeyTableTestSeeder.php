@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 class KeyTableTestSeeder extends Seeder
 {
-
     /**
      * Run the database seeds.
      *
@@ -14,13 +13,11 @@ class KeyTableTestSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('keys')->delete();
+        DB::table('keys')->truncate();
 
         $testmodpack = Key::create([
             'name' => 'TestKey',
             'api_key' => 'sfIvEcNueZtwKsTAIYOIYng1iuPAgavJsfIvEcNueZtwKsTAIYOIYng1iuPAgavJ',
         ]);
-
     }
-
 }

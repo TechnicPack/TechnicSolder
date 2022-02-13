@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 use App\Build;
 use App\Client;
@@ -53,7 +55,7 @@ class ApiController extends Controller
         return response()->json([
             'api' => 'TechnicSolder',
             'version' => SOLDER_VERSION,
-            'stream' => SOLDER_STREAM
+            'stream' => SOLDER_STREAM,
         ]);
     }
 
@@ -85,7 +87,6 @@ class ApiController extends Controller
     public function getModpack($slug)
     {
         return response()->json($this->fetchModpack($slug));
-
     }
 
     public function getModpackBuild($modpackSlug, $buildName)
@@ -111,11 +112,11 @@ class ApiController extends Controller
                 'mods' => $mods,
             ]);
         } else {
-            $mod = Cache::remember('mod:' . $modSlug, now()->addMinutes(5), function () use ($modSlug) {
+            $mod = Cache::remember('mod:'.$modSlug, now()->addMinutes(5), function () use ($modSlug) {
                 return Mod::with('versions')->where('name', $modSlug)->first();
             });
 
-            if (!$mod) {
+            if (! $mod) {
                 return response()->json(['error' => 'Mod does not exist'], 404);
             }
 
@@ -136,8 +137,8 @@ class ApiController extends Controller
 
             $modVersion = $mod->versions()->where('version', $version)->first();
 
-            if (!$modVersion) {
-                return response()->json(["error" => "Mod version does not exist"]);
+            if (! $modVersion) {
+                return response()->json(['error' => 'Mod version does not exist']);
             }
 
             $response = $modVersion->only([
@@ -153,23 +154,22 @@ class ApiController extends Controller
 
     public function getVerify($key = null)
     {
-        if (!$key) {
-            return response()->json(["error" => "No API key provided."]);
+        if (! $key) {
+            return response()->json(['error' => 'No API key provided.']);
         }
 
         $key = Key::where('api_key', $key)->first();
 
-        if (!$key) {
-            return response()->json(["error" => "Invalid key provided."]);
+        if (! $key) {
+            return response()->json(['error' => 'Invalid key provided.']);
         }
 
         return response()->json([
-            "valid" => "Key validated.",
-            "name" => $key->name,
-            "created_at" => $key->created_at,
+            'valid' => 'Key validated.',
+            'name' => $key->name,
+            'created_at' => $key->created_at,
         ]);
     }
-
 
     /* Private Functions */
 
@@ -185,14 +185,18 @@ class ApiController extends Controller
         }
 
         // Requests authenticated with a Platform key have access to all modpacks
-        if (!$this->key) {
+        if (! $this->key) {
             // If a key isn't specified, we filter modpacks
             $modpacks = $modpacks->filter(function ($modpack) {
                 // Allow non-private, non-hidden modpacks
-                if ($modpack->private == 0 && $modpack->hidden == 0) return true;
+                if ($modpack->private == 0 && $modpack->hidden == 0) {
+                    return true;
+                }
 
                 // Reject if this is a private or hidden modpack, and a client isn't set
-                if (!$this->client) return false;
+                if (! $this->client) {
+                    return false;
+                }
 
                 // Allow if the current client has access to this modpack
                 return $this->client->modpacks->contains($modpack);
@@ -205,8 +209,8 @@ class ApiController extends Controller
     private function fetchModpack($slug)
     {
         // Authenticated requests bypass cache
-        if (!$this->client && !$this->key) {
-            $modpack = Cache::remember('modpack:' . $slug, now()->addMinutes(5), function () use ($slug) {
+        if (! $this->client && ! $this->key) {
+            $modpack = Cache::remember('modpack:'.$slug, now()->addMinutes(5), function () use ($slug) {
                 return Modpack::with('builds')
                     ->where('slug', $slug)
                     ->first();
@@ -217,8 +221,8 @@ class ApiController extends Controller
                 ->first();
         }
 
-        if (!$modpack) {
-            return ["error" => "Modpack does not exist"];
+        if (! $modpack) {
+            return ['error' => 'Modpack does not exist'];
         }
 
         return $modpack->toApiResponse($this->client, $this->key);
@@ -234,15 +238,15 @@ class ApiController extends Controller
                 ->where('slug', $modpackSlug)
                 ->first();
         } else {
-            $modpack = Cache::remember('modpack:' . $modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
+            $modpack = Cache::remember('modpack:'.$modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
                 return Modpack::with('builds')
                     ->where('slug', $modpackSlug)
                     ->first();
             });
         }
 
-        if (!$modpack) {
-            return ["error" => "Modpack does not exist"];
+        if (! $modpack) {
+            return ['error' => 'Modpack does not exist'];
         }
 
         if ($bypassCache) {
@@ -250,7 +254,7 @@ class ApiController extends Controller
 
             $build->load(['modversions', 'modversions.mod']);
         } else {
-            $build = Cache::remember('modpack:' . $modpackSlug . ':build:' . $buildName,
+            $build = Cache::remember('modpack:'.$modpackSlug.':build:'.$buildName,
                 now()->addMinutes(5),
                 function () use ($modpack, $buildName) {
                     $build = $modpack->builds->firstWhere('version', '===', $buildName);
@@ -261,11 +265,11 @@ class ApiController extends Controller
                 });
         }
 
-        if (!$build) {
-            return ["error" => "Build does not exist"];
+        if (! $build) {
+            return ['error' => 'Build does not exist'];
         }
 
-        if (!$build->is_published || $build->private && !($this->key || ($this->client && $this->client->modpacks->contains($modpack)))) {
+        if (! $build->is_published || $build->private && ! ($this->key || ($this->client && $this->client->modpacks->contains($modpack)))) {
             return ['error' => 'You are not authorized to view this build'];
         }
 
@@ -281,11 +285,10 @@ class ApiController extends Controller
 
         $mods = $build->modversions->map(function ($modversion) use ($includeFullMods) {
             return $modversion->toApiResponse($includeFullMods);
-        })->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE)->values();
+        })->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->values();
 
         $response['mods'] = $mods;
 
         return $response;
     }
-
 }
