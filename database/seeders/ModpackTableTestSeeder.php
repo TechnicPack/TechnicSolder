@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Build;
 use App\Modpack;
 use Illuminate\Database\Seeder;
