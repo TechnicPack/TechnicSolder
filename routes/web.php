@@ -15,7 +15,7 @@ Route::get('/', function () {
     return redirect('dashboard');
 });
 
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware('auth')->group(function () {
     Route::redirect('client', 'client/list');
     Route::get('client/list', 'ClientController@getList')->name('client.list');
     Route::get('client/create', 'ClientController@getCreate')->name('client.create');
