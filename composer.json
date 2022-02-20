@@ -38,12 +38,12 @@
         "doctrine/dbal": "^3.3",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
+        "http-interop/http-factory-guzzle": "^1.0",
         "intervention/image": "^2.7",
-        "knplabs/github-api": "^3.5",
+        "knplabs/github-api": "^3.0",
         "laravel/framework": "^8.83",
         "laravel/tinker": "^2.5",
-        "laravelcollective/html": "^6.3",
-        "php-http/guzzle6-adapter": "^2.0"
+        "laravelcollective/html": "^6.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
