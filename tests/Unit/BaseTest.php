@@ -20,14 +20,14 @@ class BaseTest extends TestCase
         Session::start();
     }
 
-    public function testLoginGet()
+    public function test_login_get()
     {
         $response = $this->get('/login');
 
         $response->assertOk();
     }
 
-    public function testUnauthorizedLogin()
+    public function test_unauthorized_login()
     {
         $credentials = [
             'email' => 'test@admin.com',
@@ -40,7 +40,7 @@ class BaseTest extends TestCase
         $response->assertSessionHas('login_failed');
     }
 
-    public function testAuthorizedLogin()
+    public function test_authorized_login()
     {
         $credentials = [
             'email' => 'admin@admin.com',
@@ -52,7 +52,7 @@ class BaseTest extends TestCase
         $response->assertRedirect('/dashboard');
     }
 
-    public function testIndex()
+    public function test_index()
     {
         $user = User::find(1);
         $this->be($user);
@@ -62,14 +62,14 @@ class BaseTest extends TestCase
         $response->assertRedirect('/dashboard');
     }
 
-    public function testUnauthorizedAccess()
+    public function test_unauthorized_access()
     {
         $response = $this->get('/dashboard');
 
         $response->assertRedirect('/login');
     }
 
-    public function testDashboard()
+    public function test_dashboard()
     {
         $user = User::find(1);
         $this->be($user);

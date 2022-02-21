@@ -21,21 +21,21 @@ class BuildTest extends TestCase
         $this->be($user);
     }
 
-    public function testBuildGet()
+    public function test_build_get()
     {
         $response = $this->get('/modpack/build/1');
 
         $response->assertOk();
     }
 
-    public function testBuildAddGet()
+    public function test_build_add_get()
     {
         $response = $this->get('/modpack/add-build/1');
 
         $response->assertOk();
     }
 
-    public function testBuildAddPost()
+    public function test_build_add_post()
     {
         $data = [
             'version' => '1.1.0',
@@ -56,7 +56,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.7');
     }
 
-    public function testBuildAddPostEmptyVersion()
+    public function test_build_add_post_empty_version()
     {
         $data = [
             'version' => '',
@@ -71,7 +71,7 @@ class BuildTest extends TestCase
         $response->assertSessionHasErrors('version');
     }
 
-    public function testBuildAddPostEmptyMinecraft()
+    public function test_build_add_post_empty_minecraft()
     {
         $data = [
             'version' => '1.1.0',
@@ -86,7 +86,7 @@ class BuildTest extends TestCase
         $response->assertSessionHasErrors('minecraft');
     }
 
-    public function testBuildAddPostEmptyJava()
+    public function test_build_add_post_empty_java()
     {
         $data = [
             'version' => '1.1.0',
@@ -107,7 +107,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '');
     }
 
-    public function testBuildAddPostNoMemory()
+    public function test_build_add_post_no_memory()
     {
         $data = [
             'version' => '1.1.0',
@@ -128,7 +128,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.7');
     }
 
-    public function testBuildEditGet()
+    public function test_build_edit_get()
     {
         $build = Build::find(1);
 
@@ -136,7 +136,7 @@ class BuildTest extends TestCase
         $response->assertOk();
     }
 
-    public function testBuildEditPost()
+    public function test_build_edit_post()
     {
         $build = Build::find(1);
 
@@ -158,7 +158,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.8');
     }
 
-    public function testBuildDeleteGet()
+    public function test_build_delete_get()
     {
         $build = Build::find(1);
 
@@ -166,7 +166,7 @@ class BuildTest extends TestCase
         $response->assertOk();
     }
 
-    public function testBuildDeletePost()
+    public function test_build_delete_post()
     {
         $build = Build::find(1);
 

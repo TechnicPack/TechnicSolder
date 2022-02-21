@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class UrlUtilsTest extends TestCase
 {
-    public function testCheckRemoteFile()
+    public function test_check_remote_file()
     {
         $json = UrlUtils::checkRemoteFile('https://httpbin.org/bytes/10', 5);
         $this->assertTrue(is_array($json));
@@ -18,7 +18,7 @@ class UrlUtilsTest extends TestCase
         $this->assertEquals('200', $json['info']['http_code']);
     }
 
-    public function testCheckRemoteFileNon200()
+    public function test_check_remote_file_non_200()
     {
         $json = UrlUtils::checkRemoteFile('https://httpbin.org/status/404');
         $this->assertTrue(is_array($json));
@@ -30,7 +30,7 @@ class UrlUtilsTest extends TestCase
         $this->assertEquals('404', $json['info']['http_code']);
     }
 
-    public function testGetHeaders()
+    public function test_get_headers()
     {
         $json = UrlUtils::getHeaders('https://httpbin.org/bytes/10', 5);
         $this->assertTrue(is_array($json));
@@ -41,7 +41,7 @@ class UrlUtilsTest extends TestCase
         $this->assertEquals('200', $json['info']['http_code']);
     }
 
-    public function testGetHeadersNon200()
+    public function test_get_headers_non_200()
     {
         $json = UrlUtils::getHeaders('https://httpbin.org/status/404', 5);
         $this->assertTrue(is_array($json));
@@ -53,7 +53,7 @@ class UrlUtilsTest extends TestCase
         $this->assertEquals('404', $json['info']['http_code']);
     }
 
-    public function testGetRemoteMD5()
+    public function test_get_remote_md5()
     {
         $json = UrlUtils::get_remote_md5('https://httpbin.org/base64/dGVzdA==', 5);
         $this->assertTrue(is_array($json));
@@ -66,7 +66,7 @@ class UrlUtilsTest extends TestCase
         $this->assertEquals('4', $json['filesize']);
     }
 
-    public function testGetRemoteMD5Non200()
+    public function test_get_remote_md5_non_200()
     {
         $json = UrlUtils::get_remote_md5('https://httpbin.org/status/404', 5);
         $this->assertTrue(is_array($json));

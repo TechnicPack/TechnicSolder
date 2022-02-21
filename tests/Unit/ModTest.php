@@ -21,28 +21,28 @@ class ModTest extends TestCase
         $this->be($user);
     }
 
-    public function testModIndex()
+    public function test_mod_index()
     {
         $response = $this->get('/mod');
 
         $response->assertRedirect('/mod/list');
     }
 
-    public function testModList()
+    public function test_mod_list()
     {
         $response = $this->get('/mod/list');
 
         $response->assertOk();
     }
 
-    public function testModCreateGet()
+    public function test_mod_create_get()
     {
         $response = $this->get('/mod/create');
 
         $response->assertOk();
     }
 
-    public function testModCreatePostNonUniqueName()
+    public function test_mod_create_post_duplicate_name()
     {
         $data = [
             'pretty_name' => 'TestMod',
@@ -54,7 +54,7 @@ class ModTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
-    public function testModCreatePostInvalidLinkURL()
+    public function test_mod_create_post_invalid_link_url()
     {
         $data = [
             'pretty_name' => 'TestMod',
@@ -67,7 +67,7 @@ class ModTest extends TestCase
         $response->assertSessionHasErrors('link');
     }
 
-    public function testModCreatePost()
+    public function test_mod_create_post()
     {
         $data = [
             'pretty_name' => 'Random mod name',
@@ -79,7 +79,7 @@ class ModTest extends TestCase
         $response->assertRedirect('/mod/view/3');
     }
 
-    public function testModVersionAddPostNonAjax()
+    public function test_mod_version_add_post_non_ajax()
     {
         $response = $this->post('/mod/add-version/', [
             'add-version' => 'v1.5.2.v01',
@@ -89,7 +89,7 @@ class ModTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testModVersionAddPostEmptyVersion()
+    public function test_mod_version_add_post_empty_version()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -106,7 +106,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionAddPostEmptyModID()
+    public function test_mod_version_add_post_empty_mod_id()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -123,7 +123,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionAddPostInvalidModID()
+    public function test_mod_version_add_post_invalid_mod_id()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -141,7 +141,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionAddPost()
+    public function test_mod_version_add_post()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -160,7 +160,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionAddPostManualMD5()
+    public function test_mod_version_add_post_manual_md5()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -180,7 +180,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionAddPostMD5Fail()
+    public function test_mod_version_add_post_md5_fail()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -206,7 +206,7 @@ class ModTest extends TestCase
         }
     }
 
-    public function testModVersionRehashPostNonAjax()
+    public function test_mod_version_rehash_post_non_ajax()
     {
         $response = $this->post('/mod/rehash/', [
             'version-id' => '2',
@@ -215,7 +215,7 @@ class ModTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testModVersionRehashPostEmptyID()
+    public function test_mod_version_rehash_post_empty_id()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -232,7 +232,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionRehashPostInvalidID()
+    public function test_mod_version_rehash_post_invalid_id()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -249,7 +249,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionRehashPost()
+    public function test_mod_version_rehash_post()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -267,7 +267,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionRehashPostMD5Manual()
+    public function test_mod_version_rehash_post_md5_manual()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -286,7 +286,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionRehashPostMD5Empty()
+    public function test_mod_version_rehash_post_md5_empty()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -304,13 +304,13 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionDeleteNonAjax()
+    public function test_mod_version_delete_non_ajax()
     {
         $response = $this->post('/mod/delete-version/1');
         $response->assertNotFound();
     }
 
-    public function testModVersionDeleteEmptyID()
+    public function test_mod_version_delete_empty_id()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -319,7 +319,7 @@ class ModTest extends TestCase
         $response->assertNotFound();
     }
 
-    public function testModVersionDeleteInvalidID()
+    public function test_mod_version_delete_invalid_id()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -332,7 +332,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModVersionDelete()
+    public function test_mod_version_delete()
     {
         //Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
@@ -346,7 +346,7 @@ class ModTest extends TestCase
         ]);
     }
 
-    public function testModDeleteGet()
+    public function test_mod_delete_get()
     {
         $mod = Mod::find(1);
 
@@ -355,19 +355,19 @@ class ModTest extends TestCase
         $response->assertOk();
     }
 
-    public function testModDeleteGetInvalidID()
+    public function test_mod_delete_get_invalid_id()
     {
         $response = $this->get('/mod/delete/100000');
         $response->assertRedirect('/mod/list');
     }
 
-    public function testModDeletePostInvalidID()
+    public function test_mod_delete_post_invalid_id()
     {
         $response = $this->post('/mod/delete/100000');
         $response->assertRedirect('/mod/list');
     }
 
-    public function testModDeletePost()
+    public function test_mod_delete_post()
     {
         $modpack = Mod::where('name', 'backtools')->firstOrFail();
 

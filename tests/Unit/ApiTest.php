@@ -18,7 +18,7 @@ class ApiTest extends TestCase
         $this->seed();
     }
 
-    public function testBase()
+    public function test_base()
     {
         $response = $this->get('api/');
         $response->assertOk();
@@ -29,28 +29,28 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function testModpack()
+    public function test_modpack()
     {
         $response = $this->get('api/modpack');
         $response->assertOk();
         $response->assertJsonStructure(['modpacks', 'mirror_url']);
     }
 
-    public function testMod()
+    public function test_mod()
     {
         $response = $this->get('api/mod');
         $response->assertOk();
         $response->assertJsonStructure(['mods']);
     }
 
-    public function testInvalidModpack()
+    public function test_invalid_modpack()
     {
         $response = $this->get('api/modpack/bob');
         $response->assertOk();
         $response->assertJsonStructure(['error']);
     }
 
-    public function testModpackSlug()
+    public function test_modpack_slug()
     {
         $modpack = Modpack::find(1);
         $response = $this->get('api/modpack/'.$modpack->slug);
@@ -72,14 +72,14 @@ class ApiTest extends TestCase
         $response->assertJsonPath('builds', ['1.0.0'], true);
     }
 
-    public function testInvalidMod()
+    public function test_invalid_mod()
     {
         $response = $this->get('api/mod/bob');
         $response->assertNotFound();
         $response->assertJsonStructure(['error']);
     }
 
-    public function testModSlug()
+    public function test_mod_slug()
     {
         $mod = Mod::find(1);
         $response = $this->get('api/mod/'.$mod->name);
@@ -94,7 +94,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function testModpackBuild()
+    public function test_modpack_build()
     {
         $modpack = Modpack::find(1);
         $build = $modpack->builds->first();
@@ -109,7 +109,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function testModVersion()
+    public function test_mod_version()
     {
         $mod = Mod::find(1);
         $modversion = $mod->versions->first();
