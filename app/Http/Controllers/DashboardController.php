@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Build;
+use App\Models\Build;
 use App\Libraries\UpdateUtils;
-use App\Modversion;
+use App\Models\Modversion;
 
 class DashboardController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-use App\UserPermission;
+use App\Models\UserPermission;
 use Illuminate\Database\Migrations\Migration;
 
 class CreatePermissionsTable extends Migration

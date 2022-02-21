@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Libraries\UpdateUtils;
-use App\Modpack;
+use App\Models\Modpack;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
