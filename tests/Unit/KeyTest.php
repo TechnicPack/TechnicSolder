@@ -11,7 +11,7 @@ class KeyTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -21,21 +21,21 @@ class KeyTest extends TestCase
         $this->be($user);
     }
 
-    public function testKeyIndex()
+    public function test_key_index()
     {
         $response = $this->get('/key');
 
         $response->assertRedirect('/key/list');
     }
 
-    public function testKeyCreateGet()
+    public function test_key_create_get()
     {
         $response = $this->get('/key/create');
 
         $response->assertOk();
     }
 
-    public function testKeyCreatePostNonUniqueKey()
+    public function test_key_create_post_duplicate_key()
     {
         $data = [
             'name' => 'TestKey2',
@@ -47,7 +47,7 @@ class KeyTest extends TestCase
         $response->assertSessionHasErrors('api_key');
     }
 
-    public function testKeyCreatePostNonUniqueName()
+    public function test_key_create_post_duplicate_name()
     {
         $data = [
             'name' => 'TestKey',
@@ -59,7 +59,7 @@ class KeyTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
-    public function testKeyCreatePost()
+    public function test_key_create_post()
     {
         $data = [
             'name' => 'TestKey2',
@@ -71,7 +71,7 @@ class KeyTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function testKeyDeleteGet()
+    public function test_key_delete_get()
     {
         $key = Key::find(1);
 
@@ -80,19 +80,19 @@ class KeyTest extends TestCase
         $response->assertOk();
     }
 
-    public function testKeyDeleteGetInvalidID()
+    public function test_key_delete_get_invalid_id()
     {
         $response = $this->get('/key/delete/100000');
         $response->assertRedirect('/key/list');
     }
 
-    public function testKeyDeletePostInvalidID()
+    public function test_key_delete_post_invalid_id()
     {
         $response = $this->post('/key/delete/100000');
         $response->assertRedirect('/key/list');
     }
 
-    public function testKeyDeletePost()
+    public function test_key_delete_post()
     {
         $key = Key::firstOrFail();
 
@@ -101,7 +101,7 @@ class KeyTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function testKeyList()
+    public function test_key_list()
     {
         $response = $this->get('/key/list');
 

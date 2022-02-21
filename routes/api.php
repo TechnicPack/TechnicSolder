@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ApiController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -11,12 +14,12 @@
 |
 */
 
-Route::get('/', 'ApiController@getIndex');
+Route::get('/', [ApiController::class, 'getIndex']);
 
-Route::get('modpack', 'ApiController@getModpackIndex');
-Route::get('modpack/{modpack}', 'ApiController@getModpack');
-Route::get('modpack/{modpack}/{build}', 'ApiController@getModpackBuild');
+Route::get('modpack', [ApiController::class, 'getModpackIndex']);
+Route::get('modpack/{modpack}', [ApiController::class, 'getModpack']);
+Route::get('modpack/{modpack}/{build}', [ApiController::class, 'getModpackBuild']);
 
-Route::get('mod/{mod?}/{version?}', 'ApiController@getMod');
+Route::get('mod/{mod?}/{version?}', [ApiController::class, 'getMod']);
 
-Route::get('verify/{key}', 'ApiController@getVerify');
+Route::get('verify/{key}', [ApiController::class, 'getVerify']);

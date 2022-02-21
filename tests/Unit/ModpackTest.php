@@ -11,7 +11,7 @@ class ModpackTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -21,28 +21,28 @@ class ModpackTest extends TestCase
         $this->be($user);
     }
 
-    public function testModpackIndex()
+    public function test_modpack_index()
     {
         $response = $this->get('/modpack');
 
         $response->assertRedirect('/modpack/list');
     }
 
-    public function testModpackList()
+    public function test_modpack_list()
     {
         $response = $this->get('/modpack/list');
 
         $response->assertOk();
     }
 
-    public function testModpackCreateGet()
+    public function test_modpack_create_get()
     {
         $response = $this->get('/modpack/create');
 
         $response->assertOk();
     }
 
-    public function testModpackCreatePostNonUniqueSlug()
+    public function test_modpack_create_post_duplicate_slug()
     {
         $data = [
             'name' => 'TestModpack2',
@@ -54,7 +54,7 @@ class ModpackTest extends TestCase
         $response->assertSessionHasErrors('slug');
     }
 
-    public function testModpackCreatePostNonUniqueName()
+    public function test_modpack_create_post_duplicate_name()
     {
         $data = [
             'name' => 'TestModpack',
@@ -66,7 +66,7 @@ class ModpackTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
-    public function testModpackCreatePost()
+    public function test_modpack_create_post()
     {
         $data = [
             'name' => 'TestModpack2',
@@ -77,7 +77,7 @@ class ModpackTest extends TestCase
         $response->assertRedirect('/modpack/view/2');
     }
 
-    public function testModpackDeleteGet()
+    public function test_modpack_delete_get()
     {
         $modpack = Modpack::find(1);
 
@@ -86,19 +86,19 @@ class ModpackTest extends TestCase
         $response->assertOk();
     }
 
-    public function testModpackDeleteGetInvalidID()
+    public function test_modpack_delete_get_invalid_id()
     {
         $response = $this->get('/modpack/delete/100000');
         $response->assertRedirect('/modpack/list');
     }
 
-    public function testModpackDeletePostInvalidID()
+    public function test_modpack_delete_post_invalid_id()
     {
         $response = $this->post('/modpack/delete/100000');
         $response->assertRedirect('/modpack/list');
     }
 
-    public function testModpackDeletePost()
+    public function test_modpack_delete_post()
     {
         $modpack = Modpack::firstOrFail();
 
@@ -107,7 +107,7 @@ class ModpackTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function testModpackBuild()
+    public function test_modpack_build()
     {
         $modpack = Modpack::find(1);
         $build = $modpack->builds()->first();
@@ -117,7 +117,7 @@ class ModpackTest extends TestCase
         $response->assertOk();
     }
 
-    public function testModpackEditGet()
+    public function test_modpack_edit_get()
     {
         $modpack = Modpack::find(1);
 
@@ -126,7 +126,7 @@ class ModpackTest extends TestCase
         $response->assertOk();
     }
 
-    public function testModpackEditPostBlank()
+    public function test_modpack_edit_post_blank()
     {
         $modpack = Modpack::find(1);
 
@@ -141,7 +141,7 @@ class ModpackTest extends TestCase
         $response->assertRedirect('/modpack/view/'.$modpack->id);
     }
 
-    public function testModpackEditPost()
+    public function test_modpack_edit_post()
     {
         $modpack = Modpack::find(1);
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Build;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +16,10 @@ class TestSeeder extends Seeder
     public function run()
     {
         //$this->call('UserTableSeeder');
-        $this->call('ModpackTableTestSeeder');
-        $this->call('ModTableTestSeeder');
-        $this->call('ClientTableTestSeeder');
-        $this->call('KeyTableTestSeeder');
+        $this->call(ModpackTableTestSeeder::class);
+        $this->call(ModTableTestSeeder::class);
+        $this->call(ClientTableTestSeeder::class);
+        $this->call(KeyTableTestSeeder::class);
 
         DB::table('build_modversion')->truncate();
 
