@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\UrlUtils;
-use App\Mod;
-use App\Modversion;
+use App\Models\Mod;
+use App\Models\Modversion;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

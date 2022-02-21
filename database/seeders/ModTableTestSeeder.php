@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Mod;
-use App\Modversion;
+use App\Models\Mod;
+use App\Models\Modversion;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

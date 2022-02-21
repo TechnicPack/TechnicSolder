@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Build;
-use App\Client;
-use App\Key;
-use App\Mod;
-use App\Modpack;
+use App\Models\Build;
+use App\Models\Client;
+use App\Models\Key;
+use App\Models\Mod;
+use App\Models\Modpack;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 

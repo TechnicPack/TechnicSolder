@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\User;
-use App\UserPermission;
+use App\Models\User;
+use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;

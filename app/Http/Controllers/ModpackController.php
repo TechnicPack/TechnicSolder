@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Build;
-use App\Client;
+use App\Models\Build;
+use App\Models\Client;
 use App\Libraries\MinecraftUtils;
-use App\Mod;
-use App\Modpack;
-use App\Modversion;
+use App\Models\Mod;
+use App\Models\Modpack;
+use App\Models\Modversion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;

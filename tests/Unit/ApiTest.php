@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Mod;
-use App\Modpack;
+use App\Models\Mod;
+use App\Models\Modpack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

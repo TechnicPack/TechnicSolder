@@ -17,7 +17,7 @@ class Build
     public function handle($request, Closure $next)
     {
         $buildId = $request->segment(3);
-        $build = \App\Build::find($buildId);
+        $build = \App\Models\Build::find($buildId);
 
         if (empty($build)) {
             return redirect('dashboard');
