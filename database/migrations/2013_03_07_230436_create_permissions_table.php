@@ -3,7 +3,7 @@
 use App\Models\UserPermission;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePermissionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Make changes to the database.
@@ -42,4 +42,4 @@ class CreatePermissionsTable extends Migration
     {
         Schema::drop('user_permissions');
     }
-}
+};

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModsRemoveDonatelink extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -27,4 +27,4 @@ class UpdateModsRemoveDonatelink extends Migration
             $table->string('donatelink')->nullable();
         });
     }
-}
+};

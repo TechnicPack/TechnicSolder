@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildsTableAgain extends Migration
+return new class extends Migration
 {
     /**
      * Make changes to the database.
@@ -27,4 +27,4 @@ class UpdateBuildsTableAgain extends Migration
             $table->dropColumn('is_published');
         });
     }
-}
+};

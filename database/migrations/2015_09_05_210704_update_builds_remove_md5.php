@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildsRemoveMd5 extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -27,4 +27,4 @@ class UpdateBuildsRemoveMd5 extends Migration
             $table->string('minecraft_md5')->default('');
         });
     }
-}
+};

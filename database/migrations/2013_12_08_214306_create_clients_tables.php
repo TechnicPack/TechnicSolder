@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClientsTables extends Migration
+return new class extends Migration
 {
     /**
      * Make changes to the database.
@@ -36,4 +36,4 @@ class CreateClientsTables extends Migration
         Schema::drop('clients');
         Schema::drop('client_modpack');
     }
-}
+};

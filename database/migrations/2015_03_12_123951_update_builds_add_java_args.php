@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildsAddJavaArgs extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -28,4 +28,4 @@ class UpdateBuildsAddJavaArgs extends Migration
             $table->dropColumn(['min_java', 'min_memory']);
         });
     }
-}
+};

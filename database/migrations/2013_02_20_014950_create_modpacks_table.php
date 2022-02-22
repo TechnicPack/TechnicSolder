@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CreateModpacksTable extends Migration
+return new class extends Migration
 {
     /**
      * Make changes to the database.
@@ -34,4 +34,4 @@ class CreateModpacksTable extends Migration
     {
         Schema::drop('modpacks');
     }
-}
+};
