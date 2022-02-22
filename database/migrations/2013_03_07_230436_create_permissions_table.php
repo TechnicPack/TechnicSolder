@@ -3,8 +3,7 @@
 use App\Models\UserPermission;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
