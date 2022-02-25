@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateUsersTableSecurity extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -29,4 +28,4 @@ class UpdateUsersTableSecurity extends Migration
             $table->dropColumn(['created_by_user_id', 'updated_by_ip', 'updated_by_user_id']);
         });
     }
-}
+};

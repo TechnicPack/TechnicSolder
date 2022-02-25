@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModsTable extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -27,4 +26,4 @@ class UpdateModsTable extends Migration
             $table->dropColumn('pretty_name');
         });
     }
-}
+};

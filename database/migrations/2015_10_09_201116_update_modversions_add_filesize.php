@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModversionsAddFilesize extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -27,4 +26,4 @@ class UpdateModversionsAddFilesize extends Migration
             $table->dropColumn('filesize');
         });
     }
-}
+};

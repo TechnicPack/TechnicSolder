@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateUserAddRememberMe extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -27,4 +26,4 @@ class UpdateUserAddRememberMe extends Migration
             $table->dropColumn('remember_token');
         });
     }
-}
+};

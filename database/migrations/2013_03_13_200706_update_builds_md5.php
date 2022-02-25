@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildsMd5 extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -27,4 +26,4 @@ class UpdateBuildsMd5 extends Migration
             $table->dropColumn('minecraft_md5');
         });
     }
-}
+};

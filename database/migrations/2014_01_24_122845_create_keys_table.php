@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CreateKeysTable extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -28,4 +27,4 @@ class CreateKeysTable extends Migration
     {
         Schema::drop('keys');
     }
-}
+};

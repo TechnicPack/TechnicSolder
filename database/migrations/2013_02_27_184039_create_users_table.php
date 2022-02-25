@@ -4,8 +4,7 @@ use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Hash;
 
-class CreateUsersTable extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -45,4 +44,4 @@ class CreateUsersTable extends Migration
     {
         Schema::drop('users');
     }
-}
+};

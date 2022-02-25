@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateBuildsTable extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -28,4 +27,4 @@ class UpdateBuildsTable extends Migration
             $table->dropColumn(['minecraft', 'forge']);
         });
     }
-}
+};

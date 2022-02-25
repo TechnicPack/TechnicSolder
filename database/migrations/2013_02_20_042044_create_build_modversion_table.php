@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBuildModversionTable extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -28,4 +27,4 @@ class CreateBuildModversionTable extends Migration
     {
         Schema::drop('build_modversion');
     }
-}
+};

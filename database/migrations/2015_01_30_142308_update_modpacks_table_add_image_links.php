@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModpacksTableAddImageLinks extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -29,4 +28,4 @@ class UpdateModpacksTableAddImageLinks extends Migration
             $table->dropColumn(['icon_url', 'logo_url', 'background_url']);
         });
     }
-}
+};

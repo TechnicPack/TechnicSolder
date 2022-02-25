@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModpackBuildsPrivate extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -35,4 +34,4 @@ class UpdateModpackBuildsPrivate extends Migration
             $table->dropColumn('private');
         });
     }
-}
+};

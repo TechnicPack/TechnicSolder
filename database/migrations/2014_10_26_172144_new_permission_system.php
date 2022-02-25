@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class NewPermissionSystem extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -55,4 +54,4 @@ class NewPermissionSystem extends Migration
             $table->boolean('solder_create')->default(0);
         });
     }
-}
+};

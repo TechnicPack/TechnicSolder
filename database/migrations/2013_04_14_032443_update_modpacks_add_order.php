@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateModpacksAddOrder extends Migration
-{
+return new class extends Migration {
     /**
      * Make changes to the database.
      *
@@ -27,4 +26,4 @@ class UpdateModpacksAddOrder extends Migration
             $table->dropColumn('order');
         });
     }
-}
+};
