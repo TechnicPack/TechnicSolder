@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
             define('SOLDER_STREAM', 'DEV');
         }
         if (! defined('SOLDER_VERSION')) {
-            define('SOLDER_VERSION', 'v0.7.8');
+            define('SOLDER_VERSION', 'v0.7.9');
         }
 
         UpdateUtils::init();
