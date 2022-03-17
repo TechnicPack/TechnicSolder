@@ -129,6 +129,7 @@ var $select = $("#mod").selectize({
 				field: 'text',
 				direction: 'asc'
 			},
+			searchField: ['text', 'value'],
 			onChange: function(value) {
 				if (!value.length) return;
 
