@@ -120,14 +120,35 @@ class ModpackController extends Controller
                         return redirect('modpack/build/'.$build->id.'?action=edit')->withErrors($validation->messages());
                     }
 
-                    $build->version = Request::input('version');
+                    // Wrap changes inside of a transaction so potential modpack changes also get rolled back if anything fails
+                    DB::transaction(function () use ($build) {
+                        $oldVersion = $build->version;
 
-                    $minecraft = Request::input('minecraft');
+                        $build->version = Request::input('version');
 
-                    $build->minecraft = $minecraft;
-                    $build->min_java = Request::input('java-version');
-                    $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
-                    $build->save();
+                        $minecraft = Request::input('minecraft');
+
+                        $build->minecraft = $minecraft;
+                        $build->min_java = Request::input('java-version');
+                        $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
+                        $build->save();
+
+                        // If the build's name/version changes then we need to check the modpack's latest/recommended build
+                        if ($oldVersion !== $build->version) {
+                            // Update the modpack's latest build if this was it
+                            if ($build->modpack->latest === $oldVersion) {
+                                $build->modpack->latest = $build->version;
+                                $build->modpack->save();
+                            }
+
+                            // Update the modpack's recommended build if this was it
+                            if ($build->modpack->recommended === $oldVersion) {
+                                $build->modpack->recommended = $build->version;
+                                $build->modpack->save();
+                            }
+                        }
+                    });
+
                     Cache::forget('modpack:'.$build->modpack->slug);
                     Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 

@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Build;
+use App\Models\Modpack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -176,5 +177,81 @@ class BuildTest extends TestCase
 
         $response = $this->post('/modpack/build/'.$build->id.'?action=delete', $data);
         $response->assertRedirect('modpack/view/'.$build->modpack->id);
+    }
+
+    public function test_renaming_recommended_build_changes_build_in_modpack()
+    {
+        $modpack = Modpack::first();
+
+        $build = $modpack->builds()->first();
+
+        // Set it as recommended
+        $modpack->recommended = $build->version;
+        $modpack->save();
+
+        // Sanity check
+        $this->assertEquals($build->version, $modpack->recommended);
+
+        // Edit the build
+        $data = [
+            'confirm-edit' => '1',
+            'version' => '2.0.0',
+            'minecraft' => '1.7.10',
+            'java-version' => '1.8',
+            'memory' => '1024',
+            'memory-enabled' => '1',
+        ];
+
+        $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
+        $response->assertRedirect('/modpack/build/'.$build->id);
+
+        // Refresh the models
+        $modpack = Modpack::first();
+
+        $build = $modpack->builds()->first();
+
+        // Sanity check
+        $this->assertEquals($data['version'], $build->version);
+
+        // Check the recommended version changed along with the version
+        $this->assertEquals($build->version, $modpack->recommended);
+    }
+
+    public function test_renaming_latest_build_changes_build_in_modpack()
+    {
+        $modpack = Modpack::first();
+
+        $build = $modpack->builds()->first();
+
+        // Set it as latest
+        $modpack->latest = $build->version;
+        $modpack->save();
+
+        // Sanity check
+        $this->assertEquals($build->version, $modpack->latest);
+
+        // Edit the build
+        $data = [
+            'confirm-edit' => '1',
+            'version' => '2.0.0',
+            'minecraft' => '1.7.10',
+            'java-version' => '1.8',
+            'memory' => '1024',
+            'memory-enabled' => '1',
+        ];
+
+        $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
+        $response->assertRedirect('/modpack/build/'.$build->id);
+
+        // Refresh the models
+        $modpack = Modpack::first();
+
+        $build = $modpack->builds()->first();
+
+        // Sanity check
+        $this->assertEquals($data['version'], $build->version);
+
+        // Check the latest version changed along with the version
+        $this->assertEquals($build->version, $modpack->latest);
     }
 }
