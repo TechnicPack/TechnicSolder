@@ -19,8 +19,8 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP >= 7.2.0
-* Composer - <https://getcomposer.org/>
+* PHP >= 8.0.2
+* Composer (<https://getcomposer.org/>)
 * BCMath PHP Extension
 * Ctype PHP Extension
 * Fileinfo PHP extension
