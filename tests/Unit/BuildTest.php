@@ -150,7 +150,7 @@ class BuildTest extends TestCase
         ];
 
         $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
-        $response->assertRedirect('/modpack/build/1');
+        $response->assertRedirect('/modpack/build/'.$build->id);
 
         $build = Build::find(1);
 
