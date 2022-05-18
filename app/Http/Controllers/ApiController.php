@@ -86,7 +86,13 @@ class ApiController extends Controller
 
     public function getModpack($slug)
     {
-        return response()->json($this->fetchModpack($slug));
+        $response = $this->fetchModpack($slug);
+
+        if (! $response) {
+            return response()->json(['error' => 'Modpack does not exist'], 404);
+        }
+
+        return response()->json($response);
     }
 
     public function getModpackBuild($modpackSlug, $buildName)
@@ -138,7 +144,7 @@ class ApiController extends Controller
             $modVersion = $mod->versions()->where('version', $version)->first();
 
             if (! $modVersion) {
-                return response()->json(['error' => 'Mod version does not exist']);
+                return response()->json(['error' => 'Mod version does not exist'], 404);
             }
 
             $response = $modVersion->only([
@@ -155,13 +161,13 @@ class ApiController extends Controller
     public function getVerify($key = null)
     {
         if (! $key) {
-            return response()->json(['error' => 'No API key provided.']);
+            return response()->json(['error' => 'No API key provided.'], 400);
         }
 
         $key = Key::where('api_key', $key)->first();
 
         if (! $key) {
-            return response()->json(['error' => 'Invalid key provided.']);
+            return response()->json(['error' => 'Invalid key provided.'], 403);
         }
 
         return response()->json([
@@ -222,7 +228,7 @@ class ApiController extends Controller
         }
 
         if (! $modpack) {
-            return ['error' => 'Modpack does not exist'];
+            return null;
         }
 
         return $modpack->toApiResponse($this->client, $this->key);

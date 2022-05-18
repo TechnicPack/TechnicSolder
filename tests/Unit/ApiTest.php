@@ -46,8 +46,8 @@ class ApiTest extends TestCase
     public function test_invalid_modpack()
     {
         $response = $this->get('api/modpack/bob');
-        $response->assertOk();
-        $response->assertJsonStructure(['error']);
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Modpack does not exist']);
     }
 
     public function test_modpack_slug()
@@ -76,7 +76,7 @@ class ApiTest extends TestCase
     {
         $response = $this->get('api/mod/bob');
         $response->assertNotFound();
-        $response->assertJsonStructure(['error']);
+        $response->assertJson(['error' => 'Mod does not exist']);
     }
 
     public function test_mod_slug()
@@ -120,5 +120,20 @@ class ApiTest extends TestCase
             'filesize',
             'url',
         ]);
+    }
+
+    public function test_modversion_with_invalid_mod()
+    {
+        $response = $this->get('api/mod/foo/bar');
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod does not exist']);
+    }
+
+    public function test_invalid_modversion()
+    {
+        $mod = Mod::find(1);
+        $response = $this->get('api/mod/'.$mod->name.'/invalid');
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod version does not exist']);
     }
 }
