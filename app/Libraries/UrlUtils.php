@@ -2,16 +2,46 @@
 
 namespace App\Libraries;
 
-use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class UrlUtils
 {
+    private const USER_AGENT = 'Mozilla/5.0 TechnicSolder/0.7 (+https://github.com/TechnicPack/TechnicSolder)';
+    private const MAX_REDIRECTS = 5;
+    private const DEFAULT_CONNECT_TIMEOUT = 5;
+    private const DEFAULT_TOTAL_TIMEOUT = 15;
+
+    /**
+     * @var Client Guzzle client
+     */
+    private static Client $client;
+
+    public static function getGuzzleClient(): Client
+    {
+        $configConnectTimeout = config('solder.md5_connect_timeout');
+        $configTotalTimeout = config('solder.md5_file_timeout');
+
+        return self::$client ??= new Client([
+            // Disable HTTP errors (4xx, 5xx) raising exceptions
+            'http_errors' => false,
+            // Set maximum redirects
+            'allow_redirects' => [
+                'max' => 5
+            ],
+            // Set connection timeout
+            'connect_timeout' => is_int($configConnectTimeout) ? $configConnectTimeout : self::DEFAULT_CONNECT_TIMEOUT,
+            // Set total timeout
+            'timeout' => is_int($configTotalTimeout) ? $configTotalTimeout : self::DEFAULT_TOTAL_TIMEOUT,
+        ]);
+    }
+
     /**
      * Initializes a cURL session with common options
      * @param  string  $url
-     * @return resource
+     * @return CurlHandle|false
      */
     private static function curl_init($url)
     {
@@ -23,7 +53,7 @@ class UrlUtils
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
             }
         } else {
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::DEFAULT_CONNECT_TIMEOUT);
         }
 
         if (Config::has('solder.md5_file_timeout')) {
@@ -32,15 +62,15 @@ class UrlUtils
                 curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
             }
         } else {
-            curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+            curl_setopt($ch, CURLOPT_TIMEOUT, self::DEFAULT_TOTAL_TIMEOUT);
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'TechnicSolder/0.7 (https://github.com/TechnicPack/TechnicSolder)');
-        curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, self::MAX_REDIRECTS);
+        curl_setopt($ch, CURLOPT_USERAGENT, self::USER_AGENT);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         return $ch;
     }
@@ -90,48 +120,65 @@ class UrlUtils
     }
 
     /**
-     * Uses Curl to get URL contents and returns hash
+     * Uses Guzzle to get URL contents and returns hash
      * @param  string  $url  Url Location
      * @return array
      */
-    public static function get_remote_md5($url)
+    public static function get_remote_md5(string $url): array
     {
-        $checkFile = self::checkRemoteFile($url);
+        // We need to return:
+        // - success => true
+        // - md5 => md5 hash string
+        // - filesize => filesize (in bytes)
+        // If it fails, we return
+        // - success => false
+        // - message => exception message (string) $e->getMessage()
+        // And we log the error to the laravel error log
 
-        if ($checkFile['success']) {
-            $content = self::get_url_contents($url);
-            if ($content['success']) {
-                try {
-                    $md5 = md5($content['data']);
+        $client = self::getGuzzleClient();
 
-                    return [
-                        'success' => true,
-                        'md5' => $md5,
-                        'filesize' => $content['info']['download_content_length'],
-                    ];
-                } catch (Exception $e) {
-                    Log::error('Error hashing remote md5: '.$e->getMessage());
+        try {
+            $response = $client->get($url, [
+                'headers' => [
+                    'User-Agent' => self::USER_AGENT,
+                ],
+                'stream' => true,
+            ]);
 
-                    return [
-                        'success' => false,
-                        'message' => $e->getMessage(),
-                        'info' => $content['info'],
-                    ];
-                }
-            } else {
+            if ($response->getStatusCode() !== 200) {
                 return [
                     'success' => false,
-                    'message' => $content['message'],
-                    'info' => $content['info'],
+                    'message' => 'Expected status code 200, got ' . $response->getStatusCode(),
                 ];
             }
-        }
 
-        return [
-            'success' => false,
-            'message' => $checkFile['message'],
-            'info' => $checkFile['info'],
-        ];
+            $body = $response->getBody();
+
+            $ctx = hash_init('md5');
+            $filesize = 0;
+
+            while (!$body->eof()) {
+                // Read in 64 KB chunks
+                $buffer = $body->read(64 * 1024);
+                $filesize += strlen($buffer);
+                hash_update($ctx, $buffer);
+            }
+
+            $hash = hash_final($ctx);
+
+            return [
+                'success' => true,
+                'md5' => $hash,
+                'filesize' => $filesize,
+            ];
+        } catch (GuzzleException $e) {
+            Log::error('Error hashing remote md5: ' . $e->getMessage());
+
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
     }
 
     public static function checkRemoteFile($url)

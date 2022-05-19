@@ -201,7 +201,7 @@ class ModTest extends TestCase
             ]);
         } else {
             $response->assertJson([
-                'reason' => 'Remote MD5 failed. '.config('solder.repo_location').'mods/backtools/backtools-v1.5.2.1.zip is not a valid URI',
+                'reason' => 'Remote MD5 failed. '.config('solder.repo_location').'mods/backtools/backtools-v1.5.2.1.zip does not exist',
             ]);
         }
     }

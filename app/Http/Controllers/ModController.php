@@ -335,7 +335,9 @@ class ModController extends Controller
         $location = config('solder.repo_location');
         $URI = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-        if (file_exists($URI)) {
+        if (filter_var($URI, FILTER_VALIDATE_URL)) {
+            return $this->remote_mod_md5($mod, $version, $location);
+        } elseif (file_exists($URI)) {
             Log::info('Found \''.$URI.'\'');
             try {
                 $filesize = filesize($URI);
@@ -347,17 +349,12 @@ class ModController extends Controller
 
                 return ['success' => false, 'message' => $e->getMessage()];
             }
+
         } else {
-            if (filter_var($URI, FILTER_VALIDATE_URL)) {
-                Log::warning('File \''.$URI.'\' was not found.');
+            $error = $URI . ' does not exist';
+            Log::error($error);
 
-                return $this->remote_mod_md5($mod, $version, $location);
-            } else {
-                $error = $URI.' is not a valid URI';
-                Log::error($error);
-
-                return ['success' => false, 'message' => $error];
-            }
+            return ['success' => false, 'message' => $error];
         }
     }
 

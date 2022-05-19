@@ -74,7 +74,6 @@ class UrlUtilsTest extends TestCase
         $this->assertArrayHasKey('success', $json);
         $this->assertFalse($json['success']);
         $this->assertArrayHasKey('message', $json);
-        $this->assertArrayHasKey('info', $json);
-        $this->assertEquals('404', $json['info']['http_code']);
+        $this->assertEquals('Expected status code 200, got 404', $json['message']);
     }
 }
