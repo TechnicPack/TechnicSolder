@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Build;
 use App\Models\Client;
 use App\Models\Key;
 use App\Models\Mod;
@@ -103,14 +102,9 @@ class ApiController extends Controller
     public function getMod($modSlug = null, $version = null)
     {
         if (empty($modSlug)) {
-            // For some reason, authenticated clients or Platform (with the Platform user API key) bypass cache
-            if ($this->client || $this->key) {
-                $mods = Mod::pluck('pretty_name', 'name');
-            } else {
-                $mods = Cache::remember('mods', now()->addMinutes(5), function () {
-                    return Mod::pluck('pretty_name', 'name');
-                });
-            }
+            $mods = Cache::remember('mods', now()->addMinutes(5), function () {
+                return Mod::pluck('pretty_name', 'name');
+            });
 
             //usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
 
@@ -214,18 +208,11 @@ class ApiController extends Controller
 
     private function fetchModpack($slug)
     {
-        // Authenticated requests bypass cache
-        if (! $this->client && ! $this->key) {
-            $modpack = Cache::remember('modpack:'.$slug, now()->addMinutes(5), function () use ($slug) {
-                return Modpack::with('builds')
-                    ->where('slug', $slug)
-                    ->first();
-            });
-        } else {
-            $modpack = Modpack::with('builds')
+        $modpack = Cache::remember('modpack:'.$slug, now()->addMinutes(5), function () use ($slug) {
+            return Modpack::with('builds')
                 ->where('slug', $slug)
                 ->first();
-        }
+        });
 
         if (! $modpack) {
             return null;
@@ -236,40 +223,25 @@ class ApiController extends Controller
 
     private function fetchBuild($modpackSlug, $buildName)
     {
-        // Authenticated requests bypass cache
-        $bypassCache = $this->client || $this->key;
-
-        if ($bypassCache) {
-            $modpack = Modpack::with('builds')
+        $modpack = Cache::remember('modpack:'.$modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
+            return Modpack::with('builds')
                 ->where('slug', $modpackSlug)
                 ->first();
-        } else {
-            $modpack = Cache::remember('modpack:'.$modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
-                return Modpack::with('builds')
-                    ->where('slug', $modpackSlug)
-                    ->first();
-            });
-        }
+        });
 
         if (! $modpack) {
             return ['error' => 'Modpack does not exist'];
         }
 
-        if ($bypassCache) {
-            $build = $modpack->builds->firstWhere('version', '===', $buildName);
+        $build = Cache::remember('modpack:'.$modpackSlug.':build:'.$buildName,
+            now()->addMinutes(5),
+            function () use ($modpack, $buildName) {
+                $build = $modpack->builds->firstWhere('version', '===', $buildName);
 
-            $build->load(['modversions', 'modversions.mod']);
-        } else {
-            $build = Cache::remember('modpack:'.$modpackSlug.':build:'.$buildName,
-                now()->addMinutes(5),
-                function () use ($modpack, $buildName) {
-                    $build = $modpack->builds->firstWhere('version', '===', $buildName);
+                $build->load(['modversions', 'modversions.mod']);
 
-                    $build->load(['modversions', 'modversions.mod']);
-
-                    return $build;
-                });
-        }
+                return $build;
+            });
 
         if (! $build) {
             return ['error' => 'Build does not exist'];
