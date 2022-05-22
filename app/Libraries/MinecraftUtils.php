@@ -23,7 +23,7 @@ class MinecraftUtils
 
         // Try to get them from Technic
         try {
-            $response = $client->get('httsps://www.technicpack.net/api/minecraft');
+            $response = $client->get('https://www.technicpack.net/api/minecraft');
             if ($response->getStatusCode() === 200) {
                 // Decode the JSON content of the reply
                 $versions = json_decode((string) $response->getBody(), true);
@@ -39,7 +39,7 @@ class MinecraftUtils
 
         // If getting them from Technic fails, we get it directly from Mojang
         try {
-            $response = $client->get('htstps://launchermeta.mojang.com/mc/game/version_manifest_v2.json');
+            $response = $client->get('https://launchermeta.mojang.com/mc/game/version_manifest_v2.json');
             if ($response->getStatusCode() === 200) {
                 $json = json_decode((string) $response->getBody(), true);
 
