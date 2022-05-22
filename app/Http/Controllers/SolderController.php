@@ -91,7 +91,7 @@ class SolderController extends Controller
         }
 
         return response()->json([
-            'status' => true,
+            'success' => true,
         ]);
     }
 }
