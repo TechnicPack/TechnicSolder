@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Libraries\UpdateUtils;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
@@ -16,22 +13,18 @@ class AuthController extends Controller
 
     public function postLogin()
     {
-        $email = Request::input('email');
-        $password = Request::input('password');
-        $remember = Request::boolean('remember');
+        $remember = request()->boolean('remember');
 
-        $credentials = [
-            'email' => $email,
-            'password' => $password,
-        ];
+        $credentials = request()->only(['email', 'password']);
 
-        if (Auth::attempt($credentials, $remember)) {
-            Auth::user()->last_ip = Request::ip();
-            Auth::user()->save();
+        if (auth()->attempt($credentials, $remember)) {
+            $user = auth()->user();
+            $user->last_ip = request()->ip();
+            $user->save();
 
-            //Check for update on login
-            if (UpdateUtils::getUpdateCheck()) {
-                Cache::put('update', true, now()->addMinutes(60));
+            // Check for update on login if the user is a superuser
+            if ($user->permission->solder_full && UpdateUtils::getUpdateCheck()) {
+                cache()->put('update', true, now()->addMinutes(60));
             }
 
             return redirect()->intended('dashboard');

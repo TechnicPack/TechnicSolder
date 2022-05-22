@@ -7,17 +7,19 @@ use RuntimeException;
 
 class UpdateUtils
 {
-    public static $githubclient;
+    private static Client $githubClient;
 
-    public static function init()
+    public static function getGithubClient(): Client
     {
-        $client = new Client();
-        // TODO: Re-add caching (it got removed upstream)
-        self::$githubclient = $client;
+        return self::$githubClient ??= new Client();
     }
 
-    public static function getUpdateCheck()
+    public static function getUpdateCheck($forceRefresh = false): bool
     {
+        if ($forceRefresh) {
+            cache()->forget('update:github:tags');
+        }
+
         $allVersions = self::getAllVersions();
 
         if (! array_key_exists('error', $allVersions)) {
@@ -41,33 +43,27 @@ class UpdateUtils
 
     public static function getAllVersions()
     {
-        try {
-            return self::$githubclient->api('repo')->tags('technicpack', 'technicsolder');
-        } catch (RuntimeException $e) {
-            return ['error' => 'Unable to pull version from Github - '.$e->getMessage()];
-        }
-    }
-
-    public static function getCommitInfo($commit = null)
-    {
-        if (is_null($commit)) {
-            $commit = self::getLatestVersion()['commit']['sha'];
-        }
+        $client = self::getGithubClient();
 
         try {
-            return self::$githubclient->api('repo')->commits()->show('technicpack', 'technicsolder', $commit);
+            return cache()->remember('update:github:tags', now()->addMinutes(60), function () use ($client) {
+                return $client->api('repo')->tags('technicpack', 'technicsolder');
+            });
         } catch (RuntimeException $e) {
-            return ['error' => 'Unable to pull commit info from Github - '.$e->getMessage()];
+            return ['error' => 'Unable to fetch versions from Github: ' . $e->getMessage()];
         }
     }
 
     public static function getLatestChangeLog($branch = 'master')
     {
+        $client = self::getGithubClient();
+
         try {
-            return self::$githubclient->api('repo')->commits()->all('technicpack', 'technicsolder',
-                ['sha' => $branch]);
+            return cache()->remember('update:github:changelog:' . $branch, now()->addMinutes(60), function () use ($client, $branch) {
+                return $client->api('repo')->commits()->all('technicpack', 'technicsolder', ['sha' => $branch]);
+            });
         } catch (RuntimeException $e) {
-            return ['error' => 'Unable to pull changelog from Github - '.$e->getMessage()];
+            return ['error' => 'Unable to fetch changelog from Github: ' . $e->getMessage()];
         }
     }
 }

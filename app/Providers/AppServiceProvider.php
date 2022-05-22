@@ -34,8 +34,6 @@ class AppServiceProvider extends ServiceProvider
             define('SOLDER_VERSION', 'v0.7.10');
         }
 
-        UpdateUtils::init();
-
         View::composer('layouts.master', function ($view) {
             $modpacks = Cache::remember('allmodpacks', now()->addMinute(), function () {
                 return Modpack::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);

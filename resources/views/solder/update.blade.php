@@ -60,7 +60,7 @@
                     @else
                 	@foreach ($changelog as $change)
                     <a href="{{ $change['html_url'] }}" target="blank_" class="list-group-item">
-                        <span class="badge" style="margin-left:5px;">{{ date_format(date_create($change['commit']['author']['date']), 'M, d, Y | g:i a') }}</span>
+                        <span class="badge" style="margin-left:5px;">{{ date_format(date_create($change['commit']['author']['date']), 'M, d Y - g:i a') }}</span>
                         <img src="{{ $change['author']['avatar_url'] ?? $change['committer']['avatar_url'] }}" alt="{{ $change['author']['login'] ?? $change['commit']['author']['name'] ?? $change['committer']['login'] }}" height="23" width="23"> {{ $change['commit']['message'] }}
                     </a>
                     @endforeach
@@ -85,14 +85,14 @@ $('#solder-update').click(function(e) {
         type: "GET",
         url: "{{ URL::to('solder/update-check/') }}/",
         success: function (data) {
-            if (data.status == "success") {
-                if(data.update) {
+            if (data.success) {
+                if (data.update) {
                     $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Solder is out of date. Please refer to the wiki on how to update.').fadeIn();
                 } else {
                     $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-success").html('Solder is up to date.').fadeIn();
                 }
             } else {
-                $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Error checking for update. ' + data.reason);
+                $("#solder-update-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Error checking for update: ' + data.reason);
             }
             $("#solder-checking").addClass("hidden");
         },

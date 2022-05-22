@@ -48,20 +48,20 @@ class SolderController extends Controller
             abort(404);
         }
 
-        if (UpdateUtils::getUpdateCheck()) {
+        if (UpdateUtils::getUpdateCheck(true)) {
             Cache::put('update', true, now()->addMinutes(60));
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'update' => true,
             ]);
         } else {
-            if (Cache::get('update')) {
+            if (Cache::has('update')) {
                 Cache::forget('update');
             }
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'update' => false,
             ]);
         }
