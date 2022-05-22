@@ -154,7 +154,7 @@ class ModpackController extends Controller
 
                     return redirect('modpack/build/'.$build->id);
                 }
-                $minecraft = MinecraftUtils::getMinecraft();
+                $minecraft = MinecraftUtils::getMinecraftVersions();
 
                 return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
             } else {
@@ -174,7 +174,7 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
         }
 
-        $minecraft = MinecraftUtils::getMinecraft();
+        $minecraft = MinecraftUtils::getMinecraftVersions();
 
         return view('modpack.build.create')
             ->with([

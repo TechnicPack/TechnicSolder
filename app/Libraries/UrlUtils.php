@@ -29,94 +29,13 @@ class UrlUtils
             'http_errors' => false,
             // Set maximum redirects
             'allow_redirects' => [
-                'max' => 5
+                'max' => self::MAX_REDIRECTS,
             ],
             // Set connection timeout
             'connect_timeout' => is_int($configConnectTimeout) ? $configConnectTimeout : self::DEFAULT_CONNECT_TIMEOUT,
             // Set total timeout
             'timeout' => is_int($configTotalTimeout) ? $configTotalTimeout : self::DEFAULT_TOTAL_TIMEOUT,
         ]);
-    }
-
-    /**
-     * Initializes a cURL session with common options
-     * @param  string  $url
-     * @return CurlHandle|false
-     */
-    private static function curl_init($url)
-    {
-        $ch = curl_init($url);
-
-        if (Config::has('solder.md5_connect_timeout')) {
-            $timeout = config('solder.md5_connect_timeout');
-            if (is_int($timeout)) {
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            }
-        } else {
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::DEFAULT_CONNECT_TIMEOUT);
-        }
-
-        if (Config::has('solder.md5_file_timeout')) {
-            $timeout = config('solder.md5_file_timeout');
-            if (is_int($timeout)) {
-                curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-            }
-        } else {
-            curl_setopt($ch, CURLOPT_TIMEOUT, self::DEFAULT_TOTAL_TIMEOUT);
-        }
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_MAXREDIRS, self::MAX_REDIRECTS);
-        curl_setopt($ch, CURLOPT_USERAGENT, self::USER_AGENT);
-//        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-//        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        return $ch;
-    }
-
-    /**
-     * Gets URL contents and returns them
-     * @param  string  $url
-     * @return array
-     */
-    public static function get_url_contents($url)
-    {
-        $ch = self::curl_init($url);
-
-        $data = curl_exec($ch);
-        $info = curl_getinfo($ch);
-
-        if (! curl_errno($ch)) {
-            //check HTTP return code
-            curl_close($ch);
-            if ($info['http_code'] == 200) {
-                return [
-                    'success' => true,
-                    'data' => $data,
-                    'info' => $info,
-                ];
-            } else {
-                Log::error('Curl error for '.$url.': URL returned status code - '.$info['http_code']);
-
-                return [
-                    'success' => false,
-                    'message' => 'URL returned status code - '.$info['http_code'],
-                    'info' => $info,
-                ];
-            }
-        }
-
-        $errors = curl_error($ch);
-        //log the string return of the errors
-        Log::error('Curl error for '.$url.': '.$errors);
-        curl_close($ch);
-
-        return [
-            'success' => false,
-            'message' => $errors,
-            'info' => $info,
-        ];
     }
 
     /**
@@ -179,68 +98,5 @@ class UrlUtils
                 'message' => $e->getMessage(),
             ];
         }
-    }
-
-    public static function checkRemoteFile($url)
-    {
-        $ch = self::curl_init($url);
-
-        curl_setopt($ch, CURLOPT_NOBODY, true);
-
-        curl_exec($ch);
-
-        $info = curl_getinfo($ch);
-
-        //check if there are any errors
-        if (! curl_errno($ch)) {
-            //check HTTP return code
-            curl_close($ch);
-            if ($info['http_code'] == 200 || $info['http_code'] == 405) {
-                return ['success' => true, 'info' => $info];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'URL returned status code - '.$info['http_code'],
-                    'info' => $info,
-                ];
-            }
-        }
-
-        //log the string return of the errors
-        $errors = curl_error($ch);
-        Log::error('Curl error for '.$url.': '.$errors);
-        curl_close($ch);
-
-        return ['success' => false, 'message' => $errors, 'info' => $info];
-    }
-
-    public static function getHeaders($url)
-    {
-        $ch = self::curl_init($url);
-
-        curl_setopt($ch, CURLOPT_NOBODY, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-
-        $data = curl_exec($ch);
-        $info = curl_getinfo($ch);
-
-        if (! curl_errno($ch)) {
-            //check HTTP return code
-            curl_close($ch);
-            if ($info['http_code'] == 200 || $info['http_code'] == 405) {
-                return ['success' => true, 'headers' => $data, 'info' => $info];
-            } else {
-                return [
-                    'success' => false, 'message' => 'Remote server did not return 200', 'info' => $info,
-                ];
-            }
-        }
-
-        //log the string return of the errors
-        $errors = curl_error($ch);
-        Log::error('Curl error for '.$url.': '.$errors);
-        curl_close($ch);
-
-        return ['success' => false, 'message' => $errors, 'info' => $info];
     }
 }

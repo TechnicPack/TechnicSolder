@@ -73,26 +73,25 @@ class SolderController extends Controller
             abort(404);
         }
 
-        $reason = '';
         try {
-            $reason = MinecraftUtils::getMinecraft(true);
+            $versions = MinecraftUtils::getMinecraftVersions(true);
         } catch (Exception $e) {
             return response()->json([
-                'status' => 'error',
-                'reason' => $e->getMessage(),
+                'success' => false,
+                'message' => $e->getMessage(),
             ]);
         }
 
-        if (Cache::has('minecraftversions')) {
+        // Sanity check in case the refetch fails
+        if (empty($versions)) {
             return response()->json([
-                'status' => 'success',
-                'reason' => $reason,
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'reason' => 'An unknown error has occured.',
+                'success' => false,
+                'message' => 'Fetch failed, check the Solder logs',
             ]);
         }
+
+        return response()->json([
+            'status' => true,
+        ]);
     }
 }

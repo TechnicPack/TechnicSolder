@@ -2,63 +2,70 @@
 
 namespace App\Libraries;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class MinecraftUtils
 {
-    public static function getMinecraft($manual = false)
+    public static function getMinecraftVersions($forceRefresh = false)
     {
-        $response = [];
-
-        if ($manual) {
+        if ($forceRefresh) {
             Cache::forget('minecraftversions');
-        } else {
-            if (! $manual && Cache::has('minecraftversions')) {
-                $response = Cache::get('minecraftversions');
-            }
         }
 
-        $response = self::getVersions();
-
-        return $response;
+        return Cache::remember('minecraftversions', now()->addHours(3), fn() => self::fetchVersions());
     }
 
-    public static function getVersions()
+    public static function fetchVersions()
     {
-        $response = [];
+        $client = UrlUtils::getGuzzleClient();
 
-        if (UrlUtils::checkRemoteFile('https://www.technicpack.net/api/minecraft')['success']) {
-            $response = UrlUtils::get_url_contents('https://www.technicpack.net/api/minecraft');
-            if ($response['success']) {
-                $response = json_decode($response['data'], true);
-                krsort($response, SORT_NATURAL);
-                Cache::put('minecraftversions', $response, now()->addMinutes(180));
+        // Try to get them from Technic
+        try {
+            $response = $client->get('httsps://www.technicpack.net/api/minecraft');
+            if ($response->getStatusCode() === 200) {
+                // Decode the JSON content of the reply
+                $versions = json_decode((string) $response->getBody(), true);
 
-                return $response;
+                // Sort versions, from most recent to oldest
+                krsort($versions, SORT_NATURAL);
+
+                return $versions;
             }
+        } catch (GuzzleException $e) {
+            Log::error('Failed to fetch Minecraft versions from Technic: ' . $e->getMessage());
         }
 
-        if (UrlUtils::checkRemoteFile('https://launchermeta.mojang.com/mc/game/version_manifest.json')['success']) {
-            $response = UrlUtils::get_url_contents('https://launchermeta.mojang.com/mc/game/version_manifest.json');
-            if ($response['success']) {
-                $mojangResponse = json_decode($response['data'], true);
+        // If getting them from Technic fails, we get it directly from Mojang
+        try {
+            $response = $client->get('htstps://launchermeta.mojang.com/mc/game/version_manifest_v2.json');
+            if ($response->getStatusCode() === 200) {
+                $json = json_decode((string) $response->getBody(), true);
+
+                // The format is ['1.12.2' => ['version' => '1.12.2'], ...]
                 $versions = [];
 
-                foreach ($mojangResponse['versions'] as $mojangVersion) {
+                foreach ($json as $mojangVersion) {
                     if ($mojangVersion['type'] !== 'release') {
                         continue;
                     }
+
                     $mcVersion = $mojangVersion['id'];
+
                     $versions[$mcVersion] = ['version' => $mcVersion];
                 }
 
                 krsort($versions, SORT_NATURAL);
-                Cache::put('minecraftversions', $versions, now()->addMinutes(180));
 
                 return $versions;
             }
+        } catch (GuzzleException $e) {
+            Log::error('Failed to fetch Minecraft versions from Mojang: ' . $e->getMessage());
         }
 
-        return $response;
+        Log::error('Failed to fetch Minecraft versions');
+
+        return [];
     }
 }

@@ -55,15 +55,14 @@
             Minecraft Versions Caching 
             </div>
             <div class="panel-body">
-            <p>Solder now caches a list of minecraft versions and their MD5 checksums. First attempt is from the Technic Platform. If that fails, an internal library processes
-            the list of versions from Mojang and calculates their MD5 checksums. The result from either is then cached. You can manually update the cache below.</p>
+            <p>Solder caches a list of Minecraft versions. The first attempt is from the Technic Platform. If that fails, it tries to get them from Mojang. The result is then cached for 3 hours. You can manually update the cache below.</p>
             <hr>
             @if (Cache::has('minecraftversions'))
                 <p id='minecraft-ajax' class="alert alert-success">Minecraft versions are currently cached.</p>
                 <button id='minecraft-cache' type="submit" class="btn btn-default">Update Cache</button>
                 <span id="mc-loading" style="margin-left:10px;" class="hidden"><i class="fa fa-cog fa-spin"></i> Caching...</span>
             @else
-                <p id='minecraft-ajax' class="alert alert-warning">Minecraft versions are not cached. This may cause unexpectedly long page loads</p>
+                <p id='minecraft-ajax' class="alert alert-warning">Minecraft versions are not cached. This may cause unexpectedly long page loads the first time it loads them.</p>
                 <button id='minecraft-cache' type="submit" class="btn btn-default">Cache</button>
                 <span id="mc-loading" style="margin-left:10px;" class="hidden"><i class="fa fa-cog fa-spin"></i> Caching...</span>
             @endif
@@ -81,13 +80,13 @@ $('#minecraft-cache').click(function(e) {
         type: "GET",
         url: "{{ URL::to('solder/cache-minecraft/') }}/",
         success: function (data) {
-            if (data.status == "success") {
+            if (data.success) {
                 console.log(data.reason);
                 $("#minecraft-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-success").html('Minecraft version caching complete.');
                 $("#minecraft-cache").html('Update Cache');
                 $("#mc-loading").addClass("hidden");
             } else {
-                $("#minecraft-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Error caching Minecraft versions. ' + data.reason);
+                $("#minecraft-ajax").removeClass("alert-warning alert-success alert-danger").addClass("alert-danger").html('Error caching Minecraft versions: ' + data.message);
                 $("#minecraft-cache").html('Update Cache');
                 $("#mc-loading").addClass("hidden");
             }
