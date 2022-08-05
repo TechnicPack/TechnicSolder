@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('mod/view/{mod_id}', [ModController::class, 'getView'])->name('mod.view');
     Route::get('mod/create', [ModController::class, 'getCreate'])->name('mod.create');
     Route::post('mod/create', [ModController::class, 'postCreate']);
+    Route::get('mod/import/{provider?}/{query?}', [ModController::class, 'getImport'])->name('mod.import');
+    Route::post('mod/import', [ModController::class, 'postImport']);
     Route::get('mod/delete/{mod_id}', [ModController::class, 'getDelete'])->name('mod.delete');
     Route::post('mod/delete/{mod_id}', [ModController::class, 'postDelete']);
     Route::post('mod/modify/{mod_id}', [ModController::class, 'postModify']);

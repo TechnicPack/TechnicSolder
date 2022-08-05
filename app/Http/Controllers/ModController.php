@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Libraries\UrlUtils;
 use App\Models\Mod;
 use App\Models\Modversion;
+use App\Mods\Providers\CurseForge;
+use App\Mods\Providers\Modrinth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -89,6 +91,23 @@ class ModController extends Controller
         $mod->save();
 
         return redirect('mod/view/'.$mod->id);
+    }
+
+    private $providers = array(
+        CurseForge::class,
+        Modrinth::class
+    );
+
+    public function getImport($provider = 0, $query = "")
+    {
+        $search = $this->providers[$provider]::search($query, Request::query('page', 1));
+
+        return view('mod.import')->with(['provider' => $provider, 'mods' => $search->mods, 'pagination' => $search->pagination]);
+    }
+
+    public function postImport()
+    {
+        return $this->providers[Request::input('provider')]::mod(Request::input('modid'));
     }
 
     public function getDelete($mod_id = null)
