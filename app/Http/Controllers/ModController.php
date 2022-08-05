@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Libraries\UrlUtils;
 use App\Models\Mod;
 use App\Models\Modversion;
-use App\Mods\Providers\CurseForge;
-use App\Mods\Providers\Modrinth;
+use App\Mods\ModProviders;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -93,17 +92,13 @@ class ModController extends Controller
         return redirect('mod/view/'.$mod->id);
     }
 
-    // TODO Move to a more generic class or something
-    private $providers = array(
-        'curseforge' => CurseForge::class,
-        'modrinth' => Modrinth::class
-    );
-
     public function getImport($provider = "", $query = "")
     {
+        $providers = ModProviders::providers();
+
         // If no provider specified grab the first in the list
         if (empty($provider)) {
-            $provider = array_key_first($this->providers);
+            $provider = array_key_first($providers);
         }
 
         $search = (object) [
@@ -118,10 +113,10 @@ class ModController extends Controller
         $errors = array();
 
         // Make sure we got a provider
-        if (!array_key_exists($provider, $this->providers)) {
+        if (!array_key_exists($provider, $providers)) {
             array_push($errors, ['invalid_provider' => 'Invalid provider specified']);
         } else {
-            $search = $this->providers[$provider]::search($query, Request::query('page', 1));
+            $search = $providers[$provider]::search($query, Request::query('page', 1));
 
             // Check if we got any erros from the search, and then pass them to the page
             if (property_exists($search, "errors")) {
@@ -131,7 +126,7 @@ class ModController extends Controller
 
         return view('mod.import')
             ->with([
-                'providers' => $this->providers,
+                'providers' => $providers,
                 'provider' => $provider,
                 'query' => $query,
                 'mods' => $search->mods,
@@ -144,13 +139,14 @@ class ModController extends Controller
     {
         return view('mod.import_details')
             ->with([
-                'mod' => $this->providers[$provider]::mod($modId)
+                'mod' => ModProviders::providers()[$provider]::mod($modId)
             ]);
     }
 
     public function postImportDetails($provider, $modId)
     {
-        $modData = $this->providers[$provider]::mod($modId);
+        $providers = ModProviders::providers();
+        $modData = $providers[$provider]::mod($modId);
         $versions = array();
         $errors = array();
         $invalidVersion = false;
@@ -181,7 +177,7 @@ class ModController extends Controller
                 ])
                 ->withErrors($errors);
         } else {
-            return $this->providers[$provider]::install($modId, $versions);
+            return $providers[$provider]::install($modId, $versions);
         }
     }
 
