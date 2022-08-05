@@ -94,15 +94,42 @@ class ModController extends Controller
     }
 
     private $providers = array(
-        CurseForge::class,
-        Modrinth::class
+        'curseforge' => CurseForge::class,
+        'modrinth' => Modrinth::class
     );
 
-    public function getImport($provider = 0, $query = "")
+    public function getImport($provider = "", $query = "")
     {
-        $search = $this->providers[$provider]::search($query, Request::query('page', 1));
+        if (empty($provider)) {
+            $provider = array_key_first($this->providers);
+        }
 
-        return view('mod.import')->with(['provider' => $provider, 'mods' => $search->mods, 'pagination' => $search->pagination]);
+        $search = (object) [
+            'mods' => array(),
+            'pagination' => (object) [
+                'currentPage' => 1,
+                'totalPages' => 1,
+                'totalItems' => 0
+            ]
+        ];
+
+        $errors = array();
+
+        if (!array_key_exists($provider, $this->providers)) {
+            array_push($errors, ['invalid_provider' => 'Invalid provider specified']);
+        } else {
+            $search = $this->providers[$provider]::search($query, Request::query('page', 1));
+        }
+
+        return view('mod.import')
+            ->with([
+                'providers' => $this->providers,
+                'provider' => $provider,
+                'query' => $query,
+                'mods' => $search->mods,
+                'pagination' => $search->pagination
+            ])
+            ->withErrors($errors);
     }
 
     public function postImport()
