@@ -4,6 +4,7 @@ namespace App\Mods;
 
 use App\Models\Mod;
 use App\Models\Modversion;
+use App\Mods\ImportedModData;
 use Illuminate\Support\Str;
 use ZipArchive;
 
@@ -14,45 +15,79 @@ abstract class ModProvider
     abstract protected static function apiHeaders() : array;
     abstract public static function search(string $query, int $page = 1) : object;
     abstract public static function mod(string $modId) : object;
-    abstract protected static function download(string $modId);
 
-    public static function install(string $modId)
+    private static function installVersion(int $modId, string $slug, ImportedModData $modData, string $version)
     {
-        $downloadData = static::download($modId);
+        $url = $modData->versions[$version]->url;
+        $fileName = $modData->versions[$version]->filename;
 
-        // Create the mod entry
-        $mod = new Mod();
-        $mod->name = Str::slug($downloadData->mod->slug);
-        $mod->pretty_name = $downloadData->mod->name;
-        $mod->author = $downloadData->mod->authors;
-        $mod->description = $downloadData->mod->summary;
-        $mod->link = $downloadData->mod->websiteUrl;
-        $mod->save();
+        // Create a temp file to download to
+        $tmpFileName = tempnam(sys_get_temp_dir(), "mod");
 
-        $slug = $mod->name;
+        // Download the file
+        $tmpFile = fopen($tmpFileName, "wb");
+        $curl_h = curl_init($url);
+        curl_setopt($curl_h, CURLOPT_FILE, $tmpFile);
+        curl_setopt($curl_h, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl_h, CURLOPT_HTTPHEADER, static::apiHeaders());
+        curl_exec($curl_h);
+        curl_close($curl_h);
+        fclose($tmpFile);
 
+        // Open the downloaded mod zip file
         $zip = new ZipArchive();
-        $res = $zip->open($downloadData->filePath, ZipArchive::RDONLY);
+        $res = $zip->open($tmpFileName, ZipArchive::RDONLY);
         if ($res === false) {
             // TODO Error
+            unlink($tmpFileName);
             return;
         }
 
+        $version = "";
+
+        // Try load the version from forge
         $forgeData = $zip->getFromName('mcmod.info');
-        if ($forgeData === false) {
-            // TODO Error
-            return;
+        if ($forgeData !== false) {
+            $version = json_decode($forgeData)[0]->version;
+        }
+
+        // Try load the version from fabric
+        $fabricData = $zip->getFromName('fabric.mod.json');
+        if ($fabricData !== false) {
+            $version = json_decode($fabricData)->version;
+        }
+
+        // Try load the version from rift
+        $riftData = $zip->getFromName('riftmod.json');
+        if ($riftData !== false) {
+            $version = json_decode($riftData)->version;
         }
 
         $zip->close();
 
-        $version = json_decode($forgeData)[0]->version;
+        // Make sure we have been given a version
+        if (empty($version)) {
+            // TODO Error
+            unlink($tmpFileName);
+            return;
+        }
+
+        // Check if the version already exists for the mod
+        if (Modversion::where([
+            'mod_id' => $modId,
+            'version' => $version,
+        ])->count() > 0) {
+            // TODO Error
+            unlink($tmpFileName);
+            return;
+        }
 
         // Check if the final path isnt a url
         $location = config('solder.repo_location');
         $finalPath = $location."mods/$slug/$slug-$version.zip";
         if (filter_var($finalPath, FILTER_VALIDATE_URL)) {
             // TODO Error
+            unlink($tmpFileName);
             return;
         }
 
@@ -64,16 +99,39 @@ abstract class ModProvider
         // Create the final mod zip
         $zip = new ZipArchive();
         $zip->open($finalPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-        $zip->addFile($downloadData->filePath, "mods/" . $downloadData->fileName);
+        $zip->addFile($tmpFileName, "mods/" . $fileName);
         $zip->close();
 
-        // Add the version
+        // Add the version to the db
         $ver = new Modversion();
-        $ver->mod_id = $mod->id;
+        $ver->mod_id = $modId;
         $ver->version = $version;
         $ver->filesize = filesize($finalPath);
         $ver->md5 = md5_file($finalPath);
         $ver->save();
+    }
+
+    public static function install(string $modId, array $versions)
+    {
+        $modData = static::mod($modId);
+
+        $slug = Str::slug($modData->slug);
+
+        $mod = Mod::where('name', $slug)->first();
+        if (empty($mod)) {
+            // Create the mod entry
+            $mod = new Mod();
+            $mod->name = $slug;
+            $mod->pretty_name = $modData->name;
+            $mod->author = $modData->authors;
+            $mod->description = $modData->summary;
+            $mod->link = $modData->websiteUrl;
+            $mod->save();
+        }
+
+        foreach ($versions as $version) {
+            static::installVersion($mod->id, $slug, $modData, $version);
+        }
 
         return redirect('mod/view/'.$mod->id);
     }

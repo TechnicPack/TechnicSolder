@@ -16,4 +16,6 @@ class ImportedModData // TODO find a better name
     public $thumbnailUrl;
     public $thumbnailDesc;
     public $websiteUrl;
+
+    public $versions;
 }

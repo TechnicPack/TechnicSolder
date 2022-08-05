@@ -58,12 +58,7 @@ class CurseForge extends ModProvider
 	
     public static function mod(string $modId) : object
 	{
-		return static::request("/v1/mods/$modId")->data;
-	}
-	
-    protected static function download(string $modId)
-	{
-
+		return static::generateModData(static::request("/v1/mods/$modId")->data);
 	}
 	
 	private static function generateModData($mod)
@@ -85,6 +80,15 @@ class CurseForge extends ModProvider
 		$modData->thumbnailUrl = $mod->logo->thumbnailUrl;
 		$modData->thumbnailDesc = empty($mod->logo->description) ? $mod->name : $mod->logo->description;
 		$modData->websiteUrl = $mod->links->websiteUrl;
+
+		$modData->versions = array();
+		foreach ($mod->latestFiles as $file) {
+			$modData->versions[$file->displayName] = (object) [
+				"url" => $file->downloadUrl,
+				"filename" => $file->fileName,
+				"gameVersions" => $file->gameVersions
+			];
+		}
 
 		return $modData;
 	}

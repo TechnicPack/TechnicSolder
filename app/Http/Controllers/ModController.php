@@ -140,12 +140,49 @@ class ModController extends Controller
             ->withErrors($errors);
     }
 
-    public function postImport()
+    public function getImportDetails($provider, $modId)
     {
-        $provider = Request::input('provider');
-        $modId = Request::input('modid');
+        return view('mod.import_details')
+            ->with([
+                'mod' => $this->providers[$provider]::mod($modId)
+            ]);
+    }
 
-        return $this->providers[$provider]::install($modId);
+    public function postImportDetails($provider, $modId)
+    {
+        $modData = $this->providers[$provider]::mod($modId);
+        $versions = array();
+        $errors = array();
+        $invalidVersion = false;
+
+        foreach (Request::all() as $version => $val) {
+            if ($val != "on") {
+                continue;
+            }
+            $version = base64_decode($version);
+            if (!array_key_exists($version, $modData->versions)) {
+                $invalidVersion = true;
+            }
+            array_push($versions, $version);
+        }
+
+        if (empty($versions)) {
+            array_push($errors, ["no_versions" => "No versions were specified to import"]);
+        }
+
+        if ($invalidVersion) {
+            array_push($errors, ["invalid_versions" => "Invalid versions specified"]);
+        }
+
+        if (count($errors) >= 1) {
+            return view('mod.import_details')
+                ->with([
+                    'mod' => $modData
+                ])
+                ->withErrors($errors);
+        } else {
+            return $this->providers[$provider]::install($modId, $versions);
+        }
     }
 
     public function getDelete($mod_id = null)

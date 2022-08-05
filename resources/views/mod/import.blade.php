@@ -55,13 +55,7 @@
                     </td>
                     <td>{{ $mod->authors }}</td>
                     <td>{!! Html::link($mod->websiteUrl, $mod->websiteUrl, ["target" => "_blank"]) !!}</td>
-                    <td>
-                        <form method="post" action="{{ URL::to('mod/import') }}">
-                            <input type="hidden" name="provider" id="provider" value="{{ $provider }}">
-                            <input type="hidden" name="modid" id="modid" value="{{ $mod->id }}">
-                            <input type="submit" value="Import" class="btn btn-xs btn-primary">
-                        </form>
-                    </td>
+                    <td>{!! Html::link('mod/import/details/'.$provider.'/'.$mod->id,'Import', ["class" => "btn btn-xs btn-primary"]) !!}</td>
                 </tr>
             @endforeach
         </table>

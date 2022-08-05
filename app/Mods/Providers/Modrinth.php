@@ -49,49 +49,7 @@ class Modrinth extends ModProvider
         $mod = static::request("/v2/project/$modId");
         $mod->versions = static::request("/v2/project/$modId/version");
         $mod->members = static::request("/v2/project/$modId/members");
-        return $mod;
-    }
-    
-    protected static function download(string $modId)
-    {
-        $modData = static::mod($modId);
-
-        $url = "";
-        $fileName = "";
-        if (count($modData->versions[0]->files) > 1) {
-            foreach ($modData->versions[0]->files as $file) {
-                if ($file->primary) {
-                    $url = $file->url;
-                    $fileName = $file->filename;
-                    break;
-                }
-            }
-        } else {
-            $url = $modData->versions[0]->files[0]->url;
-            $fileName = $modData->versions[0]->files[0]->filename;
-        }
-
-        $tmpFileName = tempnam(sys_get_temp_dir(), "mod");
-
-        $tmpFile = fopen($tmpFileName, "wb");
-
-        $curl_h = curl_init($url);
-
-        curl_setopt($curl_h, CURLOPT_FILE, $tmpFile);
-        curl_setopt($curl_h, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($curl_h, CURLOPT_HTTPHEADER, static::apiHeaders());
-
-        curl_exec($curl_h);
-
-        curl_close($curl_h);
-
-        fclose($tmpFile);
-
-        return (object) [
-            "filePath" => $tmpFileName,
-            "fileName" => $fileName,
-            "mod" => static::generateModData($modData)
-        ];
+        return static::generateModData($mod);
     }
     
     private static function generateModData($mod)
@@ -109,6 +67,30 @@ class Modrinth extends ModProvider
         $modData->thumbnailUrl = $mod->icon_url;
         $modData->thumbnailDesc = $mod->title;
         $modData->websiteUrl = "https://modrinth.com/mod/" . $mod->slug;
+
+        // Parse the versions if we were given them
+        // We have to make sure we are not parsing the wrong versions
+        // so ignore data with `project_id` as thats given from search
+        if (!property_exists($mod, "project_id") && property_exists($mod, "versions")) {
+            $modData->versions = array();
+            foreach ($mod->versions as $version) {
+                $primaryFile = $version->files[0];
+                if (count($version->files) > 1) {
+                    foreach ($version->files as $file) {
+                        if ($file->primary) {
+                            $primaryFile = $file;
+                            break;
+                        }
+                    }
+                }
+
+                $modData->versions[$version->name] = (object) [
+                    "url" => $primaryFile->url,
+                    "filename" => $primaryFile->filename,
+                    "gameVersions" => $version->game_versions
+                ];
+            }
+        }
 
         return $modData;
     }
