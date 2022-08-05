@@ -142,7 +142,10 @@ class ModController extends Controller
 
     public function postImport()
     {
-        return $this->providers[Request::input('provider')]::mod(Request::input('modid'));
+        $provider = Request::input('provider');
+        $modId = Request::input('modid');
+
+        return $this->providers[$provider]::install($modId);
     }
 
     public function getDelete($mod_id = null)
