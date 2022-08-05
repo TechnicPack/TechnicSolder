@@ -48,4 +48,6 @@ return [
      */
     'disable_mod_api' => filter_var(env('SOLDER_DISABLE_MOD_API', 'false'), FILTER_VALIDATE_BOOLEAN),
 
+    'curseforge_api_key' => strval(env('SOLDER_CURSEFORGE_API_KEY', '')),
+
 ];

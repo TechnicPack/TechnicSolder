@@ -93,6 +93,7 @@ class ModController extends Controller
         return redirect('mod/view/'.$mod->id);
     }
 
+    // TODO Move to a more generic class or something
     private $providers = array(
         'curseforge' => CurseForge::class,
         'modrinth' => Modrinth::class
@@ -100,6 +101,7 @@ class ModController extends Controller
 
     public function getImport($provider = "", $query = "")
     {
+        // If no provider specified grab the first in the list
         if (empty($provider)) {
             $provider = array_key_first($this->providers);
         }
@@ -115,10 +117,16 @@ class ModController extends Controller
 
         $errors = array();
 
+        // Make sure we got a provider
         if (!array_key_exists($provider, $this->providers)) {
             array_push($errors, ['invalid_provider' => 'Invalid provider specified']);
         } else {
             $search = $this->providers[$provider]::search($query, Request::query('page', 1));
+
+            // Check if we got any erros from the search, and then pass them to the page
+            if (property_exists($search, "errors")) {
+                array_push($errors, $search->errors);
+            }
         }
 
         return view('mod.import')

@@ -65,7 +65,9 @@
                 </tr>
             @endforeach
         </table>
-        Page {{ $pagination->currentPage }} of {{ $pagination->totalPages }} ({{ $pagination->totalItems }})
+        <div class="text-center">
+            <a class="btn btn-default" {!! $pagination->currentPage <= 1 ? "href=\"#\" disabled" : "href=\"?page=" . strval($pagination->currentPage - 1) . "\"" !!}><i class="fa fa-angle-left fa-fw"></i></a> Page {{ number_format($pagination->currentPage) }} of {{ number_format($pagination->totalPages) }} ({{ number_format($pagination->totalItems) }}) <a class="btn btn-default" {!! $pagination->currentPage >= $pagination->totalPages ? "href=\"#\" disabled" : "href=\"?page=" . strval($pagination->currentPage + 1) . "\"" !!}><i class="fa fa-angle-right fa-fw"></i></a>
+        </div>
     </div>
 </div>
 @endsection

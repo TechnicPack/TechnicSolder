@@ -20,7 +20,7 @@ class CurseForge extends ModProvider
 	protected static function apiHeaders() : array
 	{
 		return array(
-			'x-api-key: $2a$10$GGwXrmysP7HXg2yEUFGAuOmTRapITv0ZwYalmWeQDyyarWXh3uwme'
+			'x-api-key: ' . config('solder.curseforge_api_key')
 		);
 	}
 
@@ -30,18 +30,30 @@ class CurseForge extends ModProvider
 		$offset = ($page - 1) * $pageSize;
         $mods = [];
 		$data = static::request("/v1/mods/search?gameid=432&classId=6&sortOrder=desc&pageSize=$pageSize&index=$offset&searchFilter=$query");
-		foreach ($data->data as $mod) {
-            array_push($mods, static::generateModData($mod));
-        }
+		if ($data) {
+			foreach ($data->data as $mod) {
+				array_push($mods, static::generateModData($mod));
+			}
 
-        return (object) [
-            'mods' => $mods,
-            'pagination' => (object) [
-                'currentPage' => ($data->pagination->index / $pageSize) + 1,
-                'totalPages' => ceil($data->pagination->totalCount / $pageSize),
-                'totalItems' => $data->pagination->	totalCount
-            ]
-        ];
+			return (object) [
+				'mods' => $mods,
+				'pagination' => (object) [
+					'currentPage' => ($data->pagination->index / $pageSize) + 1,
+					'totalPages' => ceil($data->pagination->totalCount / $pageSize),
+					'totalItems' => $data->pagination->	totalCount
+				]
+			];
+		} else {
+			return (object) [
+				'mods' => array(),
+				'errors' => ["bad_api_key" => "Bad API key specified for CurseForge"],
+				'pagination' => (object) [
+					'currentPage' => 1,
+					'totalPages' => 1,
+					'totalItems' => 0
+				]
+				];
+		}
 	}
 	
     public static function mod(string $modId) : object
