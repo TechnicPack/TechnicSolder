@@ -49,9 +49,9 @@
                 <tr>
                     <td style='text-align:center;vertical-align:middle;'>{!! !empty($mod->thumbnailUrl) ? Html::image($mod->thumbnailUrl, $mod->thumbnailDesc, array('style' => 'height:32px')) : "" !!}</td>
                     <td>
-                        <b>{{ $mod->name }}</b>
+                        <b>{{ property_exists($mod, "displayName") ? $mod->displayName : $mod->name }}</b>
                         <br/>
-                        {{ $mod->summary }}
+                        {{ property_exists($mod, "displaySummary") ? $mod->displaySummary : $mod->summary }}
                     </td>
                     <td>{{ $mod->authors }}</td>
                     <td>{!! Html::link($mod->websiteUrl, $mod->websiteUrl, ["target" => "_blank"]) !!}</td>

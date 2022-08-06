@@ -37,8 +37,8 @@
                 {!! !empty($mod->thumbnailUrl) ? Html::image($mod->thumbnailUrl, $mod->thumbnailDesc, array('style' => 'width:100%;')) : "" !!}
             </div>
             <div class="col-xs-11">
-                <p><b>Name:</b> {{ $mod->name }}</p>
-                <p><b>Summary:</b> {{ $mod->summary }}</p>
+                <p><b>Name:</b> {{ property_exists($mod, "displayName") ? $mod->displayName : $mod->name }}</p>
+                <p><b>Summary:</b> {{ property_exists($mod, "displaySummary") ? $mod->displaySummary : $mod->summary }}</p>
                 <p><b>Author(s):</b> {{ $mod->authors }}</p>
                 <p><b>Link:</b> {!! Html::link($mod->websiteUrl, $mod->websiteUrl, ["target" => "_blank"]) !!}</p>
             </div>

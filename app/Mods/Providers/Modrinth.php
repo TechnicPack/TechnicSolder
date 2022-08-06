@@ -16,13 +16,6 @@ class Modrinth extends ModProvider
     {
         return "https://api.modrinth.com";
     }
-    
-    protected static function apiHeaders() : array
-    {
-        return array(
-            "User-Agent: TechnicPack/TechnicSolder/" . SOLDER_VERSION
-        );
-    }
 
     public static function search(string $query, int $page = 1) : object
     {

@@ -7,7 +7,8 @@ class ModProviders
     public static function providers()
     {
         $providers = array(
-            'modrinth' => \App\Mods\Providers\Modrinth::class
+            'modrinth' => \App\Mods\Providers\Modrinth::class,
+            'fabric' => \App\Mods\Providers\Fabric::class
         );
 
         return $providers;
