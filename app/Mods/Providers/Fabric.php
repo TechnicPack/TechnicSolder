@@ -87,7 +87,7 @@ class Fabric extends ModProvider
         if (property_exists($mod, "versions")) {
             $modData->versions = array();
             foreach ($mod->versions as $version) {
-                $modData->versions["$version->version-$mod->version"] = (object) [
+                $modData->versions["$mod->version-$version->version"] = (object) [
                     "url" => static::apiUrl() . "/v2/versions/loader/$mod->version/$version->version/profile/json",
                     "filename" => "version.json",
                     "gameVersions" => [$mod->version]

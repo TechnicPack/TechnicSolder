@@ -65,13 +65,21 @@ abstract class ModProvider
             // Try load the version from forge
             $forgeData = $zip->getFromName('mcmod.info');
             if ($forgeData !== false) {
-                $version = json_decode($forgeData)[0]->version;
+                $tmpData = json_decode($forgeData)[0];
+                $version = "$tmpData->mcversion-$tmpData->version";
             }
 
             // Try load the version from fabric
             $fabricData = $zip->getFromName('fabric.mod.json');
             if ($fabricData !== false) {
-                $version = json_decode($fabricData)->version;
+                $tmpData = json_decode($fabricData);
+                $mcVersion = "";
+                if (property_exists($tmpData, "depends") && property_exists($tmpData->depends, "minecraft")) {
+                    $mcVersion = $tmpData->depends->minecraft;
+                    $mcVersion = preg_replace("/[^0-9\.]/i", "", explode('-', $mcVersion)[0]); // Clean the depend version
+                    $mcVersion = "$mcVersion-";
+                }
+                $version = $mcVersion.$tmpData->version;
             }
 
             // Try load the version from rift
