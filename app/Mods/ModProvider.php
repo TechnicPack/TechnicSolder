@@ -162,7 +162,7 @@ abstract class ModProvider
         foreach ($versions as $version) {
             $error = static::installVersion($mod->id, $slug, $modData, $version);
             if (!empty($error)) {
-                array_push($response->errors, $error);
+                $response->errors = array_merge($response->errors, $error);
             }
         }
 

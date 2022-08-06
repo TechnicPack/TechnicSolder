@@ -114,13 +114,13 @@ class ModController extends Controller
 
         // Make sure we got a provider
         if (!array_key_exists($provider, $providers)) {
-            array_push($errors, ['invalid_provider' => 'Invalid provider specified']);
+            $errors['invalid_provider'] = 'Invalid provider specified';
         } else {
             $search = $providers[$provider]::search($query, Request::query('page', 1));
 
             // Check if we got any erros from the search, and then pass them to the page
             if (property_exists($search, "errors")) {
-                array_push($errors, $search->errors);
+                $errors = array_merge($errors, $search->errors);
             }
         }
 
@@ -132,7 +132,7 @@ class ModController extends Controller
                 'mods' => $search->mods,
                 'pagination' => $search->pagination
             ])
-            ->withErrors($errors);
+            ->withErrors(new MessageBag($errors));
     }
 
     public function getImportDetails($provider, $modId)
@@ -163,11 +163,11 @@ class ModController extends Controller
         }
 
         if (empty($versions)) {
-            array_push($errors, ["no_versions" => "No versions were specified to import"]);
+            $errors["no_versions"] = "No versions were specified to import";
         }
 
         if ($invalidVersion) {
-            array_push($errors, ["invalid_versions" => "Invalid versions specified"]);
+            $errors["invalid_versions"] = "Invalid versions specified";
         }
 
         $installData = (object) [
@@ -180,15 +180,13 @@ class ModController extends Controller
             $installData = $providers[$provider]::install($modId, $versions);
             $errors = array_merge($errors, $installData->errors);
         }
+        
+        $url = $installData->success ? 'mod/view/'.$installData->id : "mod/import/details/$provider/$modId";
 
-        if (!$installData->success) {
-            return view('mod.import_details')
-                ->with([
-                    'mod' => $modData
-                ])
-                ->withErrors($errors);
+        if (count($errors) >= 1) {
+            return redirect($url)->withErrors(new MessageBag($errors));
         } else {
-            return redirect('mod/view/'.$installData->id)->withErrors($errors);
+            return redirect($url);
         }
     }
 
