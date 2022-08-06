@@ -161,7 +161,7 @@ abstract class ModProvider
         return $response;
     }
 
-    protected static function request(string $url)
+    protected static function request(string $url, bool $skipJsonDecode = false)
     {
         $curl_h = curl_init(static::apiUrl() . $url);
 
@@ -171,6 +171,10 @@ abstract class ModProvider
         curl_setopt($curl_h, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($curl_h);
-        return json_decode($response);
+        if ($skipJsonDecode) {
+            return $response;
+        } else {
+            return json_decode($response);
+        }
     }
 }

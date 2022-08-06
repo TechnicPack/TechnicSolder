@@ -8,7 +8,8 @@ class ModProviders
     {
         $providers = array(
             'modrinth' => \App\Mods\Providers\Modrinth::class,
-            'fabric' => \App\Mods\Providers\Fabric::class
+            'fabric' => \App\Mods\Providers\Fabric::class,
+            'forge' => \App\Mods\Providers\Forge::class
         );
 
         return $providers;

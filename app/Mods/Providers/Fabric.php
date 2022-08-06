@@ -29,7 +29,6 @@ class Fabric extends ModProvider
 
     public static function search(string $query, int $page = 1) : object
     {
-        $pageSize = 20;
         $mods = [];
         $data = static::request("/v2/versions/game");
         foreach ($data as $mod) {
@@ -50,7 +49,7 @@ class Fabric extends ModProvider
     
     public static function mod(string $modId) : ImportedModData
     {
-        $data = static::request("/v2/versions/game");
+        $data = static::request("/v2/versions/game"); // TODO remove this request?
         $foundMod = (object) [];
         foreach ($data as $mod) {
             if ($mod->version == $modId) {
