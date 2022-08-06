@@ -44,7 +44,7 @@ class Modrinth extends ModProvider
         ];
     }
     
-    public static function mod(string $modId) : object
+    public static function mod(string $modId) : ImportedModData
     {
         $mod = static::request("/v2/project/$modId");
         $mod->versions = static::request("/v2/project/$modId/version");

@@ -170,14 +170,25 @@ class ModController extends Controller
             array_push($errors, ["invalid_versions" => "Invalid versions specified"]);
         }
 
-        if (count($errors) >= 1) {
+        $installData = (object) [
+            "success" => false,
+            "id" => -1,
+            "errors" => array()
+        ];
+
+        if (count($errors) < 1) {
+            $installData = $providers[$provider]::install($modId, $versions);
+            $errors = array_merge($errors, $installData->errors);
+        }
+
+        if (!$installData->success) {
             return view('mod.import_details')
                 ->with([
                     'mod' => $modData
                 ])
                 ->withErrors($errors);
         } else {
-            return $providers[$provider]::install($modId, $versions);
+            return redirect('mod/view/'.$installData->id)->withErrors($errors);
         }
     }
 

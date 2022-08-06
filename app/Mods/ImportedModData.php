@@ -4,7 +4,7 @@ namespace App\Mods;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ImportedModData // TODO find a better name
+class ImportedModData
 {
     public $id;
     public $slug;

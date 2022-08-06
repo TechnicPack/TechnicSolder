@@ -14,7 +14,7 @@ abstract class ModProvider
     abstract protected static function apiUrl() : string;
     abstract protected static function apiHeaders() : array;
     abstract public static function search(string $query, int $page = 1) : object;
-    abstract public static function mod(string $modId) : object;
+    abstract public static function mod(string $modId) : ImportedModData;
 
     private static function installVersion(int $modId, string $slug, ImportedModData $modData, string $version)
     {
@@ -38,9 +38,8 @@ abstract class ModProvider
         $zip = new ZipArchive();
         $res = $zip->open($tmpFileName, ZipArchive::RDONLY);
         if ($res === false) {
-            // TODO Error
             unlink($tmpFileName);
-            return;
+            return ["mod_corrupt" => "Unable to open mod file for version $version, its likely corrupt"];
         }
 
         $version = "";
@@ -67,9 +66,8 @@ abstract class ModProvider
 
         // Make sure we have been given a version
         if (empty($version)) {
-            // TODO Error
             unlink($tmpFileName);
-            return;
+            return ["version_missing" => "Unable to detect version number for $version"];
         }
 
         // Check if the version already exists for the mod
@@ -77,18 +75,16 @@ abstract class ModProvider
             'mod_id' => $modId,
             'version' => $version,
         ])->count() > 0) {
-            // TODO Error
             unlink($tmpFileName);
-            return;
+            return ["version_exists" => "$version already exists"];
         }
 
         // Check if the final path isnt a url
         $location = config('solder.repo_location');
         $finalPath = $location."mods/$slug/$slug-$version.zip";
         if (filter_var($finalPath, FILTER_VALIDATE_URL)) {
-            // TODO Error
             unlink($tmpFileName);
-            return;
+            return ["remote_repo" => "Mod repo in a remote location so unable to download $version"];
         }
 
         // Create the mod dir
@@ -114,6 +110,11 @@ abstract class ModProvider
     public static function install(string $modId, array $versions)
     {
         $modData = static::mod($modId);
+        $response = (object) [
+            "success" => true,
+            "id" => -1,
+            "errors" => array()
+        ];
 
         $slug = Str::slug($modData->slug);
 
@@ -129,11 +130,16 @@ abstract class ModProvider
             $mod->save();
         }
 
+        $response->id = $mod->id;
+
         foreach ($versions as $version) {
-            static::installVersion($mod->id, $slug, $modData, $version);
+            $error = static::installVersion($mod->id, $slug, $modData, $version);
+            if (!empty($error)) {
+                array_push($response->errors, $error);
+            }
         }
 
-        return redirect('mod/view/'.$mod->id);
+        return $response;
     }
 
     protected static function request(string $url)
