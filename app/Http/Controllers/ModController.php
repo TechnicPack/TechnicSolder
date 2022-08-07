@@ -217,6 +217,27 @@ class ModController extends Controller
         }
     }
 
+    public function postRehashAll()
+    {
+        if (!Request::ajax()) {
+            abort(404);
+        }
+        
+        foreach (Mod::all() as $mod) {
+            foreach ($mod->versions as $version) {
+                $md5Request = $this->mod_md5($mod, $version->version);
+                if ($md5Request['success']) {
+                    $version->md5 = $md5Request['md5'];
+                    $version->save();
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success'
+        ]);
+    }
+
     public function anyAddVersion()
     {
         if (! Request::ajax()) {

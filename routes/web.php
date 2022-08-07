@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::post('mod/modify/{mod_id}', [ModController::class, 'postModify']);
 //    Route::get('mod/rehash', [ModController::class, 'anyRehash'])->name('mod.rehash');
     Route::post('mod/rehash', [ModController::class, 'anyRehash']);
+    Route::post('mod/rehashall', [ModController::class, 'postRehashAll']);
 //    Route::get('mod/add-version', [ModController::class, 'anyAddVersion'])->name('mod.addVersion');
     Route::post('mod/add-version', [ModController::class, 'anyAddVersion']);
     Route::post('mod/delete-version/{version_id}', [ModController::class, 'anyDeleteVersion']);
