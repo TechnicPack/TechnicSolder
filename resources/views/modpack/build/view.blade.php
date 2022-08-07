@@ -156,6 +156,9 @@ var $select = $("#mod").selectize({
 								modversion.enable();
 								modversion.refreshOptions(true);
 								$("#mod-version").attr("placeholder", "Select a Modversion...");
+								// Get the last mod version and select it
+								const versions = Object.values(modversion.currentResults.items)
+								modversion.setValue(versions[versions.length - 1].id, true);
 							}
 						},
 						error: function (xhr, textStatus, errorThrown) {
