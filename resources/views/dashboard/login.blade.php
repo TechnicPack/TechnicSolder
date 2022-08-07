@@ -12,9 +12,9 @@
     {!! Html::style('css/login.css') !!}
   </head>
   <body class="login">
-    <img alt="Technic-logo" class="logo" height="70" src="{{ URL::asset('img/wrenchIcon.svg') }}">
     <form class="vertical-form" method="post" action="">
       <div style="margin:0;padding:0;display:inline;">
+        <img alt="Technic-logo" class="logo" height="70" src="{{ URL::asset('img/wrenchIcon.svg') }}">
         <legend>
         Technic Solder
         </legend>

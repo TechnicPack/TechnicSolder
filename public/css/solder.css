@@ -12,6 +12,16 @@ input[type=file] {
 	padding-top: 10px;
 }
 
+.navbar-brand > img {
+	display: inline;
+}
+
+@media (min-width: 768px) {
+	.navbar-right {
+		margin-right: 0px;
+	}
+}
+
 .nav > li > a > img {
   border: 1px solid #9a9a9a;
 }
