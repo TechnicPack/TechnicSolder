@@ -13,29 +13,24 @@
   </head>
   <body class="login">
     <img alt="Technic-logo" class="logo" height="70" src="{{ URL::asset('img/wrenchIcon.svg') }}">
-    <form class="vertical-form" method="post" action="">
+    <form class="vertical-form" method="post" action="{{ route('password.update') }}">
       <div style="margin:0;padding:0;display:inline;">
         <legend>
         Technic Solder
         </legend>
-        @if (Session::has('login_failed'))
+        @if (Session::has('errors'))
           <ul class="notice errors">
-            <li>{{ Session::get('login_failed') }}</li>
+            <li>{{ $errors->first('email') }}</li>
+            <li>{{ $errors->first('password') }}</li>
+            <li>{{ $errors->first('password_confirmation') }}</li>
           </ul>
         @endif
-        @if (Session::has('logout') || Session::has('status'))
-          <ul class="notice success">
-            <li>{{ Session::get('logout') }}</li>
-            <li>{{ Session::get('status') }}</li>
-          </ul>
-        @endif
-        <input type="text" name="email" class="input-block-level" placeholder="Email Address" size="30" autocomplete="off">
-        <input type="password" name="password" class="input-block-level" placeholder="Password" size="30" autocomplete="off">
-        <input name="login" type="submit" value="Log In">
-        <label class="checkbox"><input type="checkbox" name="remember" value="1">Remember me</label>
-        @if (Route::has('password.request'))
-          <p class="text-center"><a href="{{ route('password.request') }}">{{ __('Forgot Password?') }}</a></p>
-        @endif
+        @csrf
+        <input type="hidden" name="token" value="{{ $token }}">
+        <input type="text" class="input-block-level" name="email" placeholder="Email Address" required autofocus>
+        <input type="password" class="input-block-level" name="password" placeholder="Password" required autofocus>
+        <input type="password" class="input-block-level" name="password_confirmation" placeholder="Confirm Password" required autofocus>
+        <input name="login" type="submit" value="Reset Password">
         <div class="footer">
           <p><a href="https://www.technicpack.net/">Powered by the Technic Platform</a></p>
         </div>

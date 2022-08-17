@@ -97,3 +97,14 @@ Route::get('logout', function () {
 
     return Redirect::route('login')->with('logout', 'You have been logged out.');
 })->name('logout');
+
+Route::middleware('guest')->group(function () {
+    Route::get('forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('forgot-password', [AuthController::class, 'postForgotPassword'])->name('password.email');
+
+    Route::get('reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('reset-password', [AuthController::class, 'postResetPassword'])->name('password.update');
+});
+
+
+

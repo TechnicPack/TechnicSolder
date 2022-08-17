@@ -18,24 +18,18 @@
         <legend>
         Technic Solder
         </legend>
-        @if (Session::has('login_failed'))
+        @if (Session::has('error'))
           <ul class="notice errors">
-            <li>{{ Session::get('login_failed') }}</li>
+            <li>{{ Session::get('error') }}</li>
           </ul>
         @endif
-        @if (Session::has('logout') || Session::has('status'))
+        @if (Session::has('success'))
           <ul class="notice success">
-            <li>{{ Session::get('logout') }}</li>
-            <li>{{ Session::get('status') }}</li>
+            <li>{{ Session::get('success') }}</li>
           </ul>
         @endif
         <input type="text" name="email" class="input-block-level" placeholder="Email Address" size="30" autocomplete="off">
-        <input type="password" name="password" class="input-block-level" placeholder="Password" size="30" autocomplete="off">
-        <input name="login" type="submit" value="Log In">
-        <label class="checkbox"><input type="checkbox" name="remember" value="1">Remember me</label>
-        @if (Route::has('password.request'))
-          <p class="text-center"><a href="{{ route('password.request') }}">{{ __('Forgot Password?') }}</a></p>
-        @endif
+        <input name="login" type="submit" value="Reset password">
         <div class="footer">
           <p><a href="https://www.technicpack.net/">Powered by the Technic Platform</a></p>
         </div>
