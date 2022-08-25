@@ -40,4 +40,12 @@ return [
      **/
     'md5_file_timeout' => intval(env('SOLDER_MD5_FILE_TIMEOUT', '30')),
 
+    /**
+     * Disable mod API functionality?
+     *
+     * Setting this to true will disable the /mod endpoints in the API responses. You usually don't need to
+     * mess with this, but you might want to disable the mod API functionalities for privacy reasons.
+     */
+    'disable_mod_api' => filter_var(env('SOLDER_DISABLE_MOD_API', 'false'), FILTER_VALIDATE_BOOLEAN),
+
 ];

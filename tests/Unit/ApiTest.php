@@ -38,9 +38,15 @@ class ApiTest extends TestCase
 
     public function test_mod()
     {
+        config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod');
         $response->assertOk();
         $response->assertJsonStructure(['mods']);
+
+        config()->set('solder.disable_mod_api', true);
+        $response = $this->get('api/mod');
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
     public function test_invalid_modpack()
@@ -74,14 +80,22 @@ class ApiTest extends TestCase
 
     public function test_invalid_mod()
     {
+        config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/bob');
         $response->assertNotFound();
         $response->assertJson(['error' => 'Mod does not exist']);
+
+        config()->set('solder.disable_mod_api', true);
+        $response = $this->get('api/mod/bob');
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
     public function test_mod_slug()
     {
         $mod = Mod::find(1);
+
+        config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/'.$mod->name);
         $response->assertOk();
         $response->assertJsonStructure([
@@ -92,6 +106,11 @@ class ApiTest extends TestCase
             'link',
             'versions',
         ]);
+
+        config()->set('solder.disable_mod_api', true);
+        $response = $this->get('api/mod/'.$mod->name);
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
     public function test_modpack_build()
@@ -113,27 +132,47 @@ class ApiTest extends TestCase
     {
         $mod = Mod::find(1);
         $modversion = $mod->versions->first();
+
+        config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/'.$mod->name.'/'.$modversion->version);
         $response->assertOk();
-        $response->assertJsonStructure([
-            'md5',
-            'filesize',
-            'url',
+        $response->assertJson([
+            'md5' => $modversion->md5,
+            'filesize' => $modversion->filesize,
+            'url' => $modversion->url,
         ]);
+
+        config()->set('solder.disable_mod_api', true);
+        $response = $this->get('api/mod/'.$mod->name.'/'.$modversion->version);
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
     public function test_modversion_with_invalid_mod()
     {
+        config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/foo/bar');
         $response->assertNotFound();
         $response->assertJson(['error' => 'Mod does not exist']);
+
+        config()->set('solder.disable_mod_api', true);
+        $response = $this->get('api/mod/foo/bar');
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
     public function test_invalid_modversion()
     {
         $mod = Mod::find(1);
+
+        config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/'.$mod->name.'/invalid');
         $response->assertNotFound();
         $response->assertJson(['error' => 'Mod version does not exist']);
+
+        config()->set('solder.disable_mod_api', true);
+        $response = $this->get('api/mod/'.$mod->name.'/invalid');
+        $response->assertNotFound();
+        $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 }

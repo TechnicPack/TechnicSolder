@@ -101,6 +101,10 @@ class ApiController extends Controller
 
     public function getMod($modSlug = null, $version = null)
     {
+        if (config('solder.disable_mod_api')) {
+            return response()->json(['error' => 'Mod API has been disabled'], 404);
+        }
+
         if (empty($modSlug)) {
             $mods = Cache::remember('mods', now()->addMinutes(5), function () {
                 return Mod::pluck('pretty_name', 'name');
