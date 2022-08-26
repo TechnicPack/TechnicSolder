@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
 //    Route::get('mod/add-version', [ModController::class, 'anyAddVersion'])->name('mod.addVersion');
     Route::post('mod/add-version', [ModController::class, 'anyAddVersion']);
     Route::post('mod/delete-version/{version_id}', [ModController::class, 'anyDeleteVersion']);
+    Route::get('mod/versions/{modSlug}', [ModController::class, 'getModVersions']);
 
     Route::redirect('modpack', 'modpack/list');
     Route::get('modpack/list', [ModpackController::class, 'getList'])->name('modpack.list');

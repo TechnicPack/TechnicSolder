@@ -143,7 +143,7 @@ var $select = $("#mod").selectize({
 				modversion.load(function(callback) {
 					$.ajax({
 						type: "GET",
-						url: "{{ URL::to('api/mod/') }}/" + mod.getValue(),
+						url: "{{ URL::to('mod/versions') }}/" + mod.getValue(),
 						success: function (data) {
 							if (data.versions.length === 0) {
 								$.jGrowl("No Modversions found for " + data.pretty_name, {group: 'alert-warning'});

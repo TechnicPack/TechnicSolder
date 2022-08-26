@@ -17,7 +17,7 @@ class ModController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('solder_mods');
+        $this->middleware('solder_mods')->except('getModVersions');
     }
 
     public function getIndex()
@@ -328,6 +328,44 @@ class ModController extends Controller
             'version' => $old_version,
             'version_id' => $old_id,
         ]);
+    }
+
+    public function getModVersions($modSlug)
+    {
+        if (! Request::ajax()) {
+            abort(404);
+        }
+
+        if (empty($modSlug)) {
+            return response()->json([
+                'status' => 'error',
+                'reason' => 'Missing data',
+            ]);
+        }
+
+        $mod = Cache::remember('mod:'.$modSlug, now()->addMinutes(5), function () use ($modSlug) {
+            return Mod::with('versions')->where('name', $modSlug)->first();
+        });
+
+        if (! $mod) {
+            return response()->json([
+                'status' => 'error',
+                'reason' => 'Unknown mod',
+            ]);
+        }
+
+        $response = $mod->only([
+            'id',
+            'name',
+            'pretty_name',
+            'author',
+            'description',
+            'link',
+        ]);
+
+        $response['versions'] = $mod->versions->pluck('version');
+
+        return response()->json($response);
     }
 
     private function mod_md5($mod, $version)

@@ -375,4 +375,34 @@ class ModTest extends TestCase
         $response->assertRedirect('/mod/list');
         $response->assertSessionHas('success');
     }
+
+    public function test_mod_getversions()
+    {
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->get('/mod/versions/testmod');
+
+        $response->assertOk();
+        $response->assertJson([
+            'id' => 1,
+            'name' => 'testmod',
+            'pretty_name' => 'TestMod',
+            'author' => 'Technic',
+            'description' => 'This is a test mod for Solder',
+            'link' => 'http://solder.io',
+            'versions' => [
+                '1.0'
+            ],
+        ]);
+    }
+
+    public function test_mod_getversions_invalid_mod()
+    {
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->get('/mod/versions/invalid');
+
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Unknown mod',
+        ]);
+    }
 }
