@@ -9,6 +9,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<div class="pull-right">
+		<a href="#" class="btn btn-xs btn-warning rehash">Rehash All</a>
 		<a href="{{ URL::to('mod/create') }}" class="btn btn-xs btn-success">Add Mod</a>
 	</div>
 	Mod List
@@ -64,7 +65,24 @@ $(document).ready(function() {
 	$('#dataTables').dataTable({
 		"order": [[ 1, "asc" ]]
 	});
+});
 
+$('.rehash').click(function(e) {
+	e.preventDefault();
+	$.ajax({
+		type: "POST",
+		url: "{{ URL::to('mod/rehashall/') }}",
+		success: function (data) {
+			if (data.status == "success") {
+				$.jGrowl('Rehashing complete.', { group: 'alert-success' });
+			} else {
+				$.jGrowl('Error: ' + data, { group: 'alert-danger' });
+			}
+		},
+		error: function (xhr, textStatus, errorThrown) {
+			$.jGrowl(textStatus + ': ' + errorThrown, { group: 'alert-danger' });
+		}
+	});
 });
 </script>
 @endsection
