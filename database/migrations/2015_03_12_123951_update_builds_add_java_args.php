@@ -9,7 +9,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('builds', function ($table) {
             $table->string('min_java')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('builds', function ($table) {
             $table->dropColumn(['min_java', 'min_memory']);

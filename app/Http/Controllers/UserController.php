@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Models\Modpack;
 use App\Models\User;
 use App\Models\UserPermission;
@@ -19,19 +20,19 @@ class UserController extends Controller
         $this->middleware('solder_users');
     }
 
-    public function getIndex()
+    public function getIndex(): Response
     {
         return redirect('user/list');
     }
 
-    public function getList()
+    public function getList(): Response
     {
         $users = User::with('updated_by_user')->get();
 
         return view('user.list')->with('users', $users);
     }
 
-    public function getEdit($user_id = null)
+    public function getEdit($user_id = null): Response
     {
         if (empty($user_id)) {
             return redirect('user/list')
@@ -55,7 +56,7 @@ class UserController extends Controller
             ->with('userUpdatedBy', $userUpdatedBy);
     }
 
-    public function postEdit($user_id = null)
+    public function postEdit($user_id = null): Response
     {
         if (empty($user_id)) {
             return redirect('user/list')
@@ -138,7 +139,7 @@ class UserController extends Controller
         return redirect('user/list')->with('success', 'User edited successfully!');
     }
 
-    public function getCreate()
+    public function getCreate(): Response
     {
         if (! Auth::user()->permission->solder_full && ! Auth::user()->permission->solder_users) {
             return redirect('dashboard')
@@ -151,7 +152,7 @@ class UserController extends Controller
             ->with('allModpacks', $allModpacks);
     }
 
-    public function postCreate()
+    public function postCreate(): Response
     {
         $rules = [
             'email' => 'required|email|unique:users',
@@ -207,7 +208,7 @@ class UserController extends Controller
         return redirect('user/edit/'.$user->id)->with('success', 'User created!');
     }
 
-    public function getDelete($user_id = null)
+    public function getDelete($user_id = null): Response
     {
         if (! Auth::user()->permission->solder_full && ! Auth::user()->permission->solder_users) {
             return redirect('dashboard')
@@ -240,7 +241,7 @@ class UserController extends Controller
         return view('user.delete')->with(['user' => $user]);
     }
 
-    public function postDelete($user_id = null)
+    public function postDelete($user_id = null): Response
     {
         if (empty($user_id)) {
             return redirect('user/list')

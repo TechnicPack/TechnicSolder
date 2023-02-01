@@ -15,7 +15,7 @@ class ModpackTableTestSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('modpacks')->truncate();
 

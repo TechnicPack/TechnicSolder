@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Models\Key;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -15,24 +16,24 @@ class KeyController extends Controller
         $this->middleware('solder_keys');
     }
 
-    public function getIndex()
+    public function getIndex(): Response
     {
         return redirect('key/list');
     }
 
-    public function getList()
+    public function getList(): Response
     {
         $keys = Key::all();
 
         return view('key.list')->with('keys', $keys);
     }
 
-    public function getCreate()
+    public function getCreate(): Response
     {
         return view('key.create');
     }
 
-    public function postCreate()
+    public function postCreate(): Response
     {
         $rules = [
             'name' => 'required|unique:keys',
@@ -53,7 +54,7 @@ class KeyController extends Controller
         return redirect('key/list')->with('success', 'API key added!');
     }
 
-    public function getDelete($key_id)
+    public function getDelete($key_id): Response
     {
         $key = Key::find($key_id);
 
@@ -64,7 +65,7 @@ class KeyController extends Controller
         return view('key.delete')->with('key', $key);
     }
 
-    public function postDelete($key_id)
+    public function postDelete($key_id): Response
     {
         $key = Key::find($key_id);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Models\Client;
 use App\Models\Key;
 use App\Models\Mod;
@@ -49,7 +50,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getIndex()
+    public function getIndex(): Response
     {
         return response()->json([
             'api' => 'TechnicSolder',
@@ -58,7 +59,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function getModpackIndex()
+    public function getModpackIndex(): Response
     {
         $includeFull = Request::input('include') === 'full';
 
@@ -83,7 +84,7 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
-    public function getModpack($slug)
+    public function getModpack($slug): Response
     {
         $response = $this->fetchModpack($slug);
 
@@ -94,12 +95,12 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
-    public function getModpackBuild($modpackSlug, $buildName)
+    public function getModpackBuild($modpackSlug, $buildName): Response
     {
         return response()->json($this->fetchBuild($modpackSlug, $buildName));
     }
 
-    public function getMod($modSlug = null, $version = null)
+    public function getMod($modSlug = null, $version = null): Response
     {
         if (config('solder.disable_mod_api')) {
             return response()->json(['error' => 'Mod API has been disabled'], 404);
@@ -156,7 +157,7 @@ class ApiController extends Controller
         }
     }
 
-    public function getVerify($key = null)
+    public function getVerify($key = null): Response
     {
         if (! $key) {
             return response()->json(['error' => 'No API key provided.'], 400);

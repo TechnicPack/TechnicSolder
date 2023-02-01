@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Libraries\UrlUtils;
 use App\Models\Mod;
 use App\Models\Modversion;
@@ -20,12 +21,12 @@ class ModController extends Controller
         $this->middleware('solder_mods')->except('getModVersions');
     }
 
-    public function getIndex()
+    public function getIndex(): Response
     {
         return redirect('mod/list');
     }
 
-    public function getList()
+    public function getList(): Response
     {
         $mods = Mod::with(
             [
@@ -39,7 +40,7 @@ class ModController extends Controller
         return view('mod.list')->with(['mods' => $mods]);
     }
 
-    public function getView($mod_id = null)
+    public function getView($mod_id = null): Response
     {
         $mod = Mod::with('versions')
             ->with('versions.builds')
@@ -53,12 +54,12 @@ class ModController extends Controller
         return view('mod.view')->with(['mod' => $mod]);
     }
 
-    public function getCreate()
+    public function getCreate(): Response
     {
         return view('mod.create');
     }
 
-    public function postCreate()
+    public function postCreate(): Response
     {
         $rules = [
             'name' => 'required|unique:mods',
@@ -88,7 +89,7 @@ class ModController extends Controller
         return redirect('mod/view/'.$mod->id);
     }
 
-    public function getDelete($mod_id = null)
+    public function getDelete($mod_id = null): Response
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
@@ -98,7 +99,7 @@ class ModController extends Controller
         return view('mod.delete')->with(['mod' => $mod]);
     }
 
-    public function postModify($mod_id = null)
+    public function postModify($mod_id = null): Response
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
@@ -134,7 +135,7 @@ class ModController extends Controller
         return redirect('mod/view/'.$mod->id)->with('success', 'Mod successfully edited.');
     }
 
-    public function postDelete($mod_id = null)
+    public function postDelete($mod_id = null): Response
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
@@ -151,7 +152,7 @@ class ModController extends Controller
         return redirect('mod/list')->with('success', 'Mod deleted!');
     }
 
-    public function anyRehash()
+    public function anyRehash(): Response
     {
         if (! Request::ajax()) {
             abort(404);
@@ -217,7 +218,7 @@ class ModController extends Controller
         }
     }
 
-    public function anyAddVersion()
+    public function anyAddVersion(): Response
     {
         if (! Request::ajax()) {
             abort(404);
@@ -298,7 +299,7 @@ class ModController extends Controller
         }
     }
 
-    public function anyDeleteVersion($ver_id = null)
+    public function anyDeleteVersion($ver_id = null): Response
     {
         if (! Request::ajax()) {
             abort(404);
@@ -330,7 +331,7 @@ class ModController extends Controller
         ]);
     }
 
-    public function getModVersions($modSlug)
+    public function getModVersions($modSlug): Response
     {
         if (! Request::ajax()) {
             abort(404);

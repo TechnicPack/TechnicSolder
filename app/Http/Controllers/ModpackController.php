@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Libraries\MinecraftUtils;
 use App\Models\Build;
 use App\Models\Client;
@@ -29,19 +30,19 @@ class ModpackController extends Controller
         $this->middleware('build', ['only' => ['anyBuild']]);
     }
 
-    public function getIndex()
+    public function getIndex(): Response
     {
         return redirect('modpack/list');
     }
 
-    public function getList()
+    public function getList(): Response
     {
         $modpacks = Modpack::all();
 
         return view('modpack.list')->with('modpacks', $modpacks);
     }
 
-    public function getView($modpack_id = null)
+    public function getView($modpack_id = null): Response
     {
         $modpack = Modpack::with([
             'builds' => function ($query) {
@@ -57,7 +58,7 @@ class ModpackController extends Controller
         return view('modpack.view')->with('modpack', $modpack);
     }
 
-    public function anyBuild($build_id = null)
+    public function anyBuild($build_id = null): Response
     {
         $build = Build::with('modpack')
             ->with('modversions')
@@ -167,7 +168,7 @@ class ModpackController extends Controller
         }
     }
 
-    public function getAddBuild($modpack_id)
+    public function getAddBuild($modpack_id): Response
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -183,7 +184,7 @@ class ModpackController extends Controller
             ]);
     }
 
-    public function postAddBuild($modpack_id)
+    public function postAddBuild($modpack_id): Response
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -237,12 +238,12 @@ class ModpackController extends Controller
         return redirect('modpack/build/'.$build->id);
     }
 
-    public function getCreate()
+    public function getCreate(): Response
     {
         return view('modpack.create');
     }
 
-    public function postCreate()
+    public function postCreate(): Response
     {
         $rules = [
             'name' => 'required|unique:modpacks',
@@ -289,7 +290,7 @@ class ModpackController extends Controller
         return redirect('modpack/view/'.$modpack->id);
     }
 
-    public function getEdit($modpack_id)
+    public function getEdit($modpack_id): Response
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -309,7 +310,7 @@ class ModpackController extends Controller
             ->with('allClients', $allClients);
     }
 
-    public function postEdit($modpack_id)
+    public function postEdit($modpack_id): Response
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -351,7 +352,7 @@ class ModpackController extends Controller
         return redirect('modpack/view/'.$modpack->id)->with('success', 'Modpack edited');
     }
 
-    public function getDelete($modpack_id)
+    public function getDelete($modpack_id): Response
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -361,7 +362,7 @@ class ModpackController extends Controller
         return view('modpack.delete')->with(['modpack' => $modpack]);
     }
 
-    public function postDelete($modpack_id)
+    public function postDelete($modpack_id): Response
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -383,7 +384,7 @@ class ModpackController extends Controller
     /**
      * AJAX Methods for Modpack Manager
      **/
-    public function anyModify($action = null)
+    public function anyModify($action = null): Response
     {
         if (! Request::ajax()) {
             abort(404);

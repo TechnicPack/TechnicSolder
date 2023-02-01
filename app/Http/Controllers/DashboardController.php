@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Libraries\UpdateUtils;
 use App\Models\Build;
 use App\Models\Modversion;
 
 class DashboardController extends Controller
 {
-    public function getIndex()
+    public function getIndex(): Response
     {
         $builds = Build::with('modpack')
             ->withCount('modversions')

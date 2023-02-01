@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Models\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -15,24 +16,24 @@ class ClientController extends Controller
         $this->middleware('solder_clients');
     }
 
-    public function getIndex()
+    public function getIndex(): Response
     {
         return redirect('client/list');
     }
 
-    public function getList()
+    public function getList(): Response
     {
         $clients = Client::all();
 
         return view('client.list')->with('clients', $clients);
     }
 
-    public function getCreate()
+    public function getCreate(): Response
     {
         return view('client.create');
     }
 
-    public function postCreate()
+    public function postCreate(): Response
     {
         $rules = [
             'name' => 'required|unique:clients',
@@ -55,7 +56,7 @@ class ClientController extends Controller
         return redirect('client/list')->with('success', 'Client added!');
     }
 
-    public function getDelete($client_id)
+    public function getDelete($client_id): Response
     {
         $client = Client::find($client_id);
 
@@ -66,7 +67,7 @@ class ClientController extends Controller
         return view('client.delete')->with('client', $client);
     }
 
-    public function postDelete($client_id)
+    public function postDelete($client_id): Response
     {
         $client = Client::find($client_id);
 
