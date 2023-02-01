@@ -44,7 +44,6 @@ class UrlUtils
      * Uses Guzzle to get URL contents and returns hash
      *
      * @param  string  $url  Url Location
-     * @return array
      */
     public static function get_remote_md5(string $url): array
     {
