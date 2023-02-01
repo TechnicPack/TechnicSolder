@@ -50,7 +50,7 @@ class UpdateUtils
                 return $client->api('repo')->tags('technicpack', 'technicsolder');
             });
         } catch (RuntimeException $e) {
-            return ['error' => 'Unable to fetch versions from Github: ' . $e->getMessage()];
+            return ['error' => 'Unable to fetch versions from Github: '.$e->getMessage()];
         }
     }
 
@@ -59,11 +59,11 @@ class UpdateUtils
         $client = self::getGithubClient();
 
         try {
-            return cache()->remember('update:github:changelog:' . $branch, now()->addMinutes(60), function () use ($client, $branch) {
+            return cache()->remember('update:github:changelog:'.$branch, now()->addMinutes(60), function () use ($client, $branch) {
                 return $client->api('repo')->commits()->all('technicpack', 'technicsolder', ['sha' => $branch]);
             });
         } catch (RuntimeException $e) {
-            return ['error' => 'Unable to fetch changelog from Github: ' . $e->getMessage()];
+            return ['error' => 'Unable to fetch changelog from Github: '.$e->getMessage()];
         }
     }
 }
