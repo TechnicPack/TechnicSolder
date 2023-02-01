@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
 use App\Libraries\UpdateUtils;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {

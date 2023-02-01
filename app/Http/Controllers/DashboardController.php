@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
 use App\Libraries\UpdateUtils;
 use App\Models\Build;
 use App\Models\Modversion;
+use Illuminate\Http\Response;
 
 class DashboardController extends Controller
 {
