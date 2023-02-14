@@ -4,14 +4,16 @@ namespace App\Libraries;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class UrlUtils
 {
     private const USER_AGENT = 'Mozilla/5.0 TechnicSolder/0.7 (+https://github.com/TechnicPack/TechnicSolder)';
+
     private const MAX_REDIRECTS = 5;
+
     private const DEFAULT_CONNECT_TIMEOUT = 5;
+
     private const DEFAULT_TOTAL_TIMEOUT = 15;
 
     /**
@@ -40,6 +42,7 @@ class UrlUtils
 
     /**
      * Uses Guzzle to get URL contents and returns hash
+     *
      * @param  string  $url  Url Location
      * @return array
      */
@@ -67,7 +70,7 @@ class UrlUtils
             if ($response->getStatusCode() !== 200) {
                 return [
                     'success' => false,
-                    'message' => 'Expected status code 200, got ' . $response->getStatusCode(),
+                    'message' => 'Expected status code 200, got '.$response->getStatusCode(),
                 ];
             }
 
@@ -76,7 +79,7 @@ class UrlUtils
             $ctx = hash_init('md5');
             $filesize = 0;
 
-            while (!$body->eof()) {
+            while (! $body->eof()) {
                 // Read in 64 KB chunks
                 $buffer = $body->read(64 * 1024);
                 $filesize += strlen($buffer);
@@ -91,7 +94,7 @@ class UrlUtils
                 'filesize' => $filesize,
             ];
         } catch (GuzzleException $e) {
-            Log::error('Error hashing remote md5: ' . $e->getMessage());
+            Log::error('Error hashing remote md5: '.$e->getMessage());
 
             return [
                 'success' => false,

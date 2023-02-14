@@ -14,7 +14,7 @@ class MinecraftUtils
             Cache::forget('minecraftversions');
         }
 
-        return Cache::remember('minecraftversions', now()->addHours(3), fn() => self::fetchVersions());
+        return Cache::remember('minecraftversions', now()->addHours(3), fn () => self::fetchVersions());
     }
 
     public static function fetchVersions()
@@ -34,7 +34,7 @@ class MinecraftUtils
                 return $versions;
             }
         } catch (GuzzleException $e) {
-            Log::error('Failed to fetch Minecraft versions from Technic: ' . $e->getMessage());
+            Log::error('Failed to fetch Minecraft versions from Technic: '.$e->getMessage());
         }
 
         // If getting them from Technic fails, we get it directly from Mojang
@@ -61,7 +61,7 @@ class MinecraftUtils
                 return $versions;
             }
         } catch (GuzzleException $e) {
-            Log::error('Failed to fetch Minecraft versions from Mojang: ' . $e->getMessage());
+            Log::error('Failed to fetch Minecraft versions from Mojang: '.$e->getMessage());
         }
 
         Log::error('Failed to fetch Minecraft versions');

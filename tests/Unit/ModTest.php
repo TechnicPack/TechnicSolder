@@ -390,7 +390,7 @@ class ModTest extends TestCase
             'description' => 'This is a test mod for Solder',
             'link' => 'http://solder.io',
             'versions' => [
-                '1.0'
+                '1.0',
             ],
         ]);
     }

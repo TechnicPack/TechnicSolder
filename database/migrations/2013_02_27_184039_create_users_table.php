@@ -4,7 +4,8 @@ use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Hash;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Make changes to the database.
      *

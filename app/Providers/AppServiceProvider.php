@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Libraries\UpdateUtils;
 use App\Models\Modpack;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;

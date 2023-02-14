@@ -387,9 +387,8 @@ class ModController extends Controller
 
                 return ['success' => false, 'message' => $e->getMessage()];
             }
-
         } else {
-            $error = $URI . ' does not exist';
+            $error = $URI.' does not exist';
             Log::error($error);
 
             return ['success' => false, 'message' => $error];
