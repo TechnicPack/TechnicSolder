@@ -22,21 +22,21 @@ class BuildTest extends TestCase
         $this->be($user);
     }
 
-    public function test_build_get()
+    public function test_build_get(): void
     {
         $response = $this->get('/modpack/build/1');
 
         $response->assertOk();
     }
 
-    public function test_build_add_get()
+    public function test_build_add_get(): void
     {
         $response = $this->get('/modpack/add-build/1');
 
         $response->assertOk();
     }
 
-    public function test_build_add_post()
+    public function test_build_add_post(): void
     {
         $data = [
             'version' => '1.1.0',
@@ -57,7 +57,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.7');
     }
 
-    public function test_build_add_post_empty_version()
+    public function test_build_add_post_empty_version(): void
     {
         $data = [
             'version' => '',
@@ -72,7 +72,7 @@ class BuildTest extends TestCase
         $response->assertSessionHasErrors('version');
     }
 
-    public function test_build_add_post_empty_minecraft()
+    public function test_build_add_post_empty_minecraft(): void
     {
         $data = [
             'version' => '1.1.0',
@@ -87,7 +87,7 @@ class BuildTest extends TestCase
         $response->assertSessionHasErrors('minecraft');
     }
 
-    public function test_build_add_post_empty_java()
+    public function test_build_add_post_empty_java(): void
     {
         $data = [
             'version' => '1.1.0',
@@ -108,7 +108,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '');
     }
 
-    public function test_build_add_post_no_memory()
+    public function test_build_add_post_no_memory(): void
     {
         $data = [
             'version' => '1.1.0',
@@ -129,7 +129,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.7');
     }
 
-    public function test_build_edit_get()
+    public function test_build_edit_get(): void
     {
         $build = Build::find(1);
 
@@ -137,7 +137,7 @@ class BuildTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_build_edit_post()
+    public function test_build_edit_post(): void
     {
         $build = Build::find(1);
 
@@ -159,7 +159,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->min_java, '1.8');
     }
 
-    public function test_build_delete_get()
+    public function test_build_delete_get(): void
     {
         $build = Build::find(1);
 
@@ -167,7 +167,7 @@ class BuildTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_build_delete_post()
+    public function test_build_delete_post(): void
     {
         $build = Build::find(1);
 
@@ -179,7 +179,7 @@ class BuildTest extends TestCase
         $response->assertRedirect('modpack/view/'.$build->modpack->id);
     }
 
-    public function test_renaming_recommended_build_changes_build_in_modpack()
+    public function test_renaming_recommended_build_changes_build_in_modpack(): void
     {
         $modpack = Modpack::first();
 
@@ -217,7 +217,7 @@ class BuildTest extends TestCase
         $this->assertEquals($build->version, $modpack->recommended);
     }
 
-    public function test_renaming_latest_build_changes_build_in_modpack()
+    public function test_renaming_latest_build_changes_build_in_modpack(): void
     {
         $modpack = Modpack::first();
 

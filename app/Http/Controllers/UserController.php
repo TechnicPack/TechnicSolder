@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Modpack;
 use App\Models\User;
 use App\Models\UserPermission;
@@ -19,12 +21,12 @@ class UserController extends Controller
         $this->middleware('solder_users');
     }
 
-    public function getIndex()
+    public function getIndex(): RedirectResponse
     {
         return redirect('user/list');
     }
 
-    public function getList()
+    public function getList(): View
     {
         $users = User::with('updated_by_user')->get();
 
@@ -55,7 +57,7 @@ class UserController extends Controller
             ->with('userUpdatedBy', $userUpdatedBy);
     }
 
-    public function postEdit($user_id = null)
+    public function postEdit($user_id = null): RedirectResponse
     {
         if (empty($user_id)) {
             return redirect('user/list')
@@ -151,7 +153,7 @@ class UserController extends Controller
             ->with('allModpacks', $allModpacks);
     }
 
-    public function postCreate()
+    public function postCreate(): RedirectResponse
     {
         $rules = [
             'email' => 'required|email|unique:users',
@@ -240,7 +242,7 @@ class UserController extends Controller
         return view('user.delete')->with(['user' => $user]);
     }
 
-    public function postDelete($user_id = null)
+    public function postDelete($user_id = null): RedirectResponse
     {
         if (empty($user_id)) {
             return redirect('user/list')

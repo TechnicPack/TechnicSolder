@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class UrlUtilsTest extends TestCase
 {
-    public function test_get_remote_md5()
+    public function test_get_remote_md5(): void
     {
         $json = UrlUtils::get_remote_md5('https://httpbin.org/base64/dGVzdA==', 5);
         $this->assertTrue(is_array($json));
@@ -20,7 +20,7 @@ class UrlUtilsTest extends TestCase
         $this->assertEquals('4', $json['filesize']);
     }
 
-    public function test_get_remote_md5_non_200()
+    public function test_get_remote_md5_non_200(): void
     {
         $json = UrlUtils::get_remote_md5('https://httpbin.org/status/404', 5);
         $this->assertTrue(is_array($json));

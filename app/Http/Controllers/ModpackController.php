@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use App\Libraries\MinecraftUtils;
 use App\Models\Build;
 use App\Models\Client;
@@ -29,12 +32,12 @@ class ModpackController extends Controller
         $this->middleware('build', ['only' => ['anyBuild']]);
     }
 
-    public function getIndex()
+    public function getIndex(): RedirectResponse
     {
         return redirect('modpack/list');
     }
 
-    public function getList()
+    public function getList(): View
     {
         $modpacks = Modpack::all();
 
@@ -237,12 +240,12 @@ class ModpackController extends Controller
         return redirect('modpack/build/'.$build->id);
     }
 
-    public function getCreate()
+    public function getCreate(): View
     {
         return view('modpack.create');
     }
 
-    public function postCreate()
+    public function postCreate(): RedirectResponse
     {
         $rules = [
             'name' => 'required|unique:modpacks',
@@ -309,7 +312,7 @@ class ModpackController extends Controller
             ->with('allClients', $allClients);
     }
 
-    public function postEdit($modpack_id)
+    public function postEdit($modpack_id): RedirectResponse
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -361,7 +364,7 @@ class ModpackController extends Controller
         return view('modpack.delete')->with(['modpack' => $modpack]);
     }
 
-    public function postDelete($modpack_id)
+    public function postDelete($modpack_id): RedirectResponse
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
@@ -383,7 +386,7 @@ class ModpackController extends Controller
     /**
      * AJAX Methods for Modpack Manager
      **/
-    public function anyModify($action = null)
+    public function anyModify($action = null): Response
     {
         if (! Request::ajax()) {
             abort(404);

@@ -22,28 +22,28 @@ class UserTest extends TestCase
         $this->be($user);
     }
 
-    public function test_user_index_get()
+    public function test_user_index_get(): void
     {
         $response = $this->get('/user');
 
         $response->assertRedirect('/user/list');
     }
 
-    public function test_user_list_get()
+    public function test_user_list_get(): void
     {
         $response = $this->get('/user/list');
 
         $response->assertOk();
     }
 
-    public function test_user_create_get()
+    public function test_user_create_get(): void
     {
         $response = $this->get('/user/create');
 
         $response->assertOk();
     }
 
-    public function test_user_create_post_duplicate_email()
+    public function test_user_create_post_duplicate_email(): void
     {
         $data = [
             'email' => 'admin@admin.com',
@@ -56,7 +56,7 @@ class UserTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
-    public function test_user_create_post_duplicate_username()
+    public function test_user_create_post_duplicate_username(): void
     {
         $data = [
             'email' => 'test@test.com',
@@ -69,7 +69,7 @@ class UserTest extends TestCase
         $response->assertSessionHasErrors('username');
     }
 
-    public function test_user_create_post()
+    public function test_user_create_post(): void
     {
         $data = [
             'email' => 'test@test.com',
@@ -82,7 +82,7 @@ class UserTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_user_edit_get()
+    public function test_user_edit_get(): void
     {
         $user = User::firstOrFail();
 
@@ -91,7 +91,7 @@ class UserTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_user_edit_post_duplicate_email()
+    public function test_user_edit_post_duplicate_email(): void
     {
         $user = User::firstOrFail();
 
@@ -115,7 +115,7 @@ class UserTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
-    public function test_user_edit_post_duplicate_username()
+    public function test_user_edit_post_duplicate_username(): void
     {
         // Create second user
         $user = User::create([
@@ -137,7 +137,7 @@ class UserTest extends TestCase
         $response->assertSessionHasErrors('username');
     }
 
-    public function test_user_edit_post()
+    public function test_user_edit_post(): void
     {
         $user = User::firstOrFail();
 
@@ -151,7 +151,7 @@ class UserTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_user_delete_get()
+    public function test_user_delete_get(): void
     {
         // Create second user
         $user = User::create([
@@ -171,19 +171,19 @@ class UserTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_user_delete_get_invalid_id()
+    public function test_user_delete_get_invalid_id(): void
     {
         $response = $this->get('/user/delete/100000');
         $response->assertRedirect('/user/list');
     }
 
-    public function test_user_delete_post_invalid_id()
+    public function test_user_delete_post_invalid_id(): void
     {
         $response = $this->post('/user/delete/100000');
         $response->assertRedirect('/user/list');
     }
 
-    public function test_user_delete_post()
+    public function test_user_delete_post(): void
     {
         // Create second user
         $user = User::create([
@@ -204,7 +204,7 @@ class UserTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_user_cannot_delete_last_admin_post()
+    public function test_user_cannot_delete_last_admin_post(): void
     {
         // Create second user
         $user = User::create([
@@ -230,14 +230,14 @@ class UserTest extends TestCase
         $response->assertSessionHasErrors();
     }
 
-    public function test_user_cannot_delete_self()
+    public function test_user_cannot_delete_self(): void
     {
         $response = $this->post('/user/delete/'.auth()->user()->id);
         $response->assertRedirect('/user/list');
         $response->assertSessionHasErrors();
     }
 
-    public function test_user_create_more_superadmins_post()
+    public function test_user_create_more_superadmins_post(): void
     {
         $data = [
             'email' => 'test-sadmin@test.com',
@@ -251,7 +251,7 @@ class UserTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_user_delete_first_post()
+    public function test_user_delete_first_post(): void
     {
         // Create second user
         $user = User::create([

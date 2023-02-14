@@ -50,7 +50,7 @@ class User extends Model implements AuthenticatableContract
      *
      * @return string
      */
-    public function getAuthIdentifierName()
+    public function getAuthIdentifierName(): string
     {
         return 'email';
     }
@@ -70,7 +70,7 @@ class User extends Model implements AuthenticatableContract
      *
      * @return string
      */
-    public function getAuthPassword()
+    public function getAuthPassword(): string
     {
         return $this->password;
     }
@@ -80,7 +80,7 @@ class User extends Model implements AuthenticatableContract
      *
      * @return string
      */
-    public function getRememberToken()
+    public function getRememberToken(): string
     {
         return $this->remember_token;
     }
@@ -91,7 +91,7 @@ class User extends Model implements AuthenticatableContract
      * @param  string  $value
      * @return void
      */
-    public function setRememberToken($value)
+    public function setRememberToken(string $value): void
     {
         $this->remember_token = $value;
         $this->save();
@@ -102,7 +102,7 @@ class User extends Model implements AuthenticatableContract
      *
      * @return string
      */
-    public function getRememberTokenName()
+    public function getRememberTokenName(): string
     {
         return 'remember_token';
     }

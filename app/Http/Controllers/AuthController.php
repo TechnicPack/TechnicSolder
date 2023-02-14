@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Libraries\UpdateUtils;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    public function showLogin(): View
     {
         return view('dashboard.login');
     }
 
-    public function postLogin()
+    public function postLogin(): RedirectResponse
     {
         $remember = request()->boolean('remember');
 

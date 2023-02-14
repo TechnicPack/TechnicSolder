@@ -9,7 +9,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('users', function ($table) {
             $table->string('updated_by_ip')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('users', function ($table) {
             $table->dropColumn(['created_by_user_id', 'updated_by_ip', 'updated_by_user_id']);

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use App\Models\Key;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -15,24 +17,24 @@ class KeyController extends Controller
         $this->middleware('solder_keys');
     }
 
-    public function getIndex()
+    public function getIndex(): RedirectResponse
     {
         return redirect('key/list');
     }
 
-    public function getList()
+    public function getList(): View
     {
         $keys = Key::all();
 
         return view('key.list')->with('keys', $keys);
     }
 
-    public function getCreate()
+    public function getCreate(): View
     {
         return view('key.create');
     }
 
-    public function postCreate()
+    public function postCreate(): RedirectResponse
     {
         $rules = [
             'name' => 'required|unique:keys',
@@ -64,7 +66,7 @@ class KeyController extends Controller
         return view('key.delete')->with('key', $key);
     }
 
-    public function postDelete($key_id)
+    public function postDelete($key_id): RedirectResponse
     {
         $key = Key::find($key_id);
 

@@ -21,21 +21,21 @@ class ClientTest extends TestCase
         $this->be($user);
     }
 
-    public function test_client_index()
+    public function test_client_index(): void
     {
         $response = $this->get('/client');
 
         $response->assertRedirect('/client/list');
     }
 
-    public function test_client_create_get()
+    public function test_client_create_get(): void
     {
         $response = $this->get('/client/create');
 
         $response->assertOk();
     }
 
-    public function test_client_create_post_duplicate_uuid()
+    public function test_client_create_post_duplicate_uuid(): void
     {
         $data = [
             'name' => 'TestClient2',
@@ -47,7 +47,7 @@ class ClientTest extends TestCase
         $response->assertSessionHasErrors('uuid');
     }
 
-    public function test_client_create_post_duplicate_name()
+    public function test_client_create_post_duplicate_name(): void
     {
         $data = [
             'name' => 'TestClient',
@@ -59,7 +59,7 @@ class ClientTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
-    public function test_client_create_post()
+    public function test_client_create_post(): void
     {
         $data = [
             'name' => 'TestClient2',
@@ -71,7 +71,7 @@ class ClientTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_client_delete_get()
+    public function test_client_delete_get(): void
     {
         $client = Client::find(1);
 
@@ -80,19 +80,19 @@ class ClientTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_client_delete_get_invalid_id()
+    public function test_client_delete_get_invalid_id(): void
     {
         $response = $this->get('/client/delete/100000');
         $response->assertRedirect('/client/list');
     }
 
-    public function test_client_delete_post_invalid_id()
+    public function test_client_delete_post_invalid_id(): void
     {
         $response = $this->post('/client/delete/100000');
         $response->assertRedirect('/client/list');
     }
 
-    public function test_client_delete_post()
+    public function test_client_delete_post(): void
     {
         $client = Client::where('name', 'TestClient')->firstOrFail();
 
@@ -101,7 +101,7 @@ class ClientTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_client_list()
+    public function test_client_list(): void
     {
         $response = $this->get('/client/list');
 

@@ -9,7 +9,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('modpacks', function ($table) {
             $table->string('icon_url')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('modpacks', function ($table) {
             $table->dropColumn(['icon_url', 'logo_url', 'background_url']);
