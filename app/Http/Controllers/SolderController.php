@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Illuminate\Http\Response;
 use App\Libraries\MinecraftUtils;
 use App\Libraries\UpdateUtils;
 use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
+use Illuminate\View\View;
 
 class SolderController extends Controller
 {
