@@ -18,7 +18,7 @@ class ApiTest extends TestCase
         $this->seed();
     }
 
-    public function test_base()
+    public function test_base(): void
     {
         $response = $this->get('api/');
         $response->assertOk();
@@ -29,14 +29,14 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_modpack()
+    public function test_modpack(): void
     {
         $response = $this->get('api/modpack');
         $response->assertOk();
         $response->assertJsonStructure(['modpacks', 'mirror_url']);
     }
 
-    public function test_mod()
+    public function test_mod(): void
     {
         config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod');
@@ -49,14 +49,14 @@ class ApiTest extends TestCase
         $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
-    public function test_invalid_modpack()
+    public function test_invalid_modpack(): void
     {
         $response = $this->get('api/modpack/bob');
         $response->assertNotFound();
         $response->assertJson(['error' => 'Modpack does not exist']);
     }
 
-    public function test_modpack_slug()
+    public function test_modpack_slug(): void
     {
         $modpack = Modpack::find(1);
         $response = $this->get('api/modpack/'.$modpack->slug);
@@ -78,7 +78,7 @@ class ApiTest extends TestCase
         $response->assertJsonPath('builds', ['1.0.0'], true);
     }
 
-    public function test_invalid_mod()
+    public function test_invalid_mod(): void
     {
         config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/bob');
@@ -91,7 +91,7 @@ class ApiTest extends TestCase
         $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
-    public function test_mod_slug()
+    public function test_mod_slug(): void
     {
         $mod = Mod::find(1);
 
@@ -113,7 +113,7 @@ class ApiTest extends TestCase
         $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
-    public function test_modpack_build()
+    public function test_modpack_build(): void
     {
         $modpack = Modpack::find(1);
         $build = $modpack->builds->first();
@@ -128,7 +128,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_mod_version()
+    public function test_mod_version(): void
     {
         $mod = Mod::find(1);
         $modversion = $mod->versions->first();
@@ -148,7 +148,7 @@ class ApiTest extends TestCase
         $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
-    public function test_modversion_with_invalid_mod()
+    public function test_modversion_with_invalid_mod(): void
     {
         config()->set('solder.disable_mod_api', false);
         $response = $this->get('api/mod/foo/bar');
@@ -161,7 +161,7 @@ class ApiTest extends TestCase
         $response->assertJson(['error' => 'Mod API has been disabled']);
     }
 
-    public function test_invalid_modversion()
+    public function test_invalid_modversion(): void
     {
         $mod = Mod::find(1);
 

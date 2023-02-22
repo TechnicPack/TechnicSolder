@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Libraries\MinecraftUtils;
 use App\Libraries\UpdateUtils;
 use Exception;
@@ -25,7 +27,7 @@ class SolderController extends Controller
         return view('solder.configure');
     }
 
-    public function getUpdate()
+    public function getUpdate(): View
     {
         $rawChangeLog = UpdateUtils::getLatestChangeLog();
         $changelog = array_key_exists('error', $rawChangeLog) ? $rawChangeLog : array_slice($rawChangeLog, 0, 10);
@@ -42,7 +44,7 @@ class SolderController extends Controller
         return view('solder.update')->with('changelog', $changelog)->with('currentVersion', SOLDER_VERSION)->with('latestData', $latestData);
     }
 
-    public function getUpdateCheck()
+    public function getUpdateCheck(): JsonResponse
     {
         if (! Request::ajax()) {
             abort(404);
@@ -67,7 +69,7 @@ class SolderController extends Controller
         }
     }
 
-    public function getCacheMinecraft()
+    public function getCacheMinecraft(): JsonResponse
     {
         if (! Request::ajax()) {
             abort(404);

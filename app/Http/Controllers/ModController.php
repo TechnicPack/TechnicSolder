@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use App\Libraries\UrlUtils;
 use App\Models\Mod;
 use App\Models\Modversion;
@@ -20,12 +23,12 @@ class ModController extends Controller
         $this->middleware('solder_mods')->except('getModVersions');
     }
 
-    public function getIndex()
+    public function getIndex(): RedirectResponse
     {
         return redirect('mod/list');
     }
 
-    public function getList()
+    public function getList(): View
     {
         $mods = Mod::with(
             [
@@ -53,12 +56,12 @@ class ModController extends Controller
         return view('mod.view')->with(['mod' => $mod]);
     }
 
-    public function getCreate()
+    public function getCreate(): View
     {
         return view('mod.create');
     }
 
-    public function postCreate()
+    public function postCreate(): RedirectResponse
     {
         $rules = [
             'name' => 'required|unique:mods',
@@ -98,7 +101,7 @@ class ModController extends Controller
         return view('mod.delete')->with(['mod' => $mod]);
     }
 
-    public function postModify($mod_id = null)
+    public function postModify($mod_id = null): RedirectResponse
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
@@ -134,7 +137,7 @@ class ModController extends Controller
         return redirect('mod/view/'.$mod->id)->with('success', 'Mod successfully edited.');
     }
 
-    public function postDelete($mod_id = null)
+    public function postDelete($mod_id = null): RedirectResponse
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
@@ -151,7 +154,7 @@ class ModController extends Controller
         return redirect('mod/list')->with('success', 'Mod deleted!');
     }
 
-    public function anyRehash()
+    public function anyRehash(): JsonResponse
     {
         if (! Request::ajax()) {
             abort(404);
@@ -217,7 +220,7 @@ class ModController extends Controller
         }
     }
 
-    public function anyAddVersion()
+    public function anyAddVersion(): JsonResponse
     {
         if (! Request::ajax()) {
             abort(404);
@@ -298,7 +301,7 @@ class ModController extends Controller
         }
     }
 
-    public function anyDeleteVersion($ver_id = null)
+    public function anyDeleteVersion($ver_id = null): JsonResponse
     {
         if (! Request::ajax()) {
             abort(404);

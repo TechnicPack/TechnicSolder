@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Symfony\Component\HttpFoundation\Response;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class Build
      * @param  Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $buildId = $request->segment(3);
         $build = \App\Models\Build::find($buildId);
