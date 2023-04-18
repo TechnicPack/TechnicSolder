@@ -82,7 +82,7 @@ class User extends Model implements AuthenticatableContract
     /**
      * Set the token value for the "remember me" session.
      */
-    public function setRememberToken(string $value): void
+    public function setRememberToken($value): void
     {
         $this->remember_token = $value;
         $this->save();
