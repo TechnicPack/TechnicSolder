@@ -19,8 +19,9 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP >= 8.0.2
-* Composer (<https://getcomposer.org/>)
+* PHP 8.1 or higher
+* [Composer](https://getcomposer.org/) 2.2 or higher
+* `unzip` package
 * BCMath PHP Extension
 * Ctype PHP Extension
 * Fileinfo PHP extension
@@ -31,6 +32,8 @@ Requirements
 * Tokenizer PHP Extension
 * XML PHP Extension
 * A MySQL or PostgreSQL database
+
+You can find commands for this in the [getting started page](https://docs.solder.io/reference/getting-started#requirements).
 
 Installation/Updating Solder
 -------------
