@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
             define('SOLDER_STREAM', 'DEV');
         }
         if (! defined('SOLDER_VERSION')) {
-            define('SOLDER_VERSION', 'v0.7.14');
+            define('SOLDER_VERSION', 'v0.7.15');
         }
 
         View::composer('layouts.master', function ($view) {
