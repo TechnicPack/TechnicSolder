@@ -1,6 +1,6 @@
 {
     "name": "technicpack/solder",
-    "type": "application",
+    "type": "project",
     "description": "Technic Solder API using Laravel Framework",
     "keywords": [
         "technic",
