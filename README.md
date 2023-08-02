@@ -45,9 +45,9 @@ If there is any missing/incorrect info, please post an issue on our [issue track
 Using Docker
 -------------
 
-Docker can make managing your instance of solder easier. To get started, you will need to install Docker and Docker Compose to your host system. You will also need to have this repo cloned. Here's an [example for Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04). Follow the instructions below from the cloned directory:
+Docker can make managing your instance of Solder easier. To get started, you will need to install Docker and Docker Compose to your host system. You will also need to have this repo cloned. Here's an [example for Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04). Follow the instructions below from the cloned directory:
 
-Build the solder docker image.
+Build the Solder Docker image.
 ```bash
 docker build --no-cache -t solder -f ./docker/DockerFile .
 ```
@@ -57,7 +57,7 @@ Run the setup to prepare your instance. You might need to modify `start.sh` to d
 docker-compose -f compose-setup.yml up setup
 ```
 
-Finally, you can turn on your instance of solder.
+Finally, you can turn on your instance of Solder.
 ```bash
 docker-compose up -d
 ```
