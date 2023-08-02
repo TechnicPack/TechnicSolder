@@ -54,7 +54,7 @@ docker build --no-cache -t solder -f ./docker/DockerFile .
 
 Run the setup to prepare your instance. You might need to modify `start.sh` to disable setting a new app key if you already have one. Make sure not to run this more than once unless you want a new app key.
 ```bash
-docker-compose -f docker-setup.yml up setup
+docker-compose -f compose-setup.yml up setup
 ```
 
 Finally, you can turn on your instance of solder.
