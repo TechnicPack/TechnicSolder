@@ -42,6 +42,28 @@ Refer to our documentation here: <https://docs.solder.io/>
 
 If there is any missing/incorrect info, please post an issue on our [issue tracker](https://github.com/TechnicPack/TechnicSolder/issues)
 
+Using Docker
+-------------
+
+Docker can make managing your instance of solder easier. To get started, you will need to install Docker and Docker Compose to your host system. You will also need to have this repo cloned. Here's an [example for Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04). Follow the instructions below from the cloned directory:
+
+Build the solder docker image.
+```bash
+docker build --no-cache -t solder -f ./docker/DockerFile .
+```
+
+Run the setup to prepare your instance. You might need to modify `start.sh` to disable setting a new app key if you already have one. Make sure not to run this more than once unless you want a new app key.
+```bash
+docker-compose -f docker-setup.yml up setup
+```
+
+Finally, you can turn on your instance of solder.
+```bash
+docker-compose up -d
+```
+
+Refer to the [Docker docs](https://docs.docker.com/) for more information about how to use it.
+
 Troubleshooting
 ---------------
 

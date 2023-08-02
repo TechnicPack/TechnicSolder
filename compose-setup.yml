@@ -1,0 +1,26 @@
+services:
+  mysql:
+    image: mariadb
+    restart: always
+    environment:
+      - MYSQL_DATABASE=solder
+      - MYSQL_USER=solder
+      - MYSQL_PASSWORD=solder
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_TCP_PORT=4306
+      - MYSQL_UNIX_PORT=4306
+    ports:
+      - 4306:4306
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+  setup:
+    image: solder
+    depends_on:
+      - mysql
+    links:
+      - mysql:mysql
+    volumes:
+      - ./docker/setup.sh:/var/www/html/setup.sh
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    command: [ "/bin/bash", "setup.sh" ]
