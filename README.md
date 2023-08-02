@@ -59,8 +59,10 @@ docker-compose -f compose-setup.yml up setup
 
 Finally, you can turn on your instance of Solder.
 ```bash
-docker-compose up -d
+docker-compose up -d --remove-orphans
 ```
+
+(The `--remove-orphans` flag is necessary to remove the container used in the setup.)
 
 Refer to the [Docker docs](https://docs.docker.com/) for more information about how to use it.
 
