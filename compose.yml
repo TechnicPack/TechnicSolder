@@ -7,7 +7,7 @@ services:
     links:
       - solder
     ports:
-      - 80:80
+      - "80:80"
     volumes:
       - ./docker/default.conf:/etc/nginx/conf.d/default.conf
       - .:/var/www/html
@@ -20,8 +20,6 @@ services:
     links:
       - mysql:mysql
       - redis:redis
-    ports:
-      - 9000:9000
     volumes:
       - .:/var/www/html
   mysql:
@@ -34,12 +32,8 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_TCP_PORT=4306
       - MYSQL_UNIX_PORT=4306
-    ports:
-      - 4306:4306
     volumes:
       - ./docker/mysql:/var/lib/mysql
   redis:
     image: redis
     restart: always
-    ports:
-      - 6379:6379

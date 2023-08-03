@@ -9,8 +9,6 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_TCP_PORT=4306
       - MYSQL_UNIX_PORT=4306
-    ports:
-      - 4306:4306
     volumes:
       - ./docker/mysql:/var/lib/mysql
   setup:
