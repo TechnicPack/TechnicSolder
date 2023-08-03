@@ -6,11 +6,12 @@ composer install --no-dev --no-interaction
 # Setup for Solder
 # Generate a new key and migrate the database
 # It's best not to run this more than once
-php artisan key:generate --force -n
+php artisan key:generate -n
 php artisan migrate --force -n
 
 # Find all directories and files below the current directory
 # and set their permissions to something secure and sane
+echo "Fixing file permissions, this may take a minute..."
 chown -R www-data:www-data .
 find . -type d -print0 | xargs -0 chmod 755
 find . -type f -print0 | xargs -0 chmod 644
