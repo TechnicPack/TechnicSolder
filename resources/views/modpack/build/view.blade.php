@@ -4,7 +4,7 @@
 @stop
 @section('top')
     <script src="{{ asset('js/selectize.min.js') }}"></script>
-    <link href="{{ asset('css/selectize.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/selectize.bootstrap3.css') }}" rel="stylesheet">
 @endsection
 @section('content')
 <div class="page-header">

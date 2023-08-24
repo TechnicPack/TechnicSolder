@@ -7,8 +7,8 @@
     @show
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
-    <script src="{{ asset('js/jquery-migrate-3.0.0.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.7.0.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-migrate-3.4.0.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/jquery.jgrowl.min.js') }}"></script>
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
