@@ -197,11 +197,11 @@ class ModTest extends TestCase
 
         if (getenv('REPO_TYPE') === 'remote') {
             $response->assertJson([
-                'reason' => 'Remote MD5 failed. URL returned status code - 404',
+                'reason' => 'MD5 hashing failed. URL returned status code - 404',
             ]);
         } else {
             $response->assertJson([
-                'reason' => 'Remote MD5 failed. '.config('solder.repo_location').'mods/backtools/backtools-v1.5.2.1.zip does not exist',
+                'reason' => 'MD5 hashing failed. '.config('solder.repo_location').'mods/backtools/backtools-v1.5.2.1.zip does not exist',
             ]);
         }
     }

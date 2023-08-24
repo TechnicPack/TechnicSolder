@@ -31,7 +31,7 @@
                 <div class="form-group">
                     <label for="repo_location">Repository Location</label>
                     <input type="text" class="form-control" name="repo_location" id="repo_location" value="{{ config('solder.repo_location') }}" disabled>
-                    <span class="help-block">This is the location of your mod reposistory. This can be a URL (remote repo), or an absolute file location (local repo, much faster). When a remote repo is used, Solder will have to download the entire file to calculate the MD5 hash.</span>
+                    <span class="help-block">This is the location of your mod repository. This can be a URL (remote repo), or an absolute file location (local repo, much faster). When a remote repo is used, Solder will have to download the entire file to calculate the MD5 hash.</span>
                     <p class="alert alert-info">The repository location is the prime suspect when MD5 hashing fails. Most cases are caused by improper file permissions when using an absolute file location.</p>
                 </div>
 

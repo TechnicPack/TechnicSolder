@@ -215,7 +215,7 @@ class ModController extends Controller
         } else {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Remote MD5 failed. '.$md5Request['message'],
+                'reason' => 'MD5 hashing failed. '.$md5Request['message'],
             ]);
         }
     }
@@ -296,7 +296,7 @@ class ModController extends Controller
         } else {
             return response()->json([
                 'status' => 'error',
-                'reason' => 'Remote MD5 failed. '.$file_md5['message'],
+                'reason' => 'MD5 hashing failed. '.$file_md5['message'],
             ]);
         }
     }
