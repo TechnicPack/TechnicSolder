@@ -398,18 +398,22 @@ class ModController extends Controller
         }
     }
 
-    private function remote_mod_md5($mod, $version, $location, $attempts = 0)
+    private function remote_mod_md5($mod, $version, $location)
     {
         $URL = $location.'mods/'.$mod->name.'/'.$mod->name.'-'.$version.'.zip';
 
-        $hash = UrlUtils::get_remote_md5($URL);
+        $attempts = 0;
 
-        if (! ($hash['success']) && $attempts <= 3) {
-            Log::warning('Error attempting to remote MD5 file '.$mod->name.' version '.$version.' located at '.$URL.'.');
+        do {
+            $result = UrlUtils::get_remote_md5($URL);
 
-            return $this->remote_mod_md5($mod, $version, $location, $attempts + 1);
-        }
+            if (!$result['success']) {
+                Log::warning('Error attempting to remote MD5 file ' . $mod->name . ' version ' . $version . ' located at ' . $URL . '.');
+            }
 
-        return $hash;
+            $attempts++;
+        } while ($attempts < 3 && !$result['success']);
+
+        return $result;
     }
 }
