@@ -1,9 +1,0 @@
-FROM php:8.2-fpm
-
-RUN apt-get update && apt-get install -y unzip nginx
-RUN docker-php-ext-install bcmath pdo_mysql
-RUN docker-php-ext-enable bcmath pdo_mysql
-RUN pecl install redis-5.3.7
-RUN docker-php-ext-enable redis
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer self-update --no-scripts

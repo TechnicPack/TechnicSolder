@@ -49,7 +49,7 @@ Docker can make managing your instance of Solder easier. To get started, you wil
 
 Build the Solder Docker image.
 ```bash
-docker build --no-cache -t solder -f ./docker/DockerFile .
+docker build --no-cache -t solder -f ./docker/Dockerfile .
 ```
 
 Run the setup to prepare your instance. You might need to modify `start.sh` to disable setting a new app key if you already have one. Make sure not to run this more than once unless you want a new app key.
