@@ -111,7 +111,7 @@
 				@else
 				<ul>
 				@foreach ($changelog as $change)
-				<li><code>{!! Html::link($change['html_url'], substr($change['sha'], 0, 7)) !!}</code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ $change['commit']['message'] }} </li>
+				<li><code>{!! Html::link($change['html_url'], substr($change['sha'], 0, 7)) !!}</code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ explode("\n", $change['commit']['message'], 2)[0] }} </li>
 				@endforeach
 				</ul>
 				@endif
