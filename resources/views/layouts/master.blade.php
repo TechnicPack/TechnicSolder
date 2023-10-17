@@ -77,16 +77,15 @@
               <li>
                   <a href="#"><i class="fa fa-folder fa-fw"></i> Modpacks<span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
-
-                       @foreach ($allModpacks as $modpack)
+                      <li><a href="{{ URL::to('modpack/list') }}">Modpack List</a></li>
+                      <li><a href="{{ URL::to('modpack/create') }}">Add Modpack</a></li>
+                      @foreach ($allModpacks as $modpack)
                         @if ($modpack->icon)
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/' . $modpack->slug . '/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $modpack->hidden ? " (Hidden)" : "" }}</a></li>
                         @else
                           <li><a href="{{ URL::to('modpack/view/'.$modpack->id) }}"><img src="{{ URL::asset('resources/default/icon.png') }}" style="width: 16px; height: 16px;"> {{ $modpack->name }}{{ $modpack->hidden ? " (Hidden)" : "" }}</a></li>
                         @endif
                       @endforeach
-                      <li><a href="{{ URL::to('modpack/list') }}">Modpack List</a></li>
-                      <li><a href="{{ URL::to('modpack/create') }}">Add Modpack</a></li>
                   </ul>
                   <!-- /.nav-second-level -->
               </li>
