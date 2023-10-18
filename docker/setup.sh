@@ -10,8 +10,10 @@ php artisan key:generate -n
 php artisan migrate --force -n
 
 # Find all directories and files below the current directory
-# and set their permissions to something secure and sane
+# and set their permissions to something secure and sane.
+# We ignore the docker folder so it doesn't break permissions
+# on the other containers.
 echo "Fixing file permissions, this may take a minute..."
-chown -R www-data:www-data .
-find . -type d -print0 | xargs -0 chmod 755
-find . -type f -print0 | xargs -0 chmod 644
+find . -path ./docker -prune -o -print0 | xargs -0 chown www-data:www-data
+find . -path ./docker -prune -o -type d -print0 | xargs -0 chmod 755
+find . -path ./docker -prune -o -type f -print0 | xargs -0 chmod 644
