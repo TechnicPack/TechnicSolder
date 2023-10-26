@@ -22,7 +22,7 @@ class Modrinth extends ModProvider
         $pageSize = 20;
         $offset = ($page - 1) * $pageSize;
         $mods = [];
-        $data = static::request("/v2/search?limit=$pageSize&offset=$offset&query=$query");
+        $data = static::request("/v2/search?limit=$pageSize&offset=$offset&query=" . urlencode($query));
         foreach ($data->hits as $mod) {
             array_push($mods, static::generateModData($mod));
         }
