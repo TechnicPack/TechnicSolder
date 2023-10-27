@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
@@ -132,14 +133,19 @@ class ModController extends Controller
                 'mods' => $search->mods,
                 'pagination' => $search->pagination
             ])
-            ->withErrors(new MessageBag($errors));
+            ->withErrors(Session::has('errors') ? Session::get('errors')->merge($errors) : new MessageBag($errors));
     }
 
     public function getImportDetails($provider, $modId)
     {
+        $mod = ModProviders::providers()[$provider]::mod($modId);
+        if ($mod == null) {
+            return redirect()->back()->withErrors(new MessageBag(['Mod not found']));
+        }
+
         return view('mod.import_details')
             ->with([
-                'mod' => ModProviders::providers()[$provider]::mod($modId)
+                'mod' => $mod
             ]);
     }
 

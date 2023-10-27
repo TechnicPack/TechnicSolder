@@ -13,7 +13,7 @@ abstract class ModProvider
     abstract public static function name() : string;
     abstract protected static function apiUrl() : string;
     abstract public static function search(string $query, int $page = 1) : object;
-    abstract public static function mod(string $modId) : ImportedModData;
+    abstract public static function mod(string $modId) : ?ImportedModData;
     
     
     protected static function apiHeaders() : array
@@ -60,38 +60,43 @@ abstract class ModProvider
                 return ["mod_corrupt" => "Unable to open mod file for version $version, its likely corrupt"];
             }
 
-            $version = "";
+            $modVersion = "";
 
             // Try load the version from forge
             $forgeData = $zip->getFromName('mcmod.info');
             if ($forgeData !== false) {
                 $tmpData = json_decode($forgeData)[0];
-                $version = "$tmpData->mcversion-$tmpData->version";
+                $modVersion = "$tmpData->mcversion-$tmpData->version";
             }
 
             // Try load the version from fabric
             $fabricData = $zip->getFromName('fabric.mod.json');
             if ($fabricData !== false) {
                 $tmpData = json_decode($fabricData);
+                if ($tmpData === null) {
+                    unlink($tmpFileName);
+                    return ["mod_corrupt" => "Unable to parse fabric.mod.json for version $version, its likely invalid"];
+                }
+
                 $mcVersion = "";
                 if (property_exists($tmpData, "depends") && property_exists($tmpData->depends, "minecraft")) {
                     $mcVersion = $tmpData->depends->minecraft;
                     $mcVersion = preg_replace("/[^0-9\.]/i", "", explode('-', $mcVersion)[0]); // Clean the depend version
                     $mcVersion = "$mcVersion-";
                 }
-                $version = $mcVersion.$tmpData->version;
+                $modVersion = $mcVersion.$tmpData->version;
             }
 
             // Try load the version from rift
             $riftData = $zip->getFromName('riftmod.json');
             if ($riftData !== false) {
-                $version = json_decode($riftData)->version;
+                $modVersion = json_decode($riftData)->version;
             }
 
             $zip->close();
 
             // Make sure we have been given a version
-            if (empty($version)) {
+            if (empty($modVersion)) {
                 unlink($tmpFileName);
                 return ["version_missing" => "Unable to detect version number for $version"];
             }
@@ -100,18 +105,18 @@ abstract class ModProvider
         // Check if the version already exists for the mod
         if (Modversion::where([
             'mod_id' => $modId,
-            'version' => $version,
+            'version' => $modVersion,
         ])->count() > 0) {
             unlink($tmpFileName);
-            return ["version_exists" => "$version already exists"];
+            return ["version_exists" => "$modVersion already exists"];
         }
 
         // Check if the final path isnt a url
         $location = config('solder.repo_location');
-        $finalPath = $location."mods/$slug/$slug-$version.zip";
+        $finalPath = $location."mods/$slug/$slug-$modVersion.zip";
         if (filter_var($finalPath, FILTER_VALIDATE_URL)) {
             unlink($tmpFileName);
-            return ["remote_repo" => "Mod repo in a remote location so unable to download $version"];
+            return ["remote_repo" => "Mod repo in a remote location so unable to download $modVersion"];
         }
 
         // Create the mod dir

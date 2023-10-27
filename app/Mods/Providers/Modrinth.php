@@ -37,11 +37,15 @@ class Modrinth extends ModProvider
         ];
     }
     
-    public static function mod(string $modId) : ImportedModData
+    public static function mod(string $modId) : ?ImportedModData
     {
-        $mod = static::request("/v2/project/$modId");
-        $mod->versions = static::request("/v2/project/$modId/version");
-        $mod->members = static::request("/v2/project/$modId/members");
+        $modIdSafe = urlencode($modId);
+        $mod = static::request("/v2/project/$modIdSafe");
+        if ($mod === null) {
+            return null;
+        }
+        $mod->versions = static::request("/v2/project/$modIdSafe/version");
+        $mod->members = static::request("/v2/project/$modIdSafe/members");
         return static::generateModData($mod);
     }
     
