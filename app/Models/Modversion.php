@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Modversion extends Model
 {
     protected $guarded = [];
 
-    public function mod()
+    public function mod(): BelongsTo
     {
         return $this->belongsTo(Mod::class);
     }
 
-    public function builds()
+    public function builds(): BelongsToMany
     {
         return $this->belongsToMany(Build::class)->withTimestamps();
     }

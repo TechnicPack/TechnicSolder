@@ -2,18 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Modpack extends Model
 {
     protected $guarded = [];
 
-    public function builds()
+    public function builds(): HasMany
     {
         return $this->hasMany(Build::class);
     }
 
-    public function clients()
+    public function clients(): BelongsToMany
     {
         return $this->belongsToMany(Client::class)->withTimestamps();
     }
