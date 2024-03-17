@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+    branches: [ "dev", "master" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+    - uses: actions/checkout@v3
+    - name: Copy testing .env
+      run: cp .env.testing .env
+    - name: Install dependencies
+      run: composer install --no-interaction
+    - name: Generate key
+      run: php artisan key:generate
+    - name: Run tests
+      run: php artisan test
