@@ -407,12 +407,12 @@ class ModController extends Controller
         do {
             $result = UrlUtils::get_remote_md5($URL);
 
-            if (!$result['success']) {
-                Log::warning('Error attempting to remote MD5 file ' . $mod->name . ' version ' . $version . ' located at ' . $URL . '.');
+            if (! $result['success']) {
+                Log::warning('Error attempting to remote MD5 file '.$mod->name.' version '.$version.' located at '.$URL.'.');
             }
 
             $attempts++;
-        } while ($attempts < 3 && !$result['success']);
+        } while ($attempts < 3 && ! $result['success']);
 
         return $result;
     }

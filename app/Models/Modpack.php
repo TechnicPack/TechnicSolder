@@ -3,17 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Modpack extends Model
 {
     protected $guarded = [];
 
-    public function builds()
+    public function builds(): HasMany
     {
         return $this->hasMany(Build::class);
     }
 
-    public function clients()
+    public function clients(): BelongsToMany
     {
         return $this->belongsToMany(Client::class)->withTimestamps();
     }
@@ -31,7 +33,7 @@ class Modpack extends Model
         return $private;
     }
 
-    public function toApiResponse(Client $client = null, Key $key = null)
+    public function toApiResponse(?Client $client = null, ?Key $key = null)
     {
         $response = [
             'id' => $this->id,
