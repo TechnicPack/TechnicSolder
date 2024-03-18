@@ -119,3 +119,7 @@ ul li {
   letter-spacing: 1.5px;
   cursor: pointer;
 }
+
+.text-center {
+  text-align: center;
+}
