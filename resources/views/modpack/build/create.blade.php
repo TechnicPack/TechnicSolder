@@ -30,9 +30,16 @@
 				</div>
 				<div class="form-group">
 					<label for="version">Minecraft Version</label>
+					@php
+						$lastBuild = $modpack->builds()->latest('updated_at')->first();
+						$lastVersion = "";
+						if (!empty($lastBuild)) {
+							$lastVersion = $lastBuild->minecraft;
+						}
+					@endphp
 					<select class="form-control" name="minecraft">
 						@foreach ($minecraft as $version)
-						<option value="{{ $version['version'] }}">{{ $version['version'] }}</option>
+						<option value="{{ $version['version'] }}" {{ $lastVersion == $version['version'] ? 'selected' : '' }}>{{ $version['version'] }}</option>
 						@endforeach
 					</select>
 				</div>
