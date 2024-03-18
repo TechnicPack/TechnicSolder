@@ -447,9 +447,9 @@ class ModpackController extends Controller
                 }
 
                 $duplicate = DB::table('build_modversion')
-                        ->where('build_id', '=', $build->id)
-                        ->where('modversion_id', '=', $ver->id)
-                        ->count() > 0;
+                    ->where('build_id', '=', $build->id)
+                    ->where('modversion_id', '=', $ver->id)
+                    ->count() > 0;
                 if ($duplicate) {
                     return response()->json([
                         'status' => 'failed',
