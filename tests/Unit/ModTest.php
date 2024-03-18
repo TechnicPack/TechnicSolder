@@ -405,4 +405,65 @@ class ModTest extends TestCase
             'reason' => 'Unknown mod',
         ]);
     }
+
+    public function test_mod_import_get_search_default()
+    {
+        $response = $this->get('/mod/import');
+
+        $response->assertOk();
+    }
+
+    public function test_mod_import_get_search_specific()
+    {
+        $response = $this->get('/mod/import/fabric');
+
+        $response->assertOk();
+    }
+
+    public function test_mod_import_details_get()
+    {
+        $response = $this->get('/mod/import/details/fabric/1.18.2');
+
+        $response->assertOk();
+    }
+
+    public function test_mod_import_details_post_no_versions()
+    {
+        $data = [
+            base64_encode("9.9.9-9.9.9") => 'off',
+        ];
+
+        $response = $this->post('/mod/import/details/fabric/1.18.2', $data);
+        $response->assertSessionHasErrors('no_versions');
+    }
+
+    public function test_mod_import_details_post_no_versions_empty()
+    {
+        $response = $this->post('/mod/import/details/fabric/1.18.2', []);
+        $response->assertSessionHasErrors('no_versions');
+    }
+
+    public function test_mod_import_details_post()
+    {
+        $data = [
+            base64_encode("1.18.2-0.14.9") => 'on',
+        ];
+
+        $response = $this->post('/mod/import/details/fabric/1.18.2', $data);
+        $response->assertRedirect('/mod/view/3');
+        $response->assertSessionHasNoErrors();
+    }
+
+    public function test_mod_import_details_post_version_exists()
+    {
+        $this->test_mod_import_details_post();
+
+        $data = [
+            base64_encode("1.18.2-0.14.9") => 'on',
+        ];
+
+        $response = $this->post('/mod/import/details/fabric/1.18.2', $data);
+        $response->assertRedirect('/mod/view/3');
+        $response->assertSessionHasErrors('version_exists');
+    }
 }

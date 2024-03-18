@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Libraries\UrlUtils;
 use App\Models\Mod;
 use App\Models\Modversion;
+use App\Mods\ModProviders;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
@@ -89,6 +91,109 @@ class ModController extends Controller
         $mod->save();
 
         return redirect('mod/view/'.$mod->id);
+    }
+
+    public function getImport($provider = "", $query = "")
+    {
+        $providers = ModProviders::providers();
+
+        // If no provider specified grab the first in the list
+        if (empty($provider)) {
+            $provider = array_key_first($providers);
+        }
+
+        $search = (object) [
+            'mods' => array(),
+            'pagination' => (object) [
+                'currentPage' => 1,
+                'totalPages' => 1,
+                'totalItems' => 0
+            ]
+        ];
+
+        $errors = array();
+
+        // Make sure we got a provider
+        if (!array_key_exists($provider, $providers)) {
+            $errors['invalid_provider'] = 'Invalid provider specified';
+        } else {
+            $search = $providers[$provider]::search($query, Request::query('page', 1));
+
+            // Check if we got any erros from the search, and then pass them to the page
+            if (property_exists($search, "errors")) {
+                $errors = array_merge($errors, $search->errors);
+            }
+        }
+
+        return view('mod.import')
+            ->with([
+                'providers' => $providers,
+                'provider' => $provider,
+                'query' => $query,
+                'mods' => $search->mods,
+                'pagination' => $search->pagination
+            ])
+            ->withErrors(Session::has('errors') ? Session::get('errors')->merge($errors) : new MessageBag($errors));
+    }
+
+    public function getImportDetails($provider, $modId)
+    {
+        $mod = ModProviders::providers()[$provider]::mod($modId);
+        if ($mod == null) {
+            return redirect()->back()->withErrors(new MessageBag(['Mod not found']));
+        }
+
+        return view('mod.import_details')
+            ->with([
+                'mod' => $mod
+            ]);
+    }
+
+    public function postImportDetails($provider, $modId)
+    {
+        $providers = ModProviders::providers();
+        $modData = $providers[$provider]::mod($modId);
+        $versions = array();
+        $errors = array();
+        $invalidVersion = false;
+
+        foreach (Request::all() as $version => $val) {
+            if ($val != "on") {
+                continue;
+            }
+            $version = base64_decode($version);
+            if (!array_key_exists($version, $modData->versions)) {
+                $invalidVersion = true;
+            }
+            array_push($versions, $version);
+        }
+
+        if (empty($versions)) {
+            $errors["no_versions"] = "No versions were specified to import";
+        }
+
+        if ($invalidVersion) {
+            $errors["invalid_versions"] = "Invalid versions specified";
+        }
+
+        $installData = (object) [
+            "success" => false,
+            "id" => -1,
+            "errors" => array()
+        ];
+
+        if (count($errors) < 1) {
+            $installData = $providers[$provider]::install($modId, $versions);
+            $errors = array_merge($errors, $installData->errors);
+        }
+        
+        $url = $installData->success ? 'mod/view/'.$installData->id : "mod/import/details/$provider/$modId";
+
+        if (count($errors) >= 1) {
+            return redirect($url)->withErrors(new MessageBag($errors));
+        } else {
+            return redirect($url);
+        }
     }
 
     public function getDelete($mod_id = null)

@@ -94,6 +94,7 @@
                   <ul class="nav nav-second-level">
                        <li><a href="{{ URL::to('mod/list') }}">Mod List</a></li>
                        <li><a href="{{ URL::to('mod/create') }}">Add a Mod</a></li>
+                       <li><a href="{{ URL::to('mod/import') }}">Import a Mod</a></li>
                   </ul>
               </li>
               <li>
