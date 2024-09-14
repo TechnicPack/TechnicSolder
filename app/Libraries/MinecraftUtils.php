@@ -46,7 +46,7 @@ class MinecraftUtils
                 // The format is ['1.12.2' => ['version' => '1.12.2'], ...]
                 $versions = [];
 
-                foreach ($json as $mojangVersion) {
+                foreach ($json['versions'] as $mojangVersion) {
                     if ($mojangVersion['type'] !== 'release') {
                         continue;
                     }
