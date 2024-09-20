@@ -48,7 +48,7 @@
         "barryvdh/laravel-debugbar": "^3.9.2",
         "mockery/mockery": "^1.6.6",
         "nunomaduro/collision": "^6.4",
-        "phpunit/phpunit": "^9.6.13",
+        "phpunit/phpunit": "^9.6.21",
         "fakerphp/faker": "^1.23.0",
         "spatie/laravel-ignition": "^2.3.1"
     },
