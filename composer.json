@@ -40,7 +40,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7.2",
         "knplabs/github-api": "^3.12",
-        "laravel/framework": "^10.28",
+        "laravel/framework": "^10.48.25",
         "laravel/tinker": "^2.8.2",
         "laravelcollective/html": "^6.4.1"
     },
