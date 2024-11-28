@@ -25,7 +25,7 @@ return new class extends Migration
          * Create default user (if one doesn't exist)
          **/
         if (User::count() == 0) {
-            $user = new User();
+            $user = new User;
             $user->username = 'admin';
             $user->email = 'admin@admin.com';
             $user->password = Hash::make('admin');

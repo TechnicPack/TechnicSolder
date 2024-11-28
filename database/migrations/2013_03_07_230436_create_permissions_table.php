@@ -25,7 +25,7 @@ return new class extends Migration
             $table->nullableTimestamps();
         });
 
-        $perm = new UserPermission();
+        $perm = new UserPermission;
         $perm->user_id = 1;
         $perm->solder_full = true;
         $perm->save();

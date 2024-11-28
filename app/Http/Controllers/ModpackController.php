@@ -215,7 +215,7 @@ class ModpackController extends Controller
         }
 
         $clone = Request::input('clone');
-        $build = new Build();
+        $build = new Build;
         $build->modpack_id = $modpack->id;
         $build->version = Request::input('version');
 
@@ -263,7 +263,7 @@ class ModpackController extends Controller
             return redirect('modpack/create')->withErrors($validation->messages());
         }
 
-        $modpack = new Modpack();
+        $modpack = new Modpack;
         $modpack->name = Request::input('name');
         $modpack->slug = Str::slug(Request::input('slug'));
         $modpack->hidden = Request::input('hidden') ? false : true;
@@ -447,9 +447,9 @@ class ModpackController extends Controller
                 }
 
                 $duplicate = DB::table('build_modversion')
-                        ->where('build_id', '=', $build->id)
-                        ->where('modversion_id', '=', $ver->id)
-                        ->count() > 0;
+                    ->where('build_id', '=', $build->id)
+                    ->where('modversion_id', '=', $ver->id)
+                    ->count() > 0;
                 if ($duplicate) {
                     return response()->json([
                         'status' => 'failed',

@@ -31,7 +31,7 @@ class Modpack extends Model
         return $private;
     }
 
-    public function toApiResponse(Client $client = null, Key $key = null)
+    public function toApiResponse(?Client $client = null, ?Key $key = null)
     {
         $response = [
             'id' => $this->id,
