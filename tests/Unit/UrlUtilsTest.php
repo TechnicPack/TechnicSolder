@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Libraries\UrlUtils;
 use Tests\TestCase;
 
-class UrlUtilsTest extends TestCase
+final class UrlUtilsTest extends TestCase
 {
     public function test_get_remote_md5(): void
     {

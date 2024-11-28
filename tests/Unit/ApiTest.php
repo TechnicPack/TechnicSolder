@@ -7,7 +7,7 @@ use App\Models\Modpack;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ApiTest extends TestCase
+final class ApiTest extends TestCase
 {
     use RefreshDatabase;
 
