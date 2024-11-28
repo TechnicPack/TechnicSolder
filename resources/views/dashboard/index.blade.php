@@ -44,7 +44,7 @@
 								<td>{{ $build->minecraft }}</td>
 								<td>{{ $build->modversions_count }}</td>
 								<td>{{ $build->updated_at }}</td>
-								<td>{!! Html::link('modpack/build/'.$build->id, 'Manage Build', ['class' => 'btn btn-warning btn-xs']) !!}</td>
+								<td><a href="{{ url('/modpack/build/'.$build->id) }}" class="btn btn-warning btn-xs">Manage Build</a></td>
 							</tr>
 						@endforeach
 					</tbody>
@@ -77,17 +77,19 @@
 					<tbody>
 						@foreach ($modversions as $modversion)
 						<tr>
-							<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->id) !!}</td>
+							<td><a href="{{ url('/mod/view/'.$modversion->mod->id) }}">{{ $modversion->mod->id }}</a></td>
 							<td>{{ $modversion->version }}</td>
-							@if (!empty($modversion->mod->pretty_name))
-								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->pretty_name) !!} ({{ $modversion->mod->name }})</td>
-							@else
-								<td>{!! Html::link('mod/view/'.$modversion->mod->id, $modversion->mod->name) !!}</td>
-							@endif
-							<td>{{ !empty($modversion->mod->author) ? $modversion->mod->author : "N/A" }}</td>
-							<td>{!! !empty($modversion->mod->link) ? Html::link($modversion->mod->link, $modversion->mod->link, ["target" => "_blank"]) : "N/A" !!}</td>
+							<td><a href="{{ url('/mod/view/'.$modversion->mod->id) }}">{{ $modversion->mod->pretty_name ?: $modversion->mod->name }}</a></td>
+							<td>{{ $modversion->mod->author ?: "N/A" }}</td>
+							<td>
+								@if (empty($modversion->mod->link))
+									N/A
+								@else
+									<a href="{{ url($modversion->mod->link) }}" target="_blank" rel="noopener noreferrer">{{ $modversion->mod->link }}</a>
+								@endif
+							</td>
 							<td>{{ $modversion->created_at }}
-							<td>{!! Html::link('mod/view/'.$modversion->mod->id.'#versions','Manage', ["class" => "btn btn-xs btn-primary"]) !!}</td>
+							<td><a href="{{ url('/mod/view/'.$modversion->mod->id.'#versions') }}" class="btn btn-primary btn-xs">Manage</a></td>
 						</tr>
 					@endforeach
 					</tbody>
@@ -111,7 +113,7 @@
 				@else
 				<ul>
 				@foreach ($changelog as $change)
-				<li><code>{!! Html::link($change['html_url'], substr($change['sha'], 0, 7)) !!}</code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ explode("\n", $change['commit']['message'], 2)[0] }} </li>
+						<li><code><a href="{{ url($change['html_url']) }}" rel="noopener noreferrer">{{ substr($change['sha'], 0, 7) }}</a></code> <span style="margin-left:5px;margin-right:5px;"><i class="fa fa-angle-double-left fa-1"></i></span> {{ explode("\n", $change['commit']['message'], 2)[0] }} </li>
 				@endforeach
 				</ul>
 				@endif
@@ -119,5 +121,5 @@
 		</div>
 	</div>
 </div>
-<p>TechnicSolder is an open source project. It is under the MIT license. Source Code: <a href="https://github.com/TechnicPack/TechnicSolder" target="_blank">https://github.com/TechnicPack/TechnicSolder</a></p>
+<p>TechnicSolder is an open source project. It is under the MIT license. Source Code: <a href="https://github.com/TechnicPack/TechnicSolder" target="_blank" rel="noopener noreferrer">https://github.com/TechnicPack/TechnicSolder</a></p>
 @endsection

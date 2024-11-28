@@ -48,7 +48,11 @@
 					<td>{{ !empty($modpack->latest) ? $modpack->latest : "N/A" }}</td>
 					<td>{{ $modpack->hidden == 1 ? "Yes" : "No" }}</td>
 					<td>{{ $modpack->private == 1 ? "Yes" : "No" }}</td>
-					<td>{!! Html::link('modpack/view/'.$modpack->id, 'Manage Builds', ['class' => 'btn btn-warning btn-xs']) !!} {!! Html::link('modpack/edit/'.$modpack->id, 'Edit', ['class' => 'btn btn-primary btn-xs']) !!} {!! Html::link('modpack/delete/'.$modpack->id, 'Delete', ['class' => 'btn btn-danger btn-xs']) !!}</td>
+					<td>
+						<a href="{{ url('/modpack/view/'.$modpack->id) }}" class="btn btn-warning btn-xs">Manage Builds</a>
+						<a href="{{ url('/modpack/edit/'.$modpack->id) }}" class="btn btn-primary btn-xs">Edit</a>
+						<a href="{{ url('/modpack/delete/'.$modpack->id) }}" class="btn btn-danger btn-xs">Delete</a>
+					</td>
 				</tr>
 			@endforeach
 			</tbody>

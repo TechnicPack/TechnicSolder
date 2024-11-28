@@ -48,7 +48,10 @@
 					 - {{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}
 					</td>
 					<td>{{ date_format($user->updated_at, 'M-d-Y g:ia') }}</td>
-					<td>{!! Html::link('user/edit/'.$user->id,'Edit', ['class' => 'btn btn-xs btn-warning']) !!} {!! Html::link('user/delete/'.$user->id, 'Delete', ['class' => 'btn btn-xs btn-danger']) !!}</td>
+					<td>
+						<a href="{{ url('/user/edit/'.$user->id) }}" class="btn btn-warning btn-xs">Edit</a>
+						<a href="{{ url('/user/delete/'.$user->id) }}" class="btn btn-danger btn-xs">Delete</a>
+					</td>
 				</tr>
 			@endforeach
 			</tbody>

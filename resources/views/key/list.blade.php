@@ -35,7 +35,7 @@
 					<td>{{ $key->id }}</td>
 					<td>{{ $key->name }}</td>
 					<td>{{ $key->api_key }}</td>
-					<td>{!! Html::link('key/delete/'.$key->id, 'Delete', ['class' => 'btn btn-danger btn-xs']) !!}</td>
+					<td><a href="{{ url('/key/delete/'.$key->id) }}" class="btn btn-danger btn-xs">Delete</a></td>
 				</tr>
 			@endforeach
 			</tbody>

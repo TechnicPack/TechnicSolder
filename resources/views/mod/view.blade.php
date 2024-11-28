@@ -34,7 +34,7 @@
 						{{ Session::get('success') }}
 					</div>
 				@endif
-				<form method="post" action="{{ URL::to('mod/modify/'.$mod->id) }}">
+				<form method="post" action="{{ url('/mod/modify/'.$mod->id) }}" accept-charset="UTF-8">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
@@ -59,9 +59,9 @@
 											</div>
 						</div>
 					</div>
-					{!! Form::submit('Save Changes', ['class' => 'btn btn-success']) !!}
-					{!! Html::link('mod/delete/'.$mod->id, 'Delete Mod', ['class' => 'btn btn-danger']) !!}
-					{!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
+					<input type="submit" class="btn btn-success" value="Save Changes">
+					<a href="{{ url('/mod/delete/'.$mod->id) }}" class="btn btn-danger">Delete Mod</a>
+					<a href="{{ url('/mod/list') }}" class="btn btn-primary">Go Back</a>
 				</form>
 			</div>
 			<div class="tab-pane fade in active" id="versions">
@@ -79,7 +79,7 @@
 					</thead>
 					<tbody>
 						<tr id="add-row">
-							<form method="post" id="add" action="{{ URL::to('mod/add-version') }}">
+							<form method="post" id="add" action="{{ url('/mod/add-version') }}" accept-charset="UTF-8">
 								<input type="hidden" name="mod-id" value="{{ $mod->id }}">
 								<td></td>
 								<td>
@@ -89,19 +89,19 @@
 								</td>
 								<td><span id="add-url">N/A</span></td>
 								<td>N/A</td>
-								<td><button type="submit" class="btn btn-success btn-small add">Add Version</button></td>
+								<td><input type="submit" class="btn btn-success btn-small add" value="Add Version"></td>
 							</form>
 						</tr>
 						@foreach ($mod->versions->sortByDesc('id') as $ver)
 						<tr class="version" rel="{{ $ver->id }}">
-							<form class="rehash-form" data-version-id="{{ $ver->id }}">
+							<form class="rehash-form" data-version-id="{{ $ver->id }}" accept-charset="UTF-8">
 								<input type="hidden" name="version-id" value="{{ $ver->id }}">
 								<td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
 								<td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
 								<td><input type="text" class="md5 form-control" name="md5" rel="{{ $ver->id }}" placeholder="{{ $ver->md5 }}"></td>
 								<td class="url" rel="{{ $ver->id }}"><small><a href="{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small></td>
 								<td class="filesize" rel="{{ $ver->id }}">{{ $ver->humanFilesize() }}</td>
-								<td><button type="submit" class="btn btn-primary btn-xs" rel="{{ $ver->id }}">Rehash</button> <button class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
+								<td><input type="submit" class="btn btn-primary btn-xs" rel="{{ $ver->id }}" value="Rehash"> <button type="button" class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">Delete</button>
 							</form>
 						</tr>
 						<tr class="version-details" rel="{{ $ver->id }}" style="display: none">
@@ -112,7 +112,11 @@
 								<p>Builds used in:</p>
 								<ul>
 								@foreach ($ver->builds as $build)
-									<li>{!! Html::link('modpack/view/'.$build->modpack->id,$build->modpack->name) !!} - {!! Html::link('modpack/build/'.$build->id,$build->version) !!}</li>
+									<li>
+										<a href="{{ url('/modpack/view/'.$build->modpack->id) }}">{{ $build->modpack->name }}</a>
+										-
+										<a href="{{ url('/modpack/build/'.$build->id) }}">{{ $build->version }}</a>
+									</li>
 								@endforeach
 								</ul>
 								@endif
@@ -180,7 +184,7 @@ $('.rehash-form').submit(function(e) {
 
 	$.ajax({
 		type: "POST",
-		url: "{{ url('mod/rehash') }}",
+		url: "{{ url('/mod/rehash') }}",
 		data: $(this).serialize(),
 		success: function (data) {
 			if (data.status === "success") {
@@ -201,7 +205,6 @@ $('.rehash-form').submit(function(e) {
 });
 
 $('.delete').click(function(e) {
-	e.preventDefault();
 	$.ajax({
 		type: "POST",
 		url: "{{ URL::to('mod/delete-version') }}/" + $(this).attr('rel'),

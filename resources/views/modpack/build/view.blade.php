@@ -43,7 +43,7 @@
 				<th></th>
 			</thead>
 			<tbody>
-			<form method="post" action="{{ URL::to('modpack/build/modify') }}" class="mod-add">
+			<form method="post" action="{{ url('/modpack/build/modify') }}" accept-charset="UTF-8" class="mod-add">
 			<input type="hidden" name="build" value="{{ $build->id }}">
 			<input type="hidden" name="action" value="add">
 			<tr id="mod-list-add">
@@ -61,7 +61,7 @@
 					</select>
 				</td>
 				<td>
-					<button type="submit" class="btn btn-success btn-small">Add Mod</button>
+					<input type="submit" class="btn btn-success btn-small" value="Add Mod">
 				</td>
 			</tr>
 			</form>
@@ -85,9 +85,12 @@
 			<tbody>
 				@foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
 				<tr>
-					<td>{!! Html::link('mod/view/'.$ver->mod->id, $ver->mod->pretty_name) !!} ({{ $ver->mod->name }})</td>
 					<td>
-						<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-version">
+						<a href="{{ url('/mod/view/'.$ver->mod->id) }}">{{ $ver->mod->pretty_name ?: $ver->mod->name }}</a>
+						({{ $ver->mod->name }})
+					</td>
+					<td>
+						<form method="post" action="{{ url('/modpack/build/modify') }}" accept-charset="UTF-8" style="margin-bottom: 0" class="mod-version">
 							<input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
 							<input type="hidden" class="modversion-id" name="modversion_id" value="{{ $ver->pivot->modversion_id }}">
 							<input type="hidden" name="action" value="version">
@@ -98,17 +101,17 @@
 									@endforeach
 								</select>
 								<span class="input-group-btn">
-									<button type="submit" class="btn btn-primary">Change</button>
+									<input type="submit" class="btn btn-primary" value="Change">
 								</span>
 							</div>
 						</form>
 					</td>
 					<td>
-						<form method="post" action="{{ URL::to('modpack/build/modify') }}" style="margin-bottom: 0" class="mod-delete">
+						<form method="post" action="{{ url('/modpack/build/modify') }}" accept-charset="UTF-8" style="margin-bottom: 0" class="mod-delete">
 							<input type="hidden" name="build_id" value="{{ $build->id }}">
 							<input type="hidden" class="modversion-id" name="modversion_id" value="{{ $ver->pivot->modversion_id }}">
 							<input type="hidden" name="action" value="delete">
-							<button type="submit" class="btn btn-danger btn-small">Remove</button>
+							<input type="submit" class="btn btn-danger btn-small" value="Remove">
 						</form>
 					</td>
 				</tr>

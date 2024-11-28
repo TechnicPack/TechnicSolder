@@ -18,8 +18,8 @@
             @endforeach
             </div>
         @endif
-        {!! Form::open() !!}
-        {!! Form::hidden("edit-user", 1) !!}
+        <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+        <input type="hidden" name="edit-user" value="1">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -34,7 +34,7 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" name="password" id="password">
                 </div>
-                {!! Form::submit('Create User', ['class' => 'btn btn-success']) !!}
+                <input type="submit" class="btn btn-success" value="Create User">
             </div>
             <div class="col-md-6">
                 <h3>Permissions</h3>
@@ -77,7 +77,7 @@
                 </div>
             </div>
         </div>
-        {!! Form::close() !!}
+        </form>
     </div>
 </div>
 @endsection
