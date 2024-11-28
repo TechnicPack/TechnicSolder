@@ -1,7 +1,7 @@
 <!--
 After reading this section, fill out the fields below.
 
-Please note that this is the issue tracker for TechnicSolder, and NOT the place to
+Please note that this is the issue tracker for Technic Solder, and NOT the place to
 post problems opening/installing/managing any modpacks/mods/java/anything else.
 
 If you are having issues installing or opening a modpack, ask for assistance in the #help
