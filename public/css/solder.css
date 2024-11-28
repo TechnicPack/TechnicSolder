@@ -1,148 +1,147 @@
 body {
-	color: #4C4643;
-	font-family: "Open Sans", "Helvetica", "Arial", sans-serif;
-	background: #163f69 url(../img/background.png) bottom left;
+    color: #4C4643;
+    font-family: "Open Sans", "Helvetica", "Arial", sans-serif;
+    background: #163f69 url(../img/background.png) bottom left;
 }
 
 hr {
-	border-top: 1px solid #bfb8b6;
+    border-top: 1px solid #bfb8b6;
 }
 
 input[type=file] {
-	padding-top: 10px;
+    padding-top: 10px;
 }
 
 .navbar-brand > img {
-	display: inline;
+    display: inline;
 }
 
 @media (min-width: 768px) {
-	.navbar-right {
-		margin-right: 0px;
-	}
+    .navbar-right {
+        margin-right: 0px;
+    }
 }
 
 .nav > li > a > img {
-  border: 1px solid #9a9a9a;
+    border: 1px solid #9a9a9a;
 }
 
 .nav-tabs {
-	margin-bottom: 5px;
-	border-bottom: 1px solid #bfb8b6;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #bfb8b6;
 }
 
 .nav-tabs > li {
-	background: #163f69;
-	border-radius: 4;
+    background: #163f69;
+    border-radius: 4;
 }
 
 .nav-tabs > li > a {
-	margin-right: 0;
-	border-radius: 0;
-	color: #FFF;
+    margin-right: 0;
+    border-radius: 0;
+    color: #FFF;
 }
 
-.nav-tabs>li>a:hover,
-.nav-tabs>li>a:focus,
-.nav-tabs>li.active>a,
-.nav-tabs>li.active>a:hover,
-.nav-tabs>li.active>a:focus {
-	color: #4C4643;
-	border: 1px solid #bfb8b6;
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus,
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+    color: #4C4643;
+    border: 1px solid #bfb8b6;
 }
 
 #page-wrapper {
-	background: #e8e8e8;
-	border-left: 1px solid #9a9a9a;
+    background: #e8e8e8;
+    border-left: 1px solid #9a9a9a;
 }
 
 .navbar {
-	min-height: 75px;
+    min-height: 75px;
 }
 
 .navbar-default {
-	background: #2d3d4d;
-	border: 0;
+    background: #2d3d4d;
+    border: 0;
 }
 
 .navbar-default .navbar-brand {
-	color: #fff;
-	font-size: 10px;
-	height: 75px;
+    color: #fff;
+    font-size: 10px;
+    height: 75px;
 }
 
 .navbar-default .navbar-brand:hover {
-	color: #fff;
+    color: #fff;
 }
 
 .navbar-top-links li a {
-	min-height: 75px;
-	padding: 25px;
-	color: #fff;
+    min-height: 75px;
+    padding: 25px;
+    color: #fff;
 }
 
-.navbar-static-top .nav>li>a:hover,
-.navbar-static-top .nav>li>a:focus {
-	border-bottom: 4px solid #337ab7;
-	background: transparent;
+.navbar-static-top .nav > li > a:hover,
+.navbar-static-top .nav > li > a:focus {
+    border-bottom: 4px solid #337ab7;
+    background: transparent;
 }
 
-.navbar-static-top .nav .open>a,
-.navbar-static-top .nav .open>a:hover,
-.navbar-static-top .nav .open>a:focus {
-	background: transparent;
+.navbar-static-top .nav .open > a,
+.navbar-static-top .nav .open > a:hover,
+.navbar-static-top .nav .open > a:focus {
+    background: transparent;
 }
 
 .navbar-static-top .dropdown-menu {
-	background: #2d3d4d;
+    background: #2d3d4d;
 }
 
 .nav.side-menu {
-	background: #163f69;
+    background: #163f69;
 }
 
 .navbar-static-side ul > li:first-child {
-	border-top: 1px solid #9a9a9a;
+    border-top: 1px solid #9a9a9a;
 }
 
 .navbar-static-side ul li {
-	border-bottom: 1px solid #9a9a9a;
+    border-bottom: 1px solid #9a9a9a;
 }
 
-.navbar-static-side .nav>li>a {
-	color: #fff;
+.navbar-static-side .nav > li > a {
+    color: #fff;
 }
 
-.navbar-static-side .nav>li>a:hover,
-.navbar-static-side .nav>li>a:focus,
-.navbar-static-side .nav>li>a.active {
-	background: #e8e8e8;
-	color: #4C4643;
+.navbar-static-side .nav > li > a:hover,
+.navbar-static-side .nav > li > a:focus,
+.navbar-static-side .nav > li > a.active {
+    background: #e8e8e8;
+    color: #4C4643;
 }
 
 .sidebar-scrolled {
-	position: fixed;
-	width: inherit;
-	top: 0;
+    position: fixed;
+    width: inherit;
+    top: 0;
 }
 
 .navbar-static-side
-
 .panel-group .panel {
-	border-radius: 0;
+    border-radius: 0;
 }
 
-.panel-default>.panel-heading {
-	background: #2d3d4d;
-	border-radius: 0;
-	color: #fff;
+.panel-default > .panel-heading {
+    background: #2d3d4d;
+    border-radius: 0;
+    color: #fff;
 }
 
 .page-header {
-	border-bottom: none;
-	margin: 0;
+    border-bottom: none;
+    margin: 0;
 }
 
 .panel-body {
-	overflow: auto;
+    overflow: auto;
 }

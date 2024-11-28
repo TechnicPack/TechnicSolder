@@ -44,10 +44,11 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",
+        "fakerphp/faker": "^1.23.0",
+        "laravel/pint": "^1.18",
         "mockery/mockery": "^1.6.6",
         "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^10.5",
-        "fakerphp/faker": "^1.23.0"
+        "phpunit/phpunit": "^10.5"
     },
     "config": {
         "optimize-autoloader": true,
