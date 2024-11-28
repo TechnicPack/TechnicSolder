@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,12 +36,12 @@ class User extends Model implements AuthenticatableContract
      */
     protected $with = ['permission'];
 
-    public function permission()
+    public function permission(): HasOne
     {
         return $this->hasOne(UserPermission::class);
     }
 
-    public function updated_by_user()
+    public function updated_by_user(): HasOne
     {
         return $this->hasOne(self::class, 'id', 'updated_by_user_id');
     }
