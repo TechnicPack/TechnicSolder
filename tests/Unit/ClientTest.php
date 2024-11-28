@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ClientTest extends TestCase
+final class ClientTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
-class BaseTest extends TestCase
+final class BaseTest extends TestCase
 {
     use RefreshDatabase;
 
