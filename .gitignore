@@ -3,7 +3,7 @@
 !docker/.env
 .env
 .env.*
-.phpunit.result.cache
+/.phpunit.cache
 /docker/mysql
 /node_modules
 /public/hot
