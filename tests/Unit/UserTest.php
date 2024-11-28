@@ -96,14 +96,14 @@ class UserTest extends TestCase
         $user = User::firstOrFail();
 
         // Create second user
-        User::create([
+        User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
-        ]);
+        ]));
 
         $data = [
             'email' => 'test@test.com',
@@ -118,14 +118,14 @@ class UserTest extends TestCase
     public function test_user_edit_post_duplicate_username(): void
     {
         // Create second user
-        $user = User::create([
+        $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
-        ]);
+        ]));
 
         $data = [
             'email' => 'test@test.com',
@@ -154,14 +154,14 @@ class UserTest extends TestCase
     public function test_user_delete_get(): void
     {
         // Create second user
-        $user = User::create([
+        $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
-        ]);
+        ]));
 
         $perm = new UserPermission;
         $perm->user_id = $user->id;
@@ -186,14 +186,14 @@ class UserTest extends TestCase
     public function test_user_delete_post(): void
     {
         // Create second user
-        $user = User::create([
+        $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
-        ]);
+        ]));
 
         $perm = new UserPermission;
         $perm->user_id = $user->id;
@@ -207,14 +207,14 @@ class UserTest extends TestCase
     public function test_user_cannot_delete_last_admin_post(): void
     {
         // Create second user
-        $user = User::create([
+        $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
-        ]);
+        ]));
 
         // Allow this user to manage users, but not be an admin
         $perm = new UserPermission;
@@ -254,14 +254,14 @@ class UserTest extends TestCase
     public function test_user_delete_first_post(): void
     {
         // Create second user
-        $user = User::create([
+        $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
             'password' => Hash::make('password'),
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
-        ]);
+        ]));
 
         $perm = new UserPermission;
         $perm->user_id = $user->id;
