@@ -169,7 +169,7 @@ class UserController extends Controller
         $creator = Auth::user()->id;
         $creatorIP = Request::ip();
 
-        $user = new User();
+        $user = new User;
         $user->email = Request::input('email');
         $user->username = Request::input('username');
         $user->password = Hash::make(Request::input('password'));
@@ -179,7 +179,7 @@ class UserController extends Controller
         $user->updated_by_user_id = $creator;
         $user->save();
 
-        $perm = new UserPermission();
+        $perm = new UserPermission;
         $perm->user_id = $user->id;
 
         $perm->solder_full = Request::input('solder-full') ? true : false;

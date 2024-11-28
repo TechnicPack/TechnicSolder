@@ -163,7 +163,7 @@ class UserTest extends TestCase
             'created_by_user_id' => 1,
         ]);
 
-        $perm = new UserPermission();
+        $perm = new UserPermission;
         $perm->user_id = $user->id;
         $perm->save();
 
@@ -195,7 +195,7 @@ class UserTest extends TestCase
             'created_by_user_id' => 1,
         ]);
 
-        $perm = new UserPermission();
+        $perm = new UserPermission;
         $perm->user_id = $user->id;
         $perm->save();
 
@@ -217,7 +217,7 @@ class UserTest extends TestCase
         ]);
 
         // Allow this user to manage users, but not be an admin
-        $perm = new UserPermission();
+        $perm = new UserPermission;
         $perm->user_id = $user->id;
         $perm->solder_users = 1;
         $perm->save();
@@ -263,7 +263,7 @@ class UserTest extends TestCase
             'created_by_user_id' => 1,
         ]);
 
-        $perm = new UserPermission();
+        $perm = new UserPermission;
         $perm->user_id = $user->id;
         $perm->solder_full = 1;
         $perm->save();

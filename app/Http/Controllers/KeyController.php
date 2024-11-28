@@ -46,7 +46,7 @@ class KeyController extends Controller
             return redirect('key/create')->withErrors($validation->messages());
         }
 
-        $key = new Key();
+        $key = new Key;
         $key->name = Request::input('name');
         $key->api_key = Request::input('api_key');
         $key->save();

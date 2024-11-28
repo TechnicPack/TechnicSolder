@@ -11,7 +11,7 @@ class UpdateUtils
 
     public static function getGithubClient(): Client
     {
-        return self::$githubClient ??= new Client();
+        return self::$githubClient ??= new Client;
     }
 
     public static function getUpdateCheck($forceRefresh = false): bool

@@ -80,7 +80,7 @@ class ModController extends Controller
             return redirect('mod/create')->withErrors($validation->messages());
         }
 
-        $mod = new Mod();
+        $mod = new Mod;
         $mod->name = Str::slug(Request::input('name'));
         $mod->pretty_name = Request::input('pretty_name');
         $mod->author = Request::input('author');
@@ -264,7 +264,7 @@ class ModController extends Controller
             $pfile_md5 = ! $file_md5['success'] ? 'Null' : $file_md5['md5'];
         }
 
-        $ver = new Modversion();
+        $ver = new Modversion;
         $ver->mod_id = $mod->id;
         $ver->version = $version;
 
@@ -407,12 +407,12 @@ class ModController extends Controller
         do {
             $result = UrlUtils::get_remote_md5($URL);
 
-            if (!$result['success']) {
-                Log::warning('Error attempting to remote MD5 file ' . $mod->name . ' version ' . $version . ' located at ' . $URL . '.');
+            if (! $result['success']) {
+                Log::warning('Error attempting to remote MD5 file '.$mod->name.' version '.$version.' located at '.$URL.'.');
             }
 
             $attempts++;
-        } while ($attempts < 3 && !$result['success']);
+        } while ($attempts < 3 && ! $result['success']);
 
         return $result;
     }

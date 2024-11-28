@@ -46,7 +46,7 @@ class ClientController extends Controller
             return redirect('client/create')->withErrors($validation->messages());
         }
 
-        $client = new Client();
+        $client = new Client;
         $client->name = Request::input('name');
         $client->uuid = Request::input('uuid');
         $client->save();
