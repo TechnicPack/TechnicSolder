@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     @section('title')
-        <title>Technic Solder {{ SOLDER_VERSION }}</title>
+        <title>Technic Solder v{{ SOLDER_VERSION }}</title>
     @show
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
@@ -37,7 +37,7 @@
         </button>
         <a class="navbar-brand"
            href="{{ URL::to('dashboard') }}"
-        ><img src="{{ URL::asset('img/title.png') }}"> {{ SOLDER_VERSION }}</a>
+        ><img src="{{ URL::asset('img/title.png') }}"> v{{ SOLDER_VERSION }}</a>
     </div>
     <ul class="nav navbar-top-links navbar-left">
         @if (Cache::get('update'))

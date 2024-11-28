@@ -35,10 +35,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (! defined('SOLDER_STREAM')) {
-            define('SOLDER_STREAM', 'DEV');
+            define('SOLDER_STREAM', 'rolling');
         }
         if (! defined('SOLDER_VERSION')) {
-            define('SOLDER_VERSION', 'v0.7.16');
+            define('SOLDER_VERSION', '0.7.16');
         }
 
         View::composer('layouts.master', function ($view) {

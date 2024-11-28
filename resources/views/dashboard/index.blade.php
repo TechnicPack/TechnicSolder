@@ -140,7 +140,7 @@
             </div>
             <div id="changelog" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="changelogHeading">
                 <div class="panel-body">
-                    <p><strong>Your Solder version is {{SOLDER_VERSION}}</strong></p>
+                    <p><strong>You're running Solder v{{SOLDER_VERSION}}</strong></p>
                     @if (array_key_exists('error',$changelog))
                         <div class="alert alert-warning">{{ $changelog['error'] }}</div>
                     @else
