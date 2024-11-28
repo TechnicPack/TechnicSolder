@@ -40,7 +40,8 @@
                             <td>{{ $client->name }}</td>
                             <td>{{ $client->uuid }}</td>
                             <td><a href="{{ url('/client/delete/'.$client->id) }}"
-                                   class="btn btn-danger btn-xs">Delete</a></td>
+                                   class="btn btn-danger btn-xs"
+                                >Delete</a></td>
                         </tr>
                     @endforeach
                     </tbody>
