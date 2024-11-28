@@ -18,7 +18,7 @@
             @endforeach
             </div>
         @endif
-		<form method="post" action="{{ URL::to('mod/create') }}">
+		<form method="post" action="{{ url('/mod/create') }}" accept-charset="UTF-8">
 		<div class="row">
 			<div class="col-md-6">
 				<div class="form-group">
@@ -49,8 +49,8 @@
 				</blockquote>
 			</div>
 		</div>
-		{!! Form::submit('Add Mod', ['class' => 'btn btn-success']) !!}
-		{!! Html::link('mod/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
+        <input type="submit" class="btn btn-success" value="Add Mod">
+        <a href="{{ url('/mod/list') }}" class="btn btn-primary">Go Back</a>
 		</form>
 	</div>
 </div>

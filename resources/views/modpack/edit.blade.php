@@ -18,7 +18,7 @@
 			@endforeach
 			</div>
 		@endif
-		<form method="POST" action="{{ URL::current() }}" accept-charset="UTF-8" enctype="multipart/form-data">
+		<form method="post" action="{{ url()->current() }}" accept-charset="UTF-8">
 		<div class="row">
 			<div class="col-md-6">
 				<h3>Modpack Management</h3>
@@ -69,12 +69,12 @@
 		<div class="row">
 			<div class="col-md-12">
 				<hr>
-				{!! Form::submit('Save Modpack', ['class' => 'btn btn-success']) !!}
-				{!! Html::link('modpack/delete/' . $modpack->id, 'Delete Modpack', ['class' => 'btn btn-danger']) !!}
-				{!! Html::link(URL::previous(), 'Go Back', ['class' => 'btn btn-primary']) !!}
+				<input type="submit" class="btn btn-success" value="Save Modpack">
+				<a href="{{ url('/modpack/delete/'.$modpack->id) }}" class="btn btn-danger">Delete Modpack</a>
+				<a href="{{ url()->previous() }}" class="btn btn-primary">Go Back</a>
 			</div>
 		</div>
-		{!! Form::close() !!}
+		</form>
 	</div>
 </div>
 <script type="text/javascript">

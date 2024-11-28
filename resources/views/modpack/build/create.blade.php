@@ -18,7 +18,7 @@
 			@endforeach
 			</div>
 		@endif
-		{!! Form::open() !!}
+		<form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
 		<div class="row">
 			<div class="col-md-6">
 				<h4>Create Build</h4>
@@ -76,9 +76,9 @@
 			</div>
 		</div>
 		<hr>
-		{!! Form::submit('Add Build', ['class' => 'btn btn-success']) !!}
-		{!! Html::link('modpack/view/'.$modpack->id, 'Go Back', ['class' => 'btn btn-primary']) !!}
-		{!! Form::close() !!}
+		<input type="submit" class="btn btn-success" value="Add Build">
+		<a href="{{ url('/modpack/view/'.$modpack->id) }}" class="btn btn-primary">Go Back</a>
+		</form>
 	</div>
 </div>
 @endsection

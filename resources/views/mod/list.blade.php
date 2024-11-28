@@ -39,19 +39,24 @@
 			<tbody>
 			@foreach ($mods as $mod)
 				<tr>
-					<td>{!! Html::link('mod/view/'.$mod->id, $mod->id) !!}</td>
+					<td><a href="{{ url('/mod/view/'.$mod->id) }}">{{ $mod->id }}</a></td>
 					<td>
+						<a href="{{ url('/mod/view/'.$mod->id) }}">{{ $mod->pretty_name ?: $mod->name }}</a>
 						@if (!empty($mod->pretty_name))
-							{!! Html::link('mod/view/'.$mod->id, $mod->pretty_name) !!} ({{ $mod->name }})
-						@else
-							{!! Html::link('mod/view/'.$mod->id, $mod->name) !!}
+							({{ $mod->name }})
 						@endif
-						<br/>
+						<br>
 						<b>Latest Version:</b> {{ !$mod->versions->isEmpty() ? $mod->versions->first()->version : "N/A" }}
 					</td>
 					<td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
-					<td>{!! !empty($mod->link) ? Html::link($mod->link, $mod->link, ["target" => "_blank"]) : "N/A" !!}</td>
-					<td>{!! Html::link('mod/view/'.$mod->id,'Manage', ["class" => "btn btn-xs btn-primary"]) !!}</td>
+					<td>
+						@if (!empty($mod->link))
+							<a href="{{ $mod->link }}" target="_blank" rel="noopener noreferrer">{{ $mod->link }}</a>
+						@else
+							N/A
+						@endif
+					</td>
+					<td><a href="{{ url('/mod/view/'.$mod->id) }}" class="btn btn-primary btn-xs">Manage</a></td>
 				</tr>
 			@endforeach
 		</table>

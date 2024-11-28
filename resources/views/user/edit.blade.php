@@ -33,8 +33,8 @@
         		{{ Session::get('success') }}
         	</div>
         @endif
-        {!! Form::open() !!}
-        {!! Form::hidden("edit-user", 1) !!}
+        <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+        <input type="hidden" name="edit-user" value="1">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -55,8 +55,8 @@
                     <label for="password2">Password Again</label>
                     <input type="password" class="form-control" name="password2" id="password2">
                 </div>
-                {!! Form::submit('Save User', ['class' => 'btn btn-success']) !!}
-                {!! Html::link('user/list/', 'Go Back', ['class' => 'btn btn-primary']) !!}
+                <input type="submit" class="btn btn-success" value="Save User">
+                <a href="{{ url('/user/list') }}" class="btn btn-primary">Go Back</a>
             </div>
             <div class="col-md-6">
                 @if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users)
@@ -103,7 +103,7 @@
                 @endif
             </div>
         </div>
-        {!! Form::close() !!}
+        </form>
     </div>
 </div>
 @endsection
