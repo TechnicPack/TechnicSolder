@@ -6,9 +6,6 @@
     <div class="page-header">
         <h1>Configure Solder</h1>
     </div>
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#main" data-toggle="tab">Solder</a></li>
-    </ul>
     <div class="tab-content">
         <div class="tab-pane fade in active" id="main">
             <div class="panel panel-default">
