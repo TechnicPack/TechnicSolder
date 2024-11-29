@@ -29,11 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'solder_mods' => \App\Http\Middleware\SolderMods::class,
             'solder_users' => \App\Http\Middleware\SolderUsers::class,
         ]);
-
-        $middleware->trustProxies(
-            at: config('trustedproxies', []),
-            headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_PROTO
-        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
