@@ -101,7 +101,12 @@
                                 </td>
                                 <td>{{ $modversion->version }}</td>
                                 <td>
-                                    <a href="{{ url('/mod/view/'.$modversion->mod->id) }}">{{ $modversion->mod->pretty_name ?: $modversion->mod->name }}</a>
+                                    <a href="{{ url('/mod/view/'.$modversion->mod->id) }}">
+                                        {{ $modversion->mod->pretty_name ?: $modversion->mod->name }}
+                                        @if (!empty($modversion->mod->pretty_name))
+                                            ({{ $modversion->mod->name }})
+                                        @endif
+                                    </a>
                                 </td>
                                 <td>{{ $modversion->mod->author ?: "N/A" }}</td>
                                 <td>
