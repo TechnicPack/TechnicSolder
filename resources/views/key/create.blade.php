@@ -20,6 +20,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+                        @csrf
                         <input type="hidden" name="add-key" value="1">
                         <div class="form-group">
                             <label for="name">Name</label>

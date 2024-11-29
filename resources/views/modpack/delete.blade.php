@@ -15,6 +15,7 @@
                 them from your API. Users with this modpack already on their launcher will be able to continue to use it
                 in "Offline Mode."</p>
             <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+                @csrf
                 <input type="submit" class="btn btn-danger" value="Confirm Deletion">
                 <a href="{{ url('/modpack/list') }}" class="btn btn-primary">Go Back</a>
             </form>

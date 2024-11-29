@@ -57,6 +57,7 @@
                           accept-charset="UTF-8"
                           class="mod-add"
                     >
+                        @csrf
                         <input type="hidden" name="build" value="{{ $build->id }}">
                         <input type="hidden" name="action" value="add">
                         <tr id="mod-list-add">
@@ -113,6 +114,7 @@
                                       style="margin-bottom: 0"
                                       class="mod-version"
                                 >
+                                    @csrf
                                     <input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
                                     <input type="hidden"
                                            class="modversion-id"
@@ -139,6 +141,7 @@
                                       style="margin-bottom: 0"
                                       class="mod-delete"
                                 >
+                                    @csrf
                                     <input type="hidden" name="build_id" value="{{ $build->id }}">
                                     <input type="hidden"
                                            class="modversion-id"

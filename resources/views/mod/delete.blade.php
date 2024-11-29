@@ -45,6 +45,7 @@
             </div>
             <hr>
             <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+                @csrf
                 <input type="submit" class="btn btn-danger" value="Delete Mod">
                 <a href="{{ url('/mod/list') }}" class="btn btn-primary">Go Back</a>
             </form>

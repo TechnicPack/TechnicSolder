@@ -20,6 +20,7 @@
                     this, you will no longer be able to access Solder.</p>
             @endif
             <form method="post" action="{{ url()->current() }}" accept-charset="UTF-8">
+                @csrf
                 <input type="submit" class="btn btn-danger" value="Confirm Deletion">
                 <a href="{{ url('/user/list') }}" class="btn btn-primary">Go Back</a>
             </form>

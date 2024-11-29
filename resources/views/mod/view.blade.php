@@ -35,6 +35,7 @@
                         </div>
                     @endif
                     <form method="post" action="{{ url('/mod/modify/'.$mod->id) }}" accept-charset="UTF-8">
+                        @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -107,6 +108,7 @@
                         <tbody>
                         <tr id="add-row">
                             <form method="post" id="add" action="{{ url('/mod/add-version') }}" accept-charset="UTF-8">
+                                @csrf
                                 <input type="hidden" name="mod-id" value="{{ $mod->id }}">
                                 <td></td>
                                 <td>
@@ -128,6 +130,7 @@
                         @foreach ($mod->versions->sortByDesc('id') as $ver)
                             <tr class="version" rel="{{ $ver->id }}">
                                 <form class="rehash-form" data-version-id="{{ $ver->id }}" accept-charset="UTF-8">
+                                    @csrf
                                     <input type="hidden" name="version-id" value="{{ $ver->id }}">
                                     <td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
                                     <td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>

@@ -19,6 +19,7 @@
                 </div>
             @endif
             <form method="post" action="{{ url()->current() }}" accept-charset="UTF-8">
+                @csrf
                 <div class="row">
                     <div class="col-md-6">
                         <h3>Modpack Management</h3>

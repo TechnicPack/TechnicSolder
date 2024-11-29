@@ -19,6 +19,7 @@
                 </div>
             @endif
             <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+                @csrf
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">

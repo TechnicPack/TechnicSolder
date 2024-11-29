@@ -12,6 +12,7 @@
 </head>
 <body class="login">
 <form class="vertical-form" method="post" action="{{ url()->full() }}" accept-charset="UTF-8">
+    @csrf
     <div style="margin:0;padding:0;display:inline;">
         <img alt="Technic-logo" class="logo" height="70" src="{{ asset('/img/wrenchIcon.svg') }}">
         <legend>
