@@ -46,8 +46,7 @@
                                 ({{ $mod->name }})
                             @endif
                             <br>
-                            <b>Latest
-                                Version:</b> {{ $mod->latestVersion ? $mod->latestVersion->version : "N/A" }}
+                            <b>Latest version:</b> {{ $mod->latestVersion?->version ?? "N/A" }}
                         </td>
                         <td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
                         <td>
