@@ -4,6 +4,7 @@ use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpFoundation\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -28,6 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'solder_mods' => \App\Http\Middleware\SolderMods::class,
             'solder_users' => \App\Http\Middleware\SolderUsers::class,
         ]);
+
+        $middleware->trustProxies(at: [
+            '10.0.0.0/8',
+        ], headers: Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_PROTO);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
