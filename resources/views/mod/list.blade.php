@@ -47,7 +47,7 @@
                             @endif
                             <br>
                             <b>Latest
-                                Version:</b> {{ !$mod->versions->isEmpty() ? $mod->versions->first()->version : "N/A" }}
+                                Version:</b> {{ $mod->latestVersion ? $mod->latestVersion->version : "N/A" }}
                         </td>
                         <td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
                         <td>

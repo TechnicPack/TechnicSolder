@@ -30,14 +30,7 @@ class ModController extends Controller
 
     public function getList(): View
     {
-        $mods = Mod::with(
-            [
-                'versions' => function ($query) {
-                    $query->orderBy('modversions.updated_at', 'desc');
-                },
-            ]
-        )
-            ->get();
+        $mods = Mod::with('latestVersion')->get();
 
         return view('mod.list')->with(['mods' => $mods]);
     }
