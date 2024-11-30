@@ -2,8 +2,10 @@ Technic Solder
 =============
 
 [![License](https://poser.pugx.org/solder/solder/license.svg)](https://packagist.org/packages/solder/solder)
-[![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=master)](https://travis-ci.org/TechnicPack/TechnicSolder)
-[![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg)](https://packagist.org/packages/solder/solder) [![Build Status](https://travis-ci.org/TechnicPack/TechnicSolder.svg?branch=dev)](https://travis-ci.org/TechnicPack/TechnicSolder)
+
+![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg) ![Build Status](https://github.com/TechnicPack/TechnicSolder/actions/workflows/tests.yml/badge.svg?branch=master)
+
+![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg) ![Build Status](https://github.com/TechnicPack/TechnicSolder/actions/workflows/tests.yml/badge.svg?branch=dev)
 
 Join us on [Discord][discord]!
 
