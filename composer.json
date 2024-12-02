@@ -43,7 +43,7 @@
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.10",
+        "barryvdh/laravel-debugbar": "^3.14.9",
         "fakerphp/faker": "^1.23.0",
         "laravel/pint": "^1.18",
         "mockery/mockery": "^1.6.6",
