@@ -250,6 +250,7 @@ class ModpackController extends Controller
         $rules = [
             'name' => 'required|unique:modpacks',
             'slug' => 'required|unique:modpacks',
+            'hidden' => 'sometimes|required',
         ];
 
         $messages = [
@@ -266,7 +267,7 @@ class ModpackController extends Controller
         $modpack = new Modpack;
         $modpack->name = Request::input('name');
         $modpack->slug = Str::slug(Request::input('slug'));
-        $modpack->hidden = Request::input('hidden') ? false : true;
+        $modpack->hidden = request()->boolean('hidden');
         $modpack->icon_md5 = null;
         $modpack->icon_url = URL::asset('/resources/default/icon.png');
         $modpack->logo_md5 = null;

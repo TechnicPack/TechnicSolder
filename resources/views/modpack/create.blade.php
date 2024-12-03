@@ -30,6 +30,17 @@
                             <label for="slug">Modpack Slug</label>
                             <input type="text" class="form-control" name="slug" id="slug">
                         </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="hidden" id="hidden" checked>
+                                    Hide modpack
+                                </label>
+                                <p class="help-block">Hidden modpacks will not show up in the API response for the
+                                    modpack list. However, anyone with the modpack's slug can access all of its
+                                    information.</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <p>Creating a modpack is simple. Fill in the information here.</p>

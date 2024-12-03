@@ -41,9 +41,9 @@
                                 <input type="checkbox"
                                        name="hidden"
                                        id="hidden"{{ $checked = ($modpack->hidden ? ' checked' : '') }}>
-                                <span class="help-block">Hidden modpacks will not show up in the API response for the
-                                    modpack list regardless of whether or not a client has access to the modpack.
-                                </span>
+                                <p class="help-block">Hidden modpacks will not show up in the API response for the
+                                    modpack list. However, anyone with the modpack's slug can access all of its
+                                    information.</p>
                             </div>
                         </div>
                         <div class="control-group">
