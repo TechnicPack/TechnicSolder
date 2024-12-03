@@ -93,7 +93,6 @@
 @endsection
 @section('bottom')
     <script type="text/javascript">
-
         $("input[name=recommended]").change(function () {
             $.ajax({
                 type: "POST",
@@ -102,7 +101,7 @@
                     $.jGrowl(data.success, {group: 'alert-success'});
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(errorThrown, {group: 'alert-danger'});
+                    $.jGrowl(errorThrown || `Unknown error: ${textStatus}`, {group: 'alert-danger'});
                 }
             });
         });
@@ -115,7 +114,7 @@
                     $.jGrowl(data.success, {group: 'alert-success'});
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(errorThrown, {group: 'alert-danger'});
+                    $.jGrowl(errorThrown || `Unknown error: ${textStatus}`, {group: 'alert-danger'});
                 }
             });
         });
@@ -131,7 +130,7 @@
                     $.jGrowl(data.success, {group: 'alert-success'});
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(errorThrown, {group: 'alert-danger'});
+                    $.jGrowl(errorThrown || `Unknown error: ${textStatus}`, {group: 'alert-danger'});
                 }
             })
         });
@@ -147,7 +146,7 @@
                     $.jGrowl(data.success, {group: 'alert-success'});
                 },
                 error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(errorThrown, {group: 'alert-danger'});
+                    $.jGrowl(errorThrown || `Unknown error: ${textStatus}`, {group: 'alert-danger'});
                 }
             })
         });
@@ -157,6 +156,5 @@
                 "order": [[0, "desc"]]
             });
         });
-
     </script>
 @endsection

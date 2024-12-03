@@ -24,6 +24,7 @@
     <script src="{{ asset('js/jquery.slugify.js') }}"></script>
     <script src="{{ asset('js/nav-float.js') }}"></script>
     <link href="{{ asset('css/OpenSansfont.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('top')
 </head>
 <body>
@@ -150,6 +151,11 @@
     (function ($) {
         $(function () {
             $.jGrowl.defaults.closerTemplate = '<div class="alert alert-info">Close All</div>';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
         });
     })(jQuery);
 </script>
