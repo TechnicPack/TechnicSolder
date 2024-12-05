@@ -21,11 +21,10 @@
     <link href="{{ asset('css/jquery.jgrowl.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/datatables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/metisMenu.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/jquery.slugify.js') }}"></script>
     <script src="{{ asset('js/nav-float.js') }}"></script>
     <link href="{{ asset('css/OpenSansfont.css') }}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @yield('top')
+    @stack('top')
 </head>
 <body>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">

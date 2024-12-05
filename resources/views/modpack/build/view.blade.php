@@ -2,10 +2,10 @@
 @section('title')
     <title>{{ $build->version }} - {{ $build->modpack->name }} - Technic Solder</title>
 @stop
-@section('top')
+@push('top')
     <script src="{{ asset('js/selectize.min.js') }}"></script>
     <link href="{{ asset('css/selectize.bootstrap3.css') }}" rel="stylesheet">
-@endsection
+@endpush
 @section('content')
     <div class="page-header">
         <h1>Build Management</h1>

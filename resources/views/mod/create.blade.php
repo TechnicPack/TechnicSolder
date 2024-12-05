@@ -1,4 +1,5 @@
 @extends('layouts/master')
+@include('partial.slugify')
 @section('title')
     <title>Create Mod - Technic Solder</title>
 @stop
@@ -18,7 +19,7 @@
                     @endforeach
                 </div>
             @endif
-            <form method="post" action="{{ url('/mod/create') }}" accept-charset="UTF-8">
+            <form method="post" action="{{ url('/mod/create') }}" accept-charset="UTF-8" autocomplete="off">
                 @csrf
                 <div class="row">
                     <div class="col-md-6">
@@ -46,16 +47,14 @@
                     <div class="col-md-6">
                         <p>Because Solder doesn't do any file handling yet you will need to manually manage your set of
                             mods in your repository. The mod repository structure is very strict and must match your
-                            Solder data exact. An example of your mod directory structure will be listed below:</p>
-                        <blockquote>/mods/
-                            <span class="modslug">[modslug]</span>
-                            /<br>
-                            /mods/
-                            <span class="modslug">[modslug]</span>
-                            /
-                            <span class="modslug">[modslug]</span>
-                            -[version].zip
+                            Solder data exactly. An example of your mod directory structure will be listed below:</p>
+                        <blockquote>
+                            <samp>/mods/<span class="mod-slug">[slug]</span>/<br>
+                            /mods/<span class="mod-slug">[slug]</span>/<span class="mod-slug">[slug]</span>-[version].zip</samp>
                         </blockquote>
+                        <p>The mod slug automatically updates based on the mod name. You can change the slug to whatever
+                            you want after you set the name. If you modify the slug, it will no longer update
+                            automatically. If you wish to restore that behavior, then simply empty the slug field.</p>
                     </div>
                 </div>
                 <input type="submit" class="btn btn-success" value="Add Mod">
@@ -65,11 +64,23 @@
     </div>
 @endsection
 @section('bottom')
-    <script type="text/javascript">
-        $("#name").slugify('#pretty_name');
-        $(".modslug").slugify("#pretty_name");
-        $("#name").keyup(function () {
-            $(".modslug").html($(this).val());
+    <script>
+        const slugInputField = $('#name');
+        const slugSpans = $('.mod-slug');
+
+        slugInputField.slugify('#pretty_name');
+        slugInputField.on('input', function () {
+            slugSpans.text($(this).val() || '[slug]');
+        });
+
+        slugSpans.slugify('#pretty_name', {
+            postSlug: function (slug) {
+                if (slug == null || slug === '') {
+                    return '[slug]';
+                }
+
+                return slug;
+            }
         });
     </script>
 @endsection

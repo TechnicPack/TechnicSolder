@@ -1,4 +1,5 @@
 @extends('layouts/master')
+@include('partial.slugify')
 @section('title')
     <title>{{ $modpack->name }} - Technic Solder</title>
 @stop
@@ -96,7 +97,9 @@
             </form>
         </div>
     </div>
-    <script type="text/javascript">
-        $("#slug").slugify('#name');
+@endsection
+@section('bottom')
+    <script>
+        $('#slug').slugify('#name');
     </script>
 @endsection
