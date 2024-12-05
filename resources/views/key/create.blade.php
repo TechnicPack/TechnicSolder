@@ -1,4 +1,4 @@
-@extends('layouts/master')
+@extends('layouts.master')
 @section('title')
     <title>Create API Key - Technic Solder</title>
 @stop

@@ -1,4 +1,4 @@
-@extends('layouts/master')
+@extends('layouts.master')
 @section('title')
     <title>Main Settings - Technic Solder</title>
 @stop

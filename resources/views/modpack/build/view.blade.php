@@ -1,4 +1,4 @@
-@extends('layouts/master')
+@extends('layouts.master')
 @section('title')
     <title>{{ $build->version }} - {{ $build->modpack->name }} - Technic Solder</title>
 @stop

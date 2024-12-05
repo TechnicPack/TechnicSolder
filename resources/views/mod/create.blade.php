@@ -1,4 +1,4 @@
-@extends('layouts/master')
+@extends('layouts.master')
 @include('partial.slugify')
 @section('title')
     <title>Create Mod - Technic Solder</title>

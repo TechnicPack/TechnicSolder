@@ -1,4 +1,4 @@
-@extends('layouts/master')
+@extends('layouts.master')
 @section('title')
     <title>{{ $user->username }} - Technic Solder</title>
 @stop
