@@ -125,7 +125,9 @@
                                     <div class="form-group input-group">
                                         <select class="form-control" name="version">
                                             @foreach ($ver->mod->versions as $version)
-                                                <option value="{{ $version->id }}"{{ $selected = ($ver->version == $version->version ? 'selected' : '') }}>{{ $version->version }}</option>
+                                                <option value="{{ $version->id }}"
+                                                        @selected($ver->version == $version->version)
+                                                >{{ $version->version }}</option>
                                             @endforeach
                                         </select>
                                         <span class="input-group-btn">

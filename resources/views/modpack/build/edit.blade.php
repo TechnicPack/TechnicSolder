@@ -42,7 +42,9 @@
                             <label for="version">Minecraft Version</label>
                             <select class="form-control" name="minecraft">
                                 @foreach ($minecraft as $version)
-                                    <option value="{{ $version['version'] }}" {{ ($build->minecraft == $version['version'] ? ' selected' : '') }}>{{ $version['version'] }}</option>
+                                    <option value="{{ $version['version'] }}"
+                                            @selected($build->minecraft == $version['version'])
+                                    >{{ $version['version'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -55,16 +57,12 @@
                         <div class="form-group">
                             <label for="java-version">Minimum Java Version</label>
                             <select class="form-control" name="java-version" id="java-version">
-                                <option value="17"{{ ($build->min_java == '17' ? ' selected' : '') }}>Java 17</option>
-                                <option value="16"{{ ($build->min_java == '16' ? ' selected' : '') }}>Java 16</option>
-                                <option value="1.8"{{ ($build->min_java == '1.8' ? ' selected' : '') }}>Java 1.8
-                                </option>
-                                <option value="1.7"{{ ($build->min_java == '1.7' ? ' selected' : '') }}>Java 1.7
-                                </option>
-                                <option value="1.6"{{ ($build->min_java == '1.6' ? ' selected' : '') }}>Java 1.6
-                                </option>
-                                <option value=""{{ ($build->min_java == '' ? ' selected' : '') }}>No Requirement
-                                </option>
+                                <option value="17" @selected($build->min_java === '17')>Java 17</option>
+                                <option value="16" @selected($build->min_java === '16')>Java 16</option>
+                                <option value="1.8" @selected($build->min_java === '1.8')>Java 1.8</option>
+                                <option value="1.7" @selected($build->min_java === '1.7')>Java 1.7</option>
+                                <option value="1.6" @selected($build->min_java === '1.6')>Java 1.6</option>
+                                <option value="" @selected(empty($build->min_java))>No Requirement</option>
                             </select>
                         </div>
                         <div class="form-group">
