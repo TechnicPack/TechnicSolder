@@ -105,21 +105,21 @@ class UserController extends Controller
             if ($user->id == 1) {
                 $perm->solder_full = true;
             } else {
-                $perm->solder_full = Request::input('solder-full') ? true : false;
+                $perm->solder_full = \request()->boolean('solder-full');
             }
-            $perm->solder_users = Request::input('manage-users') ? true : false;
-            $perm->solder_keys = Request::input('manage-keys') ? true : false;
-            $perm->solder_clients = Request::input('manage-clients') ? true : false;
+            $perm->solder_users = \request()->boolean('manage-users');
+            $perm->solder_keys = \request()->boolean('manage-keys');
+            $perm->solder_clients = \request()->boolean('manage-clients');
 
             /* Mod Perms */
-            $perm->mods_create = Request::input('mod-create') ? true : false;
-            $perm->mods_manage = Request::input('mod-manage') ? true : false;
-            $perm->mods_delete = Request::input('mod-delete') ? true : false;
+            $perm->mods_create = \request()->boolean('mod-create');
+            $perm->mods_manage = \request()->boolean('mod-manage');
+            $perm->mods_delete = \request()->boolean('mod-delete');
 
             /* Modpack Perms */
-            $perm->modpacks_create = Request::input('modpack-create') ? true : false;
-            $perm->modpacks_manage = Request::input('modpack-manage') ? true : false;
-            $perm->modpacks_delete = Request::input('modpack-delete') ? true : false;
+            $perm->modpacks_create = \request()->boolean('modpack-create');
+            $perm->modpacks_manage = \request()->boolean('modpack-manage');
+            $perm->modpacks_delete = \request()->boolean('modpack-delete');
             $modpack = Request::input('modpack');
 
             if (! empty($modpack)) {
@@ -182,20 +182,20 @@ class UserController extends Controller
         $perm = new UserPermission;
         $perm->user_id = $user->id;
 
-        $perm->solder_full = Request::input('solder-full') ? true : false;
-        $perm->solder_users = Request::input('manage-users') ? true : false;
-        $perm->solder_keys = Request::input('manage-keys') ? true : false;
-        $perm->solder_clients = Request::input('manage-clients') ? true : false;
+        $perm->solder_full = \request()->boolean('solder-full');
+        $perm->solder_users = \request()->boolean('manage-users');
+        $perm->solder_keys = \request()->boolean('manage-keys');
+        $perm->solder_clients = \request()->boolean('manage-clients');
 
         /* Mod Perms */
-        $perm->mods_create = Request::input('mod-create') ? true : false;
-        $perm->mods_manage = Request::input('mod-manage') ? true : false;
-        $perm->mods_delete = Request::input('mod-delete') ? true : false;
+        $perm->mods_create = \request()->boolean('mod-create');
+        $perm->mods_manage = \request()->boolean('mod-manage');
+        $perm->mods_delete = \request()->boolean('mod-delete');
 
         /* Modpack Perms */
-        $perm->modpacks_create = Request::input('modpack-create') ? true : false;
-        $perm->modpacks_manage = Request::input('modpack-manage') ? true : false;
-        $perm->modpacks_delete = Request::input('modpack-delete') ? true : false;
+        $perm->modpacks_create = \request()->boolean('modpack-create');
+        $perm->modpacks_manage = \request()->boolean('modpack-manage');
+        $perm->modpacks_delete = \request()->boolean('modpack-delete');
         $modpack = Request::input('modpack');
 
         if (! empty($modpack)) {

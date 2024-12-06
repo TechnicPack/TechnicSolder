@@ -80,7 +80,6 @@
                                         <input type="checkbox"
                                                name="solder-full"
                                                id="solder-full"
-                                               value="1"
                                                @checked($user->permission->solder_full)
                                         >
                                         Full Solder Access (Blanket permission)</label>
@@ -88,7 +87,6 @@
                                         <input type="checkbox"
                                                name="manage-users"
                                                id="manage-users"
-                                               value="1"
                                                @checked($user->permission->solder_users)
                                         >
                                         Manage Users</label>
@@ -96,7 +94,6 @@
                                         <input type="checkbox"
                                                name="manage-keys"
                                                id="manage-keys"
-                                               value="1"
                                                @checked($user->permission->solder_keys)
                                         >
                                         Manage API Keys</label>
@@ -104,7 +101,6 @@
                                         <input type="checkbox"
                                                name="manage-clients"
                                                id="manage-clients"
-                                               value="1"
                                                @checked($user->permission->solder_clients)
                                         >
                                         Manage Clients</label>
@@ -117,7 +113,6 @@
                                         <input type="checkbox"
                                                name="mod-create"
                                                id="mod-create"
-                                               value="1"
                                                @checked($user->permission->mods_create)
                                         >
                                         Create Mods</label>
@@ -125,7 +120,6 @@
                                         <input type="checkbox"
                                                name="mod-manage"
                                                id="mod-manage"
-                                               value="1"
                                                @checked($user->permission->mods_manage)
                                         >
                                         Manage Mods</label>
@@ -133,7 +127,6 @@
                                         <input type="checkbox"
                                                name="mod-delete"
                                                id="mod-delete"
-                                               value="1"
                                                @checked($user->permission->mods_delete)
                                         >
                                         Delete Mods</label>
@@ -149,7 +142,6 @@
                                         <input type="checkbox"
                                                name="modpack-create"
                                                id="modpack-create"
-                                               value="1"
                                                @checked($user->permission->modpacks_create)
                                         >
                                         Create Modpacks</label>
@@ -157,7 +149,6 @@
                                         <input type="checkbox"
                                                name="modpack-manage"
                                                id="modpack-manage"
-                                               value="1"
                                                @checked($user->permission->modpacks_manage)
                                         >
                                         Manage Modpacks</label>
@@ -165,7 +156,6 @@
                                         <input type="checkbox"
                                                name="modpack-delete"
                                                id="modpack-delete"
-                                               value="1"
                                                @checked($user->permission->modpacks_delete)
                                         >
                                         Delete Modpacks</label>

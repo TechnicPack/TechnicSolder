@@ -63,7 +63,6 @@
                                 <input autocomplete="off"
                                        type="checkbox"
                                        name="published"
-                                       value="1"
                                        class="published"
                                        rel="{{ $build->id }}"
                                        @checked($build->is_published)
@@ -73,7 +72,6 @@
                                 <input autocomplete="off"
                                        type="checkbox"
                                        name="private"
-                                       value="1"
                                        class="private"
                                        rel="{{ $build->id }}"
                                        @checked($build->private)

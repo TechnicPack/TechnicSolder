@@ -494,9 +494,8 @@ class ModpackController extends Controller
                 ]);
             case 'published': // Set build published status
                 $build = Build::with('modpack')->find(Request::input('build'));
-                $published = Request::input('published');
 
-                $build->is_published = ($published ? true : false);
+                $build->is_published = \request()->boolean('published');
                 $build->save();
 
                 Cache::forget('modpack:'.$build->modpack->slug);
@@ -507,9 +506,8 @@ class ModpackController extends Controller
                 ]);
             case 'private':
                 $build = Build::with('modpack')->find(Request::input('build'));
-                $private = Request::input('private');
 
-                $build->private = ($private ? true : false);
+                $build->private = \request()->boolean('private');
                 $build->save();
 
                 Cache::forget('modpack:'.$build->modpack->slug);

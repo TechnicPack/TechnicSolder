@@ -48,16 +48,16 @@
                             <label>Solderwide</label>
                             <div class="controls">
                                 <label for="solder-full" class="checkbox-inline">
-                                    <input type="checkbox" name="solder-full" id="solder-full" value="1">
+                                    <input type="checkbox" name="solder-full" id="solder-full">
                                     Full Solder Access (Blanket permission)</label>
                                 <label for="manage-users" class="checkbox-inline">
-                                    <input type="checkbox" name="manage-users" id="manage-users" value="1">
+                                    <input type="checkbox" name="manage-users" id="manage-users">
                                     Manage Users</label>
                                 <label for="manage-keys" class="checkbox-inline">
-                                    <input type="checkbox" name="manage-keys" id="manage-keys" value="1">
+                                    <input type="checkbox" name="manage-keys" id="manage-keys">
                                     Manage API Keys</label>
                                 <label for="manage-clients" class="checkbox-inline">
-                                    <input type="checkbox" name="manage-clients" id="manage-clients" value="1">
+                                    <input type="checkbox" name="manage-clients" id="manage-clients">
                                     Manage Clients</label>
                             </div>
                         </div>
@@ -65,13 +65,13 @@
                             <label>Mod Library</label>
                             <div class="controls">
                                 <label for="mod-create" class="checkbox-inline">
-                                    <input type="checkbox" name="mod-create" id="mod-create" value="1">
+                                    <input type="checkbox" name="mod-create" id="mod-create">
                                     Create Mods</label>
                                 <label for="mod-manage" class="checkbox-inline">
-                                    <input type="checkbox" name="mod-manage" id="mod-manage" value="1">
+                                    <input type="checkbox" name="mod-manage" id="mod-manage">
                                     Manage Mods</label>
                                 <label for="mod-delete" class="checkbox-inline">
-                                    <input type="checkbox" name="mod-delete" id="mod-delete" value="1">
+                                    <input type="checkbox" name="mod-delete" id="mod-delete">
                                     Delete Mods</label>
                             </div>
                         </div>
@@ -82,13 +82,13 @@
                                 if the specfic modpack is selected.</p>
                             <div class="controls">
                                 <label for="modpack-create" class="checkbox-inline">
-                                    <input type="checkbox" name="modpack-create" id="modpack-create" value="1">
+                                    <input type="checkbox" name="modpack-create" id="modpack-create">
                                     Create Modpacks</label>
                                 <label for="modpack-manage" class="checkbox-inline">
-                                    <input type="checkbox" name="modpack-manage" id="modpack-manage" value="1">
+                                    <input type="checkbox" name="modpack-manage" id="modpack-manage">
                                     Manage Modpacks</label>
                                 <label for="modpack-delete" class="checkbox-inline">
-                                    <input type="checkbox" name="modpack-delete" id="modpack-delete" value="1">
+                                    <input type="checkbox" name="modpack-delete" id="modpack-delete">
                                     Delete Modpacks</label>
                             </div>
                         </div>
