@@ -47,13 +47,17 @@
                                 <input autocomplete="off"
                                        type="radio"
                                        name="recommended"
-                                       value="{{ $build->version }}"{{ $modpack->recommended === $build->version ? " checked" : "" }}>
+                                       value="{{ $build->version }}"
+                                       @checked($modpack->recommended === $build->version)
+                                >
                             </td>
                             <td>
                                 <input autocomplete="off"
                                        type="radio"
                                        name="latest"
-                                       value="{{ $build->version }}"{{ $modpack->latest === $build->version ? " checked" : "" }}>
+                                       value="{{ $build->version }}"
+                                       @checked($modpack->latest === $build->version)
+                                >
                             </td>
                             <td>
                                 <input autocomplete="off"
@@ -61,7 +65,9 @@
                                        name="published"
                                        value="1"
                                        class="published"
-                                       rel="{{ $build->id }}"{{ $build->is_published ? " checked" : "" }}>
+                                       rel="{{ $build->id }}"
+                                       @checked($build->is_published)
+                                >
                             </td>
                             <td>
                                 <input autocomplete="off"
@@ -69,7 +75,9 @@
                                        name="private"
                                        value="1"
                                        class="private"
-                                       rel="{{ $build->id }}"{{ $build->private ? " checked" : "" }}>
+                                       rel="{{ $build->id }}"
+                                       @checked($build->private)
+                                >
                             </td>
                             <td>{{ $build->created_at }}</td>
                             <td>

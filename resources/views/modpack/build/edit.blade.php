@@ -74,7 +74,9 @@
                                     <input type="checkbox"
                                            id="memory-enabled"
                                            name="memory-enabled"
-                                           aria-label="mb"{{ $build->min_memory ? ' checked' : '' }}>
+                                           aria-label="mb"
+                                           @checked($build->min_memory)
+                                    >
                                 </span>
                                 <input type="text"
                                        class="form-control"

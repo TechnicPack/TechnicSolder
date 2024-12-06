@@ -41,7 +41,9 @@
                             <div class="controls">
                                 <input type="checkbox"
                                        name="hidden"
-                                       id="hidden"{{ $checked = ($modpack->hidden ? ' checked' : '') }}>
+                                       id="hidden"
+                                       @checked($modpack->hidden)
+                                >
                                 <p class="help-block">Hidden modpacks will not show up in the API response for the
                                     modpack list. However, anyone with the modpack's slug can access all of its
                                     information.</p>
@@ -52,7 +54,9 @@
                             <div class="controls">
                                 <input type="checkbox"
                                        name="private"
-                                       id="private"{{ ($modpack->private ? ' checked' : '') }}>
+                                       id="private"
+                                       @checked($modpack->private)
+                                >
                                 <span class="help-block">Private modpacks will only be available to clients that are
                                     linked to this modpack. You can link clients below. You can also individually mark
                                     builds as private.
@@ -71,7 +75,9 @@
                                     <div style="display: inline-block; padding-right: 10px;">
                                         <input type="checkbox"
                                                name="clients[]"
-                                               value="{{ $client->id }}"{{ (in_array($client->id, $currentClients) ? ' checked' : '') }}> {{ $client->name }}
+                                               value="{{ $client->id }}"
+                                               @checked(in_array($client->id, $currentClients))
+                                        > {{ $client->name }}
                                     </div>
                                 @endforeach
                             @endif
