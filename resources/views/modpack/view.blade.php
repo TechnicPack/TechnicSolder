@@ -82,10 +82,10 @@
                                 <a href="{{ url('/modpack/build/'.$build->id) }}"
                                    class="btn btn-primary btn-xs"
                                 >Manage</a>
-                                <a href="{{ url('/modpack/build/'.$build->id, ['action' => 'edit']) }}"
+                                <a href="{{ url()->query('/modpack/build/'.$build->id, ['action' => 'edit']) }}"
                                    class="btn btn-warning btn-xs"
                                 >Edit</a>
-                                <a href="{{ url('/modpack/build/'.$build->id, ['action' => 'delete']) }}"
+                                <a href="{{ url()->query('/modpack/build/'.$build->id, ['action' => 'delete']) }}"
                                    class="btn btn-danger btn-xs"
                                 >Delete</a>
                             </td>
