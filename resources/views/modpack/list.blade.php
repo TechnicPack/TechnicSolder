@@ -46,10 +46,10 @@
                         <tr>
                             <td>{{ $modpack->name }}</td>
                             <td>{{ $modpack->slug }}</td>
-                            <td>{{ !empty($modpack->recommended) ? $modpack->recommended : "N/A" }}</td>
-                            <td>{{ !empty($modpack->latest) ? $modpack->latest : "N/A" }}</td>
-                            <td>{{ $modpack->hidden == 1 ? "Yes" : "No" }}</td>
-                            <td>{{ $modpack->private == 1 ? "Yes" : "No" }}</td>
+                            <td>{{ $modpack->recommended ?: "N/A" }}</td>
+                            <td>{{ $modpack->latest ?: "N/A" }}</td>
+                            <td>{{ $modpack->hidden ? "Yes" : "No" }}</td>
+                            <td>{{ $modpack->private ? "Yes" : "No" }}</td>
                             <td>
                                 <a href="{{ url('/modpack/view/'.$modpack->id) }}" class="btn btn-warning btn-xs">Manage
                                     Builds</a>

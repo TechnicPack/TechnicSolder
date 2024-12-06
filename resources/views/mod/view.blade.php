@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('title')
-    <title>{{ empty($mod->pretty_name) ? $mod->name : $mod->pretty_name }} - Technic Solder</title>
+    <title>{{ $mod->pretty_name ?: $mod->name }} - Technic Solder</title>
 @stop
 @section('content')
     <div class="page-header">

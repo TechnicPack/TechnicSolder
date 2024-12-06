@@ -74,7 +74,7 @@
     <div class="sidebar-collapse">
         <ul class="nav side-menu" id="side-menu">
             <li>
-                <a href="{{ URL::to('dashboard') }}" {{ Request::is('dashboard') ? ' class="mm-active"' : '' }}><i class="fa fa-dashboard fa-fw"></i>
+                <a href="{{ URL::to('dashboard') }}" @class(['mm-active' => Request::is('dashboard')])><i class="fa fa-dashboard fa-fw"></i>
                     Dashboard</a>
             </li>
             <li>

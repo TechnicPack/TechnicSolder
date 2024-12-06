@@ -12,12 +12,7 @@
             <span style="float: right;">
                 <i class="fa fa-bullhorn fa-1"></i>
                 <strong>Last Updated By:</strong>
-                @if ($userUpdatedBy)
-                    {{ $userUpdatedBy->username }}
-                @else
-                    N/A
-                @endif
-                - <em>{{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}</em>
+                {{ $userUpdatedBy?->username ?? 'N/A' }} - <em>{{ $user->updated_by_ip ?: "N/A" }}</em>
             </span>
         </div>
         <div class="panel-body">

@@ -40,14 +40,9 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->username }}</td>
                             <td>
-                                @if ($user->updated_by_user)
-                                    {{ $user->updated_by_user->username }}
-                                @else
-                                    N/A
-                                @endif
-                                - {{ empty($user->updated_by_ip) ? "N/A" : $user->updated_by_ip }}
+                                {{ $user->updated_by_user?->username ?? 'N/A' }} - {{ $user->updated_by_ip ?: "N/A" }}
                             </td>
-                            <td>{{ date_format($user->updated_at, 'M-d-Y g:ia') }}</td>
+                            <td>{{ date_format($user->updated_at, 'r') }}</td>
                             <td>
                                 <a href="{{ url('/user/edit/'.$user->id) }}" class="btn btn-warning btn-xs">Edit</a>
                                 <a href="{{ url('/user/delete/'.$user->id) }}" class="btn btn-danger btn-xs">Delete</a>

@@ -48,7 +48,7 @@
                             <br>
                             <b>Latest version:</b> {{ $mod->latestVersion?->version ?? "N/A" }}
                         </td>
-                        <td>{{ !empty($mod->author) ? $mod->author : "N/A" }}</td>
+                        <td>{{ $mod->author ?: "N/A" }}</td>
                         <td>
                             @if (!empty($mod->link))
                                 <a href="{{ $mod->link }}"

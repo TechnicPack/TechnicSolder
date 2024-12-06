@@ -9,8 +9,11 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 style="margin-top:10px;">Delete User
-                ({{ $user->username }} {{ Auth::user()->id == $user->id ? "<i class='text-warning'>That's you!</i>" : "" }}
-                )</h3>
+                ({{ $user->username }})
+                @if(Auth::user()->id == $user->id)
+                    <i class='text-warning'>That's you!</i>
+                @endif
+            </h3>
         </div>
         <div class="panel-body">
             <p>This will immediately remove the user from Solder.<br>Are you sure you want to remove
