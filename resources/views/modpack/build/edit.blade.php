@@ -82,7 +82,9 @@
                                        id="memory"
                                        aria-label="mb"
                                        aria-describedby="addon-mb"
-                                       value="{{ $build->min_memory ?: '' }}" {{ $build->min_memory ? '' : ' disabled' }}>
+                                       value="{{ $build->min_memory ?: '' }}"
+                                       @disabled($build->min_memory)
+                                >
                                 <span class="input-group-addon" id="addon-mb">MB</span>
                             </div>
                             <p class="help-block">Check the checkbox to enable the memory requirement.</p>
