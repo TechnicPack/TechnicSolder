@@ -96,9 +96,11 @@
             <div class="table-responsive">
                 <table class="table" id="mod-list">
                     <thead>
-                    <th id="mod-header" style="width: 60%">Mod Name</th>
-                    <th>Version</th>
-                    <th></th>
+                    <tr>
+                        <th id="mod-header" style="width: 60%">Mod Name</th>
+                        <th>Version</th>
+                        <th></th>
+                    </tr>
                     </thead>
                     <tbody>
                     @foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
