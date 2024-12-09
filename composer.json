@@ -35,7 +35,7 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
-        "guzzlehttp/guzzle": "^7.8",
+        "guzzlehttp/guzzle": "^7.9.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7.2",
         "knplabs/github-api": "^3.12",
