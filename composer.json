@@ -38,7 +38,7 @@
         "guzzlehttp/guzzle": "^7.8",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7.2",
-        "knplabs/github-api": "^3.12",
+        "knplabs/github-api": "^3.16.0",
         "laravel/framework": "^11.34",
         "laravel/tinker": "^2.9"
     },
