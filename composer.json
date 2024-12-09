@@ -46,7 +46,7 @@
         "barryvdh/laravel-debugbar": "^3.10",
         "fakerphp/faker": "^1.23.0",
         "laravel/pint": "^1.18",
-        "mockery/mockery": "^1.6.6",
+        "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.0",
         "phpunit/phpunit": "^10.5"
     },
