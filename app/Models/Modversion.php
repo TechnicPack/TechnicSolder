@@ -6,6 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property int $id
+ * @property int $mod_id
+ * @property string $version
+ * @property string $md5
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property int|null $filesize
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Build> $builds
+ * @property-read int|null $builds_count
+ * @property-read mixed $url
+ * @property-read \App\Models\Mod|null $mod
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereFilesize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereMd5($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereModId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion whereVersion($value)
+ *
+ * @mixin \Eloquent
+ */
 class Modversion extends Model
 {
     protected $guarded = [];
