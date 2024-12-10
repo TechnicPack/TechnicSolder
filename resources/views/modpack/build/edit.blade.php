@@ -11,13 +11,7 @@
             Edit Build ({{ $build->version }})
         </div>
         <div class="panel-body">
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br/>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <form action="{{ url()->full() }}" method="post" accept-charset="UTF-8">
                 @csrf
                 <input type="hidden" name="confirm-edit" value="1">

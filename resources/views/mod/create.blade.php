@@ -12,13 +12,7 @@
             Add Mod
         </div>
         <div class="panel-body">
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br/>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <form method="post" action="{{ url('/mod/create') }}" accept-charset="UTF-8" autocomplete="off">
                 @csrf
                 <div class="row">

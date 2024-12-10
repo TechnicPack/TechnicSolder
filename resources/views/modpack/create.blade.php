@@ -11,13 +11,7 @@
             Create Modpack
         </div>
         <div class="panel-body">
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br/>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
                 @csrf
                 <div class="row">

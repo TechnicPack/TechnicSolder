@@ -14,13 +14,7 @@
             User List
         </div>
         <div class="panel-body">
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br/>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                     <thead>

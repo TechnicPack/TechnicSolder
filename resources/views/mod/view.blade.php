@@ -22,13 +22,7 @@
             <div class="tab-content">
                 <div class="tab-pane fade" id="details">
                     <br>
-                    @if ($errors->all())
-                        <div class="alert alert-danger">
-                            @foreach ($errors->all() as $error)
-                                {{ $error }}<br/>
-                            @endforeach
-                        </div>
-                    @endif
+                    @include('partial.form-errors')
                     @if (Session::has('success'))
                         <div class="alert alert-success">
                             {{ Session::get('success') }}

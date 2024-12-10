@@ -12,13 +12,7 @@
             Editing Modpack: {{ $modpack->name }}
         </div>
         <div class="panel-body">
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br/>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <form method="post" action="{{ url()->current() }}" accept-charset="UTF-8">
                 @csrf
                 <div class="row">

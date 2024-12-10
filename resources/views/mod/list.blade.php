@@ -19,13 +19,7 @@
                     {{ Session::get('success') }}
                 </div>
             @endif
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br/>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <table class="table table-striped table-bordered table-hover" id="dataTables">
                 <thead>
                 <tr>

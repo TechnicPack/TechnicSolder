@@ -10,13 +10,7 @@
             Add Client
         </div>
         <div class="panel-body">
-            @if ($errors->all())
-                <div class="alert alert-danger">
-                    @foreach ($errors->all() as $error)
-                        {{ $error }}<br>
-                    @endforeach
-                </div>
-            @endif
+            @include('partial.form-errors')
             <div class="row">
                 <div class="col-md-6">
                     <form method="post" action="{{ url()->current() }}" accept-charset="UTF-8">
