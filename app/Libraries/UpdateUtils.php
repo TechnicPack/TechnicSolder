@@ -54,7 +54,7 @@ class UpdateUtils
         }
     }
 
-    public static function getLatestChangeLog($branch = 'master')
+    public static function getLatestChangeLog($branch = 'main')
     {
         $client = self::getGithubClient();
 
