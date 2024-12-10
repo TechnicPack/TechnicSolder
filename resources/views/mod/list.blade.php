@@ -14,11 +14,11 @@
             Mod List
         </div>
         <div class="panel-body">
-            @if (Session::has('success'))
+            @session('success')
                 <div class="alert alert-success">
-                    {{ Session::get('success') }}
+                    {{ $value }}
                 </div>
-            @endif
+            @endsession
             @include('partial.form-errors')
             <table class="table table-striped table-bordered table-hover" id="dataTables">
                 <thead>

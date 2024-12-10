@@ -13,11 +13,11 @@
                     Main Settings
                 </div>
                 <div class="panel-body">
-                    @if (Session::has('success'))
+                    @session('success')
                         <div class="alert alert-success">
-                            {{ Session::get('success') }}
+                            {{ $value }}
                         </div>
-                    @endif
+                    @endsession
 
                     <div class="form-group">
                         <label for="mirror_url">Repository Mirror URL</label>

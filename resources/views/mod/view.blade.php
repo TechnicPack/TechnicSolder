@@ -23,11 +23,11 @@
                 <div class="tab-pane fade" id="details">
                     <br>
                     @include('partial.form-errors')
-                    @if (Session::has('success'))
+                    @session('success')
                         <div class="alert alert-success">
-                            {{ Session::get('success') }}
+                            {{ $value }}
                         </div>
-                    @endif
+                    @endsession
                     <form method="post" action="{{ url('/mod/modify/'.$mod->id) }}" accept-charset="UTF-8">
                         @csrf
                         <div class="row">

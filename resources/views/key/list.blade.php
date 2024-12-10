@@ -16,11 +16,11 @@
         </div>
         <div class="panel-body">
             <p>This is the list of API keys that have access to Solder.</p>
-            @if (Session::has('success'))
+            @session('success')
                 <div class="alert alert-success">
-                    {{ Session::get('success') }}
+                    {{ $value }}
                 </div>
-            @endif
+            @endsession
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                     <thead>

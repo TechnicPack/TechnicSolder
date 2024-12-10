@@ -7,11 +7,11 @@
         <h1>Solder Dashboard</h1>
         <p class="lead">Welcome to Technic Solder!</p>
     </div>
-    @if (Session::has('permission'))
+    @session('permission')
         <div class="alert alert-danger">
-            {{ Session::get('permission') }}
+            {{ $value }}
         </div>
-    @endif
+    @endsession
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="recentModpacksHeading">

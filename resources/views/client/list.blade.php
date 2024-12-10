@@ -18,11 +18,11 @@
             <p>This is the client management area. Here you can register your launcher client UUID to Solder so that
                 private builds will show up to you in the launcher. After a client is added to this list, they need to
                 be linked to the modpacks you want them to have access to in Solder.</p>
-            @if (Session::has('success'))
+            @session('success')
                 <div class="alert alert-success">
-                    {{ Session::get('success') }}
+                    {{ $value }}
                 </div>
-            @endif
+            @endsession
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                     <thead>

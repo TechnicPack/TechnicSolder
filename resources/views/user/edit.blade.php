@@ -17,11 +17,11 @@
         </div>
         <div class="panel-body">
             @include('partial.form-errors')
-            @if (Session::has('success'))
+            @session('success')
                 <div class="alert alert-success">
-                    {{ Session::get('success') }}
+                    {{ $value }}
                 </div>
-            @endif
+            @endsession
             <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
                 @csrf
                 <input type="hidden" name="edit-user" value="1">

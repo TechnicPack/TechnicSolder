@@ -18,16 +18,16 @@
         <legend>
             Technic Solder
         </legend>
-        @if (Session::has('login_failed'))
+        @session('login_failed')
             <ul class="notice errors">
-                <li>{{ Session::get('login_failed') }}</li>
+                <li>{{ $value }}</li>
             </ul>
-        @endif
-        @if (Session::has('logout'))
+        @endsession
+        @session('logout')
             <ul class="notice success">
-                <li>{{ Session::get('logout') }}</li>
+                <li>{{ $value }}</li>
             </ul>
-        @endif
+        @endsession
         <input type="email" name="email" value="{{ old('email') }}" required class="input-block-level" placeholder="Email Address" size="30">
         <input type="password" name="password" class="input-block-level" required placeholder="Password" size="30">
         <input name="login" type="submit" value="Log In">
