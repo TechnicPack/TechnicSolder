@@ -88,8 +88,4 @@ Route::middleware('auth')->group(function () {
 // Authentication routes
 Route::get('login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('login', [AuthController::class, 'postLogin']);
-Route::get('logout', function () {
-    Auth::logout();
-
-    return Redirect::route('login')->with('logout', 'You have been logged out.');
-})->name('logout');
+Route::get('logout', [AuthController::class, 'doLogout'])->name('logout');

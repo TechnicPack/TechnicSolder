@@ -28,8 +28,8 @@
                 <li>{{ Session::get('logout') }}</li>
             </ul>
         @endif
-        <input type="text" name="email" class="input-block-level" placeholder="Email Address" size="30">
-        <input type="password" name="password" class="input-block-level" placeholder="Password" size="30">
+        <input type="email" name="email" value="{{ old('email') }}" required class="input-block-level" placeholder="Email Address" size="30">
+        <input type="password" name="password" class="input-block-level" required placeholder="Password" size="30">
         <input name="login" type="submit" value="Log In">
         <label class="checkbox">
             <input type="checkbox" name="remember" checked>

@@ -85,7 +85,7 @@ ul li {
   font-family: inherit;
 }
 
-.login .vertical-form input[type='text'], 
+.login .vertical-form input[type='email'],
 .login .vertical-form input[type='password'] {
   border: 1px #c1c1c1 solid;
   color: #c1c1c1;
@@ -93,7 +93,7 @@ ul li {
   font-size: 18px;
 }
 
-.login .vertical-form input[type='text'], 
+.login .vertical-form input[type='email'],
 .login .vertical-form input[type='password'], 
 .login .vertical-form input[type='submit']  {
   display: block;

@@ -29,9 +29,23 @@ class AuthController extends Controller
                 cache()->put('update', true, now()->addMinutes(60));
             }
 
+            request()->session()->regenerate();
+
             return redirect()->intended('dashboard');
         } else {
-            return redirect()->route('login')->with('login_failed', 'Invalid Username/Password');
+            return redirect()
+                ->route('login')
+                ->with('login_failed', 'Invalid email or password')
+                ->onlyInput('email');
         }
+    }
+
+    public function doLogout(): RedirectResponse
+    {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login')->with('logout', 'You have been logged out.');
     }
 }
