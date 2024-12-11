@@ -40,7 +40,7 @@
         "intervention/image": "^2.7.2",
         "knplabs/github-api": "^3.12",
         "laravel/framework": "^11.34",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.10.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",
