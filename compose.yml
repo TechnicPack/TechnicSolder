@@ -1,39 +1,39 @@
+version: "3.3"
+
 services:
   nginx:
     image: nginx
     restart: always
     depends_on:
       - solder
-    links:
-      - solder
     ports:
       - "80:80"
     volumes:
       - ./docker/default.conf:/etc/nginx/conf.d/default.conf
-      - .:/var/www/html
+      - ./www:/var/www/html
+      
   solder:
     image: solder
     restart: always
     depends_on:
       - mysql
       - redis
-    links:
-      - mysql:mysql
-      - redis:redis
     volumes:
-      - .:/var/www/html
+      - ./www:/var/www/html
+
   mysql:
     image: mariadb
     restart: always
     environment:
-      - MYSQL_DATABASE=solder
-      - MYSQL_USER=solder
-      - MYSQL_PASSWORD=solder
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_TCP_PORT=4306
-      - MYSQL_UNIX_PORT=4306
+      MYSQL_DATABASE: solder
+      MYSQL_USER: solder
+      MYSQL_PASSWORD: solder
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    ports:
+      - "4306:3306"
     volumes:
       - ./docker/mysql:/var/lib/mysql
+
   redis:
     image: redis
     restart: always
