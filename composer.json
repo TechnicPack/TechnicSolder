@@ -39,17 +39,18 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^2.7.2",
         "knplabs/github-api": "^3.12",
-        "laravel/framework": "^11.34",
-        "laravel/tinker": "^2.9"
+        "laravel/framework": "^12.0",
+        "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",
         "barryvdh/laravel-ide-helper": "^3.2",
         "fakerphp/faker": "^1.23.0",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.18",
         "mockery/mockery": "^1.6.6",
-        "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^10.5"
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5.3"
     },
     "config": {
         "optimize-autoloader": true,
