@@ -14,7 +14,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Copy testing .env
       run: cp .env.testing .env
     - name: Install dependencies
