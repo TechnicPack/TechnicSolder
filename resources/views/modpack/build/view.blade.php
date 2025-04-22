@@ -18,7 +18,7 @@
                 <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-info">Back to
                     Modpack</a>
             </div>
-            Build Info: {{ $build->modpack->name }} - Build {{ $build->version }}
+            {{ $build->modpack->name }} - Build {{ $build->version }}
         </div>
         <div class="panel-body">
             <div class="col-md-6">
@@ -40,9 +40,6 @@
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading">
-            Build Management: {{ $build->modpack->name }} - Build {{ $build->version }}
-        </div>
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table">
@@ -89,9 +86,6 @@
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading">
-            Build Management: {{ $build->modpack->name }} - Build {{ $build->version }}
-        </div>
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table" id="mod-list">
