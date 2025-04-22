@@ -52,4 +52,9 @@ class Build extends Model
     {
         return $this->belongsToMany(Modversion::class)->withTimestamps();
     }
+
+    public function isLive(): bool
+    {
+        return $this->is_published && !$this->private;
+    }
 }

@@ -39,121 +39,130 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                    <th style="width: 60%">Add a Mod</th>
-                    <th></th>
-                    <th></th>
-                    </thead>
-                    <tbody>
-                    <form method="post"
-                          action="{{ url('/modpack/build/modify') }}"
-                          accept-charset="UTF-8"
-                          class="mod-add"
-                    >
-                        @csrf
-                        <input type="hidden" name="build" value="{{ $build->id }}">
-                        <input type="hidden" name="action" value="add">
-                        <tr id="mod-list-add">
-                            <td>
-                                <i class="icon-plus"></i>
-                                <select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
-                                    <option value=""></option>
-                                    @foreach ($mods as $mod)
-                                        <option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-control"
-                                        name="mod-version"
-                                        id="mod-version"
-                                        placeholder="Select a Modversion..."
-                                >
-                                </select>
-                            </td>
-                            <td>
-                                <input type="submit" class="btn btn-success btn-small" value="Add Mod">
-                            </td>
-                        </tr>
-                    </form>
-                    </tbody>
-                </table>
+@if ($build->isLive())
+    <div class="alert alert-warning">
+        <p>This build is currently published and not marked as private. <strong>You are editing a live build</strong>.<br>
+        <br>
+        Build management panels have been hidden. <a style="cursor:pointer" onclick="document.getElementById('edit-panel').classList.remove('hidden');return false">Click here to show them</a>.</p>
+    </div>
+@endif
+    <div id="edit-panel" @class(['hidden' => $build->isLive()])>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <th style="width: 60%">Add a Mod</th>
+                        <th></th>
+                        <th></th>
+                        </thead>
+                        <tbody>
+                        <form method="post"
+                              action="{{ url('/modpack/build/modify') }}"
+                              accept-charset="UTF-8"
+                              class="mod-add"
+                        >
+                            @csrf
+                            <input type="hidden" name="build" value="{{ $build->id }}">
+                            <input type="hidden" name="action" value="add">
+                            <tr id="mod-list-add">
+                                <td>
+                                    <i class="icon-plus"></i>
+                                    <select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
+                                        <option value=""></option>
+                                        @foreach ($mods as $mod)
+                                            <option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control"
+                                            name="mod-version"
+                                            id="mod-version"
+                                            placeholder="Select a Modversion..."
+                                    >
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="submit" class="btn btn-success btn-small" value="Add Mod">
+                                </td>
+                            </tr>
+                        </form>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table" id="mod-list">
-                    <thead>
-                    <tr>
-                        <th id="mod-header" style="width: 60%">Mod Name</th>
-                        <th>Version</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table" id="mod-list">
+                        <thead>
                         <tr>
-                            <td>
-                                <a href="{{ url('/mod/view/'.$ver->mod->id) }}">{{ $ver->mod->pretty_name ?: $ver->mod->name }}</a>
-                                ({{ $ver->mod->name }})
-                            </td>
-                            <td>
-                                <form method="post"
-                                      action="{{ url('/modpack/build/modify') }}"
-                                      accept-charset="UTF-8"
-                                      style="margin-bottom: 0"
-                                      class="mod-version"
-                                >
-                                    @csrf
-                                    <input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
-                                    <input type="hidden"
-                                           class="modversion-id"
-                                           name="modversion_id"
-                                           value="{{ $ver->pivot->modversion_id }}"
-                                    >
-                                    <input type="hidden" name="action" value="version">
-                                    <div class="form-group input-group">
-                                        <select class="form-control" name="version">
-                                            @foreach ($ver->mod->versions as $version)
-                                                <option value="{{ $version->id }}"
-                                                        @selected($ver->version == $version->version)
-                                                >{{ $version->version }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="input-group-btn">
-                                            <input type="submit" class="btn btn-primary" value="Change">
-                                        </span>
-                                    </div>
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post"
-                                      action="{{ url('/modpack/build/modify') }}"
-                                      accept-charset="UTF-8"
-                                      style="margin-bottom: 0"
-                                      class="mod-delete"
-                                >
-                                    @csrf
-                                    <input type="hidden" name="build_id" value="{{ $build->id }}">
-                                    <input type="hidden"
-                                           class="modversion-id"
-                                           name="modversion_id"
-                                           value="{{ $ver->pivot->modversion_id }}"
-                                    >
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="submit" class="btn btn-danger btn-small" value="Remove">
-                                </form>
-                            </td>
+                            <th id="mod-header" style="width: 60%">Mod Name</th>
+                            <th>Version</th>
+                            <th></th>
                         </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        @foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
+                            <tr>
+                                <td>
+                                    <a href="{{ url('/mod/view/'.$ver->mod->id) }}">{{ $ver->mod->pretty_name ?: $ver->mod->name }}</a>
+                                    ({{ $ver->mod->name }})
+                                </td>
+                                <td>
+                                    <form method="post"
+                                          action="{{ url('/modpack/build/modify') }}"
+                                          accept-charset="UTF-8"
+                                          style="margin-bottom: 0"
+                                          class="mod-version"
+                                    >
+                                        @csrf
+                                        <input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
+                                        <input type="hidden"
+                                               class="modversion-id"
+                                               name="modversion_id"
+                                               value="{{ $ver->pivot->modversion_id }}"
+                                        >
+                                        <input type="hidden" name="action" value="version">
+                                        <div class="form-group input-group">
+                                            <select class="form-control" name="version">
+                                                @foreach ($ver->mod->versions as $version)
+                                                    <option value="{{ $version->id }}"
+                                                            @selected($ver->version == $version->version)
+                                                    >{{ $version->version }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <input type="submit" class="btn btn-primary" value="Change">
+                                            </span>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="post"
+                                          action="{{ url('/modpack/build/modify') }}"
+                                          accept-charset="UTF-8"
+                                          style="margin-bottom: 0"
+                                          class="mod-delete"
+                                    >
+                                        @csrf
+                                        <input type="hidden" name="build_id" value="{{ $build->id }}">
+                                        <input type="hidden"
+                                               class="modversion-id"
+                                               name="modversion_id"
+                                               value="{{ $ver->pivot->modversion_id }}"
+                                        >
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="submit" class="btn btn-danger btn-small" value="Remove">
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
