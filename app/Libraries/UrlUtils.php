@@ -45,7 +45,7 @@ class UrlUtils
      *
      * @param  string  $url  Url Location
      */
-    public static function get_remote_md5(string $url): array
+    public static function get_remote_md5(string $url, $handler = null): array
     {
         // We need to return:
         // - success => true
@@ -64,6 +64,7 @@ class UrlUtils
                     'User-Agent' => self::USER_AGENT,
                 ],
                 'stream' => true,
+                'handler' => $handler,
             ]);
 
             if ($response->getStatusCode() !== 200) {

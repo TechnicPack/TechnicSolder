@@ -3,13 +3,22 @@
 namespace Tests\Unit;
 
 use App\Libraries\UrlUtils;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
 
 final class UrlUtilsTest extends TestCase
 {
     public function test_get_remote_md5(): void
     {
-        $json = UrlUtils::get_remote_md5('https://httpbin.org/base64/dGVzdA==', 5);
+        $mockHandler = HandlerStack::create(
+            new MockHandler([
+                new Response(200, [], 'test'),
+            ])
+        );
+
+        $json = UrlUtils::get_remote_md5('https://test.invalid/test', $mockHandler);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
@@ -22,7 +31,13 @@ final class UrlUtilsTest extends TestCase
 
     public function test_get_remote_md5_non_200(): void
     {
-        $json = UrlUtils::get_remote_md5('https://httpbin.org/status/404', 5);
+        $mockHandler = HandlerStack::create(
+            new MockHandler([
+                new Response(404),
+            ])
+        );
+
+        $json = UrlUtils::get_remote_md5('https://test.invalid/404', $mockHandler);
         $this->assertTrue(is_array($json));
 
         $this->assertArrayHasKey('success', $json);
