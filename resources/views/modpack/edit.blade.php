@@ -67,7 +67,7 @@
                             @empty ($allClients)
                                 <div class="alert alert-warning">No clients to add</div>
                             @else
-                                @foreach ($allClients->sortBy('name', SORT_NATURAL) as $client)
+                                @foreach ($allClients->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE) as $client)
                                     <div style="display: inline-block; padding-right: 10px;">
                                         <input type="checkbox"
                                                name="clients[]"
