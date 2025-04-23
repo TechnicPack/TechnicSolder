@@ -8,11 +8,16 @@
     ":semanticCommitTypeAll(chore)",
     ":separateMajorReleases"
   ],
+  "configMigration": true,
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "matchManagers": ["composer"],
-      "matchPackageNames": ["php"],
+      "matchManagers": [
+        "composer"
+      ],
+      "matchDepNames": [
+        "php"
+      ],
       "enabled": false
     }
   ]
