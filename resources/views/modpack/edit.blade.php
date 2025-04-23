@@ -18,8 +18,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h3>Modpack Management</h3>
-                        <p>Edit your modpack settings here. You are required to delete and re-import your pack on the
-                            Technic Platform when changing the Modpack slug</p>
+                        <p>Edit your modpack settings here</p>
                         <hr>
                         <div class="form-group">
                             <label for="name">Modpack Name</label>
@@ -27,7 +26,10 @@
                         </div>
                         <div class="form-group">
                             <label for="slug">Modpack Slug</label>
-                            <input type="text" class="form-control" name="slug" id="slug" value="{{ $modpack->slug }}">
+                            <input type="text" class="form-control" name="slug" id="slug" value="{{ $modpack->slug }}" onfocus="document.getElementById('slug-alert').classList.remove('hidden')">
+                        </div>
+                        <div class="alert alert-warning hidden" id="slug-alert">
+                            <p>If you change the modpack slug you have to delete and re-import your pack on Technic Platform</p>
                         </div>
                         <hr>
                         <div class="form-group">
