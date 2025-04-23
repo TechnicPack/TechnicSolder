@@ -59,12 +59,12 @@
                         <div class="form-group">
                             <label for="java-version">Required Java version (at least)</label>
                             <select class="form-control" name="java-version" id="java-version">
-                                <option value="17" @selected($build->min_java === '17')>Java 17</option>
-                                <option value="16" @selected($build->min_java === '16')>Java 16</option>
-                                <option value="1.8" @selected($build->min_java === '1.8')>Java 1.8</option>
-                                <option value="1.7" @selected($build->min_java === '1.7')>Java 1.7</option>
-                                <option value="1.6" @selected($build->min_java === '1.6')>Java 1.6</option>
-                                <option value="" @selected(empty($build->min_java))>No Requirement</option>
+                                @foreach(\App\JavaVersionsEnum::cases() as $java)
+                                    <option value="{{ $java->value }}"
+                                            @selected(old('java-version', $build->min_java) === $java->value)
+                                    >Java {{ $java->value }}</option>
+                                @endforeach
+                                <option value="" @selected(!old('java-version', $build->min_java))>No Requirement</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -75,7 +75,7 @@
                                            id="memory-enabled"
                                            name="memory-enabled"
                                            aria-label="mb"
-                                           @checked($build->min_memory)
+                                           @checked(old('memory-enabled', $build->min_memory))
                                     >
                                 </span>
                                 <input type="number"
@@ -84,8 +84,8 @@
                                        id="memory"
                                        aria-label="mb"
                                        aria-describedby="addon-mb"
-                                       value="{{ $build->min_memory ?: '' }}"
-                                       @disabled($build->min_memory)
+                                       value="{{ old('memory', $build->min_memory) ?: '' }}"
+                                       @disabled(!old('memory-enabled', $build->min_memory))
                                 >
                                 <span class="input-group-addon" id="addon-mb">MB</span>
                             </div>

@@ -52,12 +52,12 @@
                         <div class="form-group">
                             <label for="java-version">Minimum Java Version</label>
                             <select class="form-control" name="java-version" id="java-version">
-                                <option value="17">Java 17</option>
-                                <option value="16">Java 16</option>
-                                <option value="1.8">Java 1.8</option>
-                                <option value="1.7">Java 1.7</option>
-                                <option value="1.6">Java 1.6</option>
-                                <option value="" selected>No Requirement</option>
+                                @foreach(\App\JavaVersionsEnum::cases() as $java)
+                                    <option value="{{ $java->value }}"
+                                            @selected(old('java-version') === $java->value)
+                                    >Java {{ $java->value }}</option>
+                                @endforeach
+                                <option value="" @selected(!old('java-version'))>No Requirement</option>
                             </select>
                         </div>
                         <div class="form-group">

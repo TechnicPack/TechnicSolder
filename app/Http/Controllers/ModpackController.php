@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\JavaVersionsEnum;
 use App\Libraries\MinecraftUtils;
 use App\Models\Build;
 use App\Models\Client;
@@ -110,20 +111,33 @@ class ModpackController extends Controller
                     $rules = [
                         'version' => 'required',
                         'minecraft' => 'required',
-                        'memory' => 'numeric',
+                        'memory' => [
+                            'required_if_accepted:memory-enabled',
+                            'numeric',
+                        ],
+                        'java-version' => [
+                            'nullable',
+                            Rule::enum(JavaVersionsEnum::class),
+                        ],
                     ];
 
                     $messages = [
-                        'version.required' => 'You must enter in the build number.',
                         'memory.numeric' => 'You may enter in numbers only for the memory requirement',
                     ];
 
-                    $validation = Validator::make(Request::all(), $rules, $messages);
+                    $attributes = [
+                        'version' => 'modpack version',
+                        'java-version' => 'Java version',
+                    ];
+
+                    $validation = Validator::make(Request::all(), $rules, $messages, $attributes);
                     if ($validation->fails()) {
-                        return redirect('modpack/build/'.$build->id.'?action=edit')->withErrors($validation->messages());
+                        return redirect('modpack/build/'.$build->id.'?action=edit')
+                            ->withErrors($validation->messages())
+                            ->withInput();
                     }
 
-                    // Wrap changes inside of a transaction so potential modpack changes also get rolled back if anything fails
+                    // Wrap changes inside a transaction so potential modpack changes also get rolled back if anything fails
                     DB::transaction(function () use ($build) {
                         $oldVersion = $build->version;
 
@@ -201,17 +215,27 @@ class ModpackController extends Controller
                 }),
             ],
             'minecraft' => 'required',
-            'memory' => 'numeric',
+            'memory' => [
+                'required_if_accepted:memory-enabled',
+                'numeric',
+            ],
+            'java-version' => [
+                'nullable',
+                Rule::enum(JavaVersionsEnum::class),
+            ],
         ];
 
         $messages = [
-            'version.required' => 'You must enter in the build number.',
             'memory.numeric' => 'You may enter in numbers only for the memory requirement',
         ];
+        $attributes = [
+            'version' => 'modpack version',
+            'java-version' => 'Java version',
+        ];
 
-        $validation = Validator::make(Request::all(), $rules, $messages);
+        $validation = Validator::make(Request::all(), $rules, $messages, $attributes);
         if ($validation->fails()) {
-            return redirect('modpack/add-build/'.$modpack_id)->withErrors($validation->messages());
+            return redirect('modpack/add-build/'.$modpack_id)->withErrors($validation->messages())->withInput();
         }
 
         $clone = Request::input('clone');
