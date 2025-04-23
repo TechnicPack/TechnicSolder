@@ -11,31 +11,30 @@
         <h1>Build Management</h1>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left" style="padding-top: 0.3rem;padding-bottom: 0.3rem">
+                {{ $build->modpack->name }} &mdash; build {{ $build->version }}
+            </h3>
             <div class="pull-right">
-                <a href="{{ URL::current() }}" class="btn btn-xs btn-warning">Refresh</a>
-                <a href="{{ URL::to('modpack/build/' . $build->id . '?action=edit') }}" class="btn btn-xs btn-danger">Edit</a>
-                <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-info">Back to
-                    Modpack</a>
+                <a href="{{ URL::to('modpack/build/' . $build->id . '?action=edit') }}" class="btn btn-xs btn-primary">Edit</a>
+                <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-default">Back to
+                    modpack</a>
             </div>
-            {{ $build->modpack->name }} - Build {{ $build->version }}
         </div>
         <div class="panel-body">
-            <div class="col-md-6">
-                <label>Build Version:
-                    <span class="label label-default">{{ $build->version }}</span>
-                </label><br>
-                <label>Minecraft Version:
-                    <span class="label label-default">{{ $build->minecraft }}</span>
-                </label><br>
-            </div>
-            <div class="col-md-6">
-                <label>Java Version:
-                    <span class="label label-default">{{ $build->min_java ?: 'Not Required'  }}</span>
-                </label><br>
-                <label>Memory (<i>in MB</i>):
-                    <span class="label label-default">{{ $build->min_memory ?: 'Not Required' }}</span>
-                </label>
+            <div class="row row-no-gutters">
+                <div class="col-lg-3 col-md-6">
+                    <p><b>Build:</b> {{ $build->version }}</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <p><b>Minecraft version:</b> {{ $build->minecraft }}</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <p><b>Required Java version:</b> {{ $build->min_java ?: 'Not set'  }}</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <p><b>Required RAM/memory:</b> {{ $build->min_memory ? $build->min_memory . ' MB' : 'Not set' }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -52,15 +51,19 @@
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-                        <th style="width: 60%">Add a Mod</th>
-                        <th></th>
-                        <th></th>
+                        <tr>
+                            <th style="width: 60%">Add a mod</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
                         </thead>
                         <tbody>
                         <form method="post"
                               action="{{ url('/modpack/build/modify') }}"
                               accept-charset="UTF-8"
                               class="mod-add"
+                              autocomplete="off"
+                              class="form-horizontal"
                         >
                             @csrf
                             <input type="hidden" name="build" value="{{ $build->id }}">
@@ -68,7 +71,7 @@
                             <tr id="mod-list-add">
                                 <td>
                                     <i class="icon-plus"></i>
-                                    <select class="form-control" name="mod-name" id="mod" placeholder="Select a Mod...">
+                                    <select class="form-control" name="mod-name" id="mod" placeholder="Select a mod...">
                                         <option value=""></option>
                                         @foreach ($mods as $mod)
                                             <option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
@@ -79,12 +82,12 @@
                                     <select class="form-control"
                                             name="mod-version"
                                             id="mod-version"
-                                            placeholder="Select a Modversion..."
+                                            placeholder="Select a mod version..."
                                     >
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="submit" class="btn btn-success btn-small" value="Add Mod">
+                                    <input type="submit" class="btn btn-success btn-small" value="Add to build">
                                 </td>
                             </tr>
                         </form>
@@ -108,7 +111,7 @@
                         @foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
                             <tr>
                                 <td>
-                                    <a href="{{ url('/mod/view/'.$ver->mod->id) }}">{{ $ver->mod->pretty_name ?: $ver->mod->name }}</a>
+                                    <a href="{{ url('/mod/view/'.$ver->mod->id) }}">{{ $ver->mod->pretty_name ?: $ver->mod->name }}</a><br>
                                     ({{ $ver->mod->name }})
                                 </td>
                                 <td>
@@ -117,6 +120,7 @@
                                           accept-charset="UTF-8"
                                           style="margin-bottom: 0"
                                           class="mod-version"
+                                          autocomplete="off"
                                     >
                                         @csrf
                                         <input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
@@ -168,7 +172,7 @@
     </div>
 @endsection
 @section('bottom')
-    <script type="text/javascript">
+    <script>
         var $select = $("#mod").selectize({
             dropdownParent: "body",
             create: false,
@@ -289,7 +293,7 @@
                     }
                 });
             } else {
-                $.jGrowl("Please select a Modversion", {group: 'alert-warning'});
+                $.jGrowl("Please select a mod version", {group: 'alert-warning'});
             }
         });
 
