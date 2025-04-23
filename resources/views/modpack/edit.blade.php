@@ -63,9 +63,9 @@
                             <p>Check the clients below you want to have access to this modpack if anything is set to
                                 private.</p>
                             @empty ($allClients)
-                                <div class="alert alert-warning">No Clients to add</div>
+                                <div class="alert alert-warning">No clients to add</div>
                             @else
-                                @foreach ($allClients as $client)
+                                @foreach ($allClients->sortBy('name', SORT_NATURAL) as $client)
                                     <div style="display: inline-block; padding-right: 10px;">
                                         <input type="checkbox"
                                                name="clients[]"
