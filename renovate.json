@@ -15,7 +15,7 @@
       "matchManagers": [
         "composer"
       ],
-      "matchPackagePatterns": [
+      "matchPackageNames": [
         "^php$"
       ],
       "matchDatasources": [
