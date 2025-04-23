@@ -8,5 +8,12 @@
     ":semanticCommitTypeAll(chore)",
     ":separateMajorReleases"
   ],
-  "rangeStrategy": "bump"
+  "rangeStrategy": "bump",
+  "packageRules": [
+    {
+      "matchManagers": ["composer"],
+      "matchPackageNames": ["php"],
+      "enabled": false
+    }
+  ]
 }
