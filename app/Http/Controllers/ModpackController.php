@@ -228,12 +228,7 @@ class ModpackController extends Controller
         Cache::forget('modpack:'.$modpack->slug);
         if (! empty($clone)) {
             $clone_build = Build::find($clone);
-            $version_ids = [];
-            foreach ($clone_build->modversions as $cver) {
-                if (! empty($cver)) {
-                    array_push($version_ids, $cver->id);
-                }
-            }
+            $version_ids = $clone_build->modversions()->pluck('id')->toArray();
             $build->modversions()->sync($version_ids);
         }
 
