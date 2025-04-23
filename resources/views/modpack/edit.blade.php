@@ -81,7 +81,7 @@
                     </div>
                     <div class="col-md-6">
                         <h3>Image Management</h3>
-                        <p>Modpack art (logo, icon and background images) are handled entirely by the
+                        <p>Modpack art (the logo, icon and background images) are managed in
                             <a href="https://www.technicpack.net/" target="_blank" rel="noopener">Technic Platform</a>.
                         </p>
                         <p>To change your modpack art you should go to your modpack settings in Platform and choose the
