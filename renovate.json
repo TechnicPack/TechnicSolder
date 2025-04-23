@@ -15,8 +15,8 @@
       "matchManagers": [
         "composer"
       ],
-      "matchPackageNames": [
-        "^php$"
+      "matchDepNames": [
+        "php"
       ],
       "enabled": false
     }
