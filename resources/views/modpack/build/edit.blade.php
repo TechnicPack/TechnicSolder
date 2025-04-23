@@ -78,7 +78,7 @@
                                            @checked($build->min_memory)
                                     >
                                 </span>
-                                <input type="text"
+                                <input type="number"
                                        class="form-control"
                                        name="memory"
                                        id="memory"
@@ -103,11 +103,15 @@
 @endsection
 @section('bottom')
     <script type="text/javascript">
-        $('#memory-enabled').change(function () {
-            if ($('#memory-enabled').is(':checked') == true) {
-                $('#memory').prop('disabled', false);
+        const memoryEnabledField = $('#memory-enabled');
+        memoryEnabledField.change(function () {
+            const memoryAmountField = $('#memory');
+
+            if ($(this).is(':checked')) {
+                memoryAmountField.val(memoryAmountField.data('value') || '').prop('disabled', false);
             } else {
-                $('#memory').val('').prop('disabled', true);
+                memoryAmountField.data('value', memoryAmountField.val());
+                memoryAmountField.val('').prop('disabled', true);
             }
         });
     </script>
