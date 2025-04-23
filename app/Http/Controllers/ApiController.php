@@ -111,7 +111,7 @@ class ApiController extends Controller
                 return Mod::pluck('pretty_name', 'name');
             });
 
-            //usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
+            // usort($response['mod'], function($a, $b){return strcasecmp($a['name'], $b['name']);});
 
             return response()->json([
                 'mods' => $mods,

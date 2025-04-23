@@ -131,7 +131,7 @@ class UserController extends Controller
             $perm->save();
         }
 
-        //Security logging
+        // Security logging
         $user->updated_by_user_id = Auth::user()->id;
         $user->updated_by_ip = Request::ip();
 

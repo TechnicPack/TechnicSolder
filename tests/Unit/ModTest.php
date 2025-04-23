@@ -91,7 +91,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_add_post_empty_version(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'md5' => '9ece64de3e11a0f15f55ef34f2194760',
@@ -108,7 +108,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_add_post_empty_mod_id(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => 'v1.5.2.v01',
@@ -125,7 +125,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_add_post_invalid_mod_id(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => 'v1.5.2.v01',
@@ -143,7 +143,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_add_post(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => '1.7.10-4.0.0',
@@ -162,7 +162,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_add_post_manual_md5(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => '1.7.10-4.0.0',
@@ -182,7 +182,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_add_post_md5_fail(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => 'v1.5.2.1',
@@ -217,7 +217,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_rehash_post_empty_id(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '',
@@ -234,7 +234,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_rehash_post_invalid_id(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '10000000',
@@ -251,7 +251,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_rehash_post(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '1',
@@ -269,7 +269,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_rehash_post_md5_manual(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '1',
@@ -288,7 +288,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_rehash_post_md5_empty(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '1',
@@ -312,7 +312,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_delete_empty_id(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/', []);
 
@@ -321,7 +321,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_delete_invalid_id(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/10000000', []);
 
@@ -334,7 +334,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_delete(): void
     {
-        //Fake an AJAX call.
+        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/1');
 

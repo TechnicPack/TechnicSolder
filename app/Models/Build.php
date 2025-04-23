@@ -55,6 +55,6 @@ class Build extends Model
 
     public function isLive(): bool
     {
-        return $this->is_published && !$this->private;
+        return $this->is_published && ! $this->private;
     }
 }
