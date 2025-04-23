@@ -11,8 +11,15 @@
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "matchManagers": ["composer"],
-      "matchPackageNames": ["php"],
+      "matchManagers": [
+        "composer"
+      ],
+      "matchPackagePatterns": [
+        "^php$"
+      ],
+      "matchDatasources": [
+        "composer"
+      ],
       "enabled": false
     }
   ]
