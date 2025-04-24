@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\HandlerStack;
 use Illuminate\Support\Facades\Log;
 
 class UrlUtils
@@ -16,17 +17,12 @@ class UrlUtils
 
     private const DEFAULT_TOTAL_TIMEOUT = 15;
 
-    /**
-     * @var Client Guzzle client
-     */
-    private static Client $client;
-
-    public static function getGuzzleClient(): Client
+    public static function getGuzzleClient(HandlerStack $handler = null): Client
     {
         $configConnectTimeout = config('solder.md5_connect_timeout');
         $configTotalTimeout = config('solder.md5_file_timeout');
 
-        return self::$client ??= new Client([
+        $options = [
             // Disable HTTP errors (4xx, 5xx) raising exceptions
             'http_errors' => false,
             // Set maximum redirects
@@ -37,7 +33,13 @@ class UrlUtils
             'connect_timeout' => is_int($configConnectTimeout) ? $configConnectTimeout : self::DEFAULT_CONNECT_TIMEOUT,
             // Set total timeout
             'timeout' => is_int($configTotalTimeout) ? $configTotalTimeout : self::DEFAULT_TOTAL_TIMEOUT,
-        ]);
+        ];
+
+        if (!is_null($handler)) {
+            $options['handler'] = $handler;
+        }
+
+        return new Client($options);
     }
 
     /**
@@ -45,7 +47,7 @@ class UrlUtils
      *
      * @param  string  $url  Url Location
      */
-    public static function get_remote_md5(string $url, $handler = null): array
+    public static function get_remote_md5(string $url, HandlerStack $handler = null): array
     {
         // We need to return:
         // - success => true
@@ -56,7 +58,7 @@ class UrlUtils
         // - message => exception message (string) $e->getMessage()
         // And we log the error to the laravel error log
 
-        $client = self::getGuzzleClient();
+        $client = self::getGuzzleClient($handler);
 
         try {
             $response = $client->get($url, [
@@ -64,7 +66,6 @@ class UrlUtils
                     'User-Agent' => self::USER_AGENT,
                 ],
                 'stream' => true,
-                'handler' => $handler,
             ]);
 
             if ($response->getStatusCode() !== 200) {
