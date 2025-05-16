@@ -46,7 +46,7 @@
         "barryvdh/laravel-ide-helper": "^3.5.5",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.4",
-        "laravel/pint": "^1.22.0",
+        "laravel/pint": "^1.22.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8",
         "phpunit/phpunit": "^11.5.18"
