@@ -17,7 +17,7 @@ class UrlUtils
 
     private const DEFAULT_TOTAL_TIMEOUT = 15;
 
-    public static function getGuzzleClient(HandlerStack $handler = null): Client
+    public static function getGuzzleClient(?HandlerStack $handler = null): Client
     {
         $configConnectTimeout = config('solder.md5_connect_timeout');
         $configTotalTimeout = config('solder.md5_file_timeout');
@@ -35,7 +35,7 @@ class UrlUtils
             'timeout' => is_int($configTotalTimeout) ? $configTotalTimeout : self::DEFAULT_TOTAL_TIMEOUT,
         ];
 
-        if (!is_null($handler)) {
+        if (! is_null($handler)) {
             $options['handler'] = $handler;
         }
 
@@ -47,7 +47,7 @@ class UrlUtils
      *
      * @param  string  $url  Url Location
      */
-    public static function get_remote_md5(string $url, HandlerStack $handler = null): array
+    public static function get_remote_md5(string $url, ?HandlerStack $handler = null): array
     {
         // We need to return:
         // - success => true
