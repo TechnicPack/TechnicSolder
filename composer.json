@@ -91,6 +91,10 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "ide": [
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
         ]
     }
 }
