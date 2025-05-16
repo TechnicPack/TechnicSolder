@@ -55,16 +55,19 @@ class Modversion extends Model
         return config('solder.mirror_url').'mods/'.$this->mod->name.'/'.$this->mod->name.'-'.$this->version.'.zip';
     }
 
-    public function humanFilesize($unit = null)
+    public function humanFilesize(): string
     {
         $size = $this->filesize;
-        if ((! $unit && $size >= 1 << 30) || $unit == 'GB') {
+
+        if ($size >= (1 << 30)) {
             return number_format($size / (1 << 30), 2).' GB';
         }
-        if ((! $unit && $size >= 1 << 20) || $unit == 'MB') {
+
+        if ($size >= (1 << 20)) {
             return number_format($size / (1 << 20), 2).' MB';
         }
-        if ((! $unit && $size >= 1 << 10) || $unit == 'KB') {
+
+        if ($size >= (1 << 10)) {
             return number_format($size / (1 << 10), 2).' KB';
         }
 
