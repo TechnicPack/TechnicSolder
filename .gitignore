@@ -3,7 +3,9 @@
 !docker/.env
 .env
 .env.*
+.phpstorm.meta.php
 .phpunit.result.cache
+/.idea
 /.phpunit.cache
 /docker/mysql
 /node_modules
@@ -13,6 +15,8 @@
 /vendor
 Homestead.json
 Homestead.yaml
+_ide_helper.php
+_ide_helper_models.php
 composer.lock
 npm-debug.log
 yarn-error.log
