@@ -156,7 +156,7 @@ final class ModTest extends TestCase
             'status' => 'success',
             'version' => '1.7.10-4.0.0',
             'md5' => '0925fb5cca71b6e8dd81fac9b257c6d4',
-            'filesize' => '8.89 KB',
+            'filesize' => '8.89 KiB',
         ]);
     }
 
@@ -175,7 +175,7 @@ final class ModTest extends TestCase
             'status' => 'warning',
             'version' => '1.7.10-4.0.0',
             'md5' => 'butts',
-            'filesize' => '8.89 KB',
+            'filesize' => '8.89 KiB',
             'reason' => 'MD5 provided does not match file MD5: 0925fb5cca71b6e8dd81fac9b257c6d4',
         ]);
     }
