@@ -60,15 +60,15 @@ class Modversion extends Model
         $size = $this->filesize;
 
         if ($size >= (1 << 30)) {
-            return number_format($size / (1 << 30), 2).' GB';
+            return number_format($size / (1 << 30), 2).' GiB';
         }
 
         if ($size >= (1 << 20)) {
-            return number_format($size / (1 << 20), 2).' MB';
+            return number_format($size / (1 << 20), 2).' MiB';
         }
 
         if ($size >= (1 << 10)) {
-            return number_format($size / (1 << 10), 2).' KB';
+            return number_format($size / (1 << 10), 2).' KiB';
         }
 
         return number_format($size).' bytes';
