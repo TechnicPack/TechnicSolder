@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
             define('SOLDER_STREAM', 'rolling');
         }
         if (! defined('SOLDER_VERSION')) {
-            define('SOLDER_VERSION', '0.12.4');
+            define('SOLDER_VERSION', '0.12.5');
         }
 
         View::composer('layouts.master', function ($view) {
