@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Build;
 use App\Models\Client;
 use App\Models\Key;
 use App\Models\Mod;
@@ -228,27 +229,34 @@ class ApiController extends Controller
 
     private function fetchBuild($modpackSlug, $buildName)
     {
-        $modpack = Cache::remember('modpack:'.$modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
-            return Modpack::with('builds')
-                ->where('slug', $modpackSlug)
-                ->first();
-        });
+        $buildCacheKey = 'modpack:'.$modpackSlug.':build:'.$buildName;
 
-        if (! $modpack) {
-            return ['error' => 'Modpack does not exist'];
-        }
-
-        $build = Cache::remember('modpack:'.$modpackSlug.':build:'.$buildName,
-            now()->addMinutes(5),
-            function () use ($modpack, $buildName) {
-                $build = $modpack->builds->firstWhere('version', '===', $buildName);
-
-                $build->load(['modversions', 'modversions.mod']);
-
-                return $build;
-            });
+        $build = Cache::get($buildCacheKey);
 
         if (! $build) {
+            $modpack = Cache::remember('modpack:'.$modpackSlug, now()->addMinutes(5), function () use ($modpackSlug) {
+                return Modpack::with('builds')->where('slug', $modpackSlug)->first();
+            });
+
+            if (! $modpack) {
+                return ['error' => 'Modpack does not exist'];
+            }
+
+            $build = $modpack->builds->firstWhere('version', '===', $buildName);
+
+            if ($build) {
+                // Cache the found build with its relationships for 5 minutes
+                $build->load(['modversions', 'modversions.mod']);
+                Cache::put($buildCacheKey, $build, now()->addMinutes(5));
+            } else {
+                // Cache the "not found" result for 1 minute
+                $build = Build::NOT_FOUND_CACHE_VALUE;
+                Cache::put($buildCacheKey, $build, now()->addMinute());
+            }
+        }
+
+        // Handle the "not found" case
+        if ($build === Build::NOT_FOUND_CACHE_VALUE) {
             return ['error' => 'Build does not exist'];
         }
 
