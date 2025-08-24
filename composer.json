@@ -42,7 +42,7 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.15.4",
+        "barryvdh/laravel-debugbar": "^3.16.0",
         "barryvdh/laravel-ide-helper": "^3.5.5",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.4.2",
