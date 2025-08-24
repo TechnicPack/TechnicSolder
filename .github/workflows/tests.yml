@@ -21,8 +21,9 @@ jobs:
       fail-fast: true
       matrix:
         php: [8.2, 8.3, 8.4]
+        stability: [prefer-lowest, prefer-stable]
 
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     
     steps:
       - name: Checkout code
@@ -33,13 +34,19 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          ini-values: error_reporting=E_ALL
+          tools: composer:v2
           coverage: none
 
       - name: Copy testing .env
         run: cp .env.testing .env
 
       - name: Install dependencies
-        run: composer install --no-interaction --no-progress
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: composer install --${{ matrix.stability }} --no-interaction --no-progress
 
       - name: Generate app key
         run: php artisan key:generate
