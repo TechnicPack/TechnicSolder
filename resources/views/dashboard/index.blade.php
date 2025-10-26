@@ -164,7 +164,6 @@
             </div>
         </div>
     </div>
-    <p>Technic Solder is an open source project. It is under the MIT license. Source Code:
-        <a href="https://github.com/TechnicPack/TechnicSolder" target="_blank" rel="noopener noreferrer">https://github.com/TechnicPack/TechnicSolder</a>
-    </p>
+    <p><a href="https://github.com/TechnicPack/TechnicSolder" target="_blank" rel="noopener noreferrer">Technic
+            Solder</a> is an open source project, under the MIT license.</p>
 @endsection
