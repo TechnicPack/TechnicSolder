@@ -45,7 +45,7 @@
         "barryvdh/laravel-debugbar": "^3.16.0",
         "barryvdh/laravel-ide-helper": "^3.6.0",
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.7.2",
+        "larastan/larastan": "^3.8.0",
         "laravel/pint": "^1.25.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
