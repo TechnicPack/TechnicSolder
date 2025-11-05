@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Middleware\Build;
+use App\Http\Middleware\Cors;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\Modpack;
+use App\Http\Middleware\SolderClients;
+use App\Http\Middleware\SolderKeys;
+use App\Http\Middleware\SolderModpacks;
+use App\Http\Middleware\SolderMods;
+use App\Http\Middleware\SolderUsers;
 use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,18 +24,19 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
+        $middleware->web([HandleInertiaRequests::class]);
         $middleware->throttleApi();
-        $middleware->api(\App\Http\Middleware\Cors::class);
+        $middleware->api(Cors::class);
 
         $middleware->alias([
-            'build' => \App\Http\Middleware\Build::class,
-            'cors' => \App\Http\Middleware\Cors::class,
-            'modpack' => \App\Http\Middleware\Modpack::class,
-            'solder_clients' => \App\Http\Middleware\SolderClients::class,
-            'solder_keys' => \App\Http\Middleware\SolderKeys::class,
-            'solder_modpacks' => \App\Http\Middleware\SolderModpacks::class,
-            'solder_mods' => \App\Http\Middleware\SolderMods::class,
-            'solder_users' => \App\Http\Middleware\SolderUsers::class,
+            'build' => Build::class,
+            'cors' => Cors::class,
+            'modpack' => Modpack::class,
+            'solder_clients' => SolderClients::class,
+            'solder_keys' => SolderKeys::class,
+            'solder_modpacks' => SolderModpacks::class,
+            'solder_mods' => SolderMods::class,
+            'solder_users' => SolderUsers::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

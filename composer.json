@@ -1,5 +1,5 @@
 {
-    "name": "JustinRijsdijk/SolderNext",
+    "name": "justinrijsdijk/soldernext",
     "type": "project",
     "description": "Technic Solder API compatible platform using Laravel Framework",
     "keywords": [
@@ -44,6 +44,7 @@
         "ext-redis": "*",
         "guzzlehttp/guzzle": "^7.10.0",
         "http-interop/http-factory-guzzle": "^1.2",
+        "inertiajs/inertia-laravel": "^2.0",
         "knplabs/github-api": "^3.16",
         "laravel/framework": "^12.36.0",
         "laravel/tinker": "^2.10.1"
