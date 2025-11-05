@@ -1,13 +1,14 @@
 {
-    "name": "technicpack/solder",
+    "name": "JustinRijsdijk/SolderNext",
     "type": "project",
-    "description": "Technic Solder API using Laravel Framework",
+    "description": "Technic Solder API compatible platform using Laravel Framework",
     "keywords": [
         "technic",
         "solder",
+        "solder next",
         "api"
     ],
-    "homepage": "https://github.com/TechnicPack/TechnicSolder",
+    "homepage": "https://github.com/JustinRijsdijk/SolderNext",
     "license": "MIT",
     "authors": [
         {
@@ -27,6 +28,12 @@
             "email": "pedroagracio@gmail.com",
             "homepage": "https://pyker.net/",
             "role": "Developer"
+        },
+        {
+            "name": "Justin Rijsdijk",
+            "email": "justinrijsdijk@gmail.com",
+            "homepage": "https://github.com/JustinRijsdijk",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -42,6 +49,7 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "barryvdh/laravel-debugbar": "^3.16.0",
         "barryvdh/laravel-ide-helper": "^3.6.0",
         "fakerphp/faker": "^1.24.1",
