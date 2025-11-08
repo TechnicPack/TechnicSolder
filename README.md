@@ -99,4 +99,8 @@ Troubleshooting
 
 If you are having issues and can't seem to figure out what's going on, join our [development Discord server][discord].
 
+Disclaimer
+---------------
+Solder Next is an independent community fork of Technic Solder and is not affiliated with or endorsed by Technic or the Technic team.
+
 [discord]: https://discord.gg/YmvZuR695j
