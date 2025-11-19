@@ -3,9 +3,7 @@ Technic Solder
 
 [![License](https://poser.pugx.org/solder/solder/license.svg)](https://packagist.org/packages/solder/solder)
 
-![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg) ![Build Status](https://github.com/TechnicPack/TechnicSolder/actions/workflows/tests.yml/badge.svg?branch=master)
-
-![Latest Unstable Version](https://poser.pugx.org/solder/solder/v/unstable.svg) ![Build Status](https://github.com/TechnicPack/TechnicSolder/actions/workflows/tests.yml/badge.svg?branch=dev)
+![Latest Stable Version](https://poser.pugx.org/solder/solder/v/stable.svg) ![Build Status](https://github.com/TechnicPack/TechnicSolder/actions/workflows/tests.yml/badge.svg?branch=main)
 
 Join us on [Discord][discord]!
 
