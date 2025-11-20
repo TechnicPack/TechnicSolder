@@ -48,7 +48,7 @@
         "larastan/larastan": "^3.8.0",
         "laravel/pint": "^1.25.1",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.8.2",
+        "nunomaduro/collision": "^8.8.3",
         "phpunit/phpunit": "^12.4.3"
     },
     "config": {
