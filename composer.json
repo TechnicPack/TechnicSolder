@@ -49,7 +49,7 @@
         "laravel/pint": "^1.25.1",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.2",
-        "phpunit/phpunit": "^11.5.43"
+        "phpunit/phpunit": "^11.5.44"
     },
     "config": {
         "optimize-autoloader": true,
