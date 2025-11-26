@@ -39,7 +39,7 @@
         "http-interop/http-factory-guzzle": "^1.2",
         "knplabs/github-api": "^3.16",
         "laravel/framework": "^12.39.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16.1",
