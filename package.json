@@ -4,7 +4,7 @@
     "laravel-vite-plugin": "^2.0.1",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
+    "vite": "^7.2.6",
     "vue-tsc": "^3.1.5"
   },
   "dependencies": {
