@@ -1,4 +1,4 @@
-FROM php:8.4-fpm
+FROM php:8.5-fpm
 
 RUN apt-get update && apt-get install -y unzip nginx \
     && docker-php-ext-install bcmath pdo_mysql \
