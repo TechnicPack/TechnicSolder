@@ -13,7 +13,7 @@ class TestSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call('UserTableSeeder');
+        $this->call(UserTableSeeder::class);
         $this->call(ModpackTableTestSeeder::class);
         $this->call(ModTableTestSeeder::class);
         $this->call(ClientTableTestSeeder::class);

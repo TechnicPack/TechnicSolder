@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
@@ -19,18 +18,6 @@ return new class extends Migration
             $table->string('last_ip')->nullable();
             $table->nullableTimestamps();
         });
-
-        /**
-         * Create default user (if one doesn't exist)
-         **/
-        if (User::count() == 0) {
-            $user = new User;
-            $user->username = 'admin';
-            $user->email = 'admin@admin.com';
-            $user->password = 'admin';
-            $user->created_ip = gethostbyname(gethostname());
-            $user->save();
-        }
     }
 
     /**

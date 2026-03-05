@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\UserPermission;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
@@ -24,11 +23,6 @@ return new class extends Migration
             $table->string('modpacks')->nullable();
             $table->nullableTimestamps();
         });
-
-        $perm = new UserPermission;
-        $perm->user_id = 1;
-        $perm->solder_full = true;
-        $perm->save();
     }
 
     /**

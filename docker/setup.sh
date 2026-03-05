@@ -17,6 +17,9 @@ fi
 # Run migrations
 php artisan migrate --force -n
 
+# Create default admin user if none exists
+php artisan solder:setup --no-interaction
+
 # Ensure the web server can write to storage and cache
 chgrp -R www-data storage bootstrap/cache
 find storage bootstrap/cache -type d -exec chmod 775 {} \;
