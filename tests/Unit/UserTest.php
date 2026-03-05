@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 final class UserTest extends TestCase
@@ -99,7 +98,7 @@ final class UserTest extends TestCase
         User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
@@ -121,7 +120,7 @@ final class UserTest extends TestCase
         $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
@@ -157,7 +156,7 @@ final class UserTest extends TestCase
         $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
@@ -189,7 +188,7 @@ final class UserTest extends TestCase
         $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
@@ -210,7 +209,7 @@ final class UserTest extends TestCase
         $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,
@@ -251,13 +250,33 @@ final class UserTest extends TestCase
         $response->assertSessionHas('success');
     }
 
+    public function test_created_user_can_login(): void
+    {
+        $data = [
+            'email' => 'logintest@test.com',
+            'username' => 'logintest',
+            'password' => 'TestPassword123',
+        ];
+
+        $this->post('/user/create', $data);
+        auth()->logout();
+
+        $response = $this->post('/login', [
+            'email' => 'logintest@test.com',
+            'password' => 'TestPassword123',
+        ]);
+
+        $response->assertRedirect('dashboard');
+        $this->assertAuthenticatedAs(User::where('email', 'logintest@test.com')->first());
+    }
+
     public function test_user_delete_first_post(): void
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
             'email' => 'test@test.com',
             'username' => 'test',
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',
             'created_by_user_id' => 1,

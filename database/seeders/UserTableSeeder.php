@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class UserTableSeeder extends Seeder
 {
@@ -21,7 +20,7 @@ class UserTableSeeder extends Seeder
         $testuser = User::create([
             'username' => 'admin',
             'email' => 'admin@admin.com',
-            'password' => Hash::make('admin'),
+            'password' => 'admin',
             'created_ip' => $thisIP,
             'last_ip' => $thisIP,
             'created_by_user_id' => 1,

@@ -8,7 +8,6 @@ use App\Models\UserPermission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
@@ -94,7 +93,7 @@ class UserController extends Controller
         $user->email = Request::input('email');
         $user->username = Request::input('username');
         if (Request::input('password1')) {
-            $user->password = Hash::make(Request::input('password1'));
+            $user->password = Request::input('password1');
         }
 
         /* Update User Permissions */
@@ -172,7 +171,7 @@ class UserController extends Controller
         $user = new User;
         $user->email = Request::input('email');
         $user->username = Request::input('username');
-        $user->password = Hash::make(Request::input('password'));
+        $user->password = Request::input('password');
         $user->created_ip = $creatorIP;
         $user->created_by_user_id = $creator;
         $user->updated_by_ip = $creatorIP;

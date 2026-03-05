@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Hash;
 
 return new class extends Migration
 {
@@ -28,7 +27,7 @@ return new class extends Migration
             $user = new User;
             $user->username = 'admin';
             $user->email = 'admin@admin.com';
-            $user->password = Hash::make('admin');
+            $user->password = 'admin';
             $user->created_ip = gethostbyname(gethostname());
             $user->save();
         }
