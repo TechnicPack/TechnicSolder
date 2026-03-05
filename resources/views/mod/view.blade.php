@@ -183,7 +183,12 @@
         var mirror_url = '{{ config("solder.mirror_url") }}';
 
         $('#add-version').keyup(function () {
-            $("#add-url").html('<a href="' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + $(this).val() + '.zip" target="_blank">' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + $(this).val() + '.zip</a>');
+            var val = $(this).val();
+            if (val === '') {
+                $("#add-url").html('N/A');
+            } else {
+                $("#add-url").html('<a href="' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + val + '.zip" target="_blank">' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + val + '.zip</a>');
+            }
         });
 
         $('#add').submit(function (e) {
