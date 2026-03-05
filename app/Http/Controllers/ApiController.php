@@ -260,7 +260,7 @@ class ApiController extends Controller
             return ['error' => 'Build does not exist'];
         }
 
-        if (! $build->is_published || $build->private && ! ($this->key || ($this->client && $this->client->modpacks->contains($modpack)))) {
+        if (! $build->is_published || $build->private && ! ($this->key || ($this->client && $this->client->modpacks->contains($build->modpack)))) {
             return ['error' => 'You are not authorized to view this build'];
         }
 

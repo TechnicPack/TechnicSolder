@@ -128,6 +128,18 @@ final class ApiTest extends TestCase
         ]);
     }
 
+    public function test_private_build_unauthorized(): void
+    {
+        $modpack = Modpack::find(1);
+        $build = $modpack->builds->first();
+        $build->private = true;
+        $build->save();
+
+        $response = $this->get('api/modpack/'.$modpack->slug.'/'.$build->version);
+        $response->assertOk();
+        $response->assertJson(['error' => 'You are not authorized to view this build']);
+    }
+
     public function test_mod_version(): void
     {
         $mod = Mod::find(1);
