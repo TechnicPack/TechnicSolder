@@ -7,7 +7,6 @@ use App\Libraries\UpdateUtils;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\View\View;
 
@@ -15,15 +14,6 @@ class SolderController extends Controller
 {
     public function getConfigure()
     {
-        if (Request::has('edit-solder')) {
-            Config::set('solder.mirror_url', Request::input('mirror_url'));
-            Config::set('solder.repo_location', Request::input('repo_location'));
-            Config::set('solder.platform_key', Request::input('platform_key'));
-
-            return redirect('solder/configure')
-                ->with('success', 'Your solder configuration has been updated.');
-        }
-
         return view('solder.configure');
     }
 
