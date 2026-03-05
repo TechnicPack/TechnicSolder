@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Build;
 use App\Models\Modpack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -115,6 +116,28 @@ final class ModpackTest extends TestCase
         $response = $this->get('/modpack/build/'.$build->id);
 
         $response->assertOk();
+    }
+
+    public function test_delete_last_build(): void
+    {
+        $modpack = Modpack::find(1);
+        $build = $modpack->builds()->first();
+
+        $modpack->recommended = $build->version;
+        $modpack->latest = $build->version;
+        $modpack->save();
+
+        $response = $this->post('/modpack/build/'.$build->id, [
+            'action' => 'delete',
+            'confirm-delete' => '1',
+        ]);
+
+        $response->assertRedirect('/modpack/view/'.$modpack->id);
+
+        $modpack->refresh();
+        $this->assertNull($modpack->recommended);
+        $this->assertNull($modpack->latest);
+        $this->assertEquals(0, Build::where('modpack_id', $modpack->id)->count());
     }
 
     public function test_modpack_edit_get(): void
