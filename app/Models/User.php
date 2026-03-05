@@ -86,7 +86,7 @@ class User extends Authenticatable
     /**
      * The relationships that should always be loaded.
      *
-     * @var array
+     * @var list<string>
      */
     protected $with = ['permission'];
 

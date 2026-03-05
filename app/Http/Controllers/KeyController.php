@@ -7,7 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
 
 class KeyController extends Controller
@@ -60,7 +59,7 @@ class KeyController extends Controller
         $key = Key::find($key_id);
 
         if (empty($key)) {
-            return redirect('key/list')->withErrors(new MessageBag(['Platform Key not found']));
+            return redirect('key/list')->withErrors(['Platform Key not found']);
         }
 
         return view('key.delete')->with('key', $key);
@@ -71,7 +70,7 @@ class KeyController extends Controller
         $key = Key::find($key_id);
 
         if (empty($key)) {
-            return redirect('key/list')->withErrors(new MessageBag(['Platform Key not found']));
+            return redirect('key/list')->withErrors(['Platform Key not found']);
         }
 
         $key->delete();

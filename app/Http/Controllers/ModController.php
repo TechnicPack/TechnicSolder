@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -43,7 +42,7 @@ class ModController extends Controller
             ->find($mod_id);
 
         if (empty($mod)) {
-            return redirect('mod/list')->withErrors(new MessageBag(['Mod not found']));
+            return redirect('mod/list')->withErrors(['Mod not found']);
         }
 
         return view('mod.view')->with(['mod' => $mod]);
@@ -88,7 +87,7 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return redirect('mod/list')->withErrors(new MessageBag(['Mod not found']));
+            return redirect('mod/list')->withErrors(['Mod not found']);
         }
 
         return view('mod.delete')->with(['mod' => $mod]);
@@ -98,7 +97,7 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return redirect('mod/list')->withErrors(new MessageBag(['Error modifying mod - Mod not found']));
+            return redirect('mod/list')->withErrors(['Error modifying mod - Mod not found']);
         }
 
         $rules = [
@@ -134,7 +133,7 @@ class ModController extends Controller
     {
         $mod = Mod::find($mod_id);
         if (empty($mod)) {
-            return redirect('mod/list')->withErrors(new MessageBag(['Error deleting mod - Mod not found']));
+            return redirect('mod/list')->withErrors(['Error deleting mod - Mod not found']);
         }
 
         foreach ($mod->versions as $ver) {
@@ -170,14 +169,11 @@ class ModController extends Controller
             ]);
         }
 
-        if (empty($md5)) {
-            $md5Request = $this->mod_md5($ver->mod, $ver->version);
-            if ($md5Request['success']) {
-                $md5 = $md5Request['md5'];
-            }
-        } else {
-            $md5Request = $this->mod_md5($ver->mod, $ver->version);
-            $providedfile_md5 = ! $md5Request['success'] ? 'Null' : $md5Request['md5'];
+        $md5Request = $this->mod_md5($ver->mod, $ver->version);
+        $providedfile_md5 = ! $md5Request['success'] ? 'Null' : $md5Request['md5'];
+
+        if (empty($md5) && $md5Request['success']) {
+            $md5 = $md5Request['md5'];
         }
 
         if ($md5Request['success'] && ! empty($md5)) {
@@ -247,14 +243,11 @@ class ModController extends Controller
             ]);
         }
 
-        if (empty($md5)) {
-            $file_md5 = $this->mod_md5($mod, $version);
-            if ($file_md5['success']) {
-                $md5 = $file_md5['md5'];
-            }
-        } else {
-            $file_md5 = $this->mod_md5($mod, $version);
-            $pfile_md5 = ! $file_md5['success'] ? 'Null' : $file_md5['md5'];
+        $file_md5 = $this->mod_md5($mod, $version);
+        $pfile_md5 = ! $file_md5['success'] ? 'Null' : $file_md5['md5'];
+
+        if (empty($md5) && $file_md5['success']) {
+            $md5 = $file_md5['md5'];
         }
 
         $ver = new Modversion;

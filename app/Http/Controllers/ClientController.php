@@ -7,7 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
 
 class ClientController extends Controller
@@ -62,7 +61,7 @@ class ClientController extends Controller
         $client = Client::find($client_id);
 
         if (empty($client)) {
-            return redirect('client/list')->withErrors(new MessageBag(['Client UUID not found']));
+            return redirect('client/list')->withErrors(['Client UUID not found']);
         }
 
         return view('client.delete')->with('client', $client);
@@ -73,7 +72,7 @@ class ClientController extends Controller
         $client = Client::find($client_id);
 
         if (empty($client)) {
-            return redirect('client/list')->withErrors(new MessageBag(['Client UUID not found']));
+            return redirect('client/list')->withErrors(['Client UUID not found']);
         }
 
         $client->modpacks()->sync([]);

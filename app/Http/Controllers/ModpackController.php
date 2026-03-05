@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -55,7 +54,7 @@ class ModpackController extends Controller
             ->find($modpack_id);
 
         if (empty($modpack)) {
-            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
         return view('modpack.view')->with('modpack', $modpack);
@@ -69,7 +68,7 @@ class ModpackController extends Controller
             ->with('modversions.mod.versions')
             ->find($build_id);
         if (empty($build)) {
-            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
         if (Request::input('action') == 'delete') {
@@ -188,7 +187,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
         $minecraft = MinecraftUtils::getMinecraftVersions();
@@ -204,7 +203,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return redirect('modpack/list')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
         $rules = [
@@ -316,7 +315,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return redirect('dashboard')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('dashboard')->withErrors(['Modpack not found']);
         }
 
         $currentClients = [];
@@ -336,7 +335,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return redirect('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list/')->withErrors(['Modpack not found']);
         }
 
         $rules = [
@@ -378,7 +377,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return redirect('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list/')->withErrors(['Modpack not found']);
         }
 
         return view('modpack.delete')->with(['modpack' => $modpack]);
@@ -388,7 +387,7 @@ class ModpackController extends Controller
     {
         $modpack = Modpack::find($modpack_id);
         if (empty($modpack)) {
-            return redirect('modpack/list/')->withErrors(new MessageBag(['Modpack not found']));
+            return redirect('modpack/list/')->withErrors(['Modpack not found']);
         }
 
         foreach ($modpack->builds as $build) {
@@ -535,6 +534,8 @@ class ModpackController extends Controller
                 return response()->json([
                     'success' => 'Updated build '.$build->version."'s private status.",
                 ]);
+            default:
+                abort(400);
         }
     }
 }

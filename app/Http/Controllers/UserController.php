@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -36,14 +35,14 @@ class UserController extends Controller
     {
         if (empty($user_id)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User ID not provided']));
+                ->withErrors(['User ID not provided']);
         }
 
         $user = User::find($user_id);
 
         if (empty($user)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User not found']));
+                ->withErrors(['User not found']);
         }
 
         $allModpacks = Modpack::all();
@@ -60,7 +59,7 @@ class UserController extends Controller
     {
         if (empty($user_id)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User ID not provided']));
+                ->withErrors(['User ID not provided']);
         }
 
         if (! Auth::user()->permission->solder_full && ! Auth::user()->permission->solder_users && $user_id != Auth::user()->id) {
@@ -72,7 +71,7 @@ class UserController extends Controller
 
         if (empty($user)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User not found']));
+                ->withErrors(['User not found']);
         }
 
         $rules = [
@@ -217,13 +216,13 @@ class UserController extends Controller
 
         if (empty($user_id)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User ID not provided']));
+                ->withErrors(['User ID not provided']);
         }
 
         $user = User::find($user_id);
         if (empty($user)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User not found']));
+                ->withErrors(['User not found']);
         }
 
         if ($user->permission->solder_full) {
@@ -234,7 +233,7 @@ class UserController extends Controller
 
             if ($numOfOtherSuperUsers <= 0) {
                 return redirect('user/list')
-                    ->withErrors(new MessageBag(['Cannot delete the only remaining super user.']));
+                    ->withErrors(['Cannot delete the only remaining super user.']);
             }
         }
 
@@ -245,13 +244,13 @@ class UserController extends Controller
     {
         if (empty($user_id)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User ID not provided']));
+                ->withErrors(['User ID not provided']);
         }
 
         $user = User::find($user_id);
         if (empty($user)) {
             return redirect('user/list')
-                ->withErrors(new MessageBag(['User not found']));
+                ->withErrors(['User not found']);
         }
 
         if ($user->permission->solder_full) {
@@ -262,7 +261,7 @@ class UserController extends Controller
 
             if ($numOfOtherSuperUsers <= 0) {
                 return redirect('user/list')
-                    ->withErrors(new MessageBag(['Cannot delete the only remaining super user.']));
+                    ->withErrors(['Cannot delete the only remaining super user.']);
             }
         }
 
