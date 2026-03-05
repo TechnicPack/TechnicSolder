@@ -66,4 +66,9 @@ class UserPermission extends Model
     {
         return preg_split('/[,]+/', $value, -1, PREG_SPLIT_NO_EMPTY);
     }
+
+    public function canAccessModpack(int $id): bool
+    {
+        return $this->solder_full || in_array($id, $this->modpacks);
+    }
 }

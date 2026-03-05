@@ -17,7 +17,7 @@
             </h3>
             <div class="pull-right">
                 <button onclick="window.location.reload()" class="btn btn-xs btn-success">Refresh</button>
-                <a href="{{ URL::to('modpack/build/' . $build->id . '?action=edit') }}" class="btn btn-xs btn-primary">Edit</a>
+                <a href="{{ URL::to('modpack/build/' . $build->id . '/edit') }}" class="btn btn-xs btn-primary">Edit</a>
                 <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-default">Back to
                     modpack</a>
             </div>

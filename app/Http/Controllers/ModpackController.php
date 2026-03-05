@@ -29,7 +29,7 @@ class ModpackController extends Controller
         $this->middleware('solder_modpacks');
         $this->middleware('modpack',
             ['only' => ['getView', 'getDelete', 'postDelete', 'getEdit', 'postEdit', 'getAddBuild', 'postAddBuild']]);
-        $this->middleware('build', ['only' => ['anyBuild']]);
+        $this->middleware('build', ['only' => ['getBuild', 'getEditBuild', 'postEditBuild', 'getDeleteBuild', 'postDeleteBuild']]);
     }
 
     public function getIndex(): RedirectResponse
@@ -40,6 +40,12 @@ class ModpackController extends Controller
     public function getList(): View
     {
         $modpacks = Modpack::all();
+
+        $user = Auth::user();
+        $perms = $user->permission;
+        if (! $perms->solder_full) {
+            $modpacks = $modpacks->filter(fn ($modpack) => $perms->canAccessModpack($modpack->id));
+        }
 
         return view('modpack.list')->with('modpacks', $modpacks);
     }
@@ -60,7 +66,7 @@ class ModpackController extends Controller
         return view('modpack.view')->with('modpack', $modpack);
     }
 
-    public function anyBuild($build_id = null)
+    public function getBuild($build_id = null)
     {
         $build = Build::with('modpack')
             ->with('modversions')
@@ -71,116 +77,141 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
-        if (Request::input('action') == 'delete') {
-            if (Request::input('confirm-delete')) {
-                $switchrec = 0;
-                $switchlat = 0;
-                $modpack = $build->modpack;
-                if ($build->version == $modpack->recommended) {
-                    $switchrec = 1;
-                }
-                if ($build->version == $modpack->latest) {
-                    $switchlat = 1;
-                }
-                $buildVersion = $build->version;
-                $build->modversions()->sync([]);
-                $build->delete();
-                if ($switchrec) {
-                    $recbuild = Build::where('modpack_id', '=', $modpack->id)
-                        ->orderBy('id', 'desc')->first();
-                    $modpack->recommended = $recbuild?->version;
-                }
+        $mods = Mod::all();
 
-                if ($switchlat) {
-                    $latbuild = Build::where('modpack_id', '=', $modpack->id)
-                        ->orderBy('id', 'desc')->first();
-                    $modpack->latest = $latbuild?->version;
-                }
-                $modpack->save();
-                Cache::forget('modpack:'.$modpack->slug);
-                Cache::forget('modpack:'.$modpack->slug.':build:'.$buildVersion);
+        return view('modpack.build.view')
+            ->with('build', $build)
+            ->with('mods', $mods);
+    }
 
-                return redirect('modpack/view/'.$build->modpack->id)->with('deleted', 'Build deleted.');
-            }
-
-            return view('modpack.build.delete')->with('build', $build);
-        } else {
-            if (Request::input('action') == 'edit') {
-                if (Request::input('confirm-edit')) {
-                    $rules = [
-                        'version' => 'required',
-                        'minecraft' => 'required',
-                        'memory' => [
-                            'required_if_accepted:memory-enabled',
-                            'numeric',
-                        ],
-                        'java-version' => [
-                            'nullable',
-                            Rule::enum(JavaVersionsEnum::class),
-                        ],
-                    ];
-
-                    $messages = [
-                        'memory.numeric' => 'You may enter in numbers only for the memory requirement',
-                    ];
-
-                    $attributes = [
-                        'version' => 'modpack version',
-                        'java-version' => 'Java version',
-                    ];
-
-                    $validation = Validator::make(Request::all(), $rules, $messages, $attributes);
-                    if ($validation->fails()) {
-                        return redirect('modpack/build/'.$build->id.'?action=edit')
-                            ->withErrors($validation->messages())
-                            ->withInput();
-                    }
-
-                    // Wrap changes inside a transaction so potential modpack changes also get rolled back if anything fails
-                    DB::transaction(function () use ($build) {
-                        $oldVersion = $build->version;
-
-                        $build->version = Request::input('version');
-
-                        $minecraft = Request::input('minecraft');
-
-                        $build->minecraft = $minecraft;
-                        $build->min_java = Request::input('java-version');
-                        $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
-                        $build->save();
-
-                        // If the build's name/version changes then we need to check the modpack's latest/recommended build
-                        if ($oldVersion !== $build->version) {
-                            // Update the modpack's latest build if this was it
-                            if ($build->modpack->latest === $oldVersion) {
-                                $build->modpack->latest = $build->version;
-                                $build->modpack->save();
-                            }
-
-                            // Update the modpack's recommended build if this was it
-                            if ($build->modpack->recommended === $oldVersion) {
-                                $build->modpack->recommended = $build->version;
-                                $build->modpack->save();
-                            }
-                        }
-                    });
-
-                    Cache::forget('modpack:'.$build->modpack->slug);
-                    Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
-
-                    return redirect('modpack/build/'.$build->id);
-                }
-                $minecraft = MinecraftUtils::getMinecraftVersions();
-
-                return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
-            } else {
-                $mods = Mod::all();
-
-                return view('modpack.build.view')
-                    ->with('build', $build)
-                    ->with('mods', $mods);
-            }
+    public function getEditBuild($build_id = null)
+    {
+        $build = Build::with('modpack')->find($build_id);
+        if (empty($build)) {
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
+
+        $minecraft = MinecraftUtils::getMinecraftVersions();
+
+        return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
+    }
+
+    public function postEditBuild($build_id = null)
+    {
+        $build = Build::with('modpack')->find($build_id);
+        if (empty($build)) {
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
+        }
+
+        $rules = [
+            'version' => 'required',
+            'minecraft' => 'required',
+            'memory' => [
+                'required_if_accepted:memory-enabled',
+                'numeric',
+            ],
+            'java-version' => [
+                'nullable',
+                Rule::enum(JavaVersionsEnum::class),
+            ],
+        ];
+
+        $messages = [
+            'memory.numeric' => 'You may enter in numbers only for the memory requirement',
+        ];
+
+        $attributes = [
+            'version' => 'modpack version',
+            'java-version' => 'Java version',
+        ];
+
+        $validation = Validator::make(Request::all(), $rules, $messages, $attributes);
+        if ($validation->fails()) {
+            return redirect('modpack/build/'.$build->id.'/edit')
+                ->withErrors($validation->messages())
+                ->withInput();
+        }
+
+        // Wrap changes inside a transaction so potential modpack changes also get rolled back if anything fails
+        DB::transaction(function () use ($build) {
+            $oldVersion = $build->version;
+
+            $build->version = Request::input('version');
+
+            $minecraft = Request::input('minecraft');
+
+            $build->minecraft = $minecraft;
+            $build->min_java = Request::input('java-version');
+            $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
+            $build->save();
+
+            // If the build's name/version changes then we need to check the modpack's latest/recommended build
+            if ($oldVersion !== $build->version) {
+                // Update the modpack's latest build if this was it
+                if ($build->modpack->latest === $oldVersion) {
+                    $build->modpack->latest = $build->version;
+                    $build->modpack->save();
+                }
+
+                // Update the modpack's recommended build if this was it
+                if ($build->modpack->recommended === $oldVersion) {
+                    $build->modpack->recommended = $build->version;
+                    $build->modpack->save();
+                }
+            }
+        });
+
+        Cache::forget('modpack:'.$build->modpack->slug);
+        Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
+
+        return redirect('modpack/build/'.$build->id);
+    }
+
+    public function getDeleteBuild($build_id = null)
+    {
+        $build = Build::with('modpack')->find($build_id);
+        if (empty($build)) {
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
+        }
+
+        return view('modpack.build.delete')->with('build', $build);
+    }
+
+    public function postDeleteBuild($build_id = null)
+    {
+        $build = Build::with('modpack')->find($build_id);
+        if (empty($build)) {
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
+        }
+
+        $switchrec = 0;
+        $switchlat = 0;
+        $modpack = $build->modpack;
+        if ($build->version == $modpack->recommended) {
+            $switchrec = 1;
+        }
+        if ($build->version == $modpack->latest) {
+            $switchlat = 1;
+        }
+        $buildVersion = $build->version;
+        $build->modversions()->sync([]);
+        $build->delete();
+        if ($switchrec) {
+            $recbuild = Build::where('modpack_id', '=', $modpack->id)
+                ->orderBy('id', 'desc')->first();
+            $modpack->recommended = $recbuild?->version;
+        }
+
+        if ($switchlat) {
+            $latbuild = Build::where('modpack_id', '=', $modpack->id)
+                ->orderBy('id', 'desc')->first();
+            $modpack->latest = $latbuild?->version;
+        }
+        $modpack->save();
+        Cache::forget('modpack:'.$modpack->slug);
+        Cache::forget('modpack:'.$modpack->slug.':build:'.$buildVersion);
+
+        return redirect('modpack/view/'.$modpack->id)->with('deleted', 'Build deleted.');
     }
 
     public function getAddBuild($modpack_id)

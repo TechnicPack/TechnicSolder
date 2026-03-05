@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Modpack;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
@@ -45,6 +46,14 @@ class AppServiceProvider extends ServiceProvider
             $modpacks = Cache::remember('allmodpacks', now()->addMinute(), function () {
                 return Modpack::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
             });
+
+            $user = Auth::user();
+            if ($user) {
+                $perms = $user->permission;
+                if (! $perms->solder_full) {
+                    $modpacks = $modpacks->filter(fn ($modpack) => $perms->canAccessModpack($modpack->id));
+                }
+            }
 
             $view->with('allModpacks', $modpacks);
         });

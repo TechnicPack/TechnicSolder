@@ -12,7 +12,7 @@
                 {{ $build->modpack->name }} &mdash; build {{ $build->version }}
             </h3>
             <div class="pull-right">
-                <a href="{{ url('modpack/build/' . $build->id) }}" class="btn btn-xs btn-primary">Add mods</a>
+                <a href="{{ url('/modpack/build/' . $build->id) }}" class="btn btn-xs btn-primary">Add mods</a>
                 <a href="{{ url('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-default">Back to
                     modpack</a>
             </div>
@@ -24,9 +24,8 @@
             </div>
             @endif
             @include('partial.form-errors')
-            <form action="{{ url()->full() }}" method="post" accept-charset="UTF-8">
+            <form action="{{ url('/modpack/build/'.$build->id.'/edit') }}" method="post" accept-charset="UTF-8">
                 @csrf
-                <input type="hidden" name="confirm-edit" value="1">
                 <div class="row">
                     <div class="col-md-6">
                         <h4>Edit Build</h4>
@@ -96,7 +95,7 @@
                 <hr>
                 <input type="submit" class="btn btn-success" value="Save changes">
                 <a href="{{ url('/modpack/build/'.$build->id) }}" class="btn btn-primary">Go back</a>
-                <a href="{{ url('/modpack/build/'.$build->id, ['action' => 'delete']) }}" class="btn btn-danger pull-right">Delete build</a>
+                <a href="{{ url('/modpack/build/'.$build->id.'/delete') }}" class="btn btn-danger pull-right">Delete build</a>
             </form>
         </div>
     </div>
