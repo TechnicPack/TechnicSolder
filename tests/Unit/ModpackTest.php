@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Build;
+use App\Models\Client;
 use App\Models\Modpack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -127,10 +128,7 @@ final class ModpackTest extends TestCase
         $modpack->latest = $build->version;
         $modpack->save();
 
-        $response = $this->post('/modpack/build/'.$build->id, [
-            'action' => 'delete',
-            'confirm-delete' => '1',
-        ]);
+        $response = $this->post('/modpack/build/'.$build->id.'/delete');
 
         $response->assertRedirect('/modpack/view/'.$modpack->id);
 
@@ -182,5 +180,45 @@ final class ModpackTest extends TestCase
         $this->assertEquals('test-test', $modpack->slug);
         $this->assertTrue((bool) ($modpack->hidden));
         $this->assertTrue((bool) ($modpack->private));
+    }
+
+    public function test_modpack_edit_post_with_clients(): void
+    {
+        $modpack = Modpack::find(1);
+        $client = Client::first();
+
+        $data = [
+            'name' => $modpack->name,
+            'slug' => $modpack->slug,
+            'clients' => [$client->id],
+        ];
+
+        $response = $this->post('/modpack/edit/'.$modpack->id, $data);
+        $response->assertRedirect('/modpack/view/'.$modpack->id);
+
+        $modpack->refresh();
+        $this->assertCount(1, $modpack->clients);
+        $this->assertEquals($client->id, $modpack->clients->first()->id);
+    }
+
+    public function test_modpack_edit_post_removes_clients(): void
+    {
+        $modpack = Modpack::find(1);
+        $client = Client::first();
+
+        // First attach a client
+        $modpack->clients()->sync([$client->id]);
+        $this->assertCount(1, $modpack->fresh()->clients);
+
+        // Post without clients to remove them
+        $data = [
+            'name' => $modpack->name,
+            'slug' => $modpack->slug,
+        ];
+
+        $response = $this->post('/modpack/edit/'.$modpack->id, $data);
+        $response->assertRedirect('/modpack/view/'.$modpack->id);
+
+        $this->assertCount(0, $modpack->fresh()->clients);
     }
 }

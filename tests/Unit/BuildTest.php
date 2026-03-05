@@ -133,7 +133,7 @@ final class BuildTest extends TestCase
     {
         $build = Build::find(1);
 
-        $response = $this->get('/modpack/build/'.$build->id.'?action=edit');
+        $response = $this->get('/modpack/build/'.$build->id.'/edit');
         $response->assertOk();
     }
 
@@ -142,7 +142,6 @@ final class BuildTest extends TestCase
         $build = Build::find(1);
 
         $data = [
-            'confirm-edit' => '1',
             'version' => '1.1.0',
             'minecraft' => '1.7.10',
             'java-version' => '1.8',
@@ -150,7 +149,7 @@ final class BuildTest extends TestCase
             'memory-enabled' => '1',
         ];
 
-        $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
+        $response = $this->post('/modpack/build/'.$build->id.'/edit', $data);
         $response->assertRedirect('/modpack/build/'.$build->id);
 
         $build = Build::find(1);
@@ -163,7 +162,7 @@ final class BuildTest extends TestCase
     {
         $build = Build::find(1);
 
-        $response = $this->get('/modpack/build/'.$build->id.'?action=delete');
+        $response = $this->get('/modpack/build/'.$build->id.'/delete');
         $response->assertOk();
     }
 
@@ -171,11 +170,7 @@ final class BuildTest extends TestCase
     {
         $build = Build::find(1);
 
-        $data = [
-            'confirm-delete' => '1',
-        ];
-
-        $response = $this->post('/modpack/build/'.$build->id.'?action=delete', $data);
+        $response = $this->post('/modpack/build/'.$build->id.'/delete');
         $response->assertRedirect('modpack/view/'.$build->modpack->id);
     }
 
@@ -194,7 +189,6 @@ final class BuildTest extends TestCase
 
         // Edit the build
         $data = [
-            'confirm-edit' => '1',
             'version' => '2.0.0',
             'minecraft' => '1.7.10',
             'java-version' => '1.8',
@@ -202,7 +196,7 @@ final class BuildTest extends TestCase
             'memory-enabled' => '1',
         ];
 
-        $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
+        $response = $this->post('/modpack/build/'.$build->id.'/edit', $data);
         $response->assertRedirect('/modpack/build/'.$build->id);
 
         // Refresh the models
@@ -232,7 +226,6 @@ final class BuildTest extends TestCase
 
         // Edit the build
         $data = [
-            'confirm-edit' => '1',
             'version' => '2.0.0',
             'minecraft' => '1.7.10',
             'java-version' => '1.8',
@@ -240,7 +233,7 @@ final class BuildTest extends TestCase
             'memory-enabled' => '1',
         ];
 
-        $response = $this->post('/modpack/build/'.$build->id.'?action=edit', $data);
+        $response = $this->post('/modpack/build/'.$build->id.'/edit', $data);
         $response->assertRedirect('/modpack/build/'.$build->id);
 
         // Refresh the models
