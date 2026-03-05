@@ -17,9 +17,9 @@ fi
 # Run migrations
 php artisan migrate --force -n
 
-# Fix permissions for the web server
+# Ensure the web server can write to storage and cache
+chgrp -R www-data storage bootstrap/cache
 find storage bootstrap/cache -type d -exec chmod 775 {} \;
 find storage bootstrap/cache -type f -exec chmod 664 {} \;
-chgrp -R www-data storage bootstrap/cache
 
 exec php-fpm
