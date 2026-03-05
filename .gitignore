@@ -1,6 +1,5 @@
 !.env.example
 !.env.testing
-!docker/.env
 .env
 .env.*
 .phpstorm.meta.php

@@ -1,19 +1,25 @@
-# Copy the default .env file into the container
-# and root application folder.
-cp docker/.env .env
-composer install --no-dev --no-interaction
+#!/bin/bash
+set -e
 
-# Setup for Solder
-# Generate a new key and migrate the database
-# It's best not to run this more than once
-php artisan key:generate -n
+cd /var/www/html
+
+# Install dependencies if needed (first run)
+if [ ! -d vendor ]; then
+    composer install --no-dev --no-interaction
+fi
+
+# Generate and persist APP_KEY on first run
+if [ ! -f .env ]; then
+    echo "APP_KEY=" > .env
+    php artisan key:generate --force
+fi
+
+# Run migrations
 php artisan migrate --force -n
 
-# Find all directories and files below the current directory
-# and set their permissions to something secure and sane.
-# We ignore the docker folder so it doesn't break permissions
-# on the other containers.
-echo "Fixing file permissions, this may take a minute..."
-find . -path ./docker -prune -o -print0 | xargs -0 chown www-data:www-data
-find . -path ./docker -prune -o -type d -print0 | xargs -0 chmod 755
-find . -path ./docker -prune -o -type f -print0 | xargs -0 chmod 644
+# Fix permissions for the web server
+find storage bootstrap/cache -type d -exec chmod 775 {} \;
+find storage bootstrap/cache -type f -exec chmod 664 {} \;
+chgrp -R www-data storage bootstrap/cache
+
+exec php-fpm
