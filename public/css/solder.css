@@ -120,10 +120,19 @@ input[type=file] {
     color: #4C4643;
 }
 
+.sidebar-collapse {
+    max-height: calc(100vh - 75px);
+    overflow-y: auto;
+}
+
 .sidebar-scrolled {
     position: fixed;
     width: inherit;
     top: 0;
+}
+
+.sidebar-scrolled .sidebar-collapse {
+    max-height: 100vh;
 }
 
 .navbar-static-side
