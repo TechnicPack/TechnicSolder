@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -45,7 +46,15 @@ class ModController extends Controller
             return redirect('mod/list')->withErrors(['Mod not found']);
         }
 
-        return view('mod.view')->with(['mod' => $mod]);
+        $perm = Auth::user()->permission;
+        $accessibleModpackIds = $perm->solder_full
+            ? null
+            : $perm->modpacks;
+
+        return view('mod.view')->with([
+            'mod' => $mod,
+            'accessibleModpackIds' => $accessibleModpackIds,
+        ]);
     }
 
     public function getCreate(): View

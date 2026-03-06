@@ -146,8 +146,12 @@
                                     </tr>
                                     <tr x-show="expandedVersions.includes(row.id)">
                                         <td colspan="6" class="px-5 py-3 bg-gray-50 dark:bg-gray-800/30">
-                                            <template x-if="row.builds.length === 0">
+                                            <template x-if="row.builds.length === 0 && row.hiddenCount === 0">
                                                 <p class="text-sm text-gray-500 dark:text-gray-400">Not used in any builds</p>
+                                            </template>
+                                            <template x-if="row.builds.length === 0 && row.hiddenCount > 0">
+                                                <p class="text-sm text-gray-500 dark:text-gray-400"
+                                                   x-text="'Used in ' + row.hiddenCount + ' build' + (row.hiddenCount === 1 ? '' : 's') + ' you don\u2019t have access to'"></p>
                                             </template>
                                             <template x-if="row.builds.length > 0">
                                                 <div>
@@ -161,6 +165,10 @@
                                                                 <a :href="'/modpack/build/' + build.id"
                                                                    class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.version"></a>
                                                             </li>
+                                                        </template>
+                                                        <template x-if="row.hiddenCount > 0">
+                                                            <li class="text-sm text-gray-400 dark:text-gray-500 italic"
+                                                                x-text="'+ ' + row.hiddenCount + ' other' + (row.hiddenCount === 1 ? '' : 's')"></li>
                                                         </template>
                                                     </ul>
                                                 </div>
@@ -292,19 +300,24 @@
         function modView() {
             return {
                 // --- dataTable properties ---
-                rows: @js($mod->versions->map(fn($v) => [
-                    'id' => $v->id,
-                    'version' => $v->version,
-                    'md5' => $v->md5,
-                    'filesize' => $v->humanFilesize(),
-                    'url' => config('solder.mirror_url') . 'mods/' . $mod->name . '/' . $mod->name . '-' . $v->version . '.zip',
-                    'builds' => $v->builds->map(fn($b) => [
+                rows: @js($mod->versions->map(function($v) use ($mod, $accessibleModpackIds) {
+                    $builds = $v->builds->map(fn($b) => [
                         'id' => $b->id,
                         'version' => $b->version,
                         'modpack_id' => $b->modpack->id,
                         'modpack_name' => $b->modpack->name,
-                    ]),
-                ])),
+                        'accessible' => $accessibleModpackIds === null || in_array($b->modpack->id, $accessibleModpackIds),
+                    ]);
+                    return [
+                        'id' => $v->id,
+                        'version' => $v->version,
+                        'md5' => $v->md5,
+                        'filesize' => $v->humanFilesize(),
+                        'url' => config('solder.mirror_url') . 'mods/' . $mod->name . '/' . $mod->name . '-' . $v->version . '.zip',
+                        'builds' => $builds->where('accessible', true)->values(),
+                        'hiddenCount' => $builds->where('accessible', false)->count(),
+                    ];
+                })),
                 sortKey: 'version',
                 sortDir: 'desc',
                 search: '',
