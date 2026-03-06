@@ -3,56 +3,73 @@
     <title>User Management - Technic Solder</title>
 @stop
 @section('content')
-    <div class="page-header">
-        <h1>User Management</h1>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="pull-right">
-                <a href="{{ URL::to('user/create') }}" class="btn btn-xs btn-success">Create User</a>
-            </div>
-            User List
+    <h1 class="text-2xl font-bold">User Management</h1>
+
+    <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">User List</h2>
+            <a href="{{ URL::to('user/create') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                Create User
+            </a>
         </div>
-        <div class="panel-body">
+        <div class="px-5 py-4">
             @include('partial.form-errors')
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover" id="dataTables">
-                    <thead>
-                    <tr>
-                        <th>ID #</th>
-                        <th>Email</th>
-                        <th>Username</th>
-                        <th>Updated by (User - IP)</th>
-                        <th>Updated at</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($users as $user)
-                        <tr>
-                            <td>{{ $user->id }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->username }}</td>
-                            <td>
-                                {{ $user->updated_by_user?->username ?? 'N/A' }} - {{ $user->updated_by_ip ?: "N/A" }}
-                            </td>
-                            <td>{{ date_format($user->updated_at, 'r') }}</td>
-                            <td>
-                                <a href="{{ url('/user/edit/'.$user->id) }}" class="btn btn-warning btn-xs">Edit</a>
-                                <a href="{{ url('/user/delete/'.$user->id) }}" class="btn btn-danger btn-xs">Delete</a>
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+
+            <div x-data="dataTable({
+                rows: @js($users->map(fn($u) => [
+                    'id' => $u->id,
+                    'email' => $u->email,
+                    'username' => $u->username,
+                    'updated_by' => ($u->updated_by_user?->username ?? 'N/A') . ' - ' . ($u->updated_by_ip ?: 'N/A'),
+                    'updated_at' => $u->updated_at->toIso8601String(),
+                    'updated_at_display' => date_format($u->updated_at, 'r'),
+                ])),
+                sortKey: 'id', types: { id: 'number', updated_at: 'date' },
+                searchKeys: ['id', 'email', 'username', 'updated_by', 'updated_at_display']
+            })">
+                @include('partial.data-table.toolbar', ['placeholder' => 'Search users...'])
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr>
+                                @include('partial.data-table.sort-header', ['key' => 'id', 'label' => 'ID #'])
+                                @include('partial.data-table.sort-header', ['key' => 'email', 'label' => 'Email'])
+                                @include('partial.data-table.sort-header', ['key' => 'username', 'label' => 'Username'])
+                                @include('partial.data-table.sort-header', ['key' => 'updated_by', 'label' => 'Updated by (User - IP)'])
+                                @include('partial.data-table.sort-header', ['key' => 'updated_at', 'label' => 'Updated at'])
+                                <th class="px-5 py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                            <template x-for="row in paged" :key="row.id">
+                                <tr>
+                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100" x-text="row.id"></td>
+                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100" x-text="row.email"></td>
+                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100" x-text="row.username"></td>
+                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.updated_by"></td>
+                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.updated_at_display"></td>
+                                    <td class="px-5 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <a :href="'/user/edit/' + row.id"
+                                               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                Edit
+                                            </a>
+                                            <a :href="'/user/delete/' + row.id"
+                                               class="bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                @include('partial.data-table.pagination')
             </div>
         </div>
     </div>
-@endsection
-@section('bottom')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#dataTables').dataTable();
-        });
-    </script>
 @endsection

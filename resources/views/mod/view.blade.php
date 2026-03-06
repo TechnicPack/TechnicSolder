@@ -3,277 +3,488 @@
     <title>{{ $mod->pretty_name ?: $mod->name }} - Technic Solder</title>
 @stop
 @section('content')
-    <div class="page-header">
-        <h1>Mod Library</h1>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">Mod Library</h1>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            @if (!empty($mod->pretty_name))
-                {{ $mod->pretty_name }} <small>{{ $mod->name }}</small>
-            @else
-                {{ $mod->name }}
-            @endif
+
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800"
+         x-data="modView()">
+        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                @if (!empty($mod->pretty_name))
+                    {{ $mod->pretty_name }}
+                    <span class="text-gray-500 dark:text-gray-400 font-normal">{{ $mod->name }}</span>
+                @else
+                    {{ $mod->name }}
+                @endif
+            </h2>
         </div>
-        <div class="panel-body">
-            <ul class="nav nav-tabs" id="tabs">
-                <li class="active"><a href="#versions" data-toggle="tab">Versions</a></li>
-                <li><a href="#details" data-toggle="tab">Details</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade" id="details">
-                    <br>
-                    @include('partial.form-errors')
-                    @session('success')
-                        <div class="alert alert-success">
-                            {{ $value }}
-                        </div>
-                    @endsession
-                    <form method="post" action="{{ url('/mod/modify/'.$mod->id) }}" accept-charset="UTF-8">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="pretty_name">Mod Name</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           name="pretty_name"
-                                           id="pretty_name"
-                                           value="{{ $mod->pretty_name }}"
-                                    >
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">Mod Slug</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           name="name"
-                                           id="name"
-                                           value="{{ $mod->name }}"
-                                    >
-                                </div>
-                                <div class="form-group">
-                                    <label for="author">Author</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           name="author"
-                                           id="author"
-                                           value="{{ $mod->author }}"
-                                    >
-                                </div>
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea name="description"
-                                              id="description"
-                                              class="form-control"
-                                              rows="5"
-                                    >{{ $mod->description }}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="link">Mod Website</label>
-                                    <input type="text"
-                                           class="form-control"
-                                           name="link"
-                                           id="link"
-                                           value="{{ $mod->link }}"
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                        <input type="submit" class="btn btn-success" value="Save Changes">
-                        <a href="{{ url('/mod/delete/'.$mod->id) }}" class="btn btn-danger">Delete Mod</a>
-                        <a href="{{ url('/mod/list') }}" class="btn btn-primary">Go Back</a>
-                    </form>
-                </div>
-                <div class="tab-pane fade in active" id="versions">
-                    <br>
-                    <p>Solder currently does not support uploading files directly to it. Your repository still needs to
+        <div class="p-5">
+            {{-- Tabs --}}
+            <div class="flex gap-1 mb-6 border-b border-gray-200 dark:border-gray-800">
+                <button @click="tab = 'versions'"
+                        :class="tab === 'versions'
+                            ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                            : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'"
+                        class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors">
+                    Versions
+                </button>
+                <button @click="tab = 'details'"
+                        :class="tab === 'details'
+                            ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+                            : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'"
+                        class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors">
+                    Details
+                </button>
+            </div>
+
+            {{-- Versions Tab --}}
+            <div x-show="tab === 'versions'">
+                <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 mb-5">
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                        Solder currently does not support uploading files directly to it. Your repository still needs to
                         exist and follow a strict directory structure. When you add versions the URL will be verified to
-                        make sure the file exists before it is added to Solder. The directory structure for this mod is
-                        as follows:</p>
-                    <blockquote><strong>/mods/{{ $mod->name }}/{{ $mod->name }}-[version].zip</strong></blockquote>
-                    <table class="table">
+                        make sure the file exists before it is added to Solder.
+                    </p>
+                    <p class="text-sm font-mono text-gray-800 dark:text-gray-200">
+                        mods/{{ $mod->name }}/{{ $mod->name }}-[version].zip
+                    </p>
+                </div>
+
+                @include('partial.data-table.toolbar', ['placeholder' => 'Search versions...', 'showPageSize' => false])
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
                         <thead>
-                        <th style="width: 1%"></th>
-                        <th style="width: 15%">Version</th>
-                        <th style="width: 25%">MD5</th>
-                        <th style="width: 35%">Download URL</th>
-                        <th style="width: 9%">Filesize</th>
-                        <th style="width: 15%"></th>
+                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th class="px-5 py-3 w-8"></th>
+                                @include('partial.data-table.sort-header', ['key' => 'version', 'label' => 'Version'])
+                                <th class="px-5 py-3" style="width: 25%">MD5</th>
+                                <th class="px-5 py-3" style="width: 30%">Download URL</th>
+                                <th class="px-5 py-3" style="width: 10%">Filesize</th>
+                                <th class="px-5 py-3" style="width: 15%"></th>
+                            </tr>
                         </thead>
-                        <tbody>
-                        <tr id="add-row">
-                            <form method="post" id="add" action="{{ url('/mod/add-version') }}" accept-charset="UTF-8">
-                                @csrf
-                                <input type="hidden" name="mod-id" value="{{ $mod->id }}">
-                                <td></td>
-                                <td>
-                                    <input type="text" name="add-version" id="add-version" class="form-control">
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                            {{-- Add version row (pinned) --}}
+                            <tr class="bg-blue-50/50 dark:bg-blue-900/10">
+                                <td class="px-5 py-3"></td>
+                                <td class="px-5 py-3">
+                                    <input type="text"
+                                           x-model="addVersion"
+                                           placeholder="Version"
+                                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                                 </td>
-                                <td>
-                                    <input type="text" name="add-md5" id="add-md5" class="form-control">
+                                <td class="px-5 py-3">
+                                    <input type="text"
+                                           x-model="addMd5"
+                                           placeholder="MD5 (optional)"
+                                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                                 </td>
+                                <td class="px-5 py-3">
+                                    <template x-if="addVersion">
+                                        <a :href="addUrl" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline text-xs break-all" x-text="addUrl"></a>
+                                    </template>
+                                    <template x-if="!addVersion">
+                                        <span class="text-gray-400 dark:text-gray-500 text-xs">N/A</span>
+                                    </template>
                                 </td>
-                                <td>
-                                    <span id="add-url">N/A</span>
+                                <td class="px-5 py-3 text-gray-400 dark:text-gray-500 text-xs">N/A</td>
+                                <td class="px-5 py-3">
+                                    <button @click="submitAddVersion()"
+                                            :disabled="addLoading || !addVersion"
+                                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <span x-show="!addLoading">Add Version</span>
+                                        <span x-show="addLoading">Adding...</span>
+                                    </button>
                                 </td>
-                                <td>N/A</td>
-                                <td>
-                                    <input type="submit" class="btn btn-success btn-small add" value="Add Version">
-                                </td>
-                            </form>
-                        </tr>
-                        @foreach ($mod->versions->sortByDesc('id') as $ver)
-                            <tr class="version" rel="{{ $ver->id }}">
-                                <form class="rehash-form" data-version-id="{{ $ver->id }}" accept-charset="UTF-8">
-                                    @csrf
-                                    <input type="hidden" name="version-id" value="{{ $ver->id }}">
-                                    <td><i class="version-icon fa fa-plus" rel="{{ $ver->id }}"></i></td>
-                                    <td class="version" rel="{{ $ver->id }}">{{ $ver->version }}</td>
-                                    <td>
-                                        <input type="text"
-                                               class="md5 form-control"
-                                               name="md5"
-                                               rel="{{ $ver->id }}"
-                                               placeholder="{{ $ver->md5 }}"
-                                        >
-                                    </td>
-                                    <td class="url" rel="{{ $ver->id }}">
-                                        <small><a href="{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}">{{ config('solder.mirror_url').'mods/'.$mod->name.'/'.$mod->name.'-'.$ver->version.'.zip' }}</a></small>
-                                    </td>
-                                    <td class="filesize" rel="{{ $ver->id }}">{{ $ver->humanFilesize() }}</td>
-                                    <td>
-                                        <input type="submit"
-                                               class="btn btn-primary btn-xs"
-                                               rel="{{ $ver->id }}"
-                                               value="Rehash"
-                                        >
-                                        <button type="button" class="btn btn-danger btn-xs delete" rel="{{ $ver->id }}">
-                                            Delete
+                            </tr>
+
+                            {{-- Data-driven version rows --}}
+                            <template x-for="row in paged" :key="row.id">
+                                <tr>
+                                    <td class="px-5 py-3">
+                                        <button @click="toggleExpand(row.id)"
+                                                type="button"
+                                                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                            <svg class="size-4 transition-transform"
+                                                 :class="expandedVersions.includes(row.id) && 'rotate-90'"
+                                                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+                                            </svg>
                                         </button>
-                                </form>
-                            </tr>
-                            <tr class="version-details" rel="{{ $ver->id }}" style="display: none">
-                                <td colspan="5">
-                                    @if ($ver->builds->isEmpty())
-                                        <p>Not used in any builds</p>
-                                    @else
-                                        <p>Builds used in:</p>
-                                        <ul>
-                                            @foreach ($ver->builds as $build)
-                                                <li>
-                                                    <a href="{{ url('/modpack/view/'.$build->modpack->id) }}">{{ $build->modpack->name }}</a>
-                                                    -
-                                                    <a href="{{ url('/modpack/build/'.$build->id) }}">{{ $build->version }}</a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
+                                    </td>
+                                    <td class="px-5 py-3 font-medium text-gray-900 dark:text-gray-100" x-text="row.version"></td>
+                                    <td class="px-5 py-3">
+                                        <input type="text"
+                                               :id="'md5-' + row.id"
+                                               :placeholder="row.md5"
+                                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                    </td>
+                                    <td class="px-5 py-3">
+                                        <a :href="row.url" target="_blank"
+                                           class="text-blue-600 dark:text-blue-400 hover:underline text-xs break-all" x-text="row.url"></a>
+                                    </td>
+                                    <td class="px-5 py-3 text-gray-700 dark:text-gray-300" x-text="row.filesize"></td>
+                                    <td class="px-5 py-3">
+                                        <div class="flex items-center gap-2">
+                                            <button @click="rehashVersion(row.id)"
+                                                    :disabled="rehashingVersions.includes(row.id)"
+                                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <span x-show="!rehashingVersions.includes(row.id)">Rehash</span>
+                                                <span x-show="rehashingVersions.includes(row.id)">...</span>
+                                            </button>
+                                            <button @click="deleteVersion(row.id)"
+                                                    :disabled="deletingVersions.includes(row.id)"
+                                                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+                            {{-- Expanded build info rows (rendered separately, shown inline) --}}
+                            <template x-for="row in paged" :key="'expand-' + row.id">
+                                <tr x-show="expandedVersions.includes(row.id)" x-collapse>
+                                    <td colspan="6" class="px-5 py-3 bg-gray-50 dark:bg-gray-800/30">
+                                        <template x-if="row.builds.length === 0">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Not used in any builds</p>
+                                        </template>
+                                        <template x-if="row.builds.length > 0">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Builds used in:</p>
+                                                <ul class="space-y-1 ml-4">
+                                                    <template x-for="build in row.builds" :key="build.id">
+                                                        <li class="text-sm text-gray-600 dark:text-gray-400">
+                                                            <a :href="'/modpack/view/' + build.modpack_id"
+                                                               class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.modpack_name"></a>
+                                                            -
+                                                            <a :href="'/modpack/build/' + build.id"
+                                                               class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.version"></a>
+                                                        </li>
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            {{-- Details Tab --}}
+            <div x-show="tab === 'details'" x-cloak>
+                @include('partial.form-errors')
+                @session('success')
+                    <div class="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
+                        {{ $value }}
+                    </div>
+                @endsession
+
+                <form method="post" action="{{ url('/mod/modify/'.$mod->id) }}" accept-charset="UTF-8">
+                    @csrf
+                    <div class="max-w-xl space-y-4">
+                        <div>
+                            <label for="pretty_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pretty Name</label>
+                            <input type="text"
+                                   name="pretty_name"
+                                   id="pretty_name"
+                                   value="{{ $mod->pretty_name }}"
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
+                            <input type="text"
+                                   name="name"
+                                   id="name"
+                                   value="{{ $mod->name }}"
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label for="author" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Author</label>
+                            <input type="text"
+                                   name="author"
+                                   id="author"
+                                   value="{{ $mod->author }}"
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                            <textarea name="description"
+                                      id="description"
+                                      rows="5"
+                                      class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">{{ $mod->description }}</textarea>
+                        </div>
+                        <div>
+                            <label for="link" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Website</label>
+                            <input type="text"
+                                   name="link"
+                                   id="link"
+                                   value="{{ $mod->link }}"
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-center gap-3">
+                        <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                            Save Changes
+                        </button>
+                        <a href="{{ url('/mod/delete/'.$mod->id) }}"
+                           class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                            Delete Mod
+                        </a>
+                        <a href="{{ url('/mod/list') }}"
+                           class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                            Go Back
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection
-@section('bottom')
-    <script type="text/javascript">
+@push('scripts')
+    <script>
+        function modView() {
+            return {
+                // --- dataTable properties ---
+                rows: @js($mod->versions->map(fn($v) => [
+                    'id' => $v->id,
+                    'version' => $v->version,
+                    'md5' => $v->md5,
+                    'filesize' => $v->humanFilesize(),
+                    'url' => config('solder.mirror_url') . 'mods/' . $mod->name . '/' . $mod->name . '-' . $v->version . '.zip',
+                    'builds' => $v->builds->map(fn($b) => [
+                        'id' => $b->id,
+                        'version' => $b->version,
+                        'modpack_id' => $b->modpack->id,
+                        'modpack_name' => $b->modpack->name,
+                    ]),
+                ])),
+                sortKey: 'version',
+                sortDir: 'desc',
+                search: '',
+                page: 1,
+                pageSize: 25,
+                paginate: false,
+                types: {},
+                searchKeys: ['version', 'md5'],
 
-        var mirror_url = '{{ config("solder.mirror_url") }}';
+                init() {
+                    this.$watch('search', () => { this.page = 1; });
+                },
 
-        $('#add-version').keyup(function () {
-            var val = $(this).val();
-            if (val === '') {
-                $("#add-url").html('N/A');
-            } else {
-                $("#add-url").html('<a href="' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + val + '.zip" target="_blank">' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + val + '.zip</a>');
-            }
-        });
+                // --- dataTable computed getters ---
+                sort(key) {
+                    if (this.sortKey === key) {
+                        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        this.sortKey = key;
+                        this.sortDir = 'asc';
+                    }
+                    this.page = 1;
+                },
 
-        $('#add').submit(function (e) {
-            e.preventDefault();
-            console.log($("#add").serialize());
-            if ($('#add-version').val() != "") {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ URL::to('mod/add-version/') }}",
-                    data: $("#add").serialize(),
-                    success: function (data) {
-                        if (data.status == "success") {
-                            $("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td>' + data.filesize + '</td><td></td></tr>');
-                            $.jGrowl('Added mod version at ' + data.version, {group: 'alert-success'});
-                        } else if (data.status == "warning") {
-                            $("#add-row").after('<tr><td></td><td>' + data.version + '</td><td>' + data.md5 + '</td><td><a href="' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip" target="_blank">' + mirror_url + 'mods/{{ $mod->name }}/{{ $mod->name }}-' + data.version + '.zip</a></td><td>' + data.filesize + '</td><td></td></tr>');
-                            $.jGrowl('Added mod version at ' + data.version + ". " + data.reason, {group: 'alert-warning'});
-                        } else {
-                            $.jGrowl('Error: ' + data.reason, {group: 'alert-danger'});
+                get filtered() {
+                    if (!this.search) return this.rows;
+                    const s = this.search.toLowerCase();
+                    const keys = this.searchKeys || Object.keys(this.rows[0] || {});
+                    return this.rows.filter(row =>
+                        keys.some(k => String(row[k] ?? '').toLowerCase().includes(s))
+                    );
+                },
+
+                get sorted() {
+                    const key = this.sortKey;
+                    if (!key) return this.filtered;
+                    const dir = this.sortDir === 'asc' ? 1 : -1;
+                    const type = this.types[key] || 'string';
+                    return [...this.filtered].sort((a, b) => {
+                        let va = a[key] ?? '', vb = b[key] ?? '';
+                        if (type === 'number') return ((parseFloat(va) || 0) - (parseFloat(vb) || 0)) * dir;
+                        if (type === 'date') return ((new Date(va).getTime() || 0) - (new Date(vb).getTime() || 0)) * dir;
+                        return dir * String(va).localeCompare(String(vb), undefined, { numeric: true, sensitivity: 'base' });
+                    });
+                },
+
+                get paged() {
+                    if (!this.paginate) return this.sorted;
+                    const start = (this.page - 1) * this.pageSize;
+                    return this.sorted.slice(start, start + this.pageSize);
+                },
+
+                get totalFiltered() { return this.filtered.length; },
+                get totalRows() { return this.rows.length; },
+                get totalPages() { return this.paginate ? Math.max(1, Math.ceil(this.totalFiltered / this.pageSize)) : 1; },
+                get showingFrom() { return this.totalFiltered === 0 ? 0 : (this.page - 1) * this.pageSize + 1; },
+                get showingTo() { return Math.min(this.page * this.pageSize, this.totalFiltered); },
+                get pageNumbers() {
+                    const total = this.totalPages;
+                    const current = this.page;
+                    const pages = [];
+                    if (total <= 7) {
+                        for (let i = 1; i <= total; i++) pages.push(i);
+                    } else {
+                        pages.push(1);
+                        if (current > 3) pages.push('...');
+                        for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+                            pages.push(i);
                         }
-                    },
-                    error: function (xhr, textStatus, errorThrown) {
-                        $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
+                        if (current < total - 2) pages.push('...');
+                        pages.push(total);
                     }
-                })
-            }
-        });
-
-        $('.version-icon').click(function () {
-            $('.version-details[rel=' + $(this).attr('rel') + "]").toggle(function () {
-                $('.version-icon[rel=' + $(this).attr('rel') + "]").toggleClass("fa-minus");
-            });
-        });
-
-        $('.rehash-form').submit(function (e) {
-            e.preventDefault();
-
-            const versionId = this.dataset.versionId;
-
-            const md5Field = $('.md5[rel=' + versionId + ']');
-            const filesizeField = $('.filesize[rel=' + versionId + ']');
-
-            md5Field.fadeOut();
-            // md5Field.attr('placeholder', 'Rehashing...');
-
-            $.ajax({
-                type: "POST",
-                url: "{{ url('/mod/rehash') }}",
-                data: $(this).serialize(),
-                success: function (data) {
-                    if (data.status === "success") {
-                        $.jGrowl('MD5 hashing complete.', {group: 'alert-success'});
-                    } else if (data.status === "warning") {
-                        $.jGrowl('MD5 hashing complete. ' + data.reason, {group: 'alert-warning'});
-                    } else {
-                        $.jGrowl('Error: ' + data.reason, {group: 'alert-danger'});
-                    }
-                    md5Field.attr('placeholder', data.md5);
-                    filesizeField.html(data.filesize);
-                    md5Field.fadeIn();
+                    return pages;
                 },
-                error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
-                }
-            });
-        });
 
-        $('.delete').click(function (e) {
-            $.ajax({
-                type: "POST",
-                url: "{{ URL::to('mod/delete-version') }}/" + $(this).attr('rel'),
-                success: function (data) {
-                    if (data.status == "success") {
-                        $('.version[rel=' + data.version_id + ']').fadeOut();
-                        $('.version-details[rel=' + data.version_id + ']').fadeOut();
-                        $.jGrowl('Mod version ' + data.version + ' deleted.', {group: 'alert-success'});
+                goToPage(n) { this.page = n; },
+                prevPage() { if (this.page > 1) this.page--; },
+                nextPage() { if (this.page < this.totalPages) this.page++; },
+
+                // --- modView properties ---
+                tab: 'versions',
+                addVersion: '',
+                addMd5: '',
+                addLoading: false,
+                expandedVersions: [],
+                rehashingVersions: [],
+                deletingVersions: [],
+                mirrorUrl: @js(config('solder.mirror_url')),
+                modName: @js($mod->name),
+                modId: @js($mod->id),
+
+                get addUrl() {
+                    return this.mirrorUrl + 'mods/' + this.modName + '/' + this.modName + '-' + this.addVersion + '.zip';
+                },
+
+                toggleExpand(verId) {
+                    const idx = this.expandedVersions.indexOf(verId);
+                    if (idx === -1) {
+                        this.expandedVersions.push(verId);
                     } else {
-                        $.jGrowl('Error: ' + data.reason, {group: 'alert-danger'});
+                        this.expandedVersions.splice(idx, 1);
                     }
                 },
-                error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
-                }
-            });
-        });
 
+                async submitAddVersion() {
+                    if (!this.addVersion) return;
+                    this.addLoading = true;
+
+                    try {
+                        const res = await fetch('{{ url("mod/add-version") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': window.csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: new URLSearchParams({
+                                'mod-id': this.modId,
+                                'add-version': this.addVersion,
+                                'add-md5': this.addMd5,
+                            }),
+                        });
+                        const data = await res.json();
+
+                        if (data.status === 'success' || data.status === 'warning') {
+                            this.rows.unshift({
+                                id: data.version_id,
+                                version: data.version,
+                                md5: data.md5,
+                                filesize: data.filesize,
+                                url: this.mirrorUrl + 'mods/' + this.modName + '/' + this.modName + '-' + data.version + '.zip',
+                                builds: [],
+                            });
+                            const msg = data.status === 'warning'
+                                ? 'Added mod version at ' + data.version + '. ' + data.reason
+                                : 'Added mod version at ' + data.version;
+                            Alpine.store('toasts').add(msg, data.status);
+                            this.addVersion = '';
+                            this.addMd5 = '';
+                        } else {
+                            Alpine.store('toasts').add('Error: ' + data.reason, 'error');
+                        }
+                    } catch (err) {
+                        Alpine.store('toasts').add('Request failed: ' + err.message, 'error');
+                    } finally {
+                        this.addLoading = false;
+                    }
+                },
+
+                async rehashVersion(verId) {
+                    this.rehashingVersions.push(verId);
+                    const md5Input = document.getElementById('md5-' + verId);
+                    const md5Value = md5Input ? md5Input.value : '';
+
+                    try {
+                        const res = await fetch('{{ url("mod/rehash") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': window.csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: new URLSearchParams({
+                                'version-id': verId,
+                                'md5': md5Value,
+                            }),
+                        });
+                        const data = await res.json();
+
+                        if (data.status === 'success') {
+                            Alpine.store('toasts').add('MD5 hashing complete.', 'success');
+                        } else if (data.status === 'warning') {
+                            Alpine.store('toasts').add('MD5 hashing complete. ' + data.reason, 'warning');
+                        } else {
+                            Alpine.store('toasts').add('Error: ' + data.reason, 'error');
+                        }
+
+                        if (data.md5) {
+                            const row = this.rows.find(r => r.id === verId);
+                            if (row) row.md5 = data.md5;
+                            if (md5Input) {
+                                md5Input.value = '';
+                                md5Input.placeholder = data.md5;
+                            }
+                        }
+                        if (data.filesize) {
+                            const row = this.rows.find(r => r.id === verId);
+                            if (row) row.filesize = data.filesize;
+                        }
+                    } catch (err) {
+                        Alpine.store('toasts').add('Request failed: ' + err.message, 'error');
+                    } finally {
+                        this.rehashingVersions = this.rehashingVersions.filter(id => id !== verId);
+                    }
+                },
+
+                async deleteVersion(verId) {
+                    this.deletingVersions.push(verId);
+
+                    try {
+                        const res = await fetch('{{ url("mod/delete-version") }}/' + verId, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': window.csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: new URLSearchParams({}),
+                        });
+                        const data = await res.json();
+
+                        if (data.status === 'success') {
+                            this.rows = this.rows.filter(r => r.id !== data.version_id);
+                            Alpine.store('toasts').add('Mod version ' + data.version + ' deleted.', 'success');
+                        } else {
+                            Alpine.store('toasts').add('Error: ' + data.reason, 'error');
+                        }
+                    } catch (err) {
+                        Alpine.store('toasts').add('Request failed: ' + err.message, 'error');
+                    } finally {
+                        this.deletingVersions = this.deletingVersions.filter(id => id !== verId);
+                    }
+                },
+            };
+        }
     </script>
-@endsection
+@endpush
