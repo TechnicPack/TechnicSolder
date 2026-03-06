@@ -80,20 +80,47 @@
                     </span>
                     <svg class="size-4 transition-transform" :class="sections.modpacks && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
                 </button>
-                <div x-show="sections.modpacks" x-collapse>
+                <div x-show="sections.modpacks" x-collapse
+                     x-data="{
+                         modpackSearch: '',
+                         modpacks: @js($allModpacks->map(fn($mp) => [
+                             'id' => $mp->id,
+                             'name' => $mp->name,
+                             'slug' => $mp->slug,
+                             'icon' => $mp->icon,
+                             'hidden' => $mp->hidden,
+                         ])->values()),
+                         get filteredModpacks() {
+                             if (!this.modpackSearch) return this.modpacks;
+                             const s = this.modpackSearch.toLowerCase();
+                             return this.modpacks.filter(mp => mp.name.toLowerCase().includes(s));
+                         }
+                     }">
                     <a href="{{ url('modpack/list') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">Modpack List</a>
                     <a href="{{ url('modpack/create') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">Add Modpack</a>
-                    @foreach ($allModpacks as $modpack)
-                        <a href="{{ url('modpack/view/'.$modpack->id) }}"
+                    <div class="px-3 py-1.5">
+                        <input type="text"
+                               x-init="$watch('sections.modpacks', v => { if (v) setTimeout(() => $el.focus(), 200) })"
+                               x-model="modpackSearch"
+                               @keydown.enter="if (filteredModpacks.length === 1) window.location.href = '/modpack/view/' + filteredModpacks[0].id"
+                               placeholder="Search modpacks..."
+                               class="w-full px-2.5 py-1.5 text-xs rounded-md bg-slate-700/50 border border-slate-600 text-slate-200 placeholder-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                        <p x-show="modpackSearch && filteredModpacks.length === 1" x-cloak
+                           class="mt-1 text-[10px] text-slate-400">Press <kbd class="px-1 py-0.5 rounded bg-slate-700 text-slate-300">Enter</kbd> to open</p>
+                    </div>
+                    <template x-for="mp in filteredModpacks" :key="mp.id">
+                        <a :href="'/modpack/view/' + mp.id"
                            class="flex items-center gap-2 pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors truncate">
-                            <img src="{{ $modpack->icon ? asset('resources/'.$modpack->slug.'/icon.png') : asset('resources/default/icon.png') }}"
+                            <img :src="mp.icon ? '/resources/' + mp.slug + '/icon.png' : '/resources/default/icon.png'"
                                  class="size-4 rounded shrink-0" alt="">
-                            <span class="truncate">{{ $modpack->name }}</span>
-                            @if ($modpack->hidden)
+                            <span class="truncate" x-text="mp.name"></span>
+                            <template x-if="mp.hidden">
                                 <svg class="shrink-0 text-slate-400" style="width:14px;height:14px" title="Hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
-                            @endif
+                            </template>
                         </a>
-                    @endforeach
+                    </template>
+                    <p x-show="modpackSearch && filteredModpacks.length === 0"
+                       class="pl-13 pr-5 py-1.5 text-xs text-slate-500 italic">No modpacks found.</p>
                 </div>
             </div>
 
