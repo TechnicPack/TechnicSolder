@@ -35,7 +35,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Mod extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'pretty_name',
+        'description',
+        'author',
+        'link',
+    ];
 
     public function versions(): HasMany
     {

@@ -43,7 +43,16 @@ class Build extends Model
 {
     const NOT_FOUND_CACHE_VALUE = 'not_found';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'modpack_id',
+        'version',
+        'minecraft',
+        'forge',
+        'is_published',
+        'private',
+        'min_java',
+        'min_memory',
+    ];
 
     public function modpack(): BelongsTo
     {

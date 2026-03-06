@@ -34,7 +34,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Modversion extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'mod_id',
+        'version',
+        'md5',
+        'filesize',
+    ];
 
     public function mod(): BelongsTo
     {

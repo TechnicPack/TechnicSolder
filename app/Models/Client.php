@@ -27,7 +27,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Client extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'uuid',
+    ];
 
     public function modpacks(): BelongsToMany
     {

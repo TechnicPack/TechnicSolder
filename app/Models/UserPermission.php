@@ -46,7 +46,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserPermission extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'solder_full',
+        'solder_users',
+        'solder_keys',
+        'solder_clients',
+        'mods_create',
+        'mods_manage',
+        'mods_delete',
+        'modpacks',
+        'modpacks_create',
+        'modpacks_manage',
+        'modpacks_delete',
+    ];
 
     public function user(): BelongsTo
     {

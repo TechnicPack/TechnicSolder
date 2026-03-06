@@ -60,7 +60,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Modpack extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'slug',
+        'recommended',
+        'latest',
+        'url',
+        'icon',
+        'icon_md5',
+        'icon_url',
+        'logo',
+        'logo_md5',
+        'logo_url',
+        'background',
+        'background_md5',
+        'background_url',
+        'order',
+        'hidden',
+        'private',
+    ];
 
     public function builds(): HasMany
     {

@@ -24,5 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Key extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'api_key',
+    ];
 }
