@@ -146,7 +146,7 @@ final class UserTest extends TestCase
         ];
 
         $response = $this->post('/user/edit/'.$user->id, $data);
-        $response->assertRedirect('/user/list');
+        $response->assertRedirect('/user/edit/'.$user->id);
         $response->assertSessionHas('success');
     }
 

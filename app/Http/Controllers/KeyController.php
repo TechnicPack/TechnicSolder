@@ -11,11 +11,6 @@ use Illuminate\View\View;
 
 class KeyController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('solder_keys');
-    }
-
     public function getIndex(): RedirectResponse
     {
         return redirect('key/list');
@@ -23,6 +18,8 @@ class KeyController extends Controller
 
     public function getList(): View
     {
+        $this->authorize('viewAny', Key::class);
+
         $keys = Key::all();
 
         return view('key.list')->with('keys', $keys);
@@ -30,11 +27,15 @@ class KeyController extends Controller
 
     public function getCreate(): View
     {
+        $this->authorize('create', Key::class);
+
         return view('key.create');
     }
 
     public function postCreate(): RedirectResponse
     {
+        $this->authorize('create', Key::class);
+
         $rules = [
             'name' => 'required|unique:keys',
             'api_key' => 'required|unique:keys',
@@ -51,7 +52,7 @@ class KeyController extends Controller
         $key->save();
         Cache::forget('keys');
 
-        return redirect('key/list')->with('success', 'API key added!');
+        return redirect('key/list')->with('success', 'Platform key added!');
     }
 
     public function getDelete($key_id)
@@ -61,6 +62,8 @@ class KeyController extends Controller
         if (empty($key)) {
             return redirect('key/list')->withErrors(['Platform Key not found']);
         }
+
+        $this->authorize('delete', $key);
 
         return view('key.delete')->with('key', $key);
     }
@@ -73,9 +76,11 @@ class KeyController extends Controller
             return redirect('key/list')->withErrors(['Platform Key not found']);
         }
 
+        $this->authorize('delete', $key);
+
         $key->delete();
         Cache::forget('keys');
 
-        return redirect('key/list')->with('success', 'API Key deleted!');
+        return redirect('key/list')->with('success', 'Platform Key deleted!');
     }
 }

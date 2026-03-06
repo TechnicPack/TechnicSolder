@@ -4,6 +4,7 @@ use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,20 +16,23 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
+        $middleware->web(\App\Http\Middleware\RequireMail::class);
+
         $middleware->throttleApi();
+        $middleware->api(prepend: [
+            \App\Http\Middleware\ForceJsonResponse::class,
+        ]);
         $middleware->api(\App\Http\Middleware\Cors::class);
 
         $middleware->alias([
-            'build' => \App\Http\Middleware\Build::class,
             'cors' => \App\Http\Middleware\Cors::class,
-            'modpack' => \App\Http\Middleware\Modpack::class,
-            'solder_clients' => \App\Http\Middleware\SolderClients::class,
-            'solder_keys' => \App\Http\Middleware\SolderKeys::class,
-            'solder_modpacks' => \App\Http\Middleware\SolderModpacks::class,
-            'solder_mods' => \App\Http\Middleware\SolderMods::class,
-            'solder_users' => \App\Http\Middleware\SolderUsers::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->renderable(function (AccessDeniedHttpException $e, $request) {
+            if (! $request->expectsJson()) {
+                return redirect('dashboard')
+                    ->with('permission', 'You do not have permission to access this area.');
+            }
+        });
     })->create();

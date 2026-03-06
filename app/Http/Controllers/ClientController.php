@@ -11,11 +11,6 @@ use Illuminate\View\View;
 
 class ClientController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('solder_clients');
-    }
-
     public function getIndex(): RedirectResponse
     {
         return redirect('client/list');
@@ -23,6 +18,8 @@ class ClientController extends Controller
 
     public function getList(): View
     {
+        $this->authorize('viewAny', Client::class);
+
         $clients = Client::all();
 
         return view('client.list')->with('clients', $clients);
@@ -30,11 +27,15 @@ class ClientController extends Controller
 
     public function getCreate(): View
     {
+        $this->authorize('create', Client::class);
+
         return view('client.create');
     }
 
     public function postCreate(): RedirectResponse
     {
+        $this->authorize('create', Client::class);
+
         $rules = [
             'name' => 'required|unique:clients',
             'uuid' => 'required|unique:clients',
@@ -64,6 +65,8 @@ class ClientController extends Controller
             return redirect('client/list')->withErrors(['Client UUID not found']);
         }
 
+        $this->authorize('delete', $client);
+
         return view('client.delete')->with('client', $client);
     }
 
@@ -74,6 +77,8 @@ class ClientController extends Controller
         if (empty($client)) {
             return redirect('client/list')->withErrors(['Client UUID not found']);
         }
+
+        $this->authorize('delete', $client);
 
         $client->modpacks()->sync([]);
         $client->delete();

@@ -18,11 +18,6 @@ use Illuminate\View\View;
 
 class ModController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('solder_mods')->except('getModVersions');
-    }
-
     public function getIndex(): RedirectResponse
     {
         return redirect('mod/list');
@@ -30,6 +25,8 @@ class ModController extends Controller
 
     public function getList(): View
     {
+        $this->authorize('viewAny', Mod::class);
+
         $mods = Mod::with('latestVersion')->get();
 
         return view('mod.list')->with(['mods' => $mods]);
@@ -46,6 +43,8 @@ class ModController extends Controller
             return redirect('mod/list')->withErrors(['Mod not found']);
         }
 
+        $this->authorize('update', $mod);
+
         $perm = Auth::user()->permission;
         $accessibleModpackIds = $perm->solder_full
             ? null
@@ -59,11 +58,15 @@ class ModController extends Controller
 
     public function getCreate(): View
     {
+        $this->authorize('create', Mod::class);
+
         return view('mod.create');
     }
 
     public function postCreate(): RedirectResponse
     {
+        $this->authorize('create', Mod::class);
+
         $rules = [
             'name' => 'required|unique:mods',
             'pretty_name' => 'required',
@@ -100,6 +103,8 @@ class ModController extends Controller
             return redirect('mod/list')->withErrors(['Mod not found']);
         }
 
+        $this->authorize('delete', $mod);
+
         return view('mod.delete')->with(['mod' => $mod]);
     }
 
@@ -109,6 +114,8 @@ class ModController extends Controller
         if (empty($mod)) {
             return redirect('mod/list')->withErrors(['Error modifying mod - Mod not found']);
         }
+
+        $this->authorize('update', $mod);
 
         $rules = [
             'pretty_name' => 'required',
@@ -147,6 +154,8 @@ class ModController extends Controller
             return redirect('mod/list')->withErrors(['Error deleting mod - Mod not found']);
         }
 
+        $this->authorize('delete', $mod);
+
         foreach ($mod->versions as $ver) {
             $ver->builds()->sync([]);
             $ver->delete();
@@ -163,6 +172,8 @@ class ModController extends Controller
         if (! Request::ajax()) {
             abort(404);
         }
+
+        $this->authorize('viewAny', Mod::class);
 
         $md5 = Request::input('md5');
         $ver_id = Request::input('version-id');
@@ -226,6 +237,8 @@ class ModController extends Controller
         if (! Request::ajax()) {
             abort(404);
         }
+
+        $this->authorize('viewAny', Mod::class);
 
         $mod_id = Request::input('mod-id');
         $md5 = Request::input('add-md5');
@@ -304,6 +317,8 @@ class ModController extends Controller
         if (! Request::ajax()) {
             abort(404);
         }
+
+        $this->authorize('viewAny', Mod::class);
 
         if (empty($ver_id)) {
             return response()->json([

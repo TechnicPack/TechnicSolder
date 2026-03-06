@@ -24,14 +24,6 @@ use Illuminate\View\View;
 
 class ModpackController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('solder_modpacks');
-        $this->middleware('modpack',
-            ['only' => ['getView', 'getDelete', 'postDelete', 'getEdit', 'postEdit', 'getAddBuild', 'postAddBuild']]);
-        $this->middleware('build', ['only' => ['getBuild', 'getEditBuild', 'postEditBuild', 'getDeleteBuild', 'postDeleteBuild']]);
-    }
-
     public function getIndex(): RedirectResponse
     {
         return redirect('modpack/list');
@@ -39,6 +31,8 @@ class ModpackController extends Controller
 
     public function getList(): View
     {
+        $this->authorize('viewAny', Modpack::class);
+
         $modpacks = Modpack::all();
 
         $user = Auth::user();
@@ -63,6 +57,8 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
+        $this->authorize('update', $modpack);
+
         return view('modpack.view')->with('modpack', $modpack);
     }
 
@@ -76,6 +72,8 @@ class ModpackController extends Controller
         if (empty($build)) {
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
+
+        $this->authorize('update', [Build::class, $build->modpack]);
 
         $mods = Mod::all();
 
@@ -91,6 +89,8 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
+        $this->authorize('update', [Build::class, $build->modpack]);
+
         $minecraft = MinecraftUtils::getMinecraftVersions();
 
         return view('modpack.build.edit')->with('build', $build)->with('minecraft', $minecraft);
@@ -102,6 +102,8 @@ class ModpackController extends Controller
         if (empty($build)) {
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
+
+        $this->authorize('update', [Build::class, $build->modpack]);
 
         $rules = [
             'version' => 'required',
@@ -174,6 +176,8 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
+        $this->authorize('delete', [Build::class, $build->modpack]);
+
         return view('modpack.build.delete')->with('build', $build);
     }
 
@@ -183,6 +187,8 @@ class ModpackController extends Controller
         if (empty($build)) {
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
+
+        $this->authorize('delete', [Build::class, $build->modpack]);
 
         $switchrec = 0;
         $switchlat = 0;
@@ -221,6 +227,8 @@ class ModpackController extends Controller
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
 
+        $this->authorize('create', [Build::class, $modpack]);
+
         $minecraft = MinecraftUtils::getMinecraftVersions();
 
         return view('modpack.build.create')
@@ -236,6 +244,8 @@ class ModpackController extends Controller
         if (empty($modpack)) {
             return redirect('modpack/list')->withErrors(['Modpack not found']);
         }
+
+        $this->authorize('create', [Build::class, $modpack]);
 
         $rules = [
             'version' => [
@@ -291,11 +301,15 @@ class ModpackController extends Controller
 
     public function getCreate(): View
     {
+        $this->authorize('create', Modpack::class);
+
         return view('modpack.create');
     }
 
     public function postCreate(): RedirectResponse
     {
+        $this->authorize('create', Modpack::class);
+
         $rules = [
             'name' => 'required|unique:modpacks',
             'slug' => 'required|unique:modpacks',
@@ -351,6 +365,8 @@ class ModpackController extends Controller
             return redirect('dashboard')->withErrors(['Modpack not found']);
         }
 
+        $this->authorize('update', $modpack);
+
         $currentClients = [];
         foreach ($modpack->clients as $client) {
             array_push($currentClients, $client->id);
@@ -370,6 +386,8 @@ class ModpackController extends Controller
         if (empty($modpack)) {
             return redirect('modpack/list/')->withErrors(['Modpack not found']);
         }
+
+        $this->authorize('update', $modpack);
 
         $rules = [
             'name' => 'required|unique:modpacks,name,'.$modpack->id,
@@ -418,6 +436,8 @@ class ModpackController extends Controller
             return redirect('modpack/list/')->withErrors(['Modpack not found']);
         }
 
+        $this->authorize('delete', $modpack);
+
         return view('modpack.delete')->with(['modpack' => $modpack]);
     }
 
@@ -427,6 +447,8 @@ class ModpackController extends Controller
         if (empty($modpack)) {
             return redirect('modpack/list/')->withErrors(['Modpack not found']);
         }
+
+        $this->authorize('delete', $modpack);
 
         foreach ($modpack->builds as $build) {
             $build->modversions()->sync([]);
@@ -462,6 +484,7 @@ class ModpackController extends Controller
                 $version_id = Request::input('version');
                 $modversion_id = Request::input('modversion_id');
                 $build = Build::with('modpack')->find(Request::input('build_id'));
+                $this->authorize('update', [Build::class, $build->modpack]);
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', $build->id)
                     ->where('modversion_id', '=', $modversion_id)
@@ -483,6 +506,7 @@ class ModpackController extends Controller
                 ]);
             case 'delete': // Remove mod version from build
                 $build = Build::with('modpack')->find(Request::input('build_id'));
+                $this->authorize('update', [Build::class, $build->modpack]);
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', $build->id)
                     ->where('modversion_id', '=', Request::input('modversion_id'))
@@ -500,6 +524,7 @@ class ModpackController extends Controller
                 ]);
             case 'add': // Add mod version to build
                 $build = Build::find(Request::input('build'));
+                $this->authorize('update', [Build::class, $build->modpack]);
                 $mod = Mod::where('name', '=', Request::input('mod-name'))->first();
                 $ver = Modversion::where('mod_id', '=', $mod->id)
                     ->where('version', '=', Request::input('mod-version'))
@@ -545,6 +570,7 @@ class ModpackController extends Controller
                 }
             case 'recommended': // Set recommended build
                 $modpack = Modpack::find(Request::input('modpack'));
+                $this->authorize('update', $modpack);
                 $new_version = Request::input('recommended');
                 $modpack->recommended = $new_version;
                 $modpack->save();
@@ -557,6 +583,7 @@ class ModpackController extends Controller
                 ]);
             case 'latest': // Set latest build
                 $modpack = Modpack::find(Request::input('modpack'));
+                $this->authorize('update', $modpack);
                 $new_version = Request::input('latest');
                 $modpack->latest = $new_version;
                 $modpack->save();
@@ -569,6 +596,7 @@ class ModpackController extends Controller
                 ]);
             case 'published': // Set build published status
                 $build = Build::with('modpack')->find(Request::input('build'));
+                $this->authorize('update', [Build::class, $build->modpack]);
 
                 $build->is_published = \request()->boolean('published');
                 $build->save();
@@ -583,6 +611,7 @@ class ModpackController extends Controller
                 ]);
             case 'private':
                 $build = Build::with('modpack')->find(Request::input('build'));
+                $this->authorize('update', [Build::class, $build->modpack]);
 
                 $build->private = \request()->boolean('private');
                 $build->save();

@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KeyController;
@@ -84,11 +83,9 @@ Route::middleware('auth')->group(function () {
     Route::post('user/edit/{user_id}', [UserController::class, 'postEdit']);
     Route::get('user/create', [UserController::class, 'getCreate'])->name('user.create');
     Route::post('user/create', [UserController::class, 'postCreate']);
+    Route::post('user/{user_id}/reset-2fa', [UserController::class, 'postResetTwoFactor'])->name('user.reset2fa');
     Route::get('user/delete/{user_id}', [UserController::class, 'getDelete'])->name('user.delete');
     Route::post('user/delete/{user_id}', [UserController::class, 'postDelete']);
+    Route::post('user/token/create', [UserController::class, 'postCreateToken'])->name('user.token.create');
+    Route::post('user/token/delete/{tokenId}', [UserController::class, 'postDeleteToken'])->name('user.token.delete');
 });
-
-// Authentication routes
-Route::get('login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('login', [AuthController::class, 'postLogin']);
-Route::get('logout', [AuthController::class, 'doLogout'])->name('logout');

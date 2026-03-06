@@ -20,6 +20,8 @@ class ModpackTableTestSeeder extends Seeder
         $testmodpack = Modpack::create([
             'name' => 'TestModpack',
             'slug' => 'testmodpack',
+            'hidden' => false,
+            'private' => false,
             'icon' => false,
             'icon_md5' => null,
             'icon_url' => URL::asset('/resources/default/icon.png'),
