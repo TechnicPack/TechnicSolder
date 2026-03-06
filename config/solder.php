@@ -49,4 +49,12 @@ return [
      */
     'disable_mod_api' => filter_var(env('SOLDER_DISABLE_MOD_API', 'false'), FILTER_VALIDATE_BOOLEAN),
 
+    /**
+     * Enable email functionality?
+     *
+     * Setting this to true enables password reset via email.
+     * You must also configure your MAIL_* environment variables.
+     */
+    'mail_enabled' => filter_var(env('MAIL_ENABLED', 'false'), FILTER_VALIDATE_BOOLEAN),
+
 ];

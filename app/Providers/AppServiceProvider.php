@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Modpack;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -42,6 +44,8 @@ class AppServiceProvider extends ServiceProvider
             define('SOLDER_VERSION', '0.12.9');
         }
 
+        Gate::before(fn (User $user) => $user->permission->solder_full ?: null);
+
         View::composer('layouts.master', function ($view) {
             $modpacks = Cache::remember('allmodpacks', now()->addMinute(), function () {
                 return Modpack::all()->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE);
@@ -59,6 +63,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->bootRoute();
+
+        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by($request->input('email').'|'.$request->ip()));
+        RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
     }
 
     public function bootRoute(): void

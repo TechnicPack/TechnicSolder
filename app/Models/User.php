@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Fortify\TwoFactorAuthenticationProvider;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property int $id
@@ -47,7 +51,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -73,6 +77,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -85,6 +91,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'two_factor_confirmed_at' => 'datetime',
         ];
     }
 
@@ -98,6 +105,22 @@ class User extends Authenticatable
     public function permission(): HasOne
     {
         return $this->hasOne(UserPermission::class);
+    }
+
+    /**
+     * Override to include the instance URL in the TOTP issuer.
+     *
+     * @see https://github.com/laravel/fortify/blob/1.x/src/TwoFactorAuthenticatable.php
+     */
+    public function twoFactorQrCodeUrl(): string
+    {
+        $host = parse_url(config('app.url'), PHP_URL_HOST) ?: config('app.url');
+
+        return app(TwoFactorAuthenticationProvider::class)->qrCodeUrl(
+            config('app.name').' ('.$host.')',
+            $this->{Fortify::username()},
+            Fortify::currentEncrypter()->decrypt($this->two_factor_secret)
+        );
     }
 
     public function updated_by_user(): HasOne

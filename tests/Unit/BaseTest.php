@@ -36,8 +36,8 @@ final class BaseTest extends TestCase
         ];
 
         $response = $this->post('/login', $credentials);
-        $response->assertRedirect('/login');
-        $response->assertSessionHas('login_failed');
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('email');
     }
 
     public function test_authorized_login(): void

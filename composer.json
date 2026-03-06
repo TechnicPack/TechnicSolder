@@ -38,7 +38,9 @@
         "guzzlehttp/guzzle": "^7.10.0",
         "http-interop/http-factory-guzzle": "^1.2.1",
         "knplabs/github-api": "^3.16",
+        "laravel/fortify": "^1.35",
         "laravel/framework": "^12.40.1",
+        "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.10.2"
     },
     "require-dev": {
