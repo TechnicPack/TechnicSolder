@@ -36,7 +36,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-                            @foreach ($builds as $build)
+                            @forelse ($builds as $build)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30">
                                     <td class="px-5 py-3 text-gray-500 dark:text-gray-400">{{ $build->id }}</td>
                                     <td class="px-5 py-3 font-medium">{{ $build->version }}</td>
@@ -48,7 +48,11 @@
                                         <a href="{{ url('/modpack/build/'.$build->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">Manage</a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No recently updated modpacks.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -75,7 +79,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
-                            @foreach ($modversions as $modversion)
+                            @forelse ($modversions as $modversion)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30">
                                     <td class="px-5 py-3 font-mono text-sm">{{ $modversion->version }}</td>
                                     <td class="px-5 py-3">
@@ -96,7 +100,11 @@
                                         <a href="{{ url('/mod/view/'.$modversion->mod->id.'#versions') }}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">Manage</a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No recently added mod versions.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

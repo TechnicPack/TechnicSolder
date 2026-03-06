@@ -5,15 +5,21 @@ namespace App\Http\Controllers;
 use App\Libraries\UpdateUtils;
 use App\Models\Build;
 use App\Models\Modversion;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
     public function getIndex(): View
     {
+        $perm = Auth::user()->permission;
+
         $builds = Build::with('modpack')
             ->withCount('modversions')
             ->where('is_published', '=', '1')
+            ->when(! $perm->solder_full, fn ($q) => $q->whereHas('modpack', fn ($q) =>
+                $q->whereIn('id', $perm->modpacks)
+            ))
             ->orderBy('updated_at', 'desc')
             ->take(5)
             ->get();
