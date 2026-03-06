@@ -1,13 +1,13 @@
 @extends('layouts.master')
 @section('title')
-    <title>Create API Key - Technic Solder</title>
+    <title>Create Platform Key - Technic Solder</title>
 @stop
 @section('content')
-    <h1 class="text-2xl font-bold">API Key Management</h1>
+    <h1 class="text-2xl font-bold">Platform Key Management</h1>
 
     <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
         <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Add API Key</h2>
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Add Platform Key</h2>
         </div>
         <div class="px-5 py-4">
             @include('partial.form-errors')

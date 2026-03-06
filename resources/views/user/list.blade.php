@@ -21,6 +21,7 @@
                     'id' => $u->id,
                     'email' => $u->email,
                     'username' => $u->username,
+                    'two_factor' => (bool) $u->two_factor_confirmed_at,
                     'updated_by' => ($u->updated_by_user?->username ?? 'N/A') . ' - ' . ($u->updated_by_ip ?: 'N/A'),
                     'updated_at' => $u->updated_at->toIso8601String(),
                     'updated_at_display' => date_format($u->updated_at, 'r'),
@@ -41,6 +42,7 @@
                                 <th class="px-5 py-3 hidden sm:table-cell cursor-pointer" @click="sort('username')">
                                     <span class="inline-flex items-center gap-1">Username <span x-show="sortKey === 'username'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
                                 </th>
+                                <th class="px-5 py-3 hidden sm:table-cell">2FA</th>
                                 <th class="px-5 py-3 hidden lg:table-cell cursor-pointer" @click="sort('updated_by')">
                                     <span class="inline-flex items-center gap-1">Updated by <span x-show="sortKey === 'updated_by'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
                                 </th>
@@ -59,6 +61,10 @@
                                         <div class="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="row.username"></div>
                                     </td>
                                     <td class="px-5 py-3 text-gray-900 dark:text-gray-100 hidden sm:table-cell" x-text="row.username"></td>
+                                    <td class="px-5 py-3 hidden sm:table-cell">
+                                        <span x-show="row.two_factor" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">Enabled</span>
+                                        <span x-show="!row.two_factor" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Disabled</span>
+                                    </td>
                                     <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden lg:table-cell" x-text="row.updated_by"></td>
                                     <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden md:table-cell" x-text="row.updated_at_display"></td>
                                     <td class="px-5 py-3">

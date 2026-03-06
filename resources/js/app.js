@@ -12,6 +12,7 @@ Alpine.store('darkMode', {
         this.on = !this.on
         localStorage.setItem('darkMode', this.on)
         document.documentElement.classList.toggle('dark', this.on)
+        document.documentElement.style.colorScheme = this.on ? 'dark' : 'light'
     }
 })
 

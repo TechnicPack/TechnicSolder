@@ -1,17 +1,17 @@
 @extends('layouts.master')
 @section('title')
-    <title>API Key Management - Technic Solder</title>
+    <title>Platform Key Management - Technic Solder</title>
 @stop
 @section('content')
-    <h1 class="text-2xl font-bold">API Key Management</h1>
+    <h1 class="text-2xl font-bold">Platform Key Management</h1>
 
     <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
         <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Delete API Key ({{ $key->name }})</h2>
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Delete Platform Key ({{ $key->name }})</h2>
         </div>
         <div class="px-5 py-4">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                This will immediately remove access to Solder using this API Key. Make sure to unlink any packs using this key
+                This will immediately remove access to Solder using this platform key. Make sure to unlink any packs using this key
                 before doing this.
             </p>
 

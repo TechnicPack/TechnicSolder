@@ -10,12 +10,7 @@
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet">
-    <script>
-        if (localStorage.getItem('darkMode') === 'true' ||
-            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-        }
-    </script>
+    @include('partial.dark-mode-script')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
@@ -163,7 +158,7 @@
                     <a href="{{ url('solder/update') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">Update Checker</a>
                     <a href="{{ url('user/list') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">Users</a>
                     <a href="{{ url('client/list') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">Clients</a>
-                    <a href="{{ url('key/list') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">API Keys</a>
+                    <a href="{{ url('key/list') }}" class="block pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors">Platform Keys</a>
                 </div>
             </div>
         </nav>
@@ -175,7 +170,7 @@
     </aside>
 
     {{-- Main content area --}}
-    <div class="lg:pl-64 min-h-screen flex flex-col">
+    <div class="lg:pl-64 min-h-screen flex flex-col min-w-0">
         {{-- Top bar --}}
         <header class="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 h-16 flex items-center justify-between px-4 lg:px-6 shrink-0">
             <div class="flex items-center gap-3">
@@ -216,11 +211,14 @@
                             <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
                             Profile
                         </a>
-                        <a href="{{ url('logout') }}"
-                           class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"/></svg>
-                            Logout
-                        </a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left">
+                                <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"/></svg>
+                                Logout
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

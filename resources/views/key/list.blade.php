@@ -1,21 +1,21 @@
 @extends('layouts.master')
 @section('title')
-    <title>API Key Management - Technic Solder</title>
+    <title>Platform Key Management - Technic Solder</title>
 @stop
 @section('content')
-    <h1 class="text-2xl font-bold">API Key Management</h1>
+    <h1 class="text-2xl font-bold">Platform Key Management</h1>
 
     <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">API Key List</h2>
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Platform Key List</h2>
             <a href="{{ URL::to('key/create') }}"
                class="self-start bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
-                Add API Key
+                Add Platform Key
             </a>
         </div>
         <div class="px-5 py-4">
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                This is the list of API keys that have access to Solder.
+                This is the list of platform keys that have access to Solder.
             </p>
 
             @session('success')
@@ -28,7 +28,7 @@
                 rows: @js($keys->map(fn($k) => ['id' => $k->id, 'name' => $k->name, 'api_key' => $k->api_key])),
                 sortKey: 'id', types: { id: 'number' }
             })">
-                @include('partial.data-table.toolbar', ['placeholder' => 'Search API keys...'])
+                @include('partial.data-table.toolbar', ['placeholder' => 'Search platform keys...'])
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">

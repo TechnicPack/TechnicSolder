@@ -3,6 +3,17 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+html.dark {
+    color-scheme: dark;
+}
+
+/* 1Password can't parse oklch backgrounds for theme detection.
+   Provide a hex fallback so autofill styling matches dark mode.
+   https://1password.community/discussions/developers/161487 */
+.dark input, .dark select, .dark textarea {
+    background-color: #27272a; /* zinc-800 */
+}
+
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
