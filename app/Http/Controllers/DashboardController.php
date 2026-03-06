@@ -17,8 +17,7 @@ class DashboardController extends Controller
         $builds = Build::with('modpack')
             ->withCount('modversions')
             ->where('is_published', '=', '1')
-            ->when(! $perm->solder_full, fn ($q) => $q->whereHas('modpack', fn ($q) =>
-                $q->whereIn('id', $perm->modpacks)
+            ->when(! $perm->solder_full, fn ($q) => $q->whereHas('modpack', fn ($q) => $q->whereIn('id', $perm->modpacks)
             ))
             ->orderBy('updated_at', 'desc')
             ->take(5)

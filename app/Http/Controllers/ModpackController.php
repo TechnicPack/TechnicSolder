@@ -324,6 +324,8 @@ class ModpackController extends Controller
         $modpack->background_md5 = null;
         $modpack->background_url = URL::asset('/resources/default/background.jpg');
         $modpack->save();
+        Cache::forget('modpacks');
+        Cache::forget('allmodpacks');
 
         /* Gives creator modpack perms */
         $user = Auth::user();
@@ -384,14 +386,19 @@ class ModpackController extends Controller
             return redirect('modpack/edit/'.$modpack_id)->withErrors($validation->messages());
         }
 
+        $oldSlug = $modpack->slug;
         $modpack->name = Request::input('name');
         $modpack->slug = Request::input('slug');
         $modpack->hidden = Request::boolean('hidden');
         $modpack->private = Request::boolean('private');
         $modpack->save();
 
-        Cache::forget('modpack:'.$modpack->slug);
+        Cache::forget('modpack:'.$oldSlug);
+        if ($oldSlug !== $modpack->slug) {
+            Cache::forget('modpack:'.$modpack->slug);
+        }
         Cache::forget('modpacks');
+        Cache::forget('allmodpacks');
 
         /* Client Syncing */
         $clients = Request::input('clients');
@@ -423,12 +430,16 @@ class ModpackController extends Controller
 
         foreach ($modpack->builds as $build) {
             $build->modversions()->sync([]);
+            Cache::forget('modpack:'.$modpack->slug.':build:'.$build->version);
             $build->delete();
         }
 
         $modpack->clients()->sync([]);
         $modpack->delete();
+        Cache::forget('modpack:'.$modpack->slug);
         Cache::forget('modpacks');
+        Cache::forget('allmodpacks');
+        Cache::forget('clients');
 
         return redirect('modpack/list/')->with('success', 'Modpack Deleted');
     }
@@ -450,8 +461,9 @@ class ModpackController extends Controller
             case 'version': // Change mod version in a build
                 $version_id = Request::input('version');
                 $modversion_id = Request::input('modversion_id');
+                $build = Build::with('modpack')->find(Request::input('build_id'));
                 $affected = DB::table('build_modversion')
-                    ->where('build_id', '=', Request::input('build_id'))
+                    ->where('build_id', '=', $build->id)
                     ->where('modversion_id', '=', $modversion_id)
                     ->update(['modversion_id' => $version_id]);
                 if ($affected == 0) {
@@ -462,6 +474,7 @@ class ModpackController extends Controller
                     }
                 } else {
                     $status = 'success';
+                    Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
                 }
 
                 return response()->json([
@@ -469,13 +482,16 @@ class ModpackController extends Controller
                     'reason' => 'Rows Affected: '.$affected,
                 ]);
             case 'delete': // Remove mod version from build
+                $build = Build::with('modpack')->find(Request::input('build_id'));
                 $affected = DB::table('build_modversion')
-                    ->where('build_id', '=', Request::input('build_id'))
+                    ->where('build_id', '=', $build->id)
                     ->where('modversion_id', '=', Request::input('modversion_id'))
                     ->delete();
                 $status = 'success';
                 if ($affected == 0) {
                     $status = 'failed';
+                } else {
+                    Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
                 }
 
                 return response()->json([

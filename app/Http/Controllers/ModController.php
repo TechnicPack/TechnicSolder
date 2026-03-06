@@ -8,9 +8,9 @@ use App\Models\Modversion;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -88,6 +88,7 @@ class ModController extends Controller
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
         $mod->save();
+        Cache::forget('mods');
 
         return redirect('mod/view/'.$mod->id);
     }
@@ -134,6 +135,7 @@ class ModController extends Controller
         $mod->link = Request::input('link');
         $mod->save();
         Cache::forget('mod:'.$mod->name);
+        Cache::forget('mods');
 
         return redirect('mod/view/'.$mod->id)->with('success', 'Mod successfully edited.');
     }
@@ -151,6 +153,7 @@ class ModController extends Controller
         }
         $mod->delete();
         Cache::forget('mod:'.$mod->name);
+        Cache::forget('mods');
 
         return redirect('mod/list')->with('success', 'Mod deleted!');
     }
