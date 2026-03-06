@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\ApiAuthContext;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -103,7 +104,14 @@ class Modpack extends Model
         return $private;
     }
 
-    public function toApiResponse(?Client $client = null, ?Key $key = null)
+    public function isAccessibleBy(ApiAuthContext $auth): bool
+    {
+        return $auth->key
+            || ($auth->user && $auth->user->permission->canAccessModpack($this->id))
+            || ($auth->client && $auth->client->modpacks->contains($this));
+    }
+
+    public function toApiResponse(ApiAuthContext $auth)
     {
         $response = [
             'id' => $this->id,
@@ -120,24 +128,18 @@ class Modpack extends Model
             'latest' => $this->latest,
         ];
 
-        $response['builds'] = $this->builds->filter(function ($build) use ($client, $key) {
-            // Don't return unpublished builds
+        $canViewPrivate = $this->isAccessibleBy($auth);
+
+        $response['builds'] = $this->builds->filter(function ($build) use ($canViewPrivate) {
             if (! $build->is_published) {
                 return false;
             }
 
-            // If this build isn't private, return it
             if (! $build->private) {
                 return true;
             }
 
-            // If a key is set, return all the builds
-            if ($key) {
-                return true;
-            }
-
-            // If this is a private build and there's a client set, check if the client can access it
-            return $client && $client->modpacks->contains($this);
+            return $canViewPrivate;
         })->pluck('version');
 
         return $response;
