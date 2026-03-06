@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install bcmath pdo_mysql pdo_pgsql zip \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && echo 'memory_limit = 256M' > /usr/local/etc/php/conf.d/memory.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

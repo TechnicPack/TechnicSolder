@@ -496,14 +496,15 @@ class ModpackController extends Controller
                     ]);
                 }
 
-                $duplicate = DB::table('build_modversion')
-                    ->where('build_id', '=', $build->id)
-                    ->where('modversion_id', '=', $ver->id)
-                    ->count() > 0;
-                if ($duplicate) {
+                $existing = DB::table('build_modversion')
+                    ->join('modversions', 'modversions.id', '=', 'build_modversion.modversion_id')
+                    ->where('build_modversion.build_id', '=', $build->id)
+                    ->where('modversions.mod_id', '=', $mod->id)
+                    ->exists();
+                if ($existing) {
                     return response()->json([
                         'status' => 'failed',
-                        'reason' => 'Duplicate mod version found',
+                        'reason' => 'This mod already exists in the build',
                     ]);
                 } else {
                     $build->modversions()->attach($ver->id);
@@ -511,10 +512,19 @@ class ModpackController extends Controller
                     Cache::forget('modpack:'.$build->modpack->slug);
                     Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 
+                    $allVersions = $mod->versions->map(fn (Modversion $v) => [
+                        'id' => $v->id,
+                        'version' => $v->version,
+                    ]);
+
                     return response()->json([
                         'status' => 'success',
-                        'pretty_name' => $mod->pretty_name,
+                        'mod_id' => $mod->id,
+                        'mod_name' => $mod->name,
+                        'pretty_name' => $mod->pretty_name ?: $mod->name,
                         'version' => $ver->version,
+                        'modversion_id' => $ver->id,
+                        'versions' => $allVersions,
                     ]);
                 }
             case 'recommended': // Set recommended build

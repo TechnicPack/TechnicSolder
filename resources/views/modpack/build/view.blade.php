@@ -77,17 +77,55 @@ document.addEventListener('alpine:init', () => {
         selectedMod: null,
         selectedModName: '',
         showDropdown: false,
+        modHighlight: -1,
         versions: [],
         selectedVersion: '',
+        versionQuery: '',
+        showVersionDropdown: false,
+        versionHighlight: -1,
         loadingVersions: false,
         mods: @json($mods->map(fn($m) => ['name' => $m->name, 'pretty_name' => $m->pretty_name ?: $m->name])),
+        modsInBuild: new Set(@json($build->modversions->pluck('mod.name'))),
 
         get filteredMods() {
-            if (!this.query) return this.mods;
+            let list = this.mods.filter(m => !this.modsInBuild.has(m.name));
+            if (!this.query) return list;
             const q = this.query.toLowerCase();
-            return this.mods.filter(m =>
+            return list.filter(m =>
                 m.pretty_name.toLowerCase().includes(q) || m.name.toLowerCase().includes(q)
             );
+        },
+
+        get filteredVersions() {
+            if (!this.versionQuery) return this.versions;
+            const q = this.versionQuery.toLowerCase();
+            return this.versions.filter(v => v.toLowerCase().includes(q));
+        },
+
+        scrollToHighlight(ref, index) {
+            this.$nextTick(() => {
+                const container = this.$refs[ref];
+                const item = container?.children[index];
+                item?.scrollIntoView({ block: 'nearest' });
+            });
+        },
+
+        modArrow(dir) {
+            const len = this.filteredMods.length;
+            if (!len) return;
+            this.modHighlight = dir === 'down'
+                ? (this.modHighlight + 1) % len
+                : (this.modHighlight - 1 + len) % len;
+            this.scrollToHighlight('modDropdown', this.modHighlight);
+        },
+
+        versionArrow(dir) {
+            const len = this.filteredVersions.length;
+            if (!len) return;
+            this.versionHighlight = dir === 'down'
+                ? (this.versionHighlight + 1) % len
+                : (this.versionHighlight - 1 + len) % len;
+            this.scrollToHighlight('versionDropdown', this.versionHighlight);
         },
 
         selectMod(mod) {
@@ -95,9 +133,18 @@ document.addEventListener('alpine:init', () => {
             this.selectedModName = mod.name;
             this.query = mod.pretty_name;
             this.showDropdown = false;
+            this.modHighlight = -1;
             this.versions = [];
             this.selectedVersion = '';
+            this.versionQuery = '';
             this.loadVersions(mod.name);
+        },
+
+        selectVersion(v) {
+            this.selectedVersion = v;
+            this.versionQuery = v;
+            this.showVersionDropdown = false;
+            this.versionHighlight = -1;
         },
 
         clearSelection() {
@@ -105,6 +152,7 @@ document.addEventListener('alpine:init', () => {
             this.selectedModName = '';
             this.versions = [];
             this.selectedVersion = '';
+            this.versionQuery = '';
         },
 
         async loadVersions(modName) {
@@ -114,6 +162,11 @@ document.addEventListener('alpine:init', () => {
                 if (data.versions && data.versions.length > 0) {
                     this.versions = data.versions;
                     this.selectedVersion = data.versions[0];
+                    this.versionQuery = data.versions[0];
+                    this.$nextTick(() => {
+                        this.$refs.versionInput?.focus();
+                        this.showVersionDropdown = true;
+                    });
                 } else {
                     this.versions = [];
                     Alpine.store('toasts').add('No mod versions found for ' + (data.pretty_name || modName), 'warning');
@@ -149,18 +202,105 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.status === 'success') {
                     Alpine.store('toasts').add('Mod ' + data.pretty_name + ' added at ' + data.version, 'success');
-                    // Add a row to the mod list
+                    this.modsInBuild.add(data.mod_name);
                     this.$dispatch('mod-added', {
+                        mod_id: data.mod_id,
+                        mod_name: data.mod_name,
                         pretty_name: data.pretty_name,
                         version: data.version,
+                        modversion_id: data.modversion_id,
+                        versions: data.versions,
                     });
+                    this.query = '';
+                    this.clearSelection();
+                    return true;
                 } else {
-                    Alpine.store('toasts').add('Unable to add mod. Reason: ' + data.reason, 'warning');
+                    Alpine.store('toasts').add(data.reason, 'error');
+                    return false;
                 }
             } catch (e) {
                 Alpine.store('toasts').add('Failed to add mod: ' + e.message, 'error');
+                return false;
             }
         }
+    }));
+
+    Alpine.data('modList', () => ({
+        buildId: {{ $build->id }},
+        mods: @js($build->modversions->sortBy(fn($v) => strtolower($v->mod->pretty_name ?: $v->mod->name))->values()->map(fn($v) => [
+            'mod_id' => $v->mod->id,
+            'mod_name' => $v->mod->name,
+            'pretty_name' => $v->mod->pretty_name ?: $v->mod->name,
+            'modversion_id' => $v->pivot->modversion_id,
+            'versions' => $v->mod->versions->map(fn($ver) => ['id' => $ver->id, 'version' => $ver->version]),
+        ])).map(m => ({ ...m, selected_version_id: String(m.modversion_id), just_added: false, changing: false })),
+
+        addMod(detail) {
+            this.mods.unshift({
+                mod_id: detail.mod_id,
+                mod_name: detail.mod_name,
+                pretty_name: detail.pretty_name,
+                modversion_id: detail.modversion_id,
+                selected_version_id: String(detail.modversion_id),
+                versions: detail.versions,
+                just_added: true,
+                changing: false,
+            });
+        },
+
+        async changeVersion(mod) {
+            mod.changing = true;
+            try {
+                const params = new URLSearchParams();
+                params.append('_token', window.csrfToken);
+                params.append('build_id', String(this.buildId));
+                params.append('modversion_id', String(mod.modversion_id));
+                params.append('action', 'version');
+                params.append('version', String(mod.selected_version_id));
+                const res = await fetch('{{ url("modpack/modify/version") }}', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                    body: params,
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    mod.modversion_id = mod.selected_version_id;
+                    Alpine.store('toasts').add('Mod version updated', 'success');
+                } else if (data.status === 'aborted') {
+                    Alpine.store('toasts').add('Mod was already set to that version', 'success');
+                } else {
+                    Alpine.store('toasts').add('Unable to update mod version', 'warning');
+                }
+            } catch {
+                Alpine.store('toasts').add('Failed to update mod version', 'error');
+            }
+            mod.changing = false;
+        },
+
+        async removeMod(mod) {
+            try {
+                const params = new URLSearchParams();
+                params.append('_token', window.csrfToken);
+                params.append('build_id', String(this.buildId));
+                params.append('modversion_id', String(mod.modversion_id));
+                params.append('action', 'delete');
+                const res = await fetch('{{ url("modpack/modify/delete") }}', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                    body: params,
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    Alpine.store('toasts').add('Mod version removed', 'success');
+                    this.mods = this.mods.filter(m => m !== mod);
+                    this.$dispatch('mod-removed', { mod_name: mod.mod_name });
+                } else {
+                    Alpine.store('toasts').add('Unable to remove mod version', 'warning');
+                }
+            } catch {
+                Alpine.store('toasts').add('Failed to remove mod version', 'error');
+            }
+        },
     }));
 });
 </script>
