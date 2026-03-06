@@ -47,7 +47,7 @@
                         make sure the file exists before it is added to Solder.
                     </p>
                     <p class="text-sm font-mono text-gray-800 dark:text-gray-200">
-                        mods/{{ $mod->name }}/{{ $mod->name }}-[version].zip
+                        mods/<span class="text-blue-600 dark:text-blue-400">{{ $mod->name }}</span>/<span class="text-blue-600 dark:text-blue-400">{{ $mod->name }}</span>-[version].zip
                     </p>
                 </div>
 
@@ -182,15 +182,40 @@
                     </div>
                 @endsession
 
-                <form method="post" action="{{ url('/mod/modify/'.$mod->id) }}" accept-charset="UTF-8">
+                <form method="post"
+                      action="{{ url('/mod/modify/'.$mod->id) }}"
+                      accept-charset="UTF-8"
+                      x-data="{
+                          prettyName: @js($mod->pretty_name),
+                          slug: @js($mod->name),
+                          slugManual: true,
+                          updateSlug() {
+                              if (!this.slugManual) {
+                                  this.slug = window.slugify(this.prettyName);
+                              }
+                          },
+                          onSlugInput() {
+                              if (this.slug === '') {
+                                  this.slugManual = false;
+                                  this.updateSlug();
+                              } else {
+                                  this.slugManual = true;
+                              }
+                          },
+                          get slugPreview() {
+                              return this.slug || '[slug]';
+                          }
+                      }">
                     @csrf
-                    <div class="max-w-xl space-y-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-4">
                         <div>
                             <label for="pretty_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pretty Name</label>
                             <input type="text"
                                    name="pretty_name"
                                    id="pretty_name"
-                                   value="{{ $mod->pretty_name }}"
+                                   x-model="prettyName"
+                                   @input="updateSlug()"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
                         <div>
@@ -198,7 +223,8 @@
                             <input type="text"
                                    name="name"
                                    id="name"
-                                   value="{{ $mod->name }}"
+                                   x-model="slug"
+                                   @input="onSlugInput()"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
                         <div>
@@ -224,6 +250,23 @@
                                    value="{{ $mod->link }}"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
+                    </div>
+                    <div>
+                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+                            <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                                Your mod directory structure must match the slug exactly:
+                            </p>
+                            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 font-mono text-sm text-gray-800 dark:text-gray-200 mb-3">
+                                <div>mods/<span x-text="slugPreview" class="text-blue-600 dark:text-blue-400"></span>/</div>
+                                <div>mods/<span x-text="slugPreview" class="text-blue-600 dark:text-blue-400"></span>/<span x-text="slugPreview" class="text-blue-600 dark:text-blue-400"></span>-[version].zip</div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                The mod slug automatically updates based on the mod name. You can change the slug to whatever
+                                you want after you set the name. If you modify the slug, it will no longer update
+                                automatically. If you wish to restore that behavior, simply empty the slug field.
+                            </p>
+                        </div>
+                    </div>
                     </div>
                     <div class="mt-6 flex items-center gap-3">
                         <button type="submit"
