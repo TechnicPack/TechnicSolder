@@ -3,51 +3,63 @@
     <title>Create Modpack - Technic Solder</title>
 @stop
 @section('content')
-    <div class="page-header">
-        <h1>Modpack Management</h1>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Modpack Management</h1>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Create a new modpack</p>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Create Modpack
+
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+            <span class="font-semibold text-gray-900 dark:text-white">Create Modpack</span>
         </div>
-        <div class="panel-body">
+        <div class="p-5">
             @include('partial.form-errors')
-            <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
+            <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8"
+                  x-data="{ name: '', slug: '' }">
                 @csrf
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="name">Modpack Name</label>
-                            <input type="text" class="form-control" name="name" id="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="slug">Modpack Slug</label>
-                            <input type="text" class="form-control" name="slug" id="slug">
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" name="hidden" id="hidden" checked>
-                                    Hide modpack
-                                </label>
-                                <p class="help-block">Hidden modpacks will not show up in the API response for the
-                                    modpack list. However, anyone with the modpack's slug can access all of its
-                                    information.</p>
-                            </div>
-                        </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                    If you wish to link this modpack with an existing Technic Platform modpack, the slug must be identical to your slug on the Platform.
+                </p>
+                <div class="space-y-5">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modpack Name</label>
+                        <input type="text"
+                               name="name"
+                               id="name"
+                               x-model="name"
+                               @input="slug = window.slugify(name)"
+                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                     </div>
-                    <div class="col-md-6">
-                        <p>Creating a modpack is simple. Fill in the information here.</p>
-                        <p>If you wish to link this modpack with an existing Technic Platform modpack, the slug must be
-                            identical to your slug on the Platform!</p>
+                    <div>
+                        <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modpack Slug</label>
+                        <input type="text"
+                               name="slug"
+                               id="slug"
+                               x-model="slug"
+                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" name="hidden" id="hidden" checked
+                                   class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Hide modpack</span>
+                        </label>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Hidden modpacks will not show up in the API response for the modpack list. However, anyone with the modpack's slug can access all of its information.
+                        </p>
                     </div>
                 </div>
-                <input type="submit" class="btn btn-success" value="Add Modpack">
-                <a href="{{ url('/modpack/list') }}" class="btn btn-primary">Go Back</a>
+                <div class="mt-6 flex items-center gap-3">
+                    <button type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white dark:bg-green-500/15 dark:text-green-400 dark:hover:bg-green-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Add Modpack
+                    </button>
+                    <a href="{{ url('/modpack/list') }}"
+                       class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Go Back
+                    </a>
+                </div>
             </form>
         </div>
     </div>
-    <script type="text/javascript">
-        $("#slug").slugify('#name');
-    </script>
 @endsection

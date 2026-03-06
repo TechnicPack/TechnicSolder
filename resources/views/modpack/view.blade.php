@@ -8,15 +8,15 @@
     </div>
 
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="px-5 py-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+        <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 dark:border-gray-800">
             <span class="font-semibold text-gray-900 dark:text-white">Build Management: {{ $modpack->name }}</span>
             <div class="flex items-center gap-2">
                 <a href="{{ url('modpack/add-build/'.$modpack->id) }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                     Create New Build
                 </a>
                 <a href="{{ url('modpack/edit/'.$modpack->id) }}"
-                   class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                   class="bg-yellow-500 hover:bg-yellow-600 text-white dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                     Edit Modpack
                 </a>
             </div>
@@ -49,25 +49,33 @@
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    @include('partial.data-table.sort-header', ['key' => 'id', 'label' => '#'])
-                                    @include('partial.data-table.sort-header', ['key' => 'version', 'label' => 'Build Number'])
-                                    @include('partial.data-table.sort-header', ['key' => 'minecraft', 'label' => 'MC Version'])
-                                    @include('partial.data-table.sort-header', ['key' => 'mod_count', 'label' => 'Mod Count'])
+                                    <th class="px-5 py-3 hidden sm:table-cell cursor-pointer" @click="sort('id')">
+                                        <span class="inline-flex items-center gap-1"># <span x-show="sortKey === 'id'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                    </th>
+                                    @include('partial.data-table.sort-header', ['key' => 'version', 'label' => 'Build'])
+                                    <th class="px-5 py-3 hidden md:table-cell cursor-pointer" @click="sort('minecraft')">
+                                        <span class="inline-flex items-center gap-1">MC <span x-show="sortKey === 'minecraft'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                    </th>
+                                    <th class="px-5 py-3 hidden lg:table-cell cursor-pointer" @click="sort('mod_count')">
+                                        <span class="inline-flex items-center gap-1">Mods <span x-show="sortKey === 'mod_count'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                    </th>
                                     <th class="px-5 py-3">Rec</th>
                                     <th class="px-5 py-3">Latest</th>
-                                    <th class="px-5 py-3">Published</th>
-                                    <th class="px-5 py-3">Private</th>
-                                    @include('partial.data-table.sort-header', ['key' => 'created_at', 'label' => 'Created on'])
+                                    <th class="px-5 py-3 hidden sm:table-cell">Published</th>
+                                    <th class="px-5 py-3 hidden md:table-cell">Private</th>
+                                    <th class="px-5 py-3 hidden lg:table-cell cursor-pointer" @click="sort('created_at')">
+                                        <span class="inline-flex items-center gap-1">Created <span x-show="sortKey === 'created_at'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                    </th>
                                     <th class="px-5 py-3">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
                                 <template x-for="row in paged" :key="row.id">
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
-                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.id"></td>
+                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden sm:table-cell" x-text="row.id"></td>
                                         <td class="px-5 py-3 text-gray-900 dark:text-gray-100 font-medium" x-text="row.version"></td>
-                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.minecraft"></td>
-                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.mod_count"></td>
+                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden md:table-cell" x-text="row.minecraft"></td>
+                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden lg:table-cell" x-text="row.mod_count"></td>
                                         <td class="px-5 py-3">
                                             <input autocomplete="off"
                                                    type="radio"
@@ -86,33 +94,33 @@
                                                    @change="setLatest($event.target.value)"
                                                    class="text-blue-600 focus:ring-blue-500 dark:bg-gray-800 border-gray-300 dark:border-gray-600">
                                         </td>
-                                        <td class="px-5 py-3">
+                                        <td class="px-5 py-3 hidden sm:table-cell">
                                             <input autocomplete="off"
                                                    type="checkbox"
                                                    :checked="row.is_published"
                                                    @change="togglePublished(row.id, $event.target.checked)"
                                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
                                         </td>
-                                        <td class="px-5 py-3">
+                                        <td class="px-5 py-3 hidden md:table-cell">
                                             <input autocomplete="off"
                                                    type="checkbox"
                                                    :checked="row.private"
                                                    @change="togglePrivate(row.id, $event.target.checked)"
                                                    class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
                                         </td>
-                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.created_at_display"></td>
+                                        <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden lg:table-cell" x-text="row.created_at_display"></td>
                                         <td class="px-5 py-3">
                                             <div class="flex items-center gap-2">
                                                 <a :href="'/modpack/build/' + row.id"
-                                                   class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                                                     Manage
                                                 </a>
                                                 <a :href="'/modpack/build/' + row.id + '/edit'"
-                                                   class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                   class="bg-yellow-500 hover:bg-yellow-600 text-white dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                                                     Edit
                                                 </a>
                                                 <a :href="'/modpack/build/' + row.id + '/delete'"
-                                                   class="bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                   class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                                                     Delete
                                                 </a>
                                             </div>
@@ -140,9 +148,9 @@
                         const data = await window.ajaxPost(
                             `{{ url('modpack/modify/recommended') }}?modpack=${this.modpackId}&recommended=${encodeURIComponent(version)}`
                         );
-                        $store.toasts.add(data.success, 'success');
+                        Alpine.store('toasts').add(data.success, 'success');
                     } catch (error) {
-                        $store.toasts.add(error.message || 'An unknown error occurred', 'error');
+                        Alpine.store('toasts').add(error.message || 'An unknown error occurred', 'error');
                     }
                 },
 
@@ -151,9 +159,9 @@
                         const data = await window.ajaxPost(
                             `{{ url('modpack/modify/latest') }}?modpack=${this.modpackId}&latest=${encodeURIComponent(version)}`
                         );
-                        $store.toasts.add(data.success, 'success');
+                        Alpine.store('toasts').add(data.success, 'success');
                     } catch (error) {
-                        $store.toasts.add(error.message || 'An unknown error occurred', 'error');
+                        Alpine.store('toasts').add(error.message || 'An unknown error occurred', 'error');
                     }
                 },
 
@@ -162,9 +170,9 @@
                         const data = await window.ajaxPost(
                             `{{ url('modpack/modify/published') }}?build=${buildId}&published=${checked ? 1 : 0}`
                         );
-                        $store.toasts.add(data.success, 'success');
+                        Alpine.store('toasts').add(data.success, 'success');
                     } catch (error) {
-                        $store.toasts.add(error.message || 'An unknown error occurred', 'error');
+                        Alpine.store('toasts').add(error.message || 'An unknown error occurred', 'error');
                     }
                 },
 
@@ -173,9 +181,9 @@
                         const data = await window.ajaxPost(
                             `{{ url('modpack/modify/private') }}?build=${buildId}&private=${checked ? 1 : 0}`
                         );
-                        $store.toasts.add(data.success, 'success');
+                        Alpine.store('toasts').add(data.success, 'success');
                     } catch (error) {
-                        $store.toasts.add(error.message || 'An unknown error occurred', 'error');
+                        Alpine.store('toasts').add(error.message || 'An unknown error occurred', 'error');
                     }
                 }
             };

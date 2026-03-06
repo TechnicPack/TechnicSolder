@@ -211,7 +211,7 @@ class ModpackController extends Controller
         Cache::forget('modpack:'.$modpack->slug);
         Cache::forget('modpack:'.$modpack->slug.':build:'.$buildVersion);
 
-        return redirect('modpack/view/'.$modpack->id)->with('deleted', 'Build deleted.');
+        return redirect('modpack/view/'.$modpack->id)->with('success', 'Build deleted.');
     }
 
     public function getAddBuild($modpack_id)
@@ -401,7 +401,7 @@ class ModpackController extends Controller
             $modpack->clients()->sync([]);
         }
 
-        return redirect('modpack/view/'.$modpack->id)->with('success', 'Modpack edited');
+        return redirect('modpack/edit/'.$modpack->id)->with('success', 'Modpack saved');
     }
 
     public function getDelete($modpack_id)
@@ -503,7 +503,7 @@ class ModpackController extends Controller
                 if ($duplicate) {
                     return response()->json([
                         'status' => 'failed',
-                        'reason' => 'Duplicate Modversion found',
+                        'reason' => 'Duplicate mod version found',
                     ]);
                 } else {
                     $build->modversions()->attach($ver->id);
@@ -526,7 +526,7 @@ class ModpackController extends Controller
                 Cache::forget('modpack:'.$modpack->slug);
 
                 return response()->json([
-                    'success' => 'Updated '.$modpack->name."'s recommended  build to ".$new_version,
+                    'success' => 'Updated '.$modpack->name."'s recommended build to ".$new_version,
                     'version' => $new_version,
                 ]);
             case 'latest': // Set latest build
@@ -538,7 +538,7 @@ class ModpackController extends Controller
                 Cache::forget('modpack:'.$modpack->slug);
 
                 return response()->json([
-                    'success' => 'Updated '.$modpack->name."'s latest  build to ".$new_version,
+                    'success' => 'Updated '.$modpack->name."'s latest build to ".$new_version,
                     'version' => $new_version,
                 ]);
             case 'published': // Set build published status
@@ -550,8 +550,10 @@ class ModpackController extends Controller
                 Cache::forget('modpack:'.$build->modpack->slug);
                 Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 
+                $state = $build->is_published ? 'published' : 'unpublished';
+
                 return response()->json([
-                    'success' => 'Updated build '.$build->version."'s published status.",
+                    'success' => 'Build '.$build->version.' is now '.$state,
                 ]);
             case 'private':
                 $build = Build::with('modpack')->find(Request::input('build'));
@@ -562,8 +564,10 @@ class ModpackController extends Controller
                 Cache::forget('modpack:'.$build->modpack->slug);
                 Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
 
+                $state = $build->private ? 'private' : 'public';
+
                 return response()->json([
-                    'success' => 'Updated build '.$build->version."'s private status.",
+                    'success' => 'Build '.$build->version.' is now '.$state,
                 ]);
             default:
                 abort(400);

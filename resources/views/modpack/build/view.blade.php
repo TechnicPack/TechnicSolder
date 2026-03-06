@@ -2,315 +2,166 @@
 @section('title')
     <title>{{ $build->version }} - {{ $build->modpack->name }} - Technic Solder</title>
 @stop
-@push('top')
-    <script src="{{ asset('js/selectize.min.js') }}"></script>
-    <link href="{{ asset('css/selectize.bootstrap3.css') }}" rel="stylesheet">
-@endpush
 @section('content')
-    <div class="page-header">
-        <h1>Build Management</h1>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Build Management</h1>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading clearfix">
-            <h3 class="panel-title pull-left" style="padding-top: 0.3rem;padding-bottom: 0.3rem">
-                {{ $build->modpack->name }} &mdash; build {{ $build->version }}
-            </h3>
-            <div class="pull-right">
-                <button onclick="window.location.reload()" class="btn btn-xs btn-success">Refresh</button>
-                <a href="{{ URL::to('modpack/build/' . $build->id . '/edit') }}" class="btn btn-xs btn-primary">Edit</a>
-                <a href="{{ URL::to('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-default">Back to
-                    modpack</a>
+
+    {{-- Build info card --}}
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-6">
+        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span class="font-semibold text-gray-900 dark:text-white">{{ $build->modpack->name }} &mdash; build {{ $build->version }}</span>
+            <div class="flex items-center gap-2">
+                <button onclick="window.location.reload()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                    Refresh
+                </button>
+                <a href="{{ url('modpack/build/' . $build->id . '/edit') }}"
+                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                    Edit
+                </a>
+                <a href="{{ url('modpack/view/' . $build->modpack->id) }}"
+                   class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                    Back to modpack
+                </a>
             </div>
         </div>
-        <div class="panel-body">
-            <div class="row row-no-gutters">
-                <div class="col-lg-3 col-md-6">
-                    <p><b>Build:</b> {{ $build->version }}</p>
+        <div class="px-5 py-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Build</span>
+                    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">{{ $build->version }}</p>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <p><b>Minecraft version:</b> {{ $build->minecraft }}</p>
+                <div>
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Minecraft version</span>
+                    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">{{ $build->minecraft }}</p>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <p><b>Required Java version:</b> {{ $build->min_java ?: 'Not set'  }}</p>
+                <div>
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Required Java version</span>
+                    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">{{ $build->min_java ?: 'Not set' }}</p>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <p><b>Required RAM/memory:</b> {{ $build->min_memory ? $build->min_memory . ' MB' : 'Not set' }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-@if ($build->isLive())
-    <div class="alert alert-warning">
-        <p>This build is currently published and not marked as private. <strong>You are editing a live build</strong>.<br>
-        <br>
-        Build management panels have been hidden. <a style="cursor:pointer" onclick="document.getElementById('edit-panel').classList.remove('hidden');return false">Click here to show them</a>.</p>
-    </div>
-@endif
-    <div id="edit-panel" @class(['hidden' => $build->isLive()])>
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th style="width: 60%">Add a mod</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <form method="post"
-                              action="{{ url('/modpack/build/modify') }}"
-                              accept-charset="UTF-8"
-                              class="mod-add"
-                              autocomplete="off"
-                              class="form-horizontal"
-                        >
-                            @csrf
-                            <input type="hidden" name="build" value="{{ $build->id }}">
-                            <input type="hidden" name="action" value="add">
-                            <tr id="mod-list-add">
-                                <td>
-                                    <i class="icon-plus"></i>
-                                    <select class="form-control" name="mod-name" id="mod" placeholder="Select a mod...">
-                                        <option value=""></option>
-                                        @foreach ($mods as $mod)
-                                            <option value="{{ $mod->name }}">{{ $mod->pretty_name ?: $mod->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control"
-                                            name="mod-version"
-                                            id="mod-version"
-                                            placeholder="Select a mod version..."
-                                    >
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="submit" class="btn btn-success btn-small" value="Add to build">
-                                </td>
-                            </tr>
-                        </form>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table" id="mod-list">
-                        <thead>
-                        <tr>
-                            <th id="mod-header" style="width: 60%">Mod Name</th>
-                            <th>Version</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach ($build->modversions->sortByDesc('build_id', SORT_NATURAL) as $ver)
-                            <tr>
-                                <td>
-                                    <a href="{{ url('/mod/view/'.$ver->mod->id) }}">{{ $ver->mod->pretty_name ?: $ver->mod->name }}</a><br>
-                                    ({{ $ver->mod->name }})
-                                </td>
-                                <td>
-                                    <form method="post"
-                                          action="{{ url('/modpack/build/modify') }}"
-                                          accept-charset="UTF-8"
-                                          style="margin-bottom: 0"
-                                          class="mod-version"
-                                          autocomplete="off"
-                                    >
-                                        @csrf
-                                        <input type="hidden" class="build-id" name="build_id" value="{{ $build->id }}">
-                                        <input type="hidden"
-                                               class="modversion-id"
-                                               name="modversion_id"
-                                               value="{{ $ver->pivot->modversion_id }}"
-                                        >
-                                        <input type="hidden" name="action" value="version">
-                                        <div class="form-group input-group">
-                                            <select class="form-control" name="version">
-                                                @foreach ($ver->mod->versions as $version)
-                                                    <option value="{{ $version->id }}"
-                                                            @selected($ver->version == $version->version)
-                                                    >{{ $version->version }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="input-group-btn">
-                                                <input type="submit" class="btn btn-primary" value="Change">
-                                            </span>
-                                        </div>
-                                    </form>
-                                </td>
-                                <td>
-                                    <form method="post"
-                                          action="{{ url('/modpack/build/modify') }}"
-                                          accept-charset="UTF-8"
-                                          style="margin-bottom: 0"
-                                          class="mod-delete"
-                                    >
-                                        @csrf
-                                        <input type="hidden" name="build_id" value="{{ $build->id }}">
-                                        <input type="hidden"
-                                               class="modversion-id"
-                                               name="modversion_id"
-                                               value="{{ $ver->pivot->modversion_id }}"
-                                        >
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="submit" class="btn btn-danger btn-small" value="Remove">
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                <div>
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Required RAM/memory</span>
+                    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">{{ $build->min_memory ? $build->min_memory . ' MB' : 'Not set' }}</p>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Live build warning --}}
+    @if ($build->isLive())
+        <div x-data="{ showPanels: false }" class="mb-6">
+            <div class="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-sm text-yellow-700 dark:text-yellow-400/80">
+                <p>This build is currently published and not marked as private. <strong>You are editing a live build</strong>.</p>
+                <p x-show="!showPanels" class="mt-2">Build management panels have been hidden.
+                    <button @click="showPanels = true"
+                            class="underline font-medium hover:text-yellow-800 dark:hover:text-yellow-300 transition-colors">Click here to show them</button>
+                </p>
+            </div>
+            <template x-if="showPanels">
+                <div class="mt-6">
+                    @include('modpack.build._edit-panels')
+                </div>
+            </template>
+        </div>
+    @else
+        @include('modpack.build._edit-panels')
+    @endif
 @endsection
-@section('bottom')
-    <script>
-        var $select = $("#mod").selectize({
-            dropdownParent: "body",
-            create: false,
-            maxItems: 1,
-            sortField: {
-                field: 'text',
-                direction: 'asc'
-            },
-            searchField: ['text', 'value'],
-            onChange: function (value) {
-                if (!value.length) return;
 
-                modversion.disable();
+@push('scripts')
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('modSearch', () => ({
+        query: '',
+        selectedMod: null,
+        selectedModName: '',
+        showDropdown: false,
+        versions: [],
+        selectedVersion: '',
+        loadingVersions: false,
+        mods: @json($mods->map(fn($m) => ['name' => $m->name, 'pretty_name' => $m->pretty_name ?: $m->name])),
 
-                // First clear the current selection and then clear all the options, otherwise
-                // the previously selected item will remain in the available options
-                modversion.clear();
-                modversion.clearOptions();
+        get filteredMods() {
+            if (!this.query) return this.mods;
+            const q = this.query.toLowerCase();
+            return this.mods.filter(m =>
+                m.pretty_name.toLowerCase().includes(q) || m.name.toLowerCase().includes(q)
+            );
+        },
 
-                modversion.load(function (callback) {
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ URL::to('mod/versions') }}/" + mod.getValue(),
-                        success: function (data) {
-                            if (data.versions.length === 0) {
-                                $.jGrowl("No Modversions found for " + data.pretty_name, {group: 'alert-warning'});
-                                $("#mod-version").attr("placeholder", "No Modversions found...");
-                                callback();
-                            } else {
-                                callback(data.versions.map(function (x) {
-                                    return {value: x, text: x}
-                                }));
-                                modversion.enable();
-                                modversion.refreshOptions(true);
-                                $("#mod-version").attr("placeholder", "Select a Modversion...");
-                            }
-                        },
-                        error: function (xhr, textStatus, errorThrown) {
-                            $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
-                            callback();
-                        }
-                    });
-                });
+        selectMod(mod) {
+            this.selectedMod = mod;
+            this.selectedModName = mod.name;
+            this.query = mod.pretty_name;
+            this.showDropdown = false;
+            this.versions = [];
+            this.selectedVersion = '';
+            this.loadVersions(mod.name);
+        },
+
+        clearSelection() {
+            this.selectedMod = null;
+            this.selectedModName = '';
+            this.versions = [];
+            this.selectedVersion = '';
+        },
+
+        async loadVersions(modName) {
+            this.loadingVersions = true;
+            try {
+                const data = await window.ajax("{{ url('mod/versions') }}/" + modName);
+                if (data.versions && data.versions.length > 0) {
+                    this.versions = data.versions;
+                    this.selectedVersion = data.versions[0];
+                } else {
+                    this.versions = [];
+                    Alpine.store('toasts').add('No mod versions found for ' + (data.pretty_name || modName), 'warning');
+                }
+            } catch (e) {
+                Alpine.store('toasts').add('Failed to load mod versions', 'error');
             }
-        });
-        var mod = $select[0].selectize;
-        var $select = $("#mod-version").selectize({
-            dropdownParent: "body",
-            create: false,
-            maxItems: 1,
-            sortField: {
-                field: 'text',
-                direction: 'asc'
-            },
-        });
-        var modversion = $select[0].selectize;
+            this.loadingVersions = false;
+        },
 
-        $(".mod-version").submit(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "{{ URL::to('modpack/modify/version') }}",
-                data: $(this).serialize(),
-                success: function (data) {
-                    console.log(data.reason);
-                    if (data.status == 'success') {
-                        $.jGrowl("Modversion Updated", {group: 'alert-success'});
-                    } else if (data.status == 'failed') {
-                        $.jGrowl("Unable to update modversion", {group: 'alert-warning'});
-                    } else if (data.status == 'aborted') {
-                        $.jGrowl("Mod was already set to that version", {group: 'alert-success'});
-                    }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
-                }
-            });
-        });
+        async addToBuild() {
+            if (!this.selectedVersion) {
+                Alpine.store('toasts').add('Please select a mod version', 'warning');
+                return;
+            }
+            try {
+                const params = new URLSearchParams();
+                params.append('_token', window.csrfToken);
+                params.append('build', '{{ $build->id }}');
+                params.append('action', 'add');
+                params.append('mod-name', this.selectedModName);
+                params.append('mod-version', this.selectedVersion);
 
-        $(".mod-delete").submit(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "{{ URL::to('modpack/modify/delete') }}",
-                data: $(this).serialize(),
-                success: function (data) {
-                    console.log(data.reason);
-                    if (data.status == 'success') {
-                        $.jGrowl("Modversion Deleted", {group: 'alert-success'});
-                    } else {
-                        $.jGrowl("Unable to delete modversion", {group: 'alert-warning'});
-                    }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
-                }
-            });
-            $(this).parent().parent().fadeOut();
-        });
-
-        $(".mod-add").submit(function (e) {
-            e.preventDefault();
-            if ($("#mod-version").val()) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ URL::to('modpack/modify/add') }}",
-                    data: $(this).serialize(),
-                    success: function (data) {
-                        if (data.status == 'success') {
-                            $("#mod-list-add").after('<tr><td>' + data.pretty_name + '</td><td>' + data.version + '</td><td></td></tr>');
-                            $.jGrowl("Mod " + data.pretty_name + " added at " + data.version, {group: 'alert-success'});
-                        } else {
-                            $.jGrowl("Unable to add mod. Reason: " + data.reason, {group: 'alert-warning'});
-                        }
+                const res = await fetch("{{ url('modpack/modify/add') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
                     },
-                    error: function (xhr, textStatus, errorThrown) {
-                        $.jGrowl(textStatus + ': ' + errorThrown, {group: 'alert-danger'});
-                    }
+                    body: params,
                 });
-            } else {
-                $.jGrowl("Please select a mod version", {group: 'alert-warning'});
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    Alpine.store('toasts').add('Mod ' + data.pretty_name + ' added at ' + data.version, 'success');
+                    // Add a row to the mod list
+                    this.$dispatch('mod-added', {
+                        pretty_name: data.pretty_name,
+                        version: data.version,
+                    });
+                } else {
+                    Alpine.store('toasts').add('Unable to add mod. Reason: ' + data.reason, 'warning');
+                }
+            } catch (e) {
+                Alpine.store('toasts').add('Failed to add mod: ' + e.message, 'error');
             }
-        });
-
-        $(document).ready(function () {
-            $("#mod-list").dataTable({
-                "order": [[0, "asc"]],
-                "autoWidth": false,
-                "columnDefs": [
-                    {"width": "60%", "targets": 0},
-                    {"width": "30%", "targets": 1}
-                ]
-            });
-
-            // Start with the mod versions dropdown disabled by default, since the user
-            // has to select a mod first, and then it updates all the versions
-            modversion.disable();
-        });
-    </script>
-@endsection
+        }
+    }));
+});
+</script>
+@endpush

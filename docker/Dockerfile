@@ -1,3 +1,12 @@
+FROM node:22-slim AS assets
+
+WORKDIR /app
+COPY package.json ./
+RUN npm install
+COPY vite.config.js ./
+COPY resources/ resources/
+RUN npm run build
+
 FROM php:8.4-fpm
 
 RUN apt-get update && apt-get install -y \
@@ -12,3 +21,5 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
+
+COPY --from=assets /app/public/build public/build

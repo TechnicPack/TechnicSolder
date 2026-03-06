@@ -3,32 +3,46 @@
     <title>Create API Key - Technic Solder</title>
 @stop
 @section('content')
-    <h1>API Key Management</h1>
-    <hr>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Add API Key
+    <h1 class="text-2xl font-bold">API Key Management</h1>
+
+    <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+            <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Add API Key</h2>
         </div>
-        <div class="panel-body">
+        <div class="px-5 py-4">
             @include('partial.form-errors')
-            <div class="row">
-                <div class="col-md-6">
-                    <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
-                        @csrf
-                        <input type="hidden" name="add-key" value="1">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" name="name" id="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="api_key">API Key</label>
-                            <input type="text" class="form-control" name="api_key" id="api_key">
-                        </div>
-                        <input type="submit" class="btn btn-success" value="Add Key">
-                        <a href="{{ url('/key/list') }}" class="btn btn-primary">Go Back</a>
-                    </form>
+
+            <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8" class="max-w-lg">
+                @csrf
+                <input type="hidden" name="add-key" value="1">
+
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                    <input type="text"
+                           name="name"
+                           id="name"
+                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                 </div>
-            </div>
+
+                <div class="mb-4">
+                    <label for="api_key" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">API Key</label>
+                    <input type="text"
+                           name="api_key"
+                           id="api_key"
+                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Add Key
+                    </button>
+                    <a href="{{ url('/key/list') }}"
+                       class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Go Back
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

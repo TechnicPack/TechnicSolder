@@ -159,7 +159,7 @@ final class ModpackTest extends TestCase
         ];
 
         $response = $this->post('/modpack/edit/'.$modpack->id, $data);
-        $response->assertRedirect('/modpack/view/'.$modpack->id);
+        $response->assertRedirect('/modpack/edit/'.$modpack->id);
     }
 
     public function test_modpack_edit_post(): void
@@ -174,7 +174,7 @@ final class ModpackTest extends TestCase
         ];
 
         $response = $this->post('/modpack/edit/'.$modpack->id, $data);
-        $response->assertRedirect('/modpack/view/'.$modpack->id);
+        $response->assertRedirect('/modpack/edit/'.$modpack->id);
         $modpack = Modpack::find(1);
         $this->assertEquals('TestTest', $modpack->name);
         $this->assertEquals('test-test', $modpack->slug);
@@ -194,7 +194,7 @@ final class ModpackTest extends TestCase
         ];
 
         $response = $this->post('/modpack/edit/'.$modpack->id, $data);
-        $response->assertRedirect('/modpack/view/'.$modpack->id);
+        $response->assertRedirect('/modpack/edit/'.$modpack->id);
 
         $modpack->refresh();
         $this->assertCount(1, $modpack->clients);
@@ -217,7 +217,7 @@ final class ModpackTest extends TestCase
         ];
 
         $response = $this->post('/modpack/edit/'.$modpack->id, $data);
-        $response->assertRedirect('/modpack/view/'.$modpack->id);
+        $response->assertRedirect('/modpack/edit/'.$modpack->id);
 
         $this->assertCount(0, $modpack->fresh()->clients);
     }

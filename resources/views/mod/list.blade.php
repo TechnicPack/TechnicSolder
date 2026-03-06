@@ -3,10 +3,10 @@
     <title>Mod Library - Technic Solder</title>
 @stop
 @section('content')
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <h1 class="text-2xl font-bold">Mod Library</h1>
         <a href="{{ URL::to('mod/create') }}"
-           class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+           class="self-start bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
             Add Mod
         </a>
     </div>
@@ -42,18 +42,24 @@
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                @include('partial.data-table.sort-header', ['key' => 'id', 'label' => '#'])
+                                <th class="px-5 py-3 hidden sm:table-cell" @click="sort('id')" role="button">
+                                    <span class="inline-flex items-center gap-1"># <span x-show="sortKey === 'id'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
                                 @include('partial.data-table.sort-header', ['key' => 'display_name', 'label' => 'Mod Name'])
                                 @include('partial.data-table.sort-header', ['key' => 'latest_version', 'label' => 'Latest Version'])
-                                @include('partial.data-table.sort-header', ['key' => 'author', 'label' => 'Author'])
-                                @include('partial.data-table.sort-header', ['key' => 'link', 'label' => 'Website'])
-                                <th class="px-5 py-3">Actions</th>
+                                <th class="px-5 py-3 hidden md:table-cell" @click="sort('author')" role="button">
+                                    <span class="inline-flex items-center gap-1">Author <span x-show="sortKey === 'author'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
+                                <th class="px-5 py-3 hidden lg:table-cell" @click="sort('link')" role="button">
+                                    <span class="inline-flex items-center gap-1">Website <span x-show="sortKey === 'link'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
+                                <th class="px-5 py-3 hidden sm:table-cell">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
                             <template x-for="row in paged" :key="row.id">
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
-                                    <td class="px-5 py-3 text-gray-500 dark:text-gray-400">
+                                    <td class="px-5 py-3 text-gray-500 dark:text-gray-400 hidden sm:table-cell">
                                         <a :href="'/mod/view/' + row.id" class="hover:text-blue-600 dark:hover:text-blue-400" x-text="row.id"></a>
                                     </td>
                                     <td class="px-5 py-3">
@@ -63,8 +69,8 @@
                                         </template>
                                     </td>
                                     <td class="px-5 py-3 text-gray-700 dark:text-gray-300" x-text="row.latest_version"></td>
-                                    <td class="px-5 py-3 text-gray-700 dark:text-gray-300" x-text="row.author"></td>
-                                    <td class="px-5 py-3">
+                                    <td class="px-5 py-3 text-gray-700 dark:text-gray-300 hidden md:table-cell" x-text="row.author"></td>
+                                    <td class="px-5 py-3 hidden lg:table-cell">
                                         <template x-if="row.link">
                                             <a :href="row.link" target="_blank" rel="noopener noreferrer"
                                                class="text-blue-600 dark:text-blue-400 hover:underline truncate block max-w-xs" x-text="row.link"></a>
@@ -73,9 +79,9 @@
                                             <span class="text-gray-400 dark:text-gray-500">N/A</span>
                                         </template>
                                     </td>
-                                    <td class="px-5 py-3">
+                                    <td class="px-5 py-3 hidden sm:table-cell">
                                         <a :href="'/mod/view/' + row.id"
-                                           class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors inline-block">
+                                           class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors inline-block">
                                             Manage
                                         </a>
                                     </td>

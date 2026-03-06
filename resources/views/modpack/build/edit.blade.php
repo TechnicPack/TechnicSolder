@@ -3,46 +3,60 @@
     <title>{{ $build->version }} &ndash; {{ $build->modpack->name }} &ndash; Technic Solder</title>
 @stop
 @section('content')
-    <div class="page-header">
-        <h1>Build Management</h1>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Build Management</h1>
+        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Edit build {{ $build->version }} for {{ $build->modpack->name }}</p>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading clearfix">
-            <h3 class="panel-title pull-left" style="padding-top: 0.3rem;padding-bottom: 0.3rem">
-                {{ $build->modpack->name }} &mdash; build {{ $build->version }}
-            </h3>
-            <div class="pull-right">
-                <a href="{{ url('/modpack/build/' . $build->id) }}" class="btn btn-xs btn-primary">Add mods</a>
-                <a href="{{ url('modpack/view/' . $build->modpack->id) }}" class="btn btn-xs btn-default">Back to
-                    modpack</a>
+
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span class="font-semibold text-gray-900 dark:text-white">{{ $build->modpack->name }} &mdash; build {{ $build->version }}</span>
+            <div class="flex items-center gap-2">
+                <a href="{{ url('/modpack/build/' . $build->id) }}"
+                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                    Add mods
+                </a>
+                <a href="{{ url('modpack/view/' . $build->modpack->id) }}"
+                   class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                    Back to modpack
+                </a>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="p-5">
             @if ($build->is_published)
-            <div class="alert alert-warning">If changes are made, users will need to re-install the modpack
-                if they have already installed this build.
-            </div>
+                <div class="mb-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-sm text-yellow-700 dark:text-yellow-400/80">
+                    If changes are made, users will need to re-install the modpack if they have already installed this build.
+                </div>
             @endif
+
             @include('partial.form-errors')
-            <form action="{{ url('/modpack/build/'.$build->id.'/edit') }}" method="post" accept-charset="UTF-8">
+
+            <form action="{{ url('/modpack/build/'.$build->id.'/edit') }}" method="post" accept-charset="UTF-8"
+                  x-data="{
+                      memoryEnabled: {{ old('memory-enabled', $build->min_memory) ? 'true' : 'false' }},
+                      memoryValue: '{{ old('memory', $build->min_memory) ?: '' }}',
+                      savedMemory: '{{ old('memory', $build->min_memory) ?: '' }}'
+                  }">
                 @csrf
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4>Edit Build</h4>
-                        <p>Here you can modify the properties of existing builds.</p>
-                        <hr>
-                        <div class="form-group">
-                            <label for="version">Build name</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {{-- Left column: Build info --}}
+                    <div class="space-y-5">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Build</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Here you can modify the properties of existing builds.</p>
+                        <hr class="border-gray-200 dark:border-gray-700">
+                        <div>
+                            <label for="version" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Build name</label>
                             <input type="text"
-                                   class="form-control"
                                    name="version"
                                    id="version"
                                    value="{{ old('version', $build->version) }}"
-                            >
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
-                        <div class="form-group">
-                            <label for="version">Minecraft version</label>
-                            <select class="form-control" name="minecraft">
+                        <div>
+                            <label for="minecraft" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Minecraft version</label>
+                            <select name="minecraft"
+                                    id="minecraft"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                                 @foreach ($minecraft as $version)
                                     <option value="{{ $version['version'] }}"
                                             @selected($build->minecraft == $version['version'])
@@ -51,13 +65,17 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <h4>Build Requirements</h4>
-                        <p>These requirements are passed to the launcher and prevent players without the required minimum settings from playing your modpack</p>
-                        <hr>
-                        <div class="form-group">
-                            <label for="java-version">Required Java version (at least)</label>
-                            <select class="form-control" name="java-version" id="java-version">
+
+                    {{-- Right column: Requirements --}}
+                    <div class="space-y-5">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Build Requirements</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">These requirements are passed to the launcher and prevent players without the required minimum settings from playing your modpack.</p>
+                        <hr class="border-gray-200 dark:border-gray-700">
+                        <div>
+                            <label for="java-version" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Required Java version (at least)</label>
+                            <select name="java-version"
+                                    id="java-version"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                                 @foreach(\App\JavaVersionsEnum::cases() as $java)
                                     <option value="{{ $java->value }}"
                                             @selected(old('java-version', $build->min_java) === $java->value)
@@ -66,52 +84,47 @@
                                 <option value="" @selected(!old('java-version', $build->min_java))>No Requirement</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="memory">Required RAM/memory (in <abbr title="megabytes (or mebibytes)">MB</abbr>)</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">
+                        <div>
+                            <label for="memory" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Required RAM/memory <span class="text-gray-400 font-normal">(in MB)</span></label>
+                            <div class="flex items-center gap-3">
+                                <label class="inline-flex items-center cursor-pointer">
                                     <input type="checkbox"
-                                           id="memory-enabled"
                                            name="memory-enabled"
-                                           aria-label="mb"
-                                           @checked(old('memory-enabled', $build->min_memory))
-                                    >
-                                </span>
-                                <input type="number"
-                                       class="form-control"
-                                       name="memory"
-                                       id="memory"
-                                       aria-label="mb"
-                                       aria-describedby="addon-mb"
-                                       value="{{ old('memory', $build->min_memory) ?: '' }}"
-                                       @disabled(!old('memory-enabled', $build->min_memory))
-                                >
-                                <span class="input-group-addon" id="addon-mb">MB</span>
+                                           x-model="memoryEnabled"
+                                           x-effect="if (!memoryEnabled) { savedMemory = memoryValue; memoryValue = ''; } else if (!memoryValue) { memoryValue = savedMemory; }"
+                                           class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
+                                </label>
+                                <div class="flex-1 relative">
+                                    <input type="number"
+                                           name="memory"
+                                           id="memory"
+                                           x-model="memoryValue"
+                                           :disabled="!memoryEnabled"
+                                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                           placeholder="e.g. 2048">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 pointer-events-none">MB</span>
+                                </div>
                             </div>
-                            <p class="help-block">Check the checkbox to enable the memory requirement.</p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Check the checkbox to enable the memory requirement.</p>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <input type="submit" class="btn btn-success" value="Save changes">
-                <a href="{{ url('/modpack/build/'.$build->id) }}" class="btn btn-primary">Go back</a>
-                <a href="{{ url('/modpack/build/'.$build->id.'/delete') }}" class="btn btn-danger pull-right">Delete build</a>
+
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex items-center gap-3">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Save changes
+                    </button>
+                    <a href="{{ url('/modpack/build/'.$build->id) }}"
+                       class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Go back
+                    </a>
+                    <a href="{{ url('/modpack/build/'.$build->id.'/delete') }}"
+                       class="ml-auto bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                        Delete build
+                    </a>
+                </div>
             </form>
         </div>
     </div>
-@endsection
-@section('bottom')
-    <script type="text/javascript">
-        const memoryEnabledField = $('#memory-enabled');
-        memoryEnabledField.change(function () {
-            const memoryAmountField = $('#memory');
-
-            if ($(this).is(':checked')) {
-                memoryAmountField.val(memoryAmountField.data('value') || '').prop('disabled', false);
-            } else {
-                memoryAmountField.data('value', memoryAmountField.val());
-                memoryAmountField.val('').prop('disabled', true);
-            }
-        });
-    </script>
 @endsection

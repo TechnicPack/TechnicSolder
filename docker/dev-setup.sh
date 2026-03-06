@@ -24,6 +24,14 @@ fi
 
 php artisan migrate --force
 
+# Build frontend assets if not already built
+if [ ! -d public/build ]; then
+    if command -v node &> /dev/null; then
+        npm install --no-audit --no-fund
+        npm run build
+    fi
+fi
+
 # Create storage directories if needed
 mkdir -p storage/mods
 chgrp -R www-data storage bootstrap/cache

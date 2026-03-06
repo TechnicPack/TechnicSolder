@@ -93,84 +93,82 @@
                                 <td class="px-5 py-3">
                                     <button @click="submitAddVersion()"
                                             :disabled="addLoading || !addVersion"
-                                            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                         <span x-show="!addLoading">Add Version</span>
                                         <span x-show="addLoading">Adding...</span>
                                     </button>
                                 </td>
                             </tr>
-
-                            {{-- Data-driven version rows --}}
-                            <template x-for="row in paged" :key="row.id">
-                                <tr>
-                                    <td class="px-5 py-3">
-                                        <button @click="toggleExpand(row.id)"
-                                                type="button"
-                                                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                                            <svg class="size-4 transition-transform"
-                                                 :class="expandedVersions.includes(row.id) && 'rotate-90'"
-                                                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                    <td class="px-5 py-3 font-medium text-gray-900 dark:text-gray-100" x-text="row.version"></td>
-                                    <td class="px-5 py-3">
-                                        <input type="text"
-                                               :id="'md5-' + row.id"
-                                               :placeholder="row.md5"
-                                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
-                                    </td>
-                                    <td class="px-5 py-3">
-                                        <a :href="row.url" target="_blank"
-                                           class="text-blue-600 dark:text-blue-400 hover:underline text-xs break-all" x-text="row.url"></a>
-                                    </td>
-                                    <td class="px-5 py-3 text-gray-700 dark:text-gray-300" x-text="row.filesize"></td>
-                                    <td class="px-5 py-3">
-                                        <div class="flex items-center gap-2">
-                                            <button @click="rehashVersion(row.id)"
-                                                    :disabled="rehashingVersions.includes(row.id)"
-                                                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                                                <span x-show="!rehashingVersions.includes(row.id)">Rehash</span>
-                                                <span x-show="rehashingVersions.includes(row.id)">...</span>
-                                            </button>
-                                            <button @click="deleteVersion(row.id)"
-                                                    :disabled="deletingVersions.includes(row.id)"
-                                                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </template>
-
-                            {{-- Expanded build info rows (rendered separately, shown inline) --}}
-                            <template x-for="row in paged" :key="'expand-' + row.id">
-                                <tr x-show="expandedVersions.includes(row.id)" x-collapse>
-                                    <td colspan="6" class="px-5 py-3 bg-gray-50 dark:bg-gray-800/30">
-                                        <template x-if="row.builds.length === 0">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">Not used in any builds</p>
-                                        </template>
-                                        <template x-if="row.builds.length > 0">
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Builds used in:</p>
-                                                <ul class="space-y-1 ml-4">
-                                                    <template x-for="build in row.builds" :key="build.id">
-                                                        <li class="text-sm text-gray-600 dark:text-gray-400">
-                                                            <a :href="'/modpack/view/' + build.modpack_id"
-                                                               class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.modpack_name"></a>
-                                                            -
-                                                            <a :href="'/modpack/build/' + build.id"
-                                                               class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.version"></a>
-                                                        </li>
-                                                    </template>
-                                                </ul>
-                                            </div>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </template>
                         </tbody>
+
+                        {{-- Data-driven version rows with inline expand --}}
+                        <template x-for="row in paged" :key="row.id">
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                                    <tr>
+                                        <td class="px-5 py-3">
+                                            <button @click="toggleExpand(row.id)"
+                                                    type="button"
+                                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                                <svg class="size-4 transition-transform"
+                                                     :class="expandedVersions.includes(row.id) && 'rotate-90'"
+                                                     fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                        <td class="px-5 py-3 font-medium text-gray-900 dark:text-gray-100" x-text="row.version"></td>
+                                        <td class="px-5 py-3">
+                                            <input type="text"
+                                                   :id="'md5-' + row.id"
+                                                   :placeholder="row.md5"
+                                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                        </td>
+                                        <td class="px-5 py-3">
+                                            <a :href="row.url" target="_blank"
+                                               class="text-blue-600 dark:text-blue-400 hover:underline text-xs break-all" x-text="row.url"></a>
+                                        </td>
+                                        <td class="px-5 py-3 text-gray-700 dark:text-gray-300" x-text="row.filesize"></td>
+                                        <td class="px-5 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <button @click="rehashVersion(row.id)"
+                                                        :disabled="rehashingVersions.includes(row.id)"
+                                                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                    <span x-show="!rehashingVersions.includes(row.id)">Rehash</span>
+                                                    <span x-show="rehashingVersions.includes(row.id)">...</span>
+                                                </button>
+                                                <button @click="deleteVersion(row.id)"
+                                                        :disabled="deletingVersions.includes(row.id)"
+                                                        class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr x-show="expandedVersions.includes(row.id)">
+                                        <td colspan="6" class="px-5 py-3 bg-gray-50 dark:bg-gray-800/30">
+                                            <template x-if="row.builds.length === 0">
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Not used in any builds</p>
+                                            </template>
+                                            <template x-if="row.builds.length > 0">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Builds used in:</p>
+                                                    <ul class="space-y-1 ml-4">
+                                                        <template x-for="build in row.builds" :key="build.id">
+                                                            <li class="text-sm text-gray-600 dark:text-gray-400">
+                                                                <a :href="'/modpack/view/' + build.modpack_id"
+                                                                   class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.modpack_name"></a>
+                                                                -
+                                                                <a :href="'/modpack/build/' + build.id"
+                                                                   class="text-blue-600 dark:text-blue-400 hover:underline" x-text="build.version"></a>
+                                                            </li>
+                                                        </template>
+                                                    </ul>
+                                                </div>
+                                            </template>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </template>
                     </table>
                 </div>
             </div>
@@ -229,11 +227,11 @@
                     </div>
                     <div class="mt-6 flex items-center gap-3">
                         <button type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
                             Save Changes
                         </button>
                         <a href="{{ url('/mod/delete/'.$mod->id) }}"
-                           class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                           class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
                             Delete Mod
                         </a>
                         <a href="{{ url('/mod/list') }}"

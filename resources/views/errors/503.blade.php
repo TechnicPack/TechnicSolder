@@ -2,34 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Maintenance - Technic Solder</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <link href="{{ URL::to('css/errors.css') }}" rel="stylesheet" type='text/css'>
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,100|Open+Sans:400,700'
-          rel='stylesheet'
-          type='text/css'
-    >
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700" rel="stylesheet">
+    <script>
+        if (localStorage.getItem('darkMode') === 'true' ||
+            (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        }
+    </script>
+    @vite(['resources/css/app.css'])
 </head>
-
-<body>
-<div class="container">
-    <h1>Application is down for maintenance!</h1>
-    <p>Please wait while the hoster is performing maintenance. Please try your request again in a few minutes.</p>
-    <p class="links"><a href="{{ URL::previous() }}" target="_blank"><i class="fa fa-arrow-circle-left"></i> Take me
-            back to where I was!</a> <a href="https://github.com/TechnicPack/TechnicSolder/issues" target="_blank"><i
-                    class="fa fa-life-ring"
-            ></i> I need help!</a></p>
-    <p class="meta">
-        <span class="label"><i class="fa fa-fire"></i></span>
-        503
-        <span class="label"><i class="fa fa-cog"></i></span>
-        Application is down for maintenance
-    </p>
-</div>
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center p-4">
+    <div class="text-center max-w-md">
+        <p class="text-7xl font-bold text-gray-200 dark:text-gray-800">503</p>
+        <h1 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Down for maintenance</h1>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">The application is currently being maintained. Please try again in a few minutes.</p>
+        <div class="mt-6">
+            <a href="https://github.com/TechnicPack/TechnicSolder/issues" target="_blank" rel="noopener noreferrer"
+               class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                Get Help
+            </a>
+        </div>
+    </div>
 </body>
 </html>

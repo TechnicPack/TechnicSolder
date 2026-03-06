@@ -6,10 +6,10 @@
     <h1 class="text-2xl font-bold">User Management</h1>
 
     <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-gray-200 dark:border-gray-800">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">User List</h2>
             <a href="{{ URL::to('user/create') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+               class="self-start bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                 Create User
             </a>
         </div>
@@ -34,30 +34,41 @@
                     <table class="w-full text-sm">
                         <thead class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             <tr>
-                                @include('partial.data-table.sort-header', ['key' => 'id', 'label' => 'ID #'])
+                                <th class="px-5 py-3 hidden sm:table-cell cursor-pointer" @click="sort('id')">
+                                    <span class="inline-flex items-center gap-1">ID # <span x-show="sortKey === 'id'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
                                 @include('partial.data-table.sort-header', ['key' => 'email', 'label' => 'Email'])
-                                @include('partial.data-table.sort-header', ['key' => 'username', 'label' => 'Username'])
-                                @include('partial.data-table.sort-header', ['key' => 'updated_by', 'label' => 'Updated by (User - IP)'])
-                                @include('partial.data-table.sort-header', ['key' => 'updated_at', 'label' => 'Updated at'])
+                                <th class="px-5 py-3 hidden sm:table-cell cursor-pointer" @click="sort('username')">
+                                    <span class="inline-flex items-center gap-1">Username <span x-show="sortKey === 'username'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
+                                <th class="px-5 py-3 hidden lg:table-cell cursor-pointer" @click="sort('updated_by')">
+                                    <span class="inline-flex items-center gap-1">Updated by <span x-show="sortKey === 'updated_by'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
+                                <th class="px-5 py-3 hidden md:table-cell cursor-pointer" @click="sort('updated_at')">
+                                    <span class="inline-flex items-center gap-1">Updated at <span x-show="sortKey === 'updated_at'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
+                                </th>
                                 <th class="px-5 py-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
                             <template x-for="row in paged" :key="row.id">
                                 <tr>
-                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100" x-text="row.id"></td>
-                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100" x-text="row.email"></td>
-                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100" x-text="row.username"></td>
-                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.updated_by"></td>
-                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-400" x-text="row.updated_at_display"></td>
+                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100 hidden sm:table-cell" x-text="row.id"></td>
+                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100">
+                                        <span x-text="row.email"></span>
+                                        <div class="sm:hidden text-xs text-gray-500 dark:text-gray-400 mt-0.5" x-text="row.username"></div>
+                                    </td>
+                                    <td class="px-5 py-3 text-gray-900 dark:text-gray-100 hidden sm:table-cell" x-text="row.username"></td>
+                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden lg:table-cell" x-text="row.updated_by"></td>
+                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden md:table-cell" x-text="row.updated_at_display"></td>
                                     <td class="px-5 py-3">
                                         <div class="flex items-center gap-2">
                                             <a :href="'/user/edit/' + row.id"
-                                               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                               class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                                                 Edit
                                             </a>
                                             <a :href="'/user/delete/' + row.id"
-                                               class="bg-red-600 hover:bg-red-700 text-white font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                               class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                                                 Delete
                                             </a>
                                         </div>
