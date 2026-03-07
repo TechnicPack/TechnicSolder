@@ -43,6 +43,7 @@ services:
       - QUEUE_CONNECTION=${QUEUE_CONNECTION:-redis}
       - SESSION_DRIVER=redis
       - SESSION_LIFETIME=${SESSION_LIFETIME:-120}
+      - SESSION_ENCRYPT=${SESSION_ENCRYPT:-true}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - MAIL_ENABLED=${MAIL_ENABLED:-false}
@@ -58,6 +59,7 @@ services:
       - SOLDER_MIRROR_URL=${SOLDER_MIRROR_URL:-http://mods.solder.test/}
       - SOLDER_MD5_CONNECT_TIMEOUT=${SOLDER_MD5_CONNECT_TIMEOUT:-5}
       - SOLDER_MD5_FILE_TIMEOUT=${SOLDER_MD5_FILE_TIMEOUT:-30}
+      - SOLDER_CORS_ORIGINS=${SOLDER_CORS_ORIGINS:-*}
     volumes:
       - .:/var/www/html
     command: ["/bin/bash", "/var/www/html/docker/setup.sh"]

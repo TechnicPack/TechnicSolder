@@ -42,6 +42,15 @@ class ClientController extends Controller
         $this->authorize('update', $client);
 
         if ($request->has('modpacks')) {
+            $validator = Validator::make($request->all(), [
+                'modpacks' => 'array',
+                'modpacks.*' => 'integer|exists:modpacks,id',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()], 422);
+            }
+
             $client->modpacks()->sync($request->input('modpacks', []));
         }
 

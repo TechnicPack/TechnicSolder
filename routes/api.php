@@ -36,7 +36,7 @@ Route::get('mod', [ModController::class, 'index']);
 Route::get('mod/{slug}', [ModController::class, 'show']);
 Route::get('mod/{slug}/{version}', [ModversionController::class, 'show']);
 
-Route::get('verify/{key}', [KeyController::class, 'verify']);
+Route::get('verify/{key}', [KeyController::class, 'verify'])->middleware('throttle:key-verify');
 
 // Write API
 Route::middleware('auth:sanctum')->group(function () {

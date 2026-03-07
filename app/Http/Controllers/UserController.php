@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Laravel\Fortify\Features;
 
@@ -98,7 +99,7 @@ class UserController extends Controller
         ];
 
         if (Request::input('password1')) {
-            $rules['password1'] = 'min:3|same:password2';
+            $rules['password1'] = [Password::defaults(), 'same:password2'];
         }
 
         $validation = Validator::make(Request::all(), $rules);
@@ -120,7 +121,7 @@ class UserController extends Controller
             /* If user is original admin, always give full access. */
             if ($user->id == 1) {
                 $perm->solder_full = true;
-            } else {
+            } elseif (Auth::user()->permission->solder_full) {
                 $perm->solder_full = \request()->boolean('solder-full');
             }
             $perm->solder_users = \request()->boolean('manage-users');
@@ -139,7 +140,8 @@ class UserController extends Controller
             $modpack = Request::input('modpack');
 
             if (! empty($modpack)) {
-                $perm->modpacks = $modpack;
+                $modpack = array_filter(array_map('intval', (array) $modpack));
+                $perm->modpacks = Modpack::whereIn('id', $modpack)->pluck('id')->all() ?: null;
             } else {
                 $perm->modpacks = null;
             }
@@ -175,7 +177,7 @@ class UserController extends Controller
         $rules = [
             'email' => 'required|email|unique:users',
             'username' => 'required|min:3|max:30|unique:users',
-            'password' => 'required|min:3',
+            'password' => ['required', Password::defaults()],
         ];
 
         $validation = Validator::make(Request::all(), $rules);
@@ -199,7 +201,7 @@ class UserController extends Controller
         $perm = new UserPermission;
         $perm->user_id = $user->id;
 
-        $perm->solder_full = \request()->boolean('solder-full');
+        $perm->solder_full = Auth::user()->permission->solder_full && \request()->boolean('solder-full');
         $perm->solder_users = \request()->boolean('manage-users');
         $perm->solder_keys = \request()->boolean('manage-keys');
         $perm->solder_clients = \request()->boolean('manage-clients');
@@ -216,7 +218,8 @@ class UserController extends Controller
         $modpack = Request::input('modpack');
 
         if (! empty($modpack)) {
-            $perm->modpacks = $modpack;
+            $modpack = array_filter(array_map('intval', (array) $modpack));
+            $perm->modpacks = Modpack::whereIn('id', $modpack)->pluck('id')->all() ?: null;
         } else {
             $perm->modpacks = null;
         }

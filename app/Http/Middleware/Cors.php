@@ -15,7 +15,9 @@ class Cors
     {
         $response = $next($request);
 
-        $response->header('Access-Control-Allow-Origin', '*');
+        $origin = config('solder.cors_allowed_origins', '*');
+
+        $response->header('Access-Control-Allow-Origin', $origin);
 
         return $response;
     }

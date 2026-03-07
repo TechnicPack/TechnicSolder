@@ -61,6 +61,7 @@ class ModController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:mods',
             'pretty_name' => 'required',
+            'link' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {
@@ -87,6 +88,7 @@ class ModController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|unique:mods,name,'.$mod->id,
             'pretty_name' => 'sometimes|required',
+            'link' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {

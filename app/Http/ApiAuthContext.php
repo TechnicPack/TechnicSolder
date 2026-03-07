@@ -22,11 +22,11 @@ readonly class ApiAuthContext
         $keys = Cache::remember('keys', now()->addMinutes(1), fn () => Key::all());
 
         $inputClientId = Request::input('cid');
-        $client = $inputClientId ? $clients->firstWhere('uuid', '===', $inputClientId) : null;
+        $client = $inputClientId ? $clients->first(fn (Client $c) => hash_equals($c->uuid, $inputClientId)) : null;
         $client?->load('modpacks');
 
         $inputKey = Request::input('k');
-        $key = $inputKey ? $keys->firstWhere('api_key', '===', $inputKey) : null;
+        $key = $inputKey ? $keys->first(fn (Key $k) => hash_equals($k->api_key, $inputKey)) : null;
 
         $authUser = auth('sanctum')->user();
         $user = $authUser instanceof User ? $authUser : null;

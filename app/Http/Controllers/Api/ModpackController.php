@@ -58,6 +58,7 @@ class ModpackController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:modpacks',
             'slug' => 'required|unique:modpacks|alpha_dash',
+            'url' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {
@@ -87,6 +88,7 @@ class ModpackController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|unique:modpacks,name,'.$modpack->id,
             'slug' => 'sometimes|required|alpha_dash|unique:modpacks,slug,'.$modpack->id,
+            'url' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {

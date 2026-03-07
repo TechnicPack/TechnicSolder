@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -62,10 +63,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with('allModpacks', $modpacks);
         });
 
+        Password::defaults(fn () => Password::min(8)->uncompromised());
+
         $this->bootRoute();
 
         RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by($request->input('email').'|'.$request->ip()));
         RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
+        RateLimiter::for('key-verify', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
     }
 
     public function bootRoute(): void

@@ -421,7 +421,9 @@ class ModpackController extends Controller
         /* Client Syncing */
         $clients = Request::input('clients');
         if ($clients) {
-            $modpack->clients()->sync($clients);
+            $clients = array_filter(array_map('intval', (array) $clients));
+            $validClients = Client::whereIn('id', $clients)->pluck('id')->all();
+            $modpack->clients()->sync($validClients);
         } else {
             $modpack->clients()->sync([]);
         }

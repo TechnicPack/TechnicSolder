@@ -57,4 +57,12 @@ return [
      */
     'mail_enabled' => filter_var(env('MAIL_ENABLED', 'false'), FILTER_VALIDATE_BOOLEAN),
 
+    /**
+     * CORS Allowed Origins
+     *
+     * The origin(s) allowed for cross-origin API requests.
+     * Use '*' to allow all origins (not recommended for production).
+     */
+    'cors_allowed_origins' => env('SOLDER_CORS_ORIGINS', '*'),
+
 ];

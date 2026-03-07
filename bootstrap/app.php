@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->web(\App\Http\Middleware\RequireMail::class);
 
         $middleware->throttleApi();

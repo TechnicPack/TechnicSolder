@@ -27,9 +27,9 @@ services:
   postgres:
     image: postgres
     environment:
-      - POSTGRES_DB=solder
-      - POSTGRES_USER=solder
-      - POSTGRES_PASSWORD=solder
+      - POSTGRES_DB=${DB_DATABASE:-solder}
+      - POSTGRES_USER=${DB_USERNAME:-solder}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-solder}
     volumes:
       - postgres_data:/var/lib/postgresql
     healthcheck:

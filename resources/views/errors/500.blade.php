@@ -14,7 +14,7 @@
     <div class="text-center max-w-md">
         <p class="text-7xl font-bold text-gray-200 dark:text-gray-800">500</p>
         <h1 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Something went wrong</h1>
-        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ $exception->getMessage() ?: 'An unexpected error occurred. Please try again later.' }}</p>
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ config('app.debug') ? $exception->getMessage() : 'An unexpected error occurred. Please try again later.' }}</p>
         <div class="mt-6 flex items-center justify-center gap-3">
             <a href="{{ URL::previous() }}"
                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
