@@ -335,6 +335,14 @@ class ModController extends Controller
             ]);
         }
 
+        if ($ver->builds()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'reason' => 'This version is in use by '.
+                    $ver->builds()->count().' build(s) and cannot be deleted.',
+            ]);
+        }
+
         $old_id = $ver->id;
         $old_version = $ver->version;
         $ver->delete();

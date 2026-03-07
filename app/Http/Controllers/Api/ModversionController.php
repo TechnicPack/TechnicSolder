@@ -90,7 +90,12 @@ class ModversionController extends Controller
             return response()->json(['error' => 'Mod version not found.'], 404);
         }
 
-        $modversion->builds()->detach();
+        if ($modversion->builds()->exists()) {
+            return response()->json([
+                'error' => 'Mod version is in use by '.$modversion->builds()->count().' build(s) and cannot be deleted.',
+            ], 409);
+        }
+
         $modversion->delete();
 
         Cache::forget('mod:'.$slug);

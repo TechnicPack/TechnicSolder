@@ -332,9 +332,25 @@ final class ModTest extends TestCase
         ]);
     }
 
+    public function test_mod_version_delete_in_use(): void
+    {
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/delete-version/1');
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'error',
+        ]);
+        $response->assertJsonFragment([
+            'reason' => 'This version is in use by 1 build(s) and cannot be deleted.',
+        ]);
+    }
+
     public function test_mod_version_delete(): void
     {
-        // Fake an AJAX call.
+        $ver = \App\Models\Modversion::find(1);
+        $ver->builds()->detach();
+
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/delete-version/1');
 

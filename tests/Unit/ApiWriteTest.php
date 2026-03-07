@@ -308,10 +308,22 @@ final class ApiWriteTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function test_delete_modversion_in_use(): void
+    {
+        $mod = Mod::first();
+        $version = $mod->versions->first();
+
+        $response = $this->deleteJson('api/mod/'.$mod->name.'/'.$version->version, [], $this->writeHeaders());
+
+        $response->assertStatus(409);
+        $response->assertJsonFragment(['error' => 'Mod version is in use by 1 build(s) and cannot be deleted.']);
+    }
+
     public function test_delete_modversion(): void
     {
         $mod = Mod::first();
         $version = $mod->versions->first();
+        $version->builds()->detach();
 
         $response = $this->deleteJson('api/mod/'.$mod->name.'/'.$version->version, [], $this->writeHeaders());
 
