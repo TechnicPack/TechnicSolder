@@ -17,24 +17,28 @@ cd TechnicSolder
 docker compose -f compose.dev.yml up -d
 ```
 
-First boot runs `docker/dev-setup.sh` which:
+The container entrypoint (`docker/dev-setup.sh`) runs on every start and handles:
 
 1. Installs all Composer dependencies (including dev dependencies)
-2. Creates a `.env` from `.env.example` with dev-appropriate defaults (debug on, PostgreSQL, Redis)
-3. Generates an `APP_KEY`
-4. Runs database migrations
-5. Builds frontend assets
-6. Sets file permissions
+2. On first run only: creates a `.env` from `.env.example` with dev defaults (`APP_ENV=local`, `APP_DEBUG=true`, `DB_CONNECTION=pgsql`, `DB_HOST=postgres`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis`) and generates an `APP_KEY`
+3. Runs database migrations
+4. Conditionally builds frontend assets (only if `public/build/` is missing and Node is available in the container)
+5. Sets file permissions
 
 Solder is then available at [http://localhost:8080](http://localhost:8080).
 
-### Default Credentials
+### Create the Admin User
+
+The dev setup does not automatically create an admin user. Run this after the first boot:
+
+```bash
+docker compose -f compose.dev.yml exec solder php artisan solder:setup
+```
+
+Default credentials:
 
 - **Email:** `admin@admin.com`
 - **Password:** `admin`
-
-!!! note
-    Run `docker compose -f compose.dev.yml exec solder php artisan solder:setup` to create the default admin user if it doesn't exist.
 
 ### How It Differs from Production
 
@@ -48,7 +52,7 @@ Solder is then available at [http://localhost:8080](http://localhost:8080).
 | Vendor directory | Inside container | Named volume (persists across rebuilds) |
 | Cache/session | Valkey | Redis |
 
-The named `vendor` volume means `vendor/` lives inside Docker, not on your host filesystem. This avoids cross-platform filesystem issues and speeds up autoloading.
+The named `vendor` volume means `vendor/` lives inside Docker, not on your host filesystem. This avoids cross-platform filesystem issues and speeds up autoloading. PostgreSQL data is also persisted in a named `postgres_data` volume.
 
 ## Common Commands
 
