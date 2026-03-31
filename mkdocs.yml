@@ -1,0 +1,76 @@
+site_name: Technic Solder
+site_url: https://docs.solder.io/
+repo_url: https://github.com/TechnicPack/TechnicSolder
+repo_name: TechnicPack/TechnicSolder
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - content.tabs.link
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+  - attr_list
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/index.md
+    - Docker Setup: getting-started/docker.md
+    - Configuration: getting-started/configuration.md
+  - Guides:
+    - Linking to Technic Platform: guides/linking-technic-platform.md
+    - Adding Mods: guides/adding-mods.md
+    - Updating Solder: guides/updating.md
+    - Web Server Configuration: guides/web-server-configs.md
+  - API Reference:
+    - Overview: api/index.md
+    - Read API:
+      - Root & Key Verification: api/read/root.md
+      - Modpacks: api/read/modpacks.md
+      - Builds: api/read/builds.md
+      - Mods: api/read/mods.md
+    - Write API:
+      - Authentication: api/write/authentication.md
+      - Modpacks: api/write/modpacks.md
+      - Builds: api/write/builds.md
+      - Build Mods: api/write/build-mods.md
+      - Mods: api/write/mods.md
+      - Clients: api/write/clients.md
+      - Tokens: api/write/tokens.md
+      - Utilities: api/write/utilities.md
+  - Troubleshooting: troubleshooting.md
+  - Community: community.md
