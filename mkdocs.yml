@@ -2,7 +2,6 @@ site_name: Technic Solder
 site_url: https://docs.solder.io/
 repo_url: https://github.com/TechnicPack/TechnicSolder
 repo_name: TechnicPack/TechnicSolder
-edit_uri: edit/main/docs/
 
 theme:
   name: material
