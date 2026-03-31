@@ -16,17 +16,4 @@ Search existing issues before opening a new one -- your problem may already have
 
 ## Contributing
 
-Contributions are welcome. The general workflow:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run the test suite before submitting a pull request:
-
-```bash
-php artisan test
-./vendor/bin/pint
-./vendor/bin/phpstan
-```
-
-Then open a pull request against the `main` branch.
+Contributions are welcome. See the [Contributing guide](contributing.md) for development environment setup, testing, and pull request guidelines.

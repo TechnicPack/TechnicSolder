@@ -73,4 +73,5 @@ nav:
       - Tokens: api/write/tokens.md
       - Utilities: api/write/utilities.md
   - Troubleshooting: troubleshooting.md
+  - Contributing: contributing.md
   - Community: community.md
