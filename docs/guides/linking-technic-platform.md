@@ -40,4 +40,4 @@ If everything is configured correctly, the Technic Platform will verify your Sol
 Once linked, you should see a confirmation message on the Platform's Solder Configuration page. You can also check that your modpacks appear in the Platform's pack management interface.
 
 !!! tip
-    If the link fails, make sure your Solder instance is publicly accessible and that your web server is correctly proxying requests to the application. See the [web server configuration guide](web-servers.md) for examples.
+    If the link fails, make sure your Solder instance is publicly accessible and that your web server is correctly proxying requests to the application. See the [web server configuration guide](web-server-configs.md) for examples.
