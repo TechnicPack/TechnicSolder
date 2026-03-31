@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/var/www/html
       - vendor:/var/www/html/vendor
-    command: ["/bin/bash", "/var/www/html/docker/dev-setup.sh"]
+    command: ["/bin/bash", "/var/www/html/docker/dev-entrypoint.sh"]
 
   postgres:
     image: postgres

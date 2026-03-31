@@ -17,7 +17,7 @@ cd TechnicSolder
 docker compose -f compose.dev.yml up -d
 ```
 
-The container entrypoint (`docker/dev-setup.sh`) runs on every start and handles:
+The container entrypoint (`docker/dev-entrypoint.sh`) runs on every start and handles:
 
 1. Installs all Composer dependencies (including dev dependencies)
 2. On first run only: creates a `.env` from `.env.example` with dev defaults (`APP_ENV=local`, `APP_DEBUG=true`, `DB_CONNECTION=pgsql`, `DB_HOST=postgres`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis`) and generates an `APP_KEY`

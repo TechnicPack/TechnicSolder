@@ -19,7 +19,7 @@ docker compose up -d
 That's it. The first boot takes a minute or two while the image builds and the setup script runs. Once the database passes its health check and the other containers are running, Solder is ready at [http://localhost](http://localhost).
 
 !!! tip "What happens on first boot"
-    The entrypoint script (`docker/setup.sh`) runs automatically and handles everything:
+    The entrypoint script (`docker/entrypoint.sh`) runs automatically and handles everything:
 
     1. Installs PHP dependencies via Composer
     2. Generates an `APP_KEY` if no `.env` file exists

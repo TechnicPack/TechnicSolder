@@ -62,7 +62,7 @@ services:
       - SOLDER_CORS_ORIGINS=${SOLDER_CORS_ORIGINS:-*}
     volumes:
       - .:/var/www/html
-    command: ["/bin/bash", "/var/www/html/docker/setup.sh"]
+    command: ["/bin/bash", "/var/www/html/docker/entrypoint.sh"]
 
   mysql:
     image: mariadb
