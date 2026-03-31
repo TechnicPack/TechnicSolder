@@ -13,7 +13,7 @@ Create a new modpack.
 | `name` | string | Yes | Display name. Must be unique. |
 | `slug` | string | Yes | URL-friendly identifier. Must be unique; only letters, numbers, dashes, and underscores. |
 | `url` | string | No | Website URL for this modpack. Must be a valid URL or null. |
-| `hidden` | boolean | No | Hide the modpack from the public API listing. Defaults to `false`. |
+| `hidden` | boolean | No | Hide the modpack from the public API listing. Defaults to `true` if not provided. |
 | `private` | boolean | No | Restrict access to authorized clients only. Defaults to `false`. |
 | `order` | integer | No | Sort order for display. |
 

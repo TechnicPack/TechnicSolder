@@ -94,9 +94,9 @@ Open `.env` in your text editor and update the variables listed below. Leave any
 
 ### Repository location and mirror URL
 
-- **`SOLDER_REPO_LOCATION`** points to where your mod files are stored. If Solder is on the same server as your mod repository, use the absolute filesystem path (e.g. `/var/www/mods/`). This is faster because MD5 checksums are calculated locally. If your mods are hosted elsewhere, use the web-accessible URL instead. **A trailing slash is required.**
+- **`SOLDER_REPO_LOCATION`** points to where your mod files are stored. If Solder is on the same server as your mod repository, use the absolute filesystem path (e.g. `/var/www/mods/`). This is faster because MD5 checksums are calculated locally. If your mods are hosted elsewhere, use the web-accessible URL instead. A trailing slash is recommended but will be added automatically if omitted.
 
-- **`SOLDER_MIRROR_URL`** is the web-accessible URL that players' launchers will use to download mods (e.g. `https://mods.example.com/`). If you used a URL for the repo location, you can use the same value here. **A trailing slash is required.**
+- **`SOLDER_MIRROR_URL`** is the web-accessible URL that players' launchers will use to download mods (e.g. `https://mods.example.com/`). If you used a URL for the repo location, you can use the same value here. A trailing slash is recommended but will be added automatically if omitted.
 
 ## Generate Application Key
 
@@ -110,7 +110,7 @@ This sets the `APP_KEY` value in your `.env` file.
 
 ## Database Setup
 
-Create a database for Solder. The default name is `solder`, but you can use any name as long as it matches `DB_DATABASE` in your `.env`.
+Create a database for Solder. The default `DB_DATABASE` in `.env.example` is `laravel` — you'll likely want to change this to something like `solder`. Use any name as long as it matches `DB_DATABASE` in your `.env`.
 
 Instructions for creating the database vary by database server and are not covered here.
 

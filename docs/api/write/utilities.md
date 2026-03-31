@@ -2,7 +2,7 @@
 
 ## POST /api/minecraft/refresh
 
-Refresh the cached list of Minecraft versions from Mojang's version manifest.
+Refresh the cached list of Minecraft versions. Fetches from Technic's API first, falling back to Mojang's version manifest.
 
 ### Example Request
 
@@ -20,4 +20,4 @@ curl -X POST https://solder.yourdomain.com/api/minecraft/refresh \
 ```
 
 !!! tip
-    Call this endpoint after Mojang releases a new Minecraft version to update the version list available in Solder's build creation UI. Under normal circumstances, the cache refreshes automatically and you should not need to call this endpoint manually.
+    Call this endpoint after a new Minecraft version is released to update the version list available in Solder's build creation UI. Under normal circumstances, the cache refreshes automatically and you should not need to call this endpoint manually.

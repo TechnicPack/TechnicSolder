@@ -7,6 +7,7 @@ List all modpacks. The modpacks returned depend on the authentication provided:
 - **No auth** -- public modpacks only.
 - **`cid` parameter** -- public modpacks plus any modpacks associated with the client.
 - **`k` parameter** -- all modpacks, including private and hidden.
+- **Bearer token** -- modpacks the token's user has access to (users with `solder_full` see all modpacks).
 
 ### Query Parameters
 

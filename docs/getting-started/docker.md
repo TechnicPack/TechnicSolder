@@ -16,7 +16,7 @@ cd TechnicSolder
 docker compose up -d
 ```
 
-That's it. The first boot takes a minute or two while the image builds and the setup script runs. Once all four containers report as healthy, Solder is ready at [http://localhost](http://localhost).
+That's it. The first boot takes a minute or two while the image builds and the setup script runs. Once the database passes its health check and the other containers are running, Solder is ready at [http://localhost](http://localhost).
 
 !!! tip "What happens on first boot"
     The entrypoint script (`docker/setup.sh`) runs automatically and handles everything:

@@ -2,7 +2,7 @@
 
 ## GET /api/modpack/{slug}/{version}
 
-Show a specific build of a modpack. The same authentication rules as the modpack endpoints apply -- without auth only public modpack builds are accessible.
+Show a specific build of a modpack. The same authentication rules as the modpack endpoints apply -- without auth only public modpack builds are accessible. Bearer tokens can also access private builds when the token's user has access to the modpack.
 
 ### Path Parameters
 
