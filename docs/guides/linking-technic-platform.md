@@ -1,6 +1,6 @@
 # Linking Solder to the Technic Platform
 
-Linking your Solder installation to the Technic Platform lets Solder interact directly with your Platform account -- importing packs and generating detailed mod lists on your Platform page.
+Linking your Solder installation to the Technic Platform lets the Platform pull modpack and mod data directly from your Solder instance -- importing packs and generating detailed mod lists on your Platform page.
 
 The process has three steps: copy an API key from the Platform, add it to Solder, then point the Platform back at your Solder API URL.
 
