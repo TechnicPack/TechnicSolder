@@ -20,3 +20,6 @@ _ide_helper_models.php
 composer.lock
 npm-debug.log
 yarn-error.log
+
+# MkDocs build output
+site/
