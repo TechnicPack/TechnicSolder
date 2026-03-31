@@ -37,7 +37,7 @@ Requirements
 * XML PHP Extension
 * A MySQL or PostgreSQL database
 
-You can find commands for this in the [getting started page](https://docs.solder.io/reference/getting-started#requirements).
+You can find commands for this in the [getting started page](https://docs.solder.io/getting-started/#requirements).
 
 Installation/Updating Solder
 -------------

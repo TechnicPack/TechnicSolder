@@ -9,6 +9,7 @@ on:
       - 'mkdocs.yml'
 
 permissions:
+  contents: read
   pages: write
   id-token: write
 
@@ -26,6 +27,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -38,7 +42,7 @@ jobs:
         run: mkdocs build --strict
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: site/
 
