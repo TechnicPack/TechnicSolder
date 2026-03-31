@@ -4,7 +4,7 @@ Technic Solder is an API that sits between a modpack repository and the Technic 
 
 Using Solder means your packs download each mod individually. The launcher checks MD5 checksums against each mod version and uses cached versions when nothing has changed — so small, incremental updates don't require redownloading the entire modpack.
 
-Solder also links to the [Technic Platform](https://www.technicpack.net/) using an API key. When linked, the Platform pulls modpack and mod data directly from your Solder instance — importing packs and generating detailed mod lists on your Platform page.
+Solder also links to [Technic Platform](https://www.technicpack.net/) using an API key. When linked, Technic Platform pulls modpack and mod data directly from your Solder instance — importing packs and generating detailed mod lists on your page.
 
 ## Quick Start
 
