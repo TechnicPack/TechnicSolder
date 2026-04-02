@@ -1,6 +1,6 @@
 # Web Server Configuration
 
-This guide provides nginx and Apache virtual host configurations for both the Solder application and the mod repository.
+This guide provides nginx, Apache, and Caddy configurations for both the Solder application and the mod repository.
 
 !!! info "Docker users can skip this"
     If you are running Solder with Docker, the bundled web server is already configured. These examples are only needed for bare-metal installations.
@@ -73,6 +73,22 @@ The application server block points its document root at Solder's `public/` dire
     </VirtualHost>
     ```
 
+=== "Caddy"
+
+    ```caddy
+    solder.example.com {
+        root * /var/www/solder/TechnicSolder/public
+        php_fastcgi unix//run/php/php8.4-fpm.sock
+        file_server
+
+        # Cache static assets
+        @static path *.ico *.css *.js *.jpg *.jpeg *.png *.svg *.woff
+        header @static Cache-Control "max-age=31536000"
+    }
+    ```
+
+    Caddy's `php_fastcgi` directive automatically handles routing all requests through `index.php` — no `try_files` equivalent is needed. Caddy also provisions and renews TLS certificates automatically; see the [HTTPS](#https) section below.
+
 ## Mod Repository
 
 The repository server block serves mod zip files as static downloads. The nginx config enables directory listing so you can browse available files; Apache achieves the same with `+Indexes`.
@@ -126,6 +142,17 @@ The repository server block serves mod zip files as static downloads. The nginx 
     </VirtualHost>
     ```
 
+=== "Caddy"
+
+    ```caddy
+    repo.example.com {
+        root * /var/www/repo
+        file_server browse
+    }
+    ```
+
+    The `browse` argument enables directory listing, equivalent to nginx's `autoindex on` or Apache's `+Indexes`.
+
 ## Apache Rewrite Engine
 
 Laravel ships with a `public/.htaccess` file that uses `mod_rewrite` to route all requests through `index.php`. For this to work, two things must be in place:
@@ -144,7 +171,13 @@ Laravel ships with a `public/.htaccess` file that uses `mod_rewrite` to route al
 
 ## HTTPS
 
-All production deployments should use HTTPS. There are two common approaches.
+All production deployments should use HTTPS.
+
+### Caddy
+
+Caddy provisions and renews TLS certificates from Let's Encrypt automatically — no extra steps are needed. As long as your domain's DNS points to the server, Caddy handles everything when you use a domain name in your Caddyfile (as shown in the examples above).
+
+If Caddy is running behind another reverse proxy or load balancer, see the [Reverse Proxy / Load Balancer](#reverse-proxy-load-balancer) section below.
 
 ### Certbot / Let's Encrypt
 
