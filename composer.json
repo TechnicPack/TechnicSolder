@@ -39,13 +39,13 @@
         "http-interop/http-factory-guzzle": "^1.2.1",
         "knplabs/github-api": "^3.16",
         "laravel/fortify": "^1.35",
-        "laravel/framework": "^12.40.1",
+        "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3",
-        "laravel/tinker": "^2.10.2"
+        "laravel/tinker": "^3.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.16.1",
-        "barryvdh/laravel-ide-helper": "^3.6.0",
+        "fruitcake/laravel-debugbar": "^4.2",
+        "barryvdh/laravel-ide-helper": "^3.7.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.8.1",
         "laravel/boost": "^2.4",
