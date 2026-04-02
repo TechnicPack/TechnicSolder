@@ -6,6 +6,7 @@ use App\Actions\ResetUserPassword;
 use App\Http\Responses\LogoutResponse;
 use App\Libraries\UpdateUtils;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 use Laravel\Fortify\Fortify;
@@ -28,11 +29,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetPasswordView(fn ($request) => view('auth.reset-password', ['request' => $request]));
 
         Fortify::authenticateUsing(function (Request $request) {
-            $credentials = $request->only('email', 'password');
-            $remember = $request->boolean('remember');
+            $user = \App\Models\User::where('email', $request->email)->first();
 
-            if (auth()->attempt($credentials, $remember)) {
-                $user = auth()->user();
+            if ($user && Hash::check($request->password, $user->password)) {
                 $user->last_ip = $request->ip();
                 $user->save();
 

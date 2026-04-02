@@ -185,6 +185,7 @@ final class TwoFactorTest extends TestCase
         ]);
 
         $response->assertRedirect('/two-factor-challenge');
+        $this->assertGuest();
     }
 
     private function loginWithChallenge(User $user): void
@@ -288,6 +289,19 @@ final class TwoFactorTest extends TestCase
         $response = $this->post('/two-factor-challenge', ['recovery_code' => 'invalid-code']);
         $response->assertRedirect();
         $response->assertSessionHasErrors();
+    }
+
+    public function test_login_updates_last_ip(): void
+    {
+        $response = $this->post('/login', [
+            'email' => 'admin@admin.com',
+            'password' => 'admin',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+
+        $user = User::find(1);
+        $this->assertEquals('127.0.0.1', $user->last_ip);
     }
 
     public function test_user_without_2fa_logs_in_normally(): void
