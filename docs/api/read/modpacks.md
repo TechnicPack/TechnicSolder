@@ -47,6 +47,7 @@ When `include=full` is set, each modpack value becomes a full object:
 {
   "modpacks": {
     "hexxit": {
+      "id": 1,
       "name": "hexxit",
       "display_name": "Hexxit",
       "url": null,
@@ -94,6 +95,7 @@ curl https://solder.yourdomain.com/api/modpack/hexxit
 
 ```json
 {
+  "id": 1,
   "name": "hexxit",
   "display_name": "Hexxit",
   "url": null,

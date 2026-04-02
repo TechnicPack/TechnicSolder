@@ -44,8 +44,8 @@
 |----------|---------|-------------|
 | `MAIL_ENABLED` | `false` | Set to `true` to enable password reset via email |
 | `MAIL_MAILER` | `smtp` | Mail driver |
-| `MAIL_HOST` | `smtp.mailtrap.io` | SMTP server host |
-| `MAIL_PORT` | `2525` | SMTP server port |
+| `MAIL_HOST` | (empty) | SMTP server host |
+| `MAIL_PORT` | `2525` | SMTP server port (Docker default: `587`) |
 | `MAIL_USERNAME` | (null) | SMTP username |
 | `MAIL_PASSWORD` | (null) | SMTP password |
 | `MAIL_ENCRYPTION` | (null) | SMTP encryption (`tls`, `ssl`, or null) |

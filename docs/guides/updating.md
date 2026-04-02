@@ -10,7 +10,9 @@ Put Solder into maintenance mode, pull the latest code, update dependencies, run
 ```bash
 php artisan down
 git pull
-composer update --no-dev --no-interaction
+composer install --no-dev --no-interaction
+npm ci
+npm run build
 php artisan migrate
 php artisan optimize
 php artisan up
@@ -49,6 +51,19 @@ git remote set-head origin -a
 ```
 
 ## Version-Specific Notes
+
+### v1.0.0
+
+**Requires PHP 8.4+, Node.js 20+, and npm.**
+
+- Laravel upgraded from 12 to **13**
+- Frontend rebuilt with **Vite 8**, Tailwind CSS v4, and Alpine.js — `npm ci && npm run build` is now a required deployment step
+- Authentication replaced with **Laravel Fortify** (2FA support) and **Laravel Sanctum** (API tokens)
+- New environment variables: `MAIL_ENABLED`, `SOLDER_CORS_ORIGINS`, `SOLDER_INITIAL_ADMIN_EMAIL`, `SOLDER_INITIAL_ADMIN_PASSWORD`
+- Password policy now requires minimum 8 characters and checks against breached databases
+- Docker: Redis image replaced by **Valkey**
+
+Run `php artisan migrate` to create the new `personal_access_tokens`, `password_reset_tokens` tables and add 2FA columns to `users`.
 
 ### v0.8.0
 

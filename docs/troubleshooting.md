@@ -59,10 +59,10 @@ When adding or rehashing a mod version, Solder computes an MD5 checksum of the z
     [repo]/mods/[slug]/[slug]-[version].zip
     ```
 
-    For example, a mod with slug `buildcraft` at version `7.1.23` should be at:
+    For example, if `SOLDER_REPO_LOCATION=/var/www/repo/`, a mod with slug `buildcraft` at version `7.1.23` should be at:
 
     ```
-    /var/www/mods/mods/buildcraft/buildcraft-7.1.23.zip
+    /var/www/repo/mods/buildcraft/buildcraft-7.1.23.zip
     ```
 
 ### Connection Issues in Docker

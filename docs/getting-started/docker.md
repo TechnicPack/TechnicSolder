@@ -25,7 +25,7 @@ That's it. The first boot takes a minute or two while the image builds and the s
     2. Generates an `APP_KEY` if no `.env` file exists
     3. Runs database migrations
     4. Creates the initial admin user
-    5. Builds frontend assets if needed
+    5. Warns if frontend assets are missing (assets are built into the Docker image at build time)
     6. Sets file permissions
     7. Starts PHP-FPM
 
