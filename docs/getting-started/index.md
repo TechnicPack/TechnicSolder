@@ -125,17 +125,23 @@ php artisan migrate --force
 
 ## Initial Setup
 
-After migrating, run the setup command to create the default admin user:
+After migrating, run the setup command to create the initial admin user:
 
 ```bash
 php artisan solder:setup
 ```
 
-In non-interactive mode (e.g. scripts), this creates an admin with the default credentials. You can also specify credentials directly:
+This will interactively prompt for an email and password.
+
+In non-interactive mode (e.g. Docker, CI scripts), a random password is generated and printed to the console. You can provide credentials via environment variables instead:
 
 ```bash
-php artisan solder:setup --email=admin@example.com --password=your-secure-password
+SOLDER_INITIAL_ADMIN_EMAIL=admin@example.com
+SOLDER_INITIAL_ADMIN_PASSWORD=your-secure-password
 ```
+
+!!! warning
+    Change these credentials immediately after your first login.
 
 ## Web Server Configuration
 
@@ -171,12 +177,16 @@ Cache Solder's configuration, routes, and views for better performance:
 php artisan optimize
 ```
 
-## Default Credentials
+## Initial Admin User
 
-Log in at your configured `APP_URL` with:
+When running interactively, `solder:setup` prompts for email and password. In non-interactive mode, the email defaults to `admin@admin.com` and a random password is generated and printed to the console.
 
-- **Email:** `admin@admin.com`
-- **Password:** `admin`
+To set specific credentials non-interactively, configure these environment variables before running setup:
+
+```bash
+SOLDER_INITIAL_ADMIN_EMAIL=admin@example.com
+SOLDER_INITIAL_ADMIN_PASSWORD=your-secure-password
+```
 
 !!! warning
     Change these credentials immediately after your first login.

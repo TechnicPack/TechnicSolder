@@ -31,12 +31,20 @@ That's it. The first boot takes a minute or two while the image builds and the s
 
     Subsequent boots skip the steps that have already been completed, so restarts are fast.
 
-## Default Credentials
+## Initial Admin User
 
-After setup completes, log in at your Solder URL with:
+On first boot, an admin user is created with email `admin@admin.com` and a randomly generated password printed to the console. Check the container logs to find it:
 
-- **Email:** `admin@admin.com`
-- **Password:** `admin`
+```bash
+docker compose logs solder | grep "Generated password"
+```
+
+To set specific credentials, add these to your `.env` file before the first boot:
+
+```bash
+SOLDER_INITIAL_ADMIN_EMAIL=admin@example.com
+SOLDER_INITIAL_ADMIN_PASSWORD=your-secure-password
+```
 
 !!! warning
     Change these credentials immediately after your first login.

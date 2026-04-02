@@ -5,12 +5,11 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class SetupCommand extends Command
 {
     protected $signature = 'solder:setup
-        {--email= : Admin email address}
-        {--password= : Admin password}
         {--username=admin : Admin username}';
 
     protected $description = 'Create the initial admin user for Solder';
@@ -25,11 +24,13 @@ class SetupCommand extends Command
 
         $username = $this->option('username') ?? 'admin';
 
-        $email = $this->option('email')
-            ?? (! $this->input->isInteractive() ? 'admin@admin.com' : $this->ask('Admin email'));
-
-        $password = $this->option('password')
-            ?? (! $this->input->isInteractive() ? 'admin' : $this->secret('Admin password'));
+        if ($this->input->isInteractive()) {
+            $email = $this->ask('Admin email');
+            $password = $this->secret('Admin password');
+        } else {
+            $email = env('SOLDER_INITIAL_ADMIN_EMAIL', 'admin@admin.com');
+            $password = env('SOLDER_INITIAL_ADMIN_PASSWORD') ?: Str::random(16);
+        }
 
         $user = new User;
         $user->username = $username;
@@ -45,8 +46,9 @@ class SetupCommand extends Command
 
         $this->info("Admin user '{$username}' created successfully.");
 
-        if (! $this->option('password') && ! $this->input->isInteractive()) {
-            $this->warn('Using default password "admin" — change it immediately!');
+        if (! $this->input->isInteractive() && ! env('SOLDER_INITIAL_ADMIN_PASSWORD')) {
+            $this->warn("Generated password: {$password}");
+            $this->warn('Change this password immediately after first login.');
         }
 
         return self::SUCCESS;

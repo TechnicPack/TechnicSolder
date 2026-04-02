@@ -35,10 +35,7 @@ The dev setup does not automatically create an admin user. Run this after the fi
 docker compose -f compose.dev.yml exec solder php artisan solder:setup
 ```
 
-Default credentials:
-
-- **Email:** `admin@admin.com`
-- **Password:** `admin`
+This will prompt for an email and password interactively.
 
 ### How It Differs from Production
 

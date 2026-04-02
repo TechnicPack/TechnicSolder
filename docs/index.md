@@ -16,14 +16,14 @@ cd TechnicSolder
 docker compose up -d
 ```
 
-The first boot automatically runs migrations, generates an app key, and creates the default admin user. See the full [Docker setup guide](getting-started/docker.md) or the [bare-metal installation guide](getting-started/index.md).
+The first boot automatically runs migrations, generates an app key, and creates the initial admin user. See the full [Docker setup guide](getting-started/docker.md) or the [bare-metal installation guide](getting-started/index.md).
 
-## Default Credentials
+## Initial Admin User
 
-After setup, log in at your Solder URL with:
+On first boot, an admin user is created with email `admin@admin.com` and a randomly generated password printed to the console. To set specific credentials, configure these environment variables before the first boot:
 
-- **Email:** `admin@admin.com`
-- **Password:** `admin`
+- `SOLDER_INITIAL_ADMIN_EMAIL` — admin email (default: `admin@admin.com`)
+- `SOLDER_INITIAL_ADMIN_PASSWORD` — admin password (randomly generated if not set)
 
 !!! warning
     Change these credentials immediately after your first login.
