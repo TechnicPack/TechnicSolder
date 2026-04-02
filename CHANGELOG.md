@@ -2,6 +2,17 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [1.0.1] - 2026-04-03
+
+### Fixed
+
+- Sidebar modpack icons using filesystem paths instead of `icon_url`, causing broken images for modpacks with custom art
+- Tests requiring Vite manifest to pass — added `withoutVite()` to base TestCase
+
+### Changed
+
+- Release workflow now extracts notes from CHANGELOG.md instead of auto-generating
+
 ## [1.0.0] - 2026-04-02
 
 ### Added
@@ -62,4 +73,5 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.0.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/TechnicPack/TechnicSolder/compare/v0.12.9...v1.0.0
