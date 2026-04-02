@@ -12,13 +12,14 @@
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "matchManagers": [
-        "composer"
-      ],
-      "matchDepNames": [
-        "php"
-      ],
+      "matchManagers": ["composer"],
+      "matchDepNames": ["php"],
       "enabled": false
+    },
+    {
+      "description": "Group all non-major updates into a single PR",
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "non-major dependencies"
     }
   ]
 }
