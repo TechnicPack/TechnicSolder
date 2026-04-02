@@ -20,12 +20,10 @@ php artisan migrate --force -n
 # Create default admin user if none exists
 php artisan solder:setup --no-interaction
 
-# Build frontend assets if not already built (e.g. volume-mounted source)
+# Warn if frontend assets are missing (e.g. volume-mounted source without a prior build)
 if [ ! -d public/build ]; then
-    if command -v node &> /dev/null; then
-        npm install --no-audit --no-fund
-        npm run build
-    fi
+    echo "WARNING: public/build/ is missing — frontend assets have not been built."
+    echo "Run 'npm ci && npm run build' on the host or inside a Node container."
 fi
 
 # Ensure the web server can write to storage and cache
