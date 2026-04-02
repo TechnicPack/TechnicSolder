@@ -44,7 +44,7 @@
         "laravel/tinker": "^3.0"
     },
     "require-dev": {
-        "fruitcake/laravel-debugbar": "^4.2",
+        "fruitcake/laravel-debugbar": "^4.2.2",
         "barryvdh/laravel-ide-helper": "^3.7.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.8.1",
