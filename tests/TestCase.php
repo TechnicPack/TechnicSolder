@@ -11,6 +11,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        $this->withoutVite();
+
         $this->mock(UncompromisedVerifier::class)
             ->shouldReceive('verify')
             ->andReturn(true);
