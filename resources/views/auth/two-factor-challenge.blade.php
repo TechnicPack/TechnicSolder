@@ -23,6 +23,11 @@
                     {{ $message }}
                 </div>
             @enderror
+            @error('recovery_code')
+                <div class="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                    {{ $message }}
+                </div>
+            @enderror
 
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4" x-show="!useRecovery">
                 Enter the 6-digit code from your authenticator app.
