@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Modpack;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -226,7 +227,7 @@ final class AuthorizationTest extends TestCase
 
     public function test_user_with_modpacks_manage_but_no_modpack_access_redirected(): void
     {
-        $modpack = \App\Models\Modpack::first();
+        $modpack = Modpack::first();
         $user = $this->createUserWithPermissions(['modpacks_manage' => true]);
         // No modpacks in allowed list
         $this->actingAs($user)->get('/modpack/view/'.$modpack->id)
@@ -235,7 +236,7 @@ final class AuthorizationTest extends TestCase
 
     public function test_user_with_modpacks_manage_and_modpack_access_can_view(): void
     {
-        $modpack = \App\Models\Modpack::first();
+        $modpack = Modpack::first();
         $user = $this->createUserWithPermissions(['modpacks_manage' => true]);
         $user->permission->modpacks = [$modpack->id];
         $user->permission->save();
@@ -244,7 +245,7 @@ final class AuthorizationTest extends TestCase
 
     public function test_build_access_follows_parent_modpack(): void
     {
-        $modpack = \App\Models\Modpack::first();
+        $modpack = Modpack::first();
         $build = $modpack->builds->first();
         $user = $this->createUserWithPermissions(['modpacks_manage' => true]);
         // No modpack access → can't view build
@@ -254,7 +255,7 @@ final class AuthorizationTest extends TestCase
 
     public function test_solder_full_bypasses_per_modpack_access(): void
     {
-        $modpack = \App\Models\Modpack::first();
+        $modpack = Modpack::first();
         $user = User::find(1); // solder_full
         $this->actingAs($user)->get('/modpack/view/'.$modpack->id)->assertOk();
     }

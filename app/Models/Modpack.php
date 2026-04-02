@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Http\ApiAuthContext;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -17,8 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $icon_md5
  * @property string|null $logo_md5
  * @property string|null $background_md5
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int $order
  * @property bool $hidden
  * @property bool $private
@@ -28,9 +30,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $icon_url
  * @property string|null $logo_url
  * @property string|null $background_url
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Build> $builds
+ * @property-read Collection<int, Build> $builds
  * @property-read int|null $builds_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
+ * @property-read Collection<int, Client> $clients
  * @property-read int|null $clients_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Modpack newModelQuery()

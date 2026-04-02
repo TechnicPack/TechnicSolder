@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,14 +15,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $mods_manage
  * @property bool $mods_delete
  * @property string|null $modpacks
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property bool $solder_keys
  * @property bool $solder_clients
  * @property bool $modpacks_create
  * @property bool $modpacks_manage
  * @property bool $modpacks_delete
- * @property-read \App\Models\User|null $user
+ * @property-read User|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPermission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|UserPermission newQuery()

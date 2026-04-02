@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -12,11 +14,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $description
  * @property string|null $author
  * @property string|null $link
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property string $pretty_name
- * @property-read \App\Models\Modversion|null $latestVersion
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Modversion> $versions
+ * @property-read Modversion|null $latestVersion
+ * @property-read Collection<int, Modversion> $versions
  * @property-read int|null $versions_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Mod newModelQuery()

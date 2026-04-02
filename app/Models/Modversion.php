@@ -2,22 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $mod_id
  * @property string $version
  * @property string $md5
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int|null $filesize
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Build> $builds
+ * @property-read Collection<int, Build> $builds
  * @property-read int|null $builds_count
  * @property-read mixed $url
- * @property-read \App\Models\Mod|null $mod
+ * @property-read Mod|null $mod
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Modversion newQuery()

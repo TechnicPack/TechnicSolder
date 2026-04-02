@@ -2,24 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $modpack_id
  * @property string $version
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property string $minecraft
  * @property string|null $forge
  * @property bool $is_published
  * @property bool $private
  * @property string|null $min_java
  * @property int|null $min_memory
- * @property-read \App\Models\Modpack|null $modpack
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Modversion> $modversions
+ * @property-read Modpack|null $modpack
+ * @property-read Collection<int, Modversion> $modversions
  * @property-read int|null $modversions_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Build newModelQuery()

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Middleware\Cors;
+use App\Http\Middleware\ForceJsonResponse;
+use App\Http\Middleware\RequireMail;
+use App\Http\Middleware\SecurityHeaders;
 use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,17 +20,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(AppServiceProvider::HOME);
 
-        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
-        $middleware->web(\App\Http\Middleware\RequireMail::class);
+        $middleware->append(SecurityHeaders::class);
+        $middleware->web(RequireMail::class);
 
         $middleware->throttleApi();
         $middleware->api(prepend: [
-            \App\Http\Middleware\ForceJsonResponse::class,
+            ForceJsonResponse::class,
         ]);
-        $middleware->api(\App\Http\Middleware\Cors::class);
+        $middleware->api(Cors::class);
 
         $middleware->alias([
-            'cors' => \App\Http\Middleware\Cors::class,
+            'cors' => Cors::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

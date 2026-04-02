@@ -32,27 +32,23 @@ final class SetupCommandTest extends TestCase
             ->assertExitCode(0);
     }
 
-    public function test_setup_uses_env_password_when_provided(): void
+    public function test_setup_uses_config_password_when_provided(): void
     {
-        putenv('SOLDER_INITIAL_ADMIN_PASSWORD=secretpass123');
+        config(['solder.initial_admin_password' => 'secretpass123']);
 
         $this->artisan('solder:setup', ['--no-interaction' => true])
             ->doesntExpectOutputToContain('Generated password:')
             ->assertExitCode(0);
-
-        putenv('SOLDER_INITIAL_ADMIN_PASSWORD');
     }
 
-    public function test_setup_uses_env_email_when_provided(): void
+    public function test_setup_uses_config_email_when_provided(): void
     {
-        putenv('SOLDER_INITIAL_ADMIN_EMAIL=custom@example.com');
+        config(['solder.initial_admin_email' => 'custom@example.com']);
 
         $this->artisan('solder:setup', ['--no-interaction' => true])
             ->assertExitCode(0);
 
         $this->assertEquals('custom@example.com', User::first()->email);
-
-        putenv('SOLDER_INITIAL_ADMIN_EMAIL');
     }
 
     public function test_setup_skips_when_users_exist(): void

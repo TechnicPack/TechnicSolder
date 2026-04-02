@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Mod;
+use App\Models\Modversion;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -348,7 +349,7 @@ final class ModTest extends TestCase
 
     public function test_mod_version_delete(): void
     {
-        $ver = \App\Models\Modversion::find(1);
+        $ver = Modversion::find(1);
         $ver->builds()->detach();
 
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])

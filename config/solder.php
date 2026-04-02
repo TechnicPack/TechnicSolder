@@ -65,4 +65,13 @@ return [
      */
     'cors_allowed_origins' => env('SOLDER_CORS_ORIGINS', '*'),
 
+    /**
+     * Initial Admin User
+     *
+     * These values are used by the solder:setup command in non-interactive mode
+     * to create the initial admin user.
+     */
+    'initial_admin_email' => env('SOLDER_INITIAL_ADMIN_EMAIL', 'admin@admin.com'),
+    'initial_admin_password' => env('SOLDER_INITIAL_ADMIN_PASSWORD'),
+
 ];

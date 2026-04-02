@@ -28,8 +28,8 @@ class SetupCommand extends Command
             $email = $this->ask('Admin email');
             $password = $this->secret('Admin password');
         } else {
-            $email = env('SOLDER_INITIAL_ADMIN_EMAIL', 'admin@admin.com');
-            $password = env('SOLDER_INITIAL_ADMIN_PASSWORD') ?: Str::random(16);
+            $email = config('solder.initial_admin_email');
+            $password = config('solder.initial_admin_password') ?: Str::random(16);
         }
 
         $user = new User;
@@ -46,7 +46,7 @@ class SetupCommand extends Command
 
         $this->info("Admin user '{$username}' created successfully.");
 
-        if (! $this->input->isInteractive() && ! env('SOLDER_INITIAL_ADMIN_PASSWORD')) {
+        if (! $this->input->isInteractive() && ! config('solder.initial_admin_password')) {
             $this->warn("Generated password: {$password}");
             $this->warn('Change this password immediately after first login.');
         }

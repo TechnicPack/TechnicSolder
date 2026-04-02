@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $uuid
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Modpack> $modpacks
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property-read Collection<int, Modpack> $modpacks
  * @property-read int|null $modpacks_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
