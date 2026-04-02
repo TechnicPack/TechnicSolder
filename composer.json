@@ -49,7 +49,7 @@
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.8.1",
         "laravel/boost": "^2.4",
-        "laravel/pint": "^1.27.0",
+        "laravel/pint": "^1.29.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.8.3",
         "phpunit/phpunit": "^12.5.8"
