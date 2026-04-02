@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -44,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
         if (! defined('SOLDER_VERSION')) {
             define('SOLDER_VERSION', '0.12.9');
         }
+
+        Model::preventSilentlyDiscardingAttributes(! app()->isProduction());
 
         Gate::before(fn (User $user) => $user->permission->solder_full ?: null);
 
