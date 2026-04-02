@@ -56,6 +56,13 @@ The application server block points its document root at Solder's `public/` dire
 
 === "Apache"
 
+    Requires `mod_proxy_fcgi` and PHP-FPM:
+
+    ```bash
+    sudo a2enmod proxy_fcgi rewrite
+    sudo systemctl restart apache2
+    ```
+
     ```apache
     <VirtualHost *:80>
         ServerName solder.example.com
@@ -67,6 +74,10 @@ The application server block points its document root at Solder's `public/` dire
             AllowOverride All
             Require all granted
         </Directory>
+
+        <FilesMatch \.php$>
+            SetHandler "proxy:unix:/run/php/php8.4-fpm.sock|fcgi://localhost"
+        </FilesMatch>
 
         ErrorLog ${APACHE_LOG_DIR}/solder_error.log
         CustomLog ${APACHE_LOG_DIR}/solder_access.log combined
@@ -153,18 +164,14 @@ The repository server block serves mod zip files as static downloads. The nginx 
 
     The `browse` argument enables directory listing, equivalent to nginx's `autoindex on` or Apache's `+Indexes`.
 
-## Apache Rewrite Engine
+## Apache Modules
 
-Laravel ships with a `public/.htaccess` file that uses `mod_rewrite` to route all requests through `index.php`. For this to work, two things must be in place:
+The Apache configuration above requires two modules:
 
-1. **Enable `mod_rewrite`:**
+1. **`mod_proxy_fcgi`** — forwards PHP requests to PHP-FPM instead of using the legacy `mod_php` (which is incompatible with Apache's event MPM).
+2. **`mod_rewrite`** — Laravel ships with a `public/.htaccess` file that uses `mod_rewrite` to route all requests through `index.php`.
 
-    ```bash
-    sudo a2enmod rewrite
-    sudo systemctl restart apache2
-    ```
-
-2. **Set `AllowOverride All`** in the `<Directory>` block for Solder's `public/` directory (already included in the vhost above).
+Both are enabled in the vhost setup instructions above. The `<Directory>` block must also have `AllowOverride All` to allow `.htaccess` processing (already included in the vhost).
 
 !!! warning
     Without `mod_rewrite` and `AllowOverride All`, Laravel's routing will not work. All URLs will require `/index.php` in the path (e.g. `solder.example.com/index.php/dashboard` instead of `solder.example.com/dashboard`).
