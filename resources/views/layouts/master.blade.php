@@ -82,7 +82,7 @@
                              'id' => $mp->id,
                              'name' => $mp->name,
                              'slug' => $mp->slug,
-                             'icon' => $mp->icon,
+                             'icon_url' => $mp->icon_url ?? asset('/resources/default/icon.png'),
                              'hidden' => $mp->hidden,
                          ])->values()),
                          get filteredModpacks() {
@@ -106,7 +106,7 @@
                     <template x-for="mp in filteredModpacks" :key="mp.id">
                         <a :href="'/modpack/view/' + mp.id"
                            class="flex items-center gap-2 pl-13 pr-5 py-1.5 text-sm text-slate-300 hover:text-white transition-colors truncate">
-                            <img :src="mp.icon ? '/resources/' + mp.slug + '/icon.png' : '/resources/default/icon.png'"
+                            <img :src="mp.icon_url"
                                  class="size-4 rounded shrink-0" alt="">
                             <span class="truncate" x-text="mp.name"></span>
                             <template x-if="mp.hidden">
