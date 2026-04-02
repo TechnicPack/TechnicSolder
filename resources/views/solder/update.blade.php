@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="flex items-center gap-3">
-                        <a href="https://docs.solder.io/docs/updating-solder" target="_blank"
+                        <a href="https://docs.solder.io/guides/updating/" target="_blank"
                            class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
                             Updating Solder
                         </a>

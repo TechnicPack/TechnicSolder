@@ -6,7 +6,7 @@ make sure you follow our guidelines.
 
 ## General steps
 
-1. Set up your workspace as described in [Getting Started](https://docs.solder.io/reference/getting-started).
+1. Set up your workspace as described in [Getting Started](https://docs.solder.io/contributing/).
 
 2. Check for existing issues in the [TechnicSolder](https://github.com/TechnicPack/TechnicSolder/issues) repository.
    There is possibly someone else already working on the same thing.
