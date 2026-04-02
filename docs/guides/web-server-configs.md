@@ -79,6 +79,9 @@ The application server block points its document root at Solder's `public/` dire
             SetHandler "proxy:unix:/run/php/php8.4-fpm.sock|fcgi://localhost"
         </FilesMatch>
 
+        # If behind a load balancer that terminates TLS:
+        # SetEnvIf X-Forwarded-Proto https HTTPS=on
+
         ErrorLog ${APACHE_LOG_DIR}/solder_error.log
         CustomLog ${APACHE_LOG_DIR}/solder_access.log combined
     </VirtualHost>
