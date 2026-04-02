@@ -4,6 +4,8 @@ namespace App;
 
 enum JavaVersionsEnum: string
 {
+    case JRE_25 = '25';
+    case JRE_21 = '21';
     case JRE_17 = '17';
     case JRE_16 = '16';
     case JRE_8 = '1.8';
