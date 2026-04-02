@@ -14,7 +14,7 @@ This guide walks through installing Technic Solder directly on a Linux server.
 ## Requirements
 
 - **Git**
-- **PHP >= 8.3** (8.4 recommended)
+- **PHP >= 8.4**
 - **Composer** ([getcomposer.org](https://getcomposer.org/))
 - **unzip**
 - **A MariaDB, MySQL, or PostgreSQL database**
