@@ -16,6 +16,7 @@ This guide walks through installing Technic Solder directly on a Linux server.
 - **Git**
 - **PHP >= 8.4**
 - **Composer** ([getcomposer.org](https://getcomposer.org/))
+- **Node.js >= 20** and **npm** ([nodejs.org](https://nodejs.org/))
 - **unzip**
 - **A MariaDB, MySQL, or PostgreSQL database**
 
@@ -59,6 +60,8 @@ Clone the repository and install dependencies:
 git clone https://github.com/TechnicPack/TechnicSolder.git
 cd TechnicSolder
 composer install --no-dev --no-interaction
+npm ci
+npm run build
 ```
 
 !!! note
@@ -177,26 +180,12 @@ Cache Solder's configuration, routes, and views for better performance:
 php artisan optimize
 ```
 
-## Initial Admin User
-
-When running interactively, `solder:setup` prompts for email and password. In non-interactive mode, the email defaults to `admin@admin.com` and a random password is generated and printed to the console.
-
-To set specific credentials non-interactively, configure these environment variables before running setup:
-
-```bash
-SOLDER_INITIAL_ADMIN_EMAIL=admin@example.com
-SOLDER_INITIAL_ADMIN_PASSWORD=your-secure-password
-```
-
-!!! warning
-    Change these credentials immediately after your first login.
-
 ## Keeping Solder Updated
 
 Solder's dependencies are frequently updated. Set up a cron job (or similar) to keep them current:
 
 ```bash
-cd /path/to/TechnicSolder && composer update --no-dev --no-interaction && php artisan optimize
+cd /path/to/TechnicSolder && composer update --no-dev --no-interaction && npm ci && npm run build && php artisan optimize
 ```
 
 !!! tip
