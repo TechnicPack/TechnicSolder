@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('modpack/list', [ModpackController::class, 'getList'])->name('modpack.list');
     Route::get('modpack/view/{modpack_id}', [ModpackController::class, 'getView'])->name('modpack.view');
     Route::get('modpack/build/{build_id}', [ModpackController::class, 'getBuild'])->name('modpack.build');
+    Route::get('modpack/build/{build_id}/export', [ModpackController::class, 'getExportBuild'])->name('modpack.build.export');
     Route::get('modpack/build/{build_id}/edit', [ModpackController::class, 'getEditBuild'])->name('modpack.build.edit');
     Route::post('modpack/build/{build_id}/edit', [ModpackController::class, 'postEditBuild']);
     Route::get('modpack/build/{build_id}/delete', [ModpackController::class, 'getDeleteBuild'])->name('modpack.build.delete');

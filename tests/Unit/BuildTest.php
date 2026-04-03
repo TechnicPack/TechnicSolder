@@ -174,6 +174,27 @@ final class BuildTest extends TestCase
         $response->assertRedirect('modpack/view/'.$build->modpack->id);
     }
 
+    public function test_build_export_csv(): void
+    {
+        $response = $this->get('/modpack/build/1/export');
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'text/csv; charset=UTF-8');
+        $response->assertHeader('Content-Disposition', 'attachment; filename=testmodpack_1.0.0.csv');
+
+        $content = $response->streamedContent();
+
+        $this->assertStringContainsString('mod_name,mod_slug,version,md5,filesize', $content);
+        $this->assertStringContainsString('TestMod,testmod,1.0,bdbc6c6cc48c7b037e4aef64b58258a3,295', $content);
+    }
+
+    public function test_build_export_csv_invalid_build(): void
+    {
+        $response = $this->get('/modpack/build/999/export');
+
+        $response->assertRedirect('modpack/list');
+    }
+
     public function test_renaming_recommended_build_changes_build_in_modpack(): void
     {
         $modpack = Modpack::first();

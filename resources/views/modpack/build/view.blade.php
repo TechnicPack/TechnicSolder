@@ -16,6 +16,10 @@
                         class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
                     Refresh
                 </button>
+                <a href="{{ url('modpack/build/' . $build->id . '/export') }}"
+                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                    Export CSV
+                </a>
                 <a href="{{ url('modpack/build/' . $build->id . '/edit') }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
                     Edit

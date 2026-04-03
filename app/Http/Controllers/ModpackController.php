@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ModpackController extends Controller
 {
@@ -80,6 +81,42 @@ class ModpackController extends Controller
         return view('modpack.build.view')
             ->with('build', $build)
             ->with('mods', $mods);
+    }
+
+    public function getExportBuild($build_id = null): StreamedResponse|RedirectResponse
+    {
+        $build = Build::with('modpack', 'modversions.mod')
+            ->find($build_id);
+
+        if (empty($build)) {
+            return redirect('modpack/list')->withErrors(['Build not found']);
+        }
+
+        $this->authorize('update', [Build::class, $build->modpack]);
+
+        $filename = $build->modpack->slug.'_'.$build->version.'.csv';
+
+        $sortedModversions = $build->modversions
+            ->sortBy(fn (Modversion $modversion) => strtolower($modversion->mod->pretty_name ?: $modversion->mod->name));
+
+        return response()->streamDownload(function () use ($sortedModversions) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['mod_name', 'mod_slug', 'version', 'md5', 'filesize']);
+
+            foreach ($sortedModversions as $modversion) {
+                fputcsv($handle, [
+                    $modversion->mod->pretty_name ?: $modversion->mod->name,
+                    $modversion->mod->name,
+                    $modversion->version,
+                    $modversion->md5,
+                    $modversion->filesize,
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 
     public function getEditBuild($build_id = null)
