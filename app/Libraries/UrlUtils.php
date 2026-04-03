@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\HandlerStack;
 use Illuminate\Support\Facades\Log;
@@ -93,6 +94,22 @@ class UrlUtils
                 'success' => true,
                 'md5' => $hash,
                 'filesize' => $filesize,
+            ];
+        } catch (ConnectException $e) {
+            $errno = $e->getHandlerContext()['errno'] ?? 0;
+
+            $hint = match ($errno) {
+                6 => 'Could not resolve hostname. Verify that SOLDER_REPO_LOCATION points to a valid domain.',
+                7 => 'Connection refused by the remote server. Ensure it is running and accessible from the Solder host.',
+                28 => 'Connection timed out. Consider increasing SOLDER_MD5_CONNECT_TIMEOUT or SOLDER_MD5_FILE_TIMEOUT.',
+                default => "Network error (cURL error {$errno}). Check connectivity to the remote server.",
+            };
+
+            Log::warning("Remote MD5 failed for {$url}: {$e->getMessage()}");
+
+            return [
+                'success' => false,
+                'message' => $hint,
             ];
         } catch (GuzzleException $e) {
             Log::error('Error hashing remote md5: '.$e->getMessage());
