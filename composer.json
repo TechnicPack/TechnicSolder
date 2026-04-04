@@ -38,21 +38,21 @@
         "guzzlehttp/guzzle": "^7.10.0",
         "http-interop/http-factory-guzzle": "^1.2.1",
         "knplabs/github-api": "^3.16",
-        "laravel/fortify": "^1.35",
-        "laravel/framework": "^13.0",
-        "laravel/sanctum": "^4.3",
+        "laravel/fortify": "^1.36.2",
+        "laravel/framework": "^13.3.0",
+        "laravel/sanctum": "^4.3.1",
         "laravel/tinker": "^3.0"
     },
     "require-dev": {
-        "fruitcake/laravel-debugbar": "^4.2",
+        "fruitcake/laravel-debugbar": "^4.2.4",
         "barryvdh/laravel-ide-helper": "^3.7.0",
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.8.1",
-        "laravel/boost": "^2.4",
-        "laravel/pint": "^1.27.0",
+        "larastan/larastan": "^3.9.3",
+        "laravel/boost": "^2.4.1",
+        "laravel/pint": "^1.29.0",
         "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^8.8.3",
-        "phpunit/phpunit": "^12.5.8"
+        "nunomaduro/collision": "^8.9.2",
+        "phpunit/phpunit": "^12.5.16"
     },
     "config": {
         "optimize-autoloader": true,
