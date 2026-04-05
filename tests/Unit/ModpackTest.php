@@ -224,6 +224,89 @@ final class ModpackTest extends TestCase
         $this->assertCount(0, $modpack->fresh()->clients);
     }
 
+    public function test_modify_version_returns_404_for_nonexistent_build(): void
+    {
+        $response = $this->post('/modpack/modify/version', [
+            'build_id' => 9999,
+            'version' => 1,
+            'modversion_id' => 1,
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_delete_returns_404_for_nonexistent_build(): void
+    {
+        $response = $this->post('/modpack/modify/delete', [
+            'build_id' => 9999,
+            'modversion_id' => 1,
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_add_returns_404_for_nonexistent_build(): void
+    {
+        $response = $this->post('/modpack/modify/add', [
+            'build' => 9999,
+            'mod-name' => 'testmod',
+            'mod-version' => '1.0',
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_add_returns_404_for_nonexistent_mod(): void
+    {
+        $response = $this->post('/modpack/modify/add', [
+            'build' => 1,
+            'mod-name' => 'nonexistent',
+            'mod-version' => '1.0',
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_recommended_returns_404_for_nonexistent_modpack(): void
+    {
+        $response = $this->post('/modpack/modify/recommended', [
+            'modpack' => 9999,
+            'recommended' => '1.0.0',
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_latest_returns_404_for_nonexistent_modpack(): void
+    {
+        $response = $this->post('/modpack/modify/latest', [
+            'modpack' => 9999,
+            'latest' => '1.0.0',
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_published_returns_404_for_nonexistent_build(): void
+    {
+        $response = $this->post('/modpack/modify/published', [
+            'build' => 9999,
+            'published' => true,
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
+    public function test_modify_private_returns_404_for_nonexistent_build(): void
+    {
+        $response = $this->post('/modpack/modify/private', [
+            'build' => 9999,
+            'private' => true,
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertNotFound();
+    }
+
     public function test_modify_add_rejects_duplicate_mod(): void
     {
         $build = Build::find(1);

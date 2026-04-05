@@ -487,7 +487,7 @@ class ModpackController extends Controller
             case 'version': // Change mod version in a build
                 $version_id = Request::input('version');
                 $modversion_id = Request::input('modversion_id');
-                $build = Build::with('modpack')->find(Request::input('build_id'));
+                $build = Build::with('modpack')->findOrFail(Request::input('build_id'));
                 $this->authorize('update', [Build::class, $build->modpack]);
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', $build->id)
@@ -509,7 +509,7 @@ class ModpackController extends Controller
                     'reason' => 'Rows Affected: '.$affected,
                 ]);
             case 'delete': // Remove mod version from build
-                $build = Build::with('modpack')->find(Request::input('build_id'));
+                $build = Build::with('modpack')->findOrFail(Request::input('build_id'));
                 $this->authorize('update', [Build::class, $build->modpack]);
                 $affected = DB::table('build_modversion')
                     ->where('build_id', '=', $build->id)
@@ -527,9 +527,9 @@ class ModpackController extends Controller
                     'reason' => 'Rows Affected: '.$affected,
                 ]);
             case 'add': // Add mod version to build
-                $build = Build::find(Request::input('build'));
+                $build = Build::findOrFail(Request::input('build'));
                 $this->authorize('update', [Build::class, $build->modpack]);
-                $mod = Mod::where('name', '=', Request::input('mod-name'))->first();
+                $mod = Mod::where('name', '=', Request::input('mod-name'))->firstOrFail();
                 $ver = Modversion::where('mod_id', '=', $mod->id)
                     ->where('version', '=', Request::input('mod-version'))
                     ->first();
@@ -573,7 +573,7 @@ class ModpackController extends Controller
                     ]);
                 }
             case 'recommended': // Set recommended build
-                $modpack = Modpack::find(Request::input('modpack'));
+                $modpack = Modpack::findOrFail(Request::input('modpack'));
                 $this->authorize('update', $modpack);
                 $new_version = Request::input('recommended');
                 $modpack->recommended = $new_version;
@@ -586,7 +586,7 @@ class ModpackController extends Controller
                     'version' => $new_version,
                 ]);
             case 'latest': // Set latest build
-                $modpack = Modpack::find(Request::input('modpack'));
+                $modpack = Modpack::findOrFail(Request::input('modpack'));
                 $this->authorize('update', $modpack);
                 $new_version = Request::input('latest');
                 $modpack->latest = $new_version;
@@ -599,7 +599,7 @@ class ModpackController extends Controller
                     'version' => $new_version,
                 ]);
             case 'published': // Set build published status
-                $build = Build::with('modpack')->find(Request::input('build'));
+                $build = Build::with('modpack')->findOrFail(Request::input('build'));
                 $this->authorize('update', [Build::class, $build->modpack]);
 
                 $build->is_published = \request()->boolean('published');
@@ -614,7 +614,7 @@ class ModpackController extends Controller
                     'success' => 'Build '.$build->version.' is now '.$state,
                 ]);
             case 'private':
-                $build = Build::with('modpack')->find(Request::input('build'));
+                $build = Build::with('modpack')->findOrFail(Request::input('build'));
                 $this->authorize('update', [Build::class, $build->modpack]);
 
                 $build->private = \request()->boolean('private');
