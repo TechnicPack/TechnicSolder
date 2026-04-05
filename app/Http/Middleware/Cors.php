@@ -15,9 +15,23 @@ class Cors
     {
         $response = $next($request);
 
-        $origin = config('solder.cors_allowed_origins', '*');
+        $allowed = config('solder.cors_allowed_origins', '*');
 
-        $response->header('Access-Control-Allow-Origin', $origin);
+        if ($allowed === '*') {
+            $response->header('Access-Control-Allow-Origin', '*');
+
+            return $response;
+        }
+
+        $requestOrigin = $request->header('Origin');
+        if ($requestOrigin) {
+            $origins = array_map('trim', explode(',', $allowed));
+            if (in_array($requestOrigin, $origins, true)) {
+                $response->header('Access-Control-Allow-Origin', $requestOrigin);
+            }
+        }
+
+        $response->header('Vary', 'Origin');
 
         return $response;
     }
