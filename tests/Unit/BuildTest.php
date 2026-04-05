@@ -247,4 +247,79 @@ final class BuildTest extends TestCase
         // Check the latest version changed along with the version
         $this->assertEquals($build->version, $modpack->latest);
     }
+
+    public function test_clone_build_cannot_cross_modpack_boundary(): void
+    {
+        // Create a second modpack with a build that has the seeded modversion
+        $otherModpack = Modpack::create([
+            'name' => 'PrivateModpack',
+            'slug' => 'privatemodpack',
+            'hidden' => false,
+            'private' => true,
+        ]);
+
+        $otherBuild = Build::create([
+            'modpack_id' => $otherModpack->id,
+            'version' => '1.0.0',
+            'minecraft' => '1.7.10',
+            'is_published' => true,
+        ]);
+
+        // Attach the seeded modversion (id=1) to the other build
+        $otherBuild->modversions()->attach(1);
+
+        // Attempt to clone the other modpack's build into modpack 1
+        $data = [
+            'version' => '2.0.0',
+            'minecraft' => '1.7.10',
+            'java-version' => '',
+            'memory-enabled' => 0,
+            'clone' => $otherBuild->id,
+        ];
+
+        $response = $this->post('/modpack/add-build/1', $data);
+        $response->assertRedirect();
+
+        // The new build should exist but have NO modversions (clone was cross-modpack)
+        $newBuild = Build::where('version', '2.0.0')->where('modpack_id', 1)->first();
+        $this->assertNotNull($newBuild);
+        $this->assertCount(0, $newBuild->modversions);
+    }
+
+    public function test_clone_build_within_same_modpack(): void
+    {
+        // Build 1 (from seeder) belongs to modpack 1 and has modversion 1 attached
+        $data = [
+            'version' => '1.1.0',
+            'minecraft' => '1.7.10',
+            'java-version' => '',
+            'memory-enabled' => 0,
+            'clone' => 1, // Clone from build 1, same modpack
+        ];
+
+        $response = $this->post('/modpack/add-build/1', $data);
+        $response->assertRedirect();
+
+        $newBuild = Build::where('version', '1.1.0')->where('modpack_id', 1)->first();
+        $this->assertNotNull($newBuild);
+        $this->assertCount(1, $newBuild->modversions);
+    }
+
+    public function test_clone_nonexistent_build_id_is_ignored(): void
+    {
+        $data = [
+            'version' => '3.0.0',
+            'minecraft' => '1.7.10',
+            'java-version' => '',
+            'memory-enabled' => 0,
+            'clone' => 9999, // Does not exist
+        ];
+
+        $response = $this->post('/modpack/add-build/1', $data);
+        $response->assertRedirect();
+
+        $newBuild = Build::where('version', '3.0.0')->where('modpack_id', 1)->first();
+        $this->assertNotNull($newBuild);
+        $this->assertCount(0, $newBuild->modversions);
+    }
 }
