@@ -33,7 +33,7 @@ That's it. The first boot takes a minute or two while the image builds and the s
 
 ## Initial Admin User
 
-On first boot, an admin user is created with email `admin@admin.com` and a randomly generated password printed to the console. Check the container logs to find it:
+On first boot, an admin user is created with email `admin@example.com` and a randomly generated password printed to the console. Check the container logs to find it:
 
 ```bash
 docker compose logs solder | grep "Generated password"
@@ -68,8 +68,8 @@ The `.env` file is loaded automatically by Docker Compose. Any variables you set
 | `DB_DATABASE` | `solder` | MariaDB database name |
 | `DB_USERNAME` | `solder` | MariaDB username |
 | `DB_PASSWORD` | `solder` | MariaDB password |
-| `SOLDER_REPO_LOCATION` | `/var/www/mods.solder.test/` | Path or URL to your mod repository |
-| `SOLDER_MIRROR_URL` | `http://mods.solder.test/` | Public URL for mod downloads |
+| `SOLDER_REPO_LOCATION` | `/var/www/mods.example.com/` | Path or URL to your mod repository |
+| `SOLDER_MIRROR_URL` | `http://mods.example.com/` | Public URL for mod downloads |
 | `SOLDER_CORS_ORIGINS` | `*` | Allowed CORS origins |
 | `MAIL_ENABLED` | `false` | Enable email functionality |
 

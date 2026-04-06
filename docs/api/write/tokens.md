@@ -7,7 +7,7 @@ List all tokens belonging to the authenticated user.
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/token \
+curl https://solder.example.com/api/token \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -50,7 +50,7 @@ Create a new API token for the authenticated user.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/token \
+curl -X POST https://solder.example.com/api/token \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -99,7 +99,7 @@ Revoke a token. You can only revoke tokens that belong to the authenticated user
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/token/1 \
+curl -X DELETE https://solder.example.com/api/token/1 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

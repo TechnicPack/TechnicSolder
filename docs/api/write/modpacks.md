@@ -20,7 +20,7 @@ Create a new modpack.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/modpack \
+curl -X POST https://solder.example.com/api/modpack \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -101,7 +101,7 @@ All fields are optional. Only included fields are updated.
 ### Example Request
 
 ```bash
-curl -X PUT https://solder.yourdomain.com/api/modpack/hexxit \
+curl -X PUT https://solder.example.com/api/modpack/hexxit \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -175,7 +175,7 @@ Delete a modpack and all of its builds.
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/modpack/hexxit \
+curl -X DELETE https://solder.example.com/api/modpack/hexxit \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

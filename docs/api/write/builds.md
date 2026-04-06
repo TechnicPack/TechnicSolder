@@ -28,7 +28,7 @@ Create a new build for a modpack.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/modpack/hexxit/build \
+curl -X POST https://solder.example.com/api/modpack/hexxit/build \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -64,7 +64,7 @@ curl -X POST https://solder.yourdomain.com/api/modpack/hexxit/build \
 Use the `clone_from` parameter to copy all mod assignments from an existing build. This is useful when creating a new version that starts with the same mod list.
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/modpack/hexxit/build \
+curl -X POST https://solder.example.com/api/modpack/hexxit/build \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -137,7 +137,7 @@ All fields are optional. Only included fields are updated.
 ### Example Request
 
 ```bash
-curl -X PUT https://solder.yourdomain.com/api/modpack/hexxit/1.0.0 \
+curl -X PUT https://solder.example.com/api/modpack/hexxit/1.0.0 \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -200,7 +200,7 @@ Delete a build from a modpack.
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/modpack/hexxit/1.0.0 \
+curl -X DELETE https://solder.example.com/api/modpack/hexxit/1.0.0 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

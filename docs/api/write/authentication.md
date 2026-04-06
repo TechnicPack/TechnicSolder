@@ -9,7 +9,7 @@ All write API endpoints require a Sanctum bearer token in the `Authorization` he
 If you already have a token, you can create additional ones:
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/token \
+curl -X POST https://solder.example.com/api/token \
   -H "Authorization: Bearer YOUR_EXISTING_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name": "CI Deploy Token"}'
@@ -49,7 +49,7 @@ Authorization: Bearer 1|abc123def456...
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/mod \
+curl -X POST https://solder.example.com/api/mod \
   -H "Authorization: Bearer 1|abc123def456..." \
   -H "Content-Type: application/json" \
   -d '{"name": "buildcraft", "pretty_name": "BuildCraft"}'

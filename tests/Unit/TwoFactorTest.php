@@ -180,7 +180,7 @@ final class TwoFactorTest extends TestCase
         auth()->logout();
 
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
         ]);
 
@@ -294,7 +294,7 @@ final class TwoFactorTest extends TestCase
     public function test_login_updates_last_ip(): void
     {
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
         ]);
 
@@ -307,7 +307,7 @@ final class TwoFactorTest extends TestCase
     public function test_user_without_2fa_logs_in_normally(): void
     {
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
         ]);
 

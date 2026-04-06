@@ -11,7 +11,7 @@ return [
      * This can be a URL or an absolute file location.
      *
      **/
-    'repo_location' => Str::finish(env('SOLDER_REPO_LOCATION', '/var/www/mods.solder.test/'), '/'),
+    'repo_location' => Str::finish(env('SOLDER_REPO_LOCATION', '/var/www/mods.example.com/'), '/'),
 
     /**
      * Mirror Location
@@ -21,7 +21,7 @@ return [
      * can use the same location here.
      *
      **/
-    'mirror_url' => Str::finish(env('SOLDER_MIRROR_URL', 'http://mods.solder.test/'), '/'),
+    'mirror_url' => Str::finish(env('SOLDER_MIRROR_URL', 'http://mods.example.com/'), '/'),
 
     /**
      * MD5 Connect Timeout
@@ -71,7 +71,7 @@ return [
      * These values are used by the solder:setup command in non-interactive mode
      * to create the initial admin user.
      */
-    'initial_admin_email' => env('SOLDER_INITIAL_ADMIN_EMAIL', 'admin@admin.com'),
+    'initial_admin_email' => env('SOLDER_INITIAL_ADMIN_EMAIL', 'admin@example.com'),
     'initial_admin_password' => env('SOLDER_INITIAL_ADMIN_PASSWORD'),
 
 ];

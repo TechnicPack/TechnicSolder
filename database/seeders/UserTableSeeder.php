@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
 
         $user = new User;
         $user->username = 'admin';
-        $user->email = 'admin@admin.com';
+        $user->email = 'admin@example.com';
         $user->password = 'admin';
         $user->created_ip = $thisIP;
         $user->last_ip = $thisIP;

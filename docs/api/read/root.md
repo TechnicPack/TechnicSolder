@@ -7,7 +7,7 @@ Returns the Solder version and stream. Use this endpoint to verify that your Sol
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/
+curl https://solder.example.com/api/
 ```
 
 ### Response (200)
@@ -35,7 +35,7 @@ Validate an API key. The Technic Platform calls this endpoint when you link a So
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/verify/YOUR_API_KEY
+curl https://solder.example.com/api/verify/YOUR_API_KEY
 ```
 
 ### Response (200)

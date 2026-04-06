@@ -7,7 +7,7 @@ Refresh the cached list of Minecraft versions. Fetches from Technic's API first,
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/minecraft/refresh \
+curl -X POST https://solder.example.com/api/minecraft/refresh \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

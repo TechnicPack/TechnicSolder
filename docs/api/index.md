@@ -7,7 +7,7 @@ Technic Solder exposes a JSON API used by the Technic Launcher to download modpa
 All endpoints are relative to your Solder installation URL:
 
 ```
-https://solder.yourdomain.com/api/
+https://solder.example.com/api/
 ```
 
 ## Authentication

@@ -10,7 +10,7 @@ List all mods.
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/mod
+curl https://solder.example.com/api/mod
 ```
 
 ### Response (200)
@@ -39,7 +39,7 @@ Show a single mod by its slug.
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/mod/rei-minimap
+curl https://solder.example.com/api/mod/rei-minimap
 ```
 
 ### Response (200)
@@ -82,7 +82,7 @@ The download URL follows the format: `{mirror_url}/mods/{modname}/{modname}-{ver
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/mod/rei-minimap/1.0.0
+curl https://solder.example.com/api/mod/rei-minimap/1.0.0
 ```
 
 ### Response (200)

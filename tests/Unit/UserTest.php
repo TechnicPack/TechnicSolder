@@ -45,7 +45,7 @@ final class UserTest extends TestCase
     public function test_user_create_post_duplicate_email(): void
     {
         $data = [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'username' => 'test',
             'password' => 'B3sTp@ss',
         ];
@@ -58,7 +58,7 @@ final class UserTest extends TestCase
     public function test_user_create_post_duplicate_username(): void
     {
         $data = [
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'admin',
             'password' => 'B3sTp@ss',
         ];
@@ -71,7 +71,7 @@ final class UserTest extends TestCase
     public function test_user_create_post(): void
     {
         $data = [
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'B3sTp@ss',
         ];
@@ -96,7 +96,7 @@ final class UserTest extends TestCase
 
         // Create second user
         User::unguarded(fn () => User::create([
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
@@ -105,7 +105,7 @@ final class UserTest extends TestCase
         ]));
 
         $data = [
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
         ];
 
@@ -118,7 +118,7 @@ final class UserTest extends TestCase
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
@@ -127,7 +127,7 @@ final class UserTest extends TestCase
         ]));
 
         $data = [
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'admin',
         ];
 
@@ -141,7 +141,7 @@ final class UserTest extends TestCase
         $user = User::firstOrFail();
 
         $data = [
-            'email' => 'admin2@admin.com',
+            'email' => 'admin2@example.com',
             'username' => 'admin2',
         ];
 
@@ -154,7 +154,7 @@ final class UserTest extends TestCase
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
@@ -186,7 +186,7 @@ final class UserTest extends TestCase
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
@@ -207,7 +207,7 @@ final class UserTest extends TestCase
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
@@ -239,7 +239,7 @@ final class UserTest extends TestCase
     public function test_user_create_more_superadmins_post(): void
     {
         $data = [
-            'email' => 'test-sadmin@test.com',
+            'email' => 'test-sadmin@example.com',
             'username' => 'sadmin',
             'password' => 'B3sT3Re4p@ss',
             'solder-full' => '1',
@@ -253,7 +253,7 @@ final class UserTest extends TestCase
     public function test_created_user_can_login(): void
     {
         $data = [
-            'email' => 'logintest@test.com',
+            'email' => 'logintest@example.com',
             'username' => 'logintest',
             'password' => 'TestPassword123',
         ];
@@ -262,19 +262,19 @@ final class UserTest extends TestCase
         auth()->logout();
 
         $response = $this->post('/login', [
-            'email' => 'logintest@test.com',
+            'email' => 'logintest@example.com',
             'password' => 'TestPassword123',
         ]);
 
         $response->assertRedirect('dashboard');
-        $this->assertAuthenticatedAs(User::where('email', 'logintest@test.com')->first());
+        $this->assertAuthenticatedAs(User::where('email', 'logintest@example.com')->first());
     }
 
     public function test_user_delete_first_post(): void
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
-            'email' => 'test@test.com',
+            'email' => 'test@example.com',
             'username' => 'test',
             'password' => 'password',
             'created_ip' => '127.0.0.1',

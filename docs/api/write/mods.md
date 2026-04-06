@@ -19,7 +19,7 @@ Create a new mod.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/mod \
+curl -X POST https://solder.example.com/api/mod \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -85,7 +85,7 @@ All fields are optional. Only included fields are updated.
 ### Example Request
 
 ```bash
-curl -X PUT https://solder.yourdomain.com/api/mod/buildcraft \
+curl -X PUT https://solder.example.com/api/mod/buildcraft \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -146,7 +146,7 @@ Delete a mod and all of its versions.
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/mod/buildcraft \
+curl -X DELETE https://solder.example.com/api/mod/buildcraft \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -194,7 +194,7 @@ Create a new version for a mod.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/mod/buildcraft/version \
+curl -X POST https://solder.example.com/api/mod/buildcraft/version \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -265,7 +265,7 @@ Delete a specific version of a mod.
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/mod/buildcraft/7.1.0 \
+curl -X DELETE https://solder.example.com/api/mod/buildcraft/7.1.0 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

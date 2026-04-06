@@ -30,7 +30,7 @@ final class BaseTest extends TestCase
     public function test_unauthorized_login(): void
     {
         $credentials = [
-            'email' => 'test@admin.com',
+            'email' => 'test@example.com',
             'password' => 'ifail',
             'remember' => false,
         ];
@@ -43,7 +43,7 @@ final class BaseTest extends TestCase
     public function test_authorized_login(): void
     {
         $credentials = [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
             'remember' => false,
         ];

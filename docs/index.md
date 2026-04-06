@@ -20,9 +20,9 @@ The first boot automatically runs migrations, generates an app key, and creates 
 
 ## Initial Admin User
 
-On first boot, an admin user is created with email `admin@admin.com` and a randomly generated password printed to the console. To set specific credentials, configure these environment variables before the first boot:
+On first boot, an admin user is created with email `admin@example.com` and a randomly generated password printed to the console. To set specific credentials, configure these environment variables before the first boot:
 
-- `SOLDER_INITIAL_ADMIN_EMAIL` — admin email (default: `admin@admin.com`)
+- `SOLDER_INITIAL_ADMIN_EMAIL` — admin email (default: `admin@example.com`)
 - `SOLDER_INITIAL_ADMIN_PASSWORD` — admin password (randomly generated if not set)
 
 !!! warning

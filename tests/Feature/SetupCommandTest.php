@@ -20,7 +20,7 @@ final class SetupCommandTest extends TestCase
         $user = User::where('username', 'admin')->first();
 
         $this->assertNotNull($user);
-        $this->assertEquals('admin@admin.com', $user->email);
+        $this->assertEquals('admin@example.com', $user->email);
         $this->assertEquals(1, $user->permission->solder_full);
     }
 

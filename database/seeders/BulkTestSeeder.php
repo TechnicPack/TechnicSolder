@@ -26,7 +26,7 @@ class BulkTestSeeder extends Seeder
         if (! $admin) {
             $admin = new User;
             $admin->username = 'admin';
-            $admin->email = 'admin@admin.com';
+            $admin->email = 'admin@example.com';
             $admin->password = 'admin';
             $admin->created_ip = $ip;
             $admin->last_ip = $ip;

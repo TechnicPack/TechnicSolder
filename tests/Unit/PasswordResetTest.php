@@ -36,7 +36,7 @@ final class PasswordResetTest extends TestCase
 
     public function test_reset_password_post_404_when_mail_disabled(): void
     {
-        $response = $this->post('/forgot-password', ['email' => 'admin@admin.com']);
+        $response = $this->post('/forgot-password', ['email' => 'admin@example.com']);
 
         $response->assertStatus(404);
     }

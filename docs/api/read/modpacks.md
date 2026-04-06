@@ -20,7 +20,7 @@ List all modpacks. The modpacks returned depend on the authentication provided:
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/modpack
+curl https://solder.example.com/api/modpack
 ```
 
 ### Response (200)
@@ -38,7 +38,7 @@ curl https://solder.yourdomain.com/api/modpack
 ### Response with `include=full` (200)
 
 ```bash
-curl https://solder.yourdomain.com/api/modpack?include=full
+curl https://solder.example.com/api/modpack?include=full
 ```
 
 When `include=full` is set, each modpack value becomes a full object:
@@ -88,7 +88,7 @@ Show a single modpack by its slug. The same authentication rules apply as the li
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/modpack/hexxit
+curl https://solder.example.com/api/modpack/hexxit
 ```
 
 ### Response (200)

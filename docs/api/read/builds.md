@@ -22,7 +22,7 @@ Show a specific build of a modpack. The same authentication rules as the modpack
 ### Example Request
 
 ```bash
-curl https://solder.yourdomain.com/api/modpack/hexxit/1.0.0
+curl https://solder.example.com/api/modpack/hexxit/1.0.0
 ```
 
 ### Response (200)
@@ -50,7 +50,7 @@ curl https://solder.yourdomain.com/api/modpack/hexxit/1.0.0
 ### Response with `include=mods` (200)
 
 ```bash
-curl https://solder.yourdomain.com/api/modpack/hexxit/1.0.0?include=mods
+curl https://solder.example.com/api/modpack/hexxit/1.0.0?include=mods
 ```
 
 When `include=mods` is set, each mod object includes additional metadata fields:

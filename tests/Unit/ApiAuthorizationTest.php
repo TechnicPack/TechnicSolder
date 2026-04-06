@@ -18,7 +18,7 @@ final class ApiAuthorizationTest extends TestCase
     {
         $user = User::create([
             'username' => 'testuser-'.uniqid(),
-            'email' => uniqid().'@test.com',
+            'email' => uniqid().'@example.com',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
         ]);

@@ -16,7 +16,7 @@ Create a new client.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/client \
+curl -X POST https://solder.example.com/api/client \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -74,7 +74,7 @@ All fields are optional. Only included fields are updated.
 ### Example Request
 
 ```bash
-curl -X PUT https://solder.yourdomain.com/api/client/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+curl -X PUT https://solder.example.com/api/client/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -135,7 +135,7 @@ Delete a client.
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/client/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
+curl -X DELETE https://solder.example.com/api/client/a1b2c3d4-e5f6-7890-abcd-ef1234567890 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

@@ -25,7 +25,7 @@ Add a mod to a build.
 ### Example Request
 
 ```bash
-curl -X POST https://solder.yourdomain.com/api/modpack/hexxit/1.0.0/mod \
+curl -X POST https://solder.example.com/api/modpack/hexxit/1.0.0/mod \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -117,7 +117,7 @@ Update which version of a mod is included in a build. Use this when the build al
 ### Example Request
 
 ```bash
-curl -X PUT https://solder.yourdomain.com/api/modpack/hexxit/1.0.0/mod/buildcraft \
+curl -X PUT https://solder.example.com/api/modpack/hexxit/1.0.0/mod/buildcraft \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -194,7 +194,7 @@ Remove a mod from a build.
 ### Example Request
 
 ```bash
-curl -X DELETE https://solder.yourdomain.com/api/modpack/hexxit/1.0.0/mod/buildcraft \
+curl -X DELETE https://solder.example.com/api/modpack/hexxit/1.0.0/mod/buildcraft \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

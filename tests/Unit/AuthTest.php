@@ -20,7 +20,7 @@ final class AuthTest extends TestCase
     public function test_login_with_valid_credentials(): void
     {
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
         ]);
 
@@ -31,7 +31,7 @@ final class AuthTest extends TestCase
     public function test_login_with_wrong_password(): void
     {
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'wrong',
         ]);
 
@@ -65,7 +65,7 @@ final class AuthTest extends TestCase
     public function test_login_updates_last_ip(): void
     {
         $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
         ]);
 
@@ -76,7 +76,7 @@ final class AuthTest extends TestCase
     public function test_login_with_remember_sets_token(): void
     {
         $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
             'remember' => true,
         ]);
@@ -119,13 +119,13 @@ final class AuthTest extends TestCase
     {
         for ($i = 0; $i < 5; $i++) {
             $this->post('/login', [
-                'email' => 'admin@admin.com',
+                'email' => 'admin@example.com',
                 'password' => 'wrong',
             ]);
         }
 
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'wrong',
         ]);
 
@@ -136,13 +136,13 @@ final class AuthTest extends TestCase
     {
         for ($i = 0; $i < 3; $i++) {
             $this->post('/login', [
-                'email' => 'admin@admin.com',
+                'email' => 'admin@example.com',
                 'password' => 'wrong',
             ]);
         }
 
         $response = $this->post('/login', [
-            'email' => 'admin@admin.com',
+            'email' => 'admin@example.com',
             'password' => 'admin',
         ]);
 

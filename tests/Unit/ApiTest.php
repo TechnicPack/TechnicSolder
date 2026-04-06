@@ -216,7 +216,7 @@ final class ApiTest extends TestCase
     {
         $user = User::create([
             'username' => 'testuser_'.uniqid(),
-            'email' => uniqid().'@test.com',
+            'email' => uniqid().'@example.com',
             'password' => 'password',
             'created_ip' => '127.0.0.1',
             'last_ip' => '127.0.0.1',

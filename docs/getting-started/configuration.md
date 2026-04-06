@@ -56,8 +56,8 @@
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SOLDER_REPO_LOCATION` | `/var/www/mods.solder.test/` | Path or URL to the mod repository. Trailing slash added automatically if omitted. |
-| `SOLDER_MIRROR_URL` | `http://mods.solder.test/` | Public URL the launcher uses to download mod files. Trailing slash added automatically if omitted. |
+| `SOLDER_REPO_LOCATION` | `/var/www/mods.example.com/` | Path or URL to the mod repository. Trailing slash added automatically if omitted. |
+| `SOLDER_MIRROR_URL` | `http://mods.example.com/` | Public URL the launcher uses to download mod files. Trailing slash added automatically if omitted. |
 | `SOLDER_MD5_CONNECT_TIMEOUT` | `5` | Seconds to wait when connecting for MD5 checksums |
 | `SOLDER_MD5_FILE_TIMEOUT` | `30` | Seconds to wait when computing MD5 checksums |
 | `SOLDER_DISABLE_MOD_API` | `false` | Set to `true` to disable `/api/mod` endpoints |
