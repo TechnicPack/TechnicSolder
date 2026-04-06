@@ -15,7 +15,7 @@ curl https://solder.yourdomain.com/api/
 ```json
 {
   "api": "TechnicSolder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "stream": "rolling"
 }
 ```

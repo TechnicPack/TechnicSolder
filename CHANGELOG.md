@@ -2,6 +2,21 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [1.0.2] - 2026-04-06
+
+### Fixed
+
+- Build clone allowing cross-modpack data leak (IDOR)
+- Null dereference in modpack modify handler on invalid IDs
+- CORS middleware now validates request origin against allowed origins list
+- Redundant prefix in release title
+
+### Changed
+
+- Replaced Dependabot with Renovate for all dependencies
+- Added PHP 8.5 to CI test matrix
+- Bumped nick-fields/retry to v4 for Node.js 24 compatibility
+
 ## [1.0.1] - 2026-04-03
 
 ### Fixed
@@ -73,5 +88,6 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.0.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/TechnicPack/TechnicSolder/compare/v0.12.9...v1.0.0
