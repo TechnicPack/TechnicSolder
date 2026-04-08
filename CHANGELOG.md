@@ -2,6 +2,13 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [1.0.3] - 2026-04-08
+
+### Fixed
+
+- Non-standard placeholder domains replaced with `example.com`
+- Guest redirect broken by Laravel framework v13.4.0 middleware bug ([laravel/framework#59600](https://github.com/laravel/framework/issues/59600))
+
 ## [1.0.2] - 2026-04-06
 
 ### Fixed
@@ -88,6 +95,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.0.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/TechnicPack/TechnicSolder/compare/v0.12.9...v1.0.0
