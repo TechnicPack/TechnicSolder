@@ -1,4 +1,4 @@
-FROM node:22.22.2-slim AS assets
+FROM node:24.14.1-slim AS assets
 
 WORKDIR /app
 COPY package.json ./
