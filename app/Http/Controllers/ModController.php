@@ -90,6 +90,7 @@ class ModController extends Controller
         $mod->author = Request::input('author');
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
+        $mod->notes = Request::input('notes');
         $mod->save();
         Cache::forget('mods');
 
@@ -140,6 +141,7 @@ class ModController extends Controller
         $mod->author = Request::input('author');
         $mod->description = Request::input('description');
         $mod->link = Request::input('link');
+        $mod->notes = Request::input('notes');
         $mod->save();
         Cache::forget('mod:'.$mod->name);
         Cache::forget('mods');

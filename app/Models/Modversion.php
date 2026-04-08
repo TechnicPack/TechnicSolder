@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property int|null $filesize
+ * @property string|null $notes
  * @property-read Collection<int, Build> $builds
  * @property-read int|null $builds_count
  * @property-read mixed $url
@@ -41,6 +42,7 @@ class Modversion extends Model
         'version',
         'md5',
         'filesize',
+        'notes',
     ];
 
     public function mod(): BelongsTo

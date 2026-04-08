@@ -65,7 +65,7 @@ class ModversionController extends Controller
             return response()->json(['error' => 'Version already exists for this mod.'], 422);
         }
 
-        $modversion = $mod->versions()->create($request->only(['version', 'md5', 'filesize']));
+        $modversion = $mod->versions()->create($request->only(['version', 'md5', 'filesize', 'notes']));
 
         Cache::forget('mod:'.$slug);
         Cache::forget('mods');

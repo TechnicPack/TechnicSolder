@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $description
  * @property string|null $author
  * @property string|null $link
+ * @property string|null $notes
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property string $pretty_name
@@ -43,6 +44,7 @@ class Mod extends Model
         'description',
         'author',
         'link',
+        'notes',
     ];
 
     public function versions(): HasMany

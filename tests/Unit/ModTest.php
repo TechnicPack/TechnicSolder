@@ -74,10 +74,12 @@ final class ModTest extends TestCase
             'pretty_name' => 'Random mod name',
             'name' => 'random-mod-name',
             'link' => 'http://technicpack.net',
+            'notes' => 'Test note',
         ];
 
         $response = $this->post('/mod/create', $data);
         $response->assertRedirect('/mod/view/3');
+        $this->assertDatabaseHas('mods', ['name' => 'random-mod-name', 'notes' => 'Test note']);
     }
 
     public function test_mod_version_add_post_non_ajax(): void

@@ -68,7 +68,7 @@ class ModController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $mod = Mod::create($request->only(['name', 'pretty_name', 'description', 'author', 'link']));
+        $mod = Mod::create($request->only(['name', 'pretty_name', 'description', 'author', 'link', 'notes']));
 
         Cache::forget('mods');
 
@@ -96,7 +96,7 @@ class ModController extends Controller
         }
 
         $oldName = $mod->name;
-        $mod->update($request->only(['name', 'pretty_name', 'description', 'author', 'link']));
+        $mod->update($request->only(['name', 'pretty_name', 'description', 'author', 'link', 'notes']));
 
         Cache::forget('mod:'.$oldName);
         if ($oldName !== $mod->name) {

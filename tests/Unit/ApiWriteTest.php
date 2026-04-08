@@ -243,10 +243,11 @@ final class ApiWriteTest extends TestCase
         $response = $this->postJson('api/mod', [
             'name' => 'new-api-mod',
             'pretty_name' => 'New API Mod',
+            'notes' => 'API note',
         ], $this->writeHeaders());
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('mods', ['name' => 'new-api-mod']);
+        $this->assertDatabaseHas('mods', ['name' => 'new-api-mod', 'notes' => 'API note']);
     }
 
     public function test_create_duplicate_mod(): void
@@ -280,6 +281,22 @@ final class ApiWriteTest extends TestCase
 
         $response->assertOk();
         $this->assertDatabaseMissing('mods', ['name' => $name]);
+    }
+
+    public function test_mod_notes_excluded_from_read_api(): void
+    {
+        $mod = Mod::create([
+            'name' => 'notes-test-mod',
+            'pretty_name' => 'Notes Test Mod',
+            'notes' => 'Secret internal note',
+        ]);
+
+        config()->set('solder.disable_mod_api', false);
+
+        $response = $this->getJson('api/mod/'.$mod->name);
+        $response->assertOk();
+        $response->assertJsonMissing(['notes' => 'Secret internal note']);
+        $this->assertArrayNotHasKey('notes', $response->json());
     }
 
     // --- Modversions ---

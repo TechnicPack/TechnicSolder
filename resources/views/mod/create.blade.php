@@ -75,6 +75,14 @@
                                       class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"></textarea>
                         </div>
                         <div>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+                            <textarea name="notes"
+                                      id="notes"
+                                      rows="3"
+                                      placeholder="Private notes (not shown in API)"
+                                      class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"></textarea>
+                        </div>
+                        <div>
                             <label for="link" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Website</label>
                             <input type="text"
                                    name="link"
