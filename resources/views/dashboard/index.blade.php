@@ -111,6 +111,51 @@
             </div>
         </div>
 
+        {{-- Unused Mod Versions --}}
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800" x-data="{ open: true }">
+            <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 text-left">
+                <h2 class="font-semibold text-gray-900 dark:text-white">
+                    Unused Mod Versions
+                    <span class="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">{{ $unusedModversions->count() }}</span>
+                </h2>
+                <svg class="size-5 text-gray-400 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <div x-show="open" x-collapse>
+                <div class="overflow-x-auto border-t border-gray-200 dark:border-gray-800">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th class="px-5 py-3">Mod Name</th>
+                                <th class="px-5 py-3">Version</th>
+                                <th class="px-5 py-3">MD5</th>
+                                <th class="px-5 py-3">Filesize</th>
+                                <th class="px-5 py-3">Created</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                            @forelse ($unusedModversions as $modversion)
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30">
+                                    <td class="px-5 py-3">
+                                        <a href="{{ url('/mod/view/'.$modversion->mod->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                            {{ $modversion->mod->pretty_name ?: $modversion->mod->name }}
+                                        </a>
+                                    </td>
+                                    <td class="px-5 py-3 font-mono text-sm">{{ $modversion->version }}</td>
+                                    <td class="px-5 py-3 font-mono text-xs text-gray-500 dark:text-gray-400">{{ Str::limit($modversion->md5, 12) }}</td>
+                                    <td class="px-5 py-3 text-gray-500 dark:text-gray-400">{{ $modversion->filesize ? $modversion->humanFilesize() : 'N/A' }}</td>
+                                    <td class="px-5 py-3 text-gray-500 dark:text-gray-400">{{ $modversion->created_at->diffForHumans() }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-5 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No unused mod versions found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         {{-- Changelog --}}
         <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800" x-data="{ open: true }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 text-left">

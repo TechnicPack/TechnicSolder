@@ -29,12 +29,19 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $unusedModversions = Modversion::with('mod')
+            ->doesntHave('builds')
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         $rawChangeLog = UpdateUtils::getLatestChangeLog();
         $changelogJson = array_key_exists('error', $rawChangeLog) ? $rawChangeLog : array_slice($rawChangeLog, 0, 10);
 
         return view('dashboard.index')
             ->with('modversions', $modversions)
             ->with('builds', $builds)
+            ->with('unusedModversions', $unusedModversions)
             ->with('changelog', $changelogJson);
     }
 }
