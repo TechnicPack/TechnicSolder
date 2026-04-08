@@ -2,6 +2,38 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [1.1.0] - 2026-04-09
+
+### Added
+
+- Clone entire modpack with all builds and mod assignments (web UI + API)
+- Clone builds across modpacks (grouped dropdown showing all accessible modpacks)
+- Save All button for batch mod version updates in builds
+- Private notes field on mods and mod versions (excluded from read API)
+- Rehash All button for mod versions (sequential with progress and cancel)
+- Unused mod versions section on dashboard
+- CSV export for build mod lists
+- Data table sort direction persisted in localStorage
+- `grantModpackAccess()` method on `UserPermission` model
+- Database indexes on `modversions.mod_id`, `builds.modpack_id`, `user_permissions.user_id`, `client_modpack.client_id`, `client_modpack.modpack_id`, `clients.uuid`, `keys.api_key`
+
+### Fixed
+
+- MD5 file download skipped when user provides hash manually (no more timeouts on large files)
+- MD5 hash format validated (must be 32-character hex string)
+- Remote MD5 error messages now show actionable hints instead of raw cURL errors
+- Cross-modpack clone authorization check (was missing, allowed unauthorized cloning)
+- Clone validation runs before build creation in API (no orphaned builds on failure)
+- Slug uniqueness validated after `Str::slug()` normalization (prevents bypass)
+- `findOrFail` used consistently in `anyModify` batch-version case
+- PHP 8.4 deprecation warning in `getModpacksAttribute()` null handling
+- Clone build dropdown sorted by modpack name (current modpack first) with newest builds first
+
+### Changed
+
+- Modpack permission assignment extracted from duplicated controller blocks into `UserPermission::grantModpackAccess()`
+- `clone_from_modpack` API parameter added for cross-pack build cloning (backward compatible)
+
 ## [1.0.3] - 2026-04-08
 
 ### Fixed
@@ -95,6 +127,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.1.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.3...v1.1.0
 [1.0.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.0...v1.0.1
