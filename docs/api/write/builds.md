@@ -23,7 +23,8 @@ Create a new build for a modpack.
 | `private` | boolean | No | Restrict to authorized clients. Defaults to `false`. |
 | `min_java` | string | No | Minimum Java version (e.g. `17`). |
 | `min_memory` | integer | No | Minimum memory in MB (e.g. `2048`). |
-| `clone_from` | string | No | Version string of an existing build in this modpack. All mod assignments from the source build will be copied to the new build. |
+| `clone_from` | string | No | Version string of an existing build. All mod assignments from the source build will be copied to the new build. Defaults to searching the current modpack unless `clone_from_modpack` is specified. |
+| `clone_from_modpack` | string | No | Slug of the modpack containing the source build. Use with `clone_from` to clone from a different modpack. |
 
 ### Example Request
 
@@ -74,7 +75,21 @@ curl -X POST https://solder.example.com/api/modpack/hexxit/build \
   }'
 ```
 
-If the source build version does not exist, the build is still created -- the `clone_from` parameter is silently ignored.
+To clone from a build in a different modpack, include `clone_from_modpack`:
+
+```bash
+curl -X POST https://solder.yourdomain.com/api/modpack/tekkit/build \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "version": "1.0.0",
+    "minecraft": "1.20.1",
+    "clone_from": "1.0.0",
+    "clone_from_modpack": "hexxit"
+  }'
+```
+
+If the clone source build or modpack is not found, the request returns a `404` error. If the user does not have permission to access the source modpack, it returns `403`. The build is not created on failure.
 
 ### Error Responses
 

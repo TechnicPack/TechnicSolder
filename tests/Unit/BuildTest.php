@@ -269,78 +269,113 @@ final class BuildTest extends TestCase
         $this->assertEquals($build->version, $modpack->latest);
     }
 
-    public function test_clone_build_cannot_cross_modpack_boundary(): void
+    public function test_build_create_clone_from_same_modpack(): void
     {
-        // Create a second modpack with a build that has the seeded modversion
-        $otherModpack = Modpack::create([
-            'name' => 'PrivateModpack',
-            'slug' => 'privatemodpack',
-            'hidden' => false,
-            'private' => true,
-        ]);
+        $modpack = Modpack::first();
+        $sourceBuild = $modpack->builds()->first();
 
-        $otherBuild = Build::create([
-            'modpack_id' => $otherModpack->id,
-            'version' => '1.0.0',
-            'minecraft' => '1.7.10',
-            'is_published' => true,
-        ]);
-
-        // Attach the seeded modversion (id=1) to the other build
-        $otherBuild->modversions()->attach(1);
-
-        // Attempt to clone the other modpack's build into modpack 1
-        $data = [
-            'version' => '2.0.0',
-            'minecraft' => '1.7.10',
-            'java-version' => '',
-            'memory-enabled' => 0,
-            'clone' => $otherBuild->id,
-        ];
-
-        $response = $this->post('/modpack/add-build/1', $data);
-        $response->assertRedirect();
-
-        // The new build should exist but have NO modversions (clone was cross-modpack)
-        $newBuild = Build::where('version', '2.0.0')->where('modpack_id', 1)->first();
-        $this->assertNotNull($newBuild);
-        $this->assertCount(0, $newBuild->modversions);
-    }
-
-    public function test_clone_build_within_same_modpack(): void
-    {
-        // Build 1 (from seeder) belongs to modpack 1 and has modversion 1 attached
         $data = [
             'version' => '1.1.0',
             'minecraft' => '1.7.10',
-            'java-version' => '',
-            'memory-enabled' => 0,
-            'clone' => 1, // Clone from build 1, same modpack
+            'clone' => $sourceBuild->id,
         ];
 
-        $response = $this->post('/modpack/add-build/1', $data);
-        $response->assertRedirect();
+        $response = $this->post('/modpack/add-build/'.$modpack->id, $data);
 
-        $newBuild = Build::where('version', '1.1.0')->where('modpack_id', 1)->first();
+        $newBuild = Build::where('version', '1.1.0')->where('modpack_id', $modpack->id)->first();
         $this->assertNotNull($newBuild);
-        $this->assertCount(1, $newBuild->modversions);
+
+        $response->assertRedirect('/modpack/build/'.$newBuild->id);
+        $this->assertEquals($sourceBuild->modversions->count(), $newBuild->modversions->count());
     }
 
-    public function test_clone_nonexistent_build_id_is_ignored(): void
+    public function test_build_create_clone_from_different_modpack(): void
     {
+        $sourceModpack = Modpack::first();
+        $sourceBuild = $sourceModpack->builds()->first();
+
+        $targetModpack = Modpack::create([
+            'name' => 'TargetPack',
+            'slug' => 'targetpack',
+            'icon_url' => URL::asset('/resources/default/icon.png'),
+            'logo_url' => URL::asset('/resources/default/logo.png'),
+            'background_url' => URL::asset('/resources/default/background.jpg'),
+        ]);
+
         $data = [
-            'version' => '3.0.0',
+            'version' => '1.0.0',
             'minecraft' => '1.7.10',
-            'java-version' => '',
-            'memory-enabled' => 0,
-            'clone' => 9999, // Does not exist
+            'clone' => $sourceBuild->id,
         ];
 
-        $response = $this->post('/modpack/add-build/1', $data);
-        $response->assertRedirect();
+        $response = $this->post('/modpack/add-build/'.$targetModpack->id, $data);
 
-        $newBuild = Build::where('version', '3.0.0')->where('modpack_id', 1)->first();
+        $newBuild = Build::where('version', '1.0.0')->where('modpack_id', $targetModpack->id)->first();
         $this->assertNotNull($newBuild);
-        $this->assertCount(0, $newBuild->modversions);
+
+        $response->assertRedirect('/modpack/build/'.$newBuild->id);
+        $this->assertEquals($sourceBuild->modversions->count(), $newBuild->modversions->count());
+    }
+
+    public function test_build_create_clone_source_null_check(): void
+    {
+        $modpack = Modpack::first();
+
+        $data = [
+            'version' => '1.1.0',
+            'minecraft' => '1.7.10',
+            'clone' => 99999,
+        ];
+
+        $response = $this->post('/modpack/add-build/'.$modpack->id, $data);
+
+        $newBuild = Build::where('version', '1.1.0')->where('modpack_id', $modpack->id)->first();
+        $this->assertNotNull($newBuild);
+
+        $response->assertRedirect('/modpack/build/'.$newBuild->id);
+        $response->assertSessionHasErrors();
+    }
+
+    public function test_build_create_clone_from_inaccessible_modpack(): void
+    {
+        $sourceModpack = Modpack::first();
+        $sourceBuild = $sourceModpack->builds()->first();
+
+        $restrictedUser = User::create([
+            'username' => 'restricted',
+            'email' => 'restricted@test.com',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+        ]);
+
+        $targetModpack = Modpack::create([
+            'name' => 'RestrictedPack',
+            'slug' => 'restrictedpack',
+            'icon_url' => URL::asset('/resources/default/icon.png'),
+            'logo_url' => URL::asset('/resources/default/logo.png'),
+            'background_url' => URL::asset('/resources/default/background.jpg'),
+        ]);
+
+        $restrictedUser->permission()->create([
+            'solder_full' => false,
+            'modpacks_create' => true,
+            'modpacks_manage' => true,
+            'modpacks' => [$targetModpack->id],
+        ]);
+
+        $this->actingAs($restrictedUser);
+
+        $data = [
+            'version' => '1.0.0',
+            'minecraft' => '1.7.10',
+            'clone' => $sourceBuild->id,
+        ];
+
+        $response = $this->post('/modpack/add-build/'.$targetModpack->id, $data);
+
+        $newBuild = Build::where('version', '1.0.0')->where('modpack_id', $targetModpack->id)->first();
+        $this->assertNotNull($newBuild);
+        $response->assertRedirect('/modpack/build/'.$newBuild->id);
+        $response->assertSessionHasErrors();
     }
 }

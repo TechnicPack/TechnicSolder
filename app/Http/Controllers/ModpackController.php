@@ -268,10 +268,17 @@ class ModpackController extends Controller
 
         $minecraft = MinecraftUtils::getMinecraftVersions();
 
+        $user = Auth::user();
+        $cloneableModpacks = Modpack::with(['builds' => fn ($q) => $q->orderBy('version')])->get();
+        if (! $user->permission->solder_full) {
+            $cloneableModpacks = $cloneableModpacks->filter(fn ($mp) => $user->permission->canAccessModpack($mp->id));
+        }
+
         return view('modpack.build.create')
             ->with([
                 'modpack' => $modpack,
                 'minecraft' => $minecraft,
+                'cloneableModpacks' => $cloneableModpacks,
             ]);
     }
 
@@ -328,11 +335,17 @@ class ModpackController extends Controller
         $build->save();
         Cache::forget('modpack:'.$modpack->slug);
         if (! empty($clone)) {
-            $clone_build = $modpack->builds()->find($clone);
-            if ($clone_build) {
-                $version_ids = $clone_build->modversions()->pluck('modversions.id')->toArray();
-                $build->modversions()->sync($version_ids);
+            $clone_build = Build::with('modpack')->find($clone);
+            if (! $clone_build) {
+                return redirect('modpack/build/'.$build->id)
+                    ->withErrors(['Clone source build not found.']);
             }
+            if (! Auth::user()->permission->canAccessModpack($clone_build->modpack_id)) {
+                return redirect('modpack/build/'.$build->id)
+                    ->withErrors(['You do not have permission to clone from that modpack.']);
+            }
+            $version_ids = $clone_build->modversions()->pluck('modversions.id')->toArray();
+            $build->modversions()->sync($version_ids);
         }
 
         return redirect('modpack/build/'.$build->id);

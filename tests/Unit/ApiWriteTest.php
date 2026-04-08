@@ -184,6 +184,66 @@ final class ApiWriteTest extends TestCase
         $this->assertEquals($build->modversions->count(), $newBuild->modversions->count());
     }
 
+    public function test_create_build_with_clone_from_different_modpack(): void
+    {
+        $sourceModpack = Modpack::first();
+        $sourceBuild = $sourceModpack->builds->first();
+
+        $targetModpack = Modpack::create([
+            'name' => 'Target Pack',
+            'slug' => 'target-pack',
+        ]);
+
+        $response = $this->postJson('api/modpack/'.$targetModpack->slug.'/build', [
+            'version' => '1.0.0',
+            'minecraft' => '1.20.1',
+            'clone_from' => $sourceBuild->version,
+            'clone_from_modpack' => $sourceModpack->slug,
+        ], $this->writeHeaders());
+
+        $response->assertStatus(201);
+
+        $newBuild = Build::where('version', '1.0.0')->where('modpack_id', $targetModpack->id)->first();
+        $this->assertNotNull($newBuild);
+        $this->assertEquals($sourceBuild->modversions->count(), $newBuild->modversions->count());
+    }
+
+    public function test_create_build_with_clone_from_inaccessible_modpack(): void
+    {
+        $sourceModpack = Modpack::first();
+
+        $restrictedUser = User::create([
+            'username' => 'restricted',
+            'email' => 'restricted@test.com',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+        ]);
+
+        $targetModpack = Modpack::create([
+            'name' => 'Restricted Target',
+            'slug' => 'restricted-target',
+        ]);
+
+        $restrictedUser->permission()->create([
+            'solder_full' => false,
+            'modpacks_create' => true,
+            'modpacks_manage' => true,
+            'modpacks' => [$targetModpack->id],
+        ]);
+
+        $token = $restrictedUser->createToken('test')->plainTextToken;
+
+        $response = $this->postJson('api/modpack/'.$targetModpack->slug.'/build', [
+            'version' => '1.0.0',
+            'minecraft' => '1.20.1',
+            'clone_from' => '1.0.0',
+            'clone_from_modpack' => $sourceModpack->slug,
+        ], ['Authorization' => 'Bearer '.$token]);
+
+        $response->assertStatus(403);
+        $response->assertJson(['error' => 'You do not have permission to clone from that modpack.']);
+    }
+
     // --- Build Modversions ---
 
     public function test_add_mod_to_build(): void

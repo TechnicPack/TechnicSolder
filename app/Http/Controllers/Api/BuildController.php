@@ -87,6 +87,7 @@ class BuildController extends Controller
             'version' => 'required',
             'minecraft' => 'required',
             'clone_from' => 'sometimes|string',
+            'clone_from_modpack' => 'sometimes|string|exists:modpacks,slug',
         ]);
 
         if ($validator->fails()) {
@@ -97,17 +98,34 @@ class BuildController extends Controller
             return response()->json(['error' => 'Build version already exists for this modpack.'], 422);
         }
 
+        // Validate clone source before creating the build
+        $cloneSource = null;
+        if ($request->filled('clone_from')) {
+            if ($request->filled('clone_from_modpack')) {
+                $sourceModpack = Modpack::where('slug', $request->input('clone_from_modpack'))->first();
+                if (! $sourceModpack) {
+                    return response()->json(['error' => 'Clone source modpack not found.'], 404);
+                }
+                if (! $request->user()->permission->canAccessModpack($sourceModpack->id)) {
+                    return response()->json(['error' => 'You do not have permission to clone from that modpack.'], 403);
+                }
+                $cloneSource = $sourceModpack->builds()->where('version', $request->input('clone_from'))->first();
+            } else {
+                $cloneSource = $modpack->builds()->where('version', $request->input('clone_from'))->first();
+            }
+
+            if (! $cloneSource) {
+                return response()->json(['error' => 'Clone source build not found.'], 404);
+            }
+        }
+
         /** @var Build $build */
         $build = $modpack->builds()->create($request->only([
             'version', 'minecraft', 'forge', 'is_published', 'private', 'min_java', 'min_memory',
         ]));
 
-        if ($request->filled('clone_from')) {
-            /** @var Build|null $source */
-            $source = $modpack->builds()->where('version', $request->input('clone_from'))->first();
-            if ($source) {
-                $build->modversions()->sync($source->modversions->pluck('id'));
-            }
+        if ($cloneSource) {
+            $build->modversions()->sync($cloneSource->modversions->pluck('id'));
         }
 
         Cache::forget('modpack:'.$slug);
