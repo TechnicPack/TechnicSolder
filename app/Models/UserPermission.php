@@ -76,13 +76,23 @@ class UserPermission extends Model
         }
     }
 
-    public function getModpacksAttribute($value)
+    public function getModpacksAttribute($value): array
     {
+        if ($value === null || $value === '') {
+            return [];
+        }
+
         return preg_split('/[,]+/', $value, -1, PREG_SPLIT_NO_EMPTY);
     }
 
     public function canAccessModpack(int $id): bool
     {
         return $this->solder_full || in_array($id, $this->modpacks);
+    }
+
+    public function grantModpackAccess(int $modpackId): void
+    {
+        $this->modpacks = [...$this->modpacks, $modpackId];
+        $this->save();
     }
 }

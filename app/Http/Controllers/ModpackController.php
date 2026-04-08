@@ -14,7 +14,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -393,19 +392,7 @@ class ModpackController extends Controller
         Cache::forget('modpacks');
         Cache::forget('allmodpacks');
 
-        /* Gives creator modpack perms */
-        $user = Auth::user();
-        $perm = $user->permission;
-        $modpacks = $perm->modpacks;
-        if (! empty($modpacks)) {
-            Log::info($modpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm not empty');
-            $newmodpacks = array_merge($modpacks, [$modpack->id]);
-            $perm->modpacks = $newmodpacks;
-        } else {
-            Log::info($modpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm empty');
-            $perm->modpacks = [$modpack->id];
-        }
-        $perm->save();
+        Auth::user()->permission->grantModpackAccess($modpack->id);
 
         return redirect('modpack/view/'.$modpack->id);
     }
@@ -494,19 +481,7 @@ class ModpackController extends Controller
             return $newModpack;
         });
 
-        /* Gives creator modpack perms */
-        $user = Auth::user();
-        $perm = $user->permission;
-        $modpacks = $perm->modpacks;
-        if (! empty($modpacks)) {
-            Log::info($newModpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm not empty');
-            $newmodpacks = array_merge($modpacks, [$newModpack->id]);
-            $perm->modpacks = $newmodpacks;
-        } else {
-            Log::info($newModpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm empty');
-            $perm->modpacks = [$newModpack->id];
-        }
-        $perm->save();
+        Auth::user()->permission->grantModpackAccess($newModpack->id);
 
         Cache::forget('modpacks');
         Cache::forget('allmodpacks');

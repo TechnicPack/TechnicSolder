@@ -142,15 +142,7 @@ class ModpackController extends Controller
             return $newModpack;
         });
 
-        $user = $request->user();
-        $perm = $user->permission;
-        $modpacks = $perm->modpacks;
-        if (! empty($modpacks)) {
-            $perm->modpacks = array_merge($modpacks, [$newModpack->id]);
-        } else {
-            $perm->modpacks = [$newModpack->id];
-        }
-        $perm->save();
+        $request->user()->permission->grantModpackAccess($newModpack->id);
 
         Cache::forget('modpacks');
         Cache::forget('allmodpacks');
