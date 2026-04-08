@@ -40,7 +40,7 @@
                         'created_at' => $b->created_at->toIso8601String(),
                         'created_at_display' => (string) $b->created_at,
                     ])),
-                    sortKey: 'id', sortDir: 'desc',
+                    sortKey: 'id', sortDir: 'desc', tableName: 'modpack-builds',
                     types: { id: 'number', mod_count: 'number', created_at: 'date' }
                 })">
                     @include('partial.data-table.toolbar', ['placeholder' => 'Search builds...'])

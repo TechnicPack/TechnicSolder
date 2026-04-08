@@ -33,7 +33,7 @@
                     'author' => $m->author ?: 'N/A',
                     'link' => $m->link,
                 ])),
-                sortKey: 'display_name', types: { id: 'number' },
+                sortKey: 'display_name', tableName: 'mod-list', types: { id: 'number' },
                 searchKeys: ['name', 'pretty_name', 'display_name', 'latest_version', 'author', 'link']
             })">
                 @include('partial.data-table.toolbar', ['placeholder' => 'Search mods...'])

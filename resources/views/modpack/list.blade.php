@@ -33,7 +33,7 @@
                     'hidden' => $m->hidden,
                     'private' => $m->private,
                 ])),
-                sortKey: 'name'
+                sortKey: 'name', tableName: 'modpack-list',
             })">
                 @include('partial.data-table.toolbar', ['placeholder' => 'Search modpacks...'])
 

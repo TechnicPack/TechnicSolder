@@ -28,7 +28,7 @@
 
             <div x-data="dataTable({
                 rows: @js($clients->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'uuid' => $c->uuid])),
-                sortKey: 'id', types: { id: 'number' }
+                sortKey: 'id', tableName: 'client-list', types: { id: 'number' }
             })">
                 @include('partial.data-table.toolbar', ['placeholder' => 'Search clients...'])
 

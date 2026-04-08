@@ -74,9 +74,25 @@ Alpine.data('dataTable', (config = {}) => ({
     paginate: config.paginate !== false,
     types: config.types || {},
     searchKeys: config.searchKeys || null,
+    tableName: config.tableName || null,
+
+    get storageKey() {
+        return 'dataTable:' + (this.tableName || window.location.pathname);
+    },
 
     init() {
         this.$watch('search', () => { this.page = 1; });
+
+        const stored = localStorage.getItem(this.storageKey);
+        if (stored) {
+            try {
+                const { sortKey, sortDir } = JSON.parse(stored);
+                if (sortKey && this.rows.length > 0 && sortKey in this.rows[0]) {
+                    this.sortKey = sortKey;
+                    this.sortDir = sortDir || 'asc';
+                }
+            } catch (e) {}
+        }
     },
 
     sort(key) {
@@ -87,6 +103,7 @@ Alpine.data('dataTable', (config = {}) => ({
             this.sortDir = 'asc';
         }
         this.page = 1;
+        localStorage.setItem(this.storageKey, JSON.stringify({ sortKey: this.sortKey, sortDir: this.sortDir }));
     },
 
     get filtered() {

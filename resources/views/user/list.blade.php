@@ -26,7 +26,7 @@
                     'updated_at' => $u->updated_at->toIso8601String(),
                     'updated_at_display' => date_format($u->updated_at, 'r'),
                 ])),
-                sortKey: 'id', types: { id: 'number', updated_at: 'date' },
+                sortKey: 'id', tableName: 'user-list', types: { id: 'number', updated_at: 'date' },
                 searchKeys: ['id', 'email', 'username', 'updated_by', 'updated_at_display']
             })">
                 @include('partial.data-table.toolbar', ['placeholder' => 'Search users...'])

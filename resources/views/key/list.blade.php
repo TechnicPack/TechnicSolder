@@ -26,7 +26,7 @@
 
             <div x-data="dataTable({
                 rows: @js($keys->map(fn($k) => ['id' => $k->id, 'name' => $k->name, 'api_key' => $k->api_key])),
-                sortKey: 'id', types: { id: 'number' }
+                sortKey: 'id', tableName: 'key-list', types: { id: 'number' }
             })">
                 @include('partial.data-table.toolbar', ['placeholder' => 'Search platform keys...'])
 
