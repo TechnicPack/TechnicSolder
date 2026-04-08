@@ -6,6 +6,7 @@ use App\Models\Build;
 use App\Models\Modpack;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 final class BuildTest extends TestCase
