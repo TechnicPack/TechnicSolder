@@ -142,9 +142,8 @@ final class ModTest extends TestCase
         ]);
     }
 
-    public function test_mod_version_add_post(): void
+    public function test_mod_version_add_post_with_md5_skips_file_download(): void
     {
-        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => '1.7.10-4.0.0',
@@ -157,27 +156,58 @@ final class ModTest extends TestCase
             'status' => 'success',
             'version' => '1.7.10-4.0.0',
             'md5' => '0925fb5cca71b6e8dd81fac9b257c6d4',
-            'filesize' => '8.89 KiB',
         ]);
+        $response->assertJsonStructure(['version_id', 'filesize']);
     }
 
-    public function test_mod_version_add_post_manual_md5(): void
+    public function test_mod_version_add_post_without_md5_computes_from_file(): void
     {
-        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/add-version/', [
                 'add-version' => '1.7.10-4.0.0',
-                'add-md5' => 'butts',
+                'add-md5' => '',
                 'mod-id' => '2',
             ]);
 
         $response->assertOk();
         $response->assertJson([
-            'status' => 'warning',
+            'status' => 'success',
             'version' => '1.7.10-4.0.0',
-            'md5' => 'butts',
+            'md5' => '0925fb5cca71b6e8dd81fac9b257c6d4',
             'filesize' => '8.89 KiB',
-            'reason' => 'MD5 provided does not match file MD5: 0925fb5cca71b6e8dd81fac9b257c6d4',
+        ]);
+    }
+
+    public function test_mod_version_add_post_invalid_md5_format(): void
+    {
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/add-version/', [
+                'add-version' => '1.7.10-4.0.0',
+                'add-md5' => 'not-a-valid-md5',
+                'mod-id' => '2',
+            ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'error',
+            'reason' => 'Invalid MD5 hash format',
+        ]);
+    }
+
+    public function test_mod_version_add_post_md5_provided_file_missing(): void
+    {
+        $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/add-version/', [
+                'add-version' => '99.99.99',
+                'add-md5' => 'aabbccdd00112233aabbccdd00112233',
+                'mod-id' => '2',
+            ]);
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'success',
+            'version' => '99.99.99',
+            'md5' => 'aabbccdd00112233aabbccdd00112233',
         ]);
     }
 
@@ -250,9 +280,8 @@ final class ModTest extends TestCase
         ]);
     }
 
-    public function test_mod_version_rehash_post(): void
+    public function test_mod_version_rehash_post_with_md5_skips_file(): void
     {
-        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '1',
@@ -264,26 +293,21 @@ final class ModTest extends TestCase
             'status' => 'success',
             'version_id' => '1',
             'md5' => 'bdbc6c6cc48c7b037e4aef64b58258a3',
-            'filesize' => '295 bytes',
         ]);
     }
 
-    public function test_mod_version_rehash_post_md5_manual(): void
+    public function test_mod_version_rehash_post_invalid_md5_format(): void
     {
-        // Fake an AJAX call.
         $response = $this->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
             ->post('/mod/rehash/', [
                 'version-id' => '1',
-                'md5' => 'butts',
+                'md5' => 'not-a-valid-md5',
             ]);
 
         $response->assertOk();
         $response->assertJson([
-            'status' => 'warning',
-            'version_id' => '1',
-            'md5' => 'butts',
-            'filesize' => '295 bytes',
-            'reason' => 'MD5 provided does not match file MD5: bdbc6c6cc48c7b037e4aef64b58258a3',
+            'status' => 'error',
+            'reason' => 'Invalid MD5 hash format',
         ]);
     }
 

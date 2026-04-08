@@ -192,44 +192,46 @@ class ModController extends Controller
             ]);
         }
 
-        $md5Request = $this->mod_md5($ver->mod, $ver->version);
-        $providedfile_md5 = ! $md5Request['success'] ? 'Null' : $md5Request['md5'];
+        $md5 = is_string($md5) ? $md5 : '';
 
-        if (empty($md5) && $md5Request['success']) {
-            $md5 = $md5Request['md5'];
+        if ($md5 !== '' && ! preg_match('/^[a-f0-9]{32}$/i', $md5)) {
+            return response()->json([
+                'status' => 'error',
+                'reason' => 'Invalid MD5 hash format',
+            ]);
         }
 
-        if ($md5Request['success'] && ! empty($md5)) {
-            if ($md5 == $md5Request['md5']) {
-                $ver->filesize = $md5Request['filesize'];
-                $ver->md5 = $md5;
-                $ver->save();
+        if ($md5 !== '') {
+            $ver->md5 = $md5;
+            $ver->save();
 
-                return response()->json([
-                    'status' => 'success',
-                    'version_id' => $ver->id,
-                    'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize(),
-                ]);
-            } else {
-                $ver->filesize = $md5Request['filesize'];
-                $ver->md5 = $md5;
-                $ver->save();
+            return response()->json([
+                'status' => 'success',
+                'version_id' => $ver->id,
+                'md5' => $ver->md5,
+                'filesize' => $ver->humanFilesize(),
+            ]);
+        }
 
-                return response()->json([
-                    'status' => 'warning',
-                    'version_id' => $ver->id,
-                    'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize(),
-                    'reason' => 'MD5 provided does not match file MD5: '.$providedfile_md5,
-                ]);
-            }
-        } else {
+        $md5Request = $this->mod_md5($ver->mod, $ver->version);
+
+        if (! $md5Request['success']) {
             return response()->json([
                 'status' => 'error',
                 'reason' => 'MD5 hashing failed. '.$md5Request['message'],
             ]);
         }
+
+        $ver->filesize = $md5Request['filesize'];
+        $ver->md5 = $md5Request['md5'];
+        $ver->save();
+
+        return response()->json([
+            'status' => 'success',
+            'version_id' => $ver->id,
+            'md5' => $ver->md5,
+            'filesize' => $ver->humanFilesize(),
+        ]);
     }
 
     public function anyAddVersion(): JsonResponse
@@ -268,48 +270,51 @@ class ModController extends Controller
             ]);
         }
 
-        $file_md5 = $this->mod_md5($mod, $version);
-        $pfile_md5 = ! $file_md5['success'] ? 'Null' : $file_md5['md5'];
+        $md5 = is_string($md5) ? $md5 : '';
 
-        if (empty($md5) && $file_md5['success']) {
-            $md5 = $file_md5['md5'];
+        if ($md5 !== '' && ! preg_match('/^[a-f0-9]{32}$/i', $md5)) {
+            return response()->json([
+                'status' => 'error',
+                'reason' => 'Invalid MD5 hash format',
+            ]);
         }
 
         $ver = new Modversion;
         $ver->mod_id = $mod->id;
         $ver->version = $version;
 
-        if ($file_md5['success'] && ! empty($md5)) {
-            if ($md5 === $file_md5['md5']) {
-                $ver->filesize = $file_md5['filesize'];
-                $ver->md5 = $md5;
-                $ver->save();
+        if ($md5 !== '') {
+            $ver->md5 = $md5;
+            $ver->save();
 
-                return response()->json([
-                    'status' => 'success',
-                    'version' => $ver->version,
-                    'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize(),
-                ]);
-            } else {
-                $ver->filesize = $file_md5['filesize'];
-                $ver->md5 = $md5;
-                $ver->save();
+            return response()->json([
+                'status' => 'success',
+                'version' => $ver->version,
+                'version_id' => $ver->id,
+                'md5' => $ver->md5,
+                'filesize' => $ver->humanFilesize(),
+            ]);
+        }
 
-                return response()->json([
-                    'status' => 'warning',
-                    'version' => $ver->version,
-                    'md5' => $ver->md5,
-                    'filesize' => $ver->humanFilesize(),
-                    'reason' => 'MD5 provided does not match file MD5: '.$pfile_md5,
-                ]);
-            }
-        } else {
+        $file_md5 = $this->mod_md5($mod, $version);
+
+        if (! $file_md5['success']) {
             return response()->json([
                 'status' => 'error',
                 'reason' => 'MD5 hashing failed. '.$file_md5['message'],
             ]);
         }
+
+        $ver->filesize = $file_md5['filesize'];
+        $ver->md5 = $file_md5['md5'];
+        $ver->save();
+
+        return response()->json([
+            'status' => 'success',
+            'version' => $ver->version,
+            'md5' => $ver->md5,
+            'filesize' => $ver->humanFilesize(),
+        ]);
     }
 
     public function anyDeleteVersion($ver_id = null): JsonResponse
