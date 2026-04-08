@@ -268,10 +268,11 @@ class ModpackController extends Controller
         $minecraft = MinecraftUtils::getMinecraftVersions();
 
         $user = Auth::user();
-        $cloneableModpacks = Modpack::with(['builds' => fn ($q) => $q->orderBy('version')])->get();
+        $cloneableModpacks = Modpack::with(['builds' => fn ($q) => $q->orderBy('id', 'desc')])->orderBy('name')->get();
         if (! $user->permission->solder_full) {
             $cloneableModpacks = $cloneableModpacks->filter(fn ($mp) => $user->permission->canAccessModpack($mp->id));
         }
+        $cloneableModpacks = $cloneableModpacks->sortBy(fn ($mp) => $mp->id === $modpack->id ? 0 : 1);
 
         return view('modpack.build.create')
             ->with([
