@@ -783,10 +783,7 @@ class ModpackController extends Controller
                     'success' => 'Build '.$build->version.' is now '.$state,
                 ]);
             case 'batch-version': // Batch change mod versions in a build
-                $build = Build::with('modpack')->find(Request::input('build_id'));
-                if (empty($build)) {
-                    abort(404);
-                }
+                $build = Build::with('modpack')->findOrFail(Request::input('build_id'));
                 $this->authorize('update', [Build::class, $build->modpack]);
 
                 $changes = Request::input('changes', []);
