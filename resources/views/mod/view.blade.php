@@ -51,7 +51,18 @@
                     </p>
                 </div>
 
-                @include('partial.data-table.toolbar', ['placeholder' => 'Search versions...', 'showPageSize' => false])
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex-1">
+                        @include('partial.data-table.toolbar', ['placeholder' => 'Search versions...', 'showPageSize' => false])
+                    </div>
+                    <button @click="rehashAllRunning ? rehashAllAborted = true : rehashAll()"
+                            :disabled="rows.length === 0"
+                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                        <span x-show="!rehashAllRunning">Rehash All</span>
+                        <span x-show="rehashAllRunning && !rehashAllAborted" x-text="'Rehashing ' + rehashAllCurrent + '/' + rehashAllTotal + '... (click to cancel)'"></span>
+                        <span x-show="rehashAllAborted">Cancelling...</span>
+                    </button>
+                </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
@@ -405,6 +416,10 @@
                 expandedVersions: [],
                 rehashingVersions: [],
                 deletingVersions: [],
+                rehashAllRunning: false,
+                rehashAllCurrent: 0,
+                rehashAllTotal: 0,
+                rehashAllAborted: false,
                 mirrorUrl: @js(config('solder.mirror_url')),
                 modName: @js($mod->name),
                 modId: @js($mod->id),
@@ -510,6 +525,63 @@
                     } finally {
                         this.rehashingVersions = this.rehashingVersions.filter(id => id !== verId);
                     }
+                },
+
+                async rehashAll() {
+                    if (this.rows.length === 0) return;
+
+                    this.rehashAllRunning = true;
+                    this.rehashAllAborted = false;
+                    this.rehashAllTotal = this.rows.length;
+                    this.rehashAllCurrent = 0;
+
+                    let successCount = 0, warningCount = 0, errorCount = 0;
+
+                    for (const row of this.rows) {
+                        if (this.rehashAllAborted) break;
+                        this.rehashAllCurrent++;
+                        this.rehashingVersions.push(row.id);
+
+                        try {
+                            const params = new URLSearchParams();
+                            params.append('version-id', row.id);
+                            params.append('md5', '');
+
+                            const res = await fetch('{{ url("mod/rehash") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': window.csrfToken,
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                },
+                                body: params,
+                            });
+                            const data = await res.json();
+
+                            if (data.status === 'success') successCount++;
+                            else if (data.status === 'warning') warningCount++;
+                            else errorCount++;
+
+                            if (data.md5) {
+                                row.md5 = data.md5;
+                                const md5Input = document.getElementById('md5-' + row.id);
+                                if (md5Input) { md5Input.value = ''; md5Input.placeholder = data.md5; }
+                            }
+                            if (data.filesize) row.filesize = data.filesize;
+                        } catch (err) {
+                            errorCount++;
+                        } finally {
+                            this.rehashingVersions = this.rehashingVersions.filter(id => id !== row.id);
+                        }
+                    }
+
+                    this.rehashAllRunning = false;
+                    const parts = [];
+                    if (successCount > 0) parts.push(successCount + ' success');
+                    if (warningCount > 0) parts.push(warningCount + ' warning');
+                    if (errorCount > 0) parts.push(errorCount + ' error');
+                    if (this.rehashAllAborted) parts.push('aborted');
+                    const type = errorCount > 0 ? 'error' : (warningCount > 0 ? 'warning' : 'success');
+                    Alpine.store('toasts').add('Rehash complete: ' + parts.join(', '), type);
                 },
 
                 async deleteVersion(verId) {
