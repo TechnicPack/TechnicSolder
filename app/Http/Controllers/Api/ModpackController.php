@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\ApiAuthContext;
 use App\Http\Controllers\Controller;
+use App\Models\Build;
 use App\Models\Modpack;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request as RequestFacade;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ModpackController extends Controller
 {
@@ -73,6 +77,85 @@ class ModpackController extends Controller
         Cache::forget('allmodpacks');
 
         return response()->json($modpack, 201);
+    }
+
+    public function clone(Request $request, string $slug): JsonResponse
+    {
+        $modpack = Modpack::with('builds.modversions')->where('slug', $slug)->first();
+
+        if (! $modpack) {
+            return response()->json(['error' => 'Modpack not found.'], 404);
+        }
+
+        $this->authorize('create', Modpack::class);
+        $this->authorize('update', $modpack);
+
+        $slug = Str::slug($request->input('slug'));
+
+        $validator = Validator::make(
+            array_merge($request->all(), ['slug' => $slug]),
+            [
+                'name' => 'required|unique:modpacks',
+                'slug' => 'required|unique:modpacks|alpha_dash',
+            ],
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $newModpack = DB::transaction(function () use ($modpack, $request, $slug) {
+            $newModpack = new Modpack;
+            $newModpack->name = $request->input('name');
+            $newModpack->slug = $slug;
+            $newModpack->hidden = $request->boolean('hidden');
+            $newModpack->private = $modpack->private;
+            $newModpack->recommended = $modpack->recommended;
+            $newModpack->latest = $modpack->latest;
+            $newModpack->icon = $modpack->icon;
+            $newModpack->icon_md5 = $modpack->icon_md5;
+            $newModpack->icon_url = $modpack->icon_url;
+            $newModpack->logo = $modpack->logo;
+            $newModpack->logo_md5 = $modpack->logo_md5;
+            $newModpack->logo_url = $modpack->logo_url;
+            $newModpack->background = $modpack->background;
+            $newModpack->background_md5 = $modpack->background_md5;
+            $newModpack->background_url = $modpack->background_url;
+            $newModpack->save();
+
+            foreach ($modpack->builds as $build) {
+                $newBuild = new Build;
+                $newBuild->modpack_id = $newModpack->id;
+                $newBuild->version = $build->version;
+                $newBuild->minecraft = $build->minecraft;
+                $newBuild->forge = $build->forge;
+                $newBuild->is_published = $build->is_published;
+                $newBuild->private = $build->private;
+                $newBuild->min_java = $build->min_java;
+                $newBuild->min_memory = $build->min_memory;
+                $newBuild->save();
+
+                $versionIds = $build->modversions->pluck('id')->toArray();
+                $newBuild->modversions()->sync($versionIds);
+            }
+
+            return $newModpack;
+        });
+
+        $user = $request->user();
+        $perm = $user->permission;
+        $modpacks = $perm->modpacks;
+        if (! empty($modpacks)) {
+            $perm->modpacks = array_merge($modpacks, [$newModpack->id]);
+        } else {
+            $perm->modpacks = [$newModpack->id];
+        }
+        $perm->save();
+
+        Cache::forget('modpacks');
+        Cache::forget('allmodpacks');
+
+        return response()->json($newModpack->load('builds'), 201);
     }
 
     public function update(Request $request, string $slug): JsonResponse

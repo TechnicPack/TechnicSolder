@@ -410,6 +410,110 @@ class ModpackController extends Controller
         return redirect('modpack/view/'.$modpack->id);
     }
 
+    public function getClone($modpack_id)
+    {
+        $modpack = Modpack::with('builds')->find($modpack_id);
+        if (empty($modpack)) {
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
+        }
+
+        $this->authorize('create', Modpack::class);
+        $this->authorize('update', $modpack);
+
+        return view('modpack.clone')->with('modpack', $modpack);
+    }
+
+    public function postClone($modpack_id): RedirectResponse
+    {
+        $modpack = Modpack::with('builds.modversions')->find($modpack_id);
+        if (empty($modpack)) {
+            return redirect('modpack/list')->withErrors(['Modpack not found']);
+        }
+
+        $this->authorize('create', Modpack::class);
+        $this->authorize('update', $modpack);
+
+        $slug = Str::slug(Request::input('slug'));
+
+        $rules = [
+            'name' => 'required|unique:modpacks',
+            'slug' => 'required|unique:modpacks|alpha_dash',
+            'hidden' => 'sometimes|required',
+        ];
+
+        $messages = [
+            'name_required' => 'You must enter a modpack name.',
+            'slug_required' => 'You must enter a modpack slug',
+        ];
+
+        $validation = Validator::make(
+            array_merge(Request::all(), ['slug' => $slug]),
+            $rules,
+            $messages,
+        );
+
+        if ($validation->fails()) {
+            return redirect('modpack/clone/'.$modpack_id)->withErrors($validation->messages());
+        }
+
+        $newModpack = DB::transaction(function () use ($modpack, $slug) {
+            $newModpack = new Modpack;
+            $newModpack->name = Request::input('name');
+            $newModpack->slug = $slug;
+            $newModpack->hidden = request()->boolean('hidden');
+            $newModpack->private = $modpack->private;
+            $newModpack->recommended = $modpack->recommended;
+            $newModpack->latest = $modpack->latest;
+            $newModpack->icon = $modpack->icon;
+            $newModpack->icon_md5 = $modpack->icon_md5;
+            $newModpack->icon_url = $modpack->icon_url;
+            $newModpack->logo = $modpack->logo;
+            $newModpack->logo_md5 = $modpack->logo_md5;
+            $newModpack->logo_url = $modpack->logo_url;
+            $newModpack->background = $modpack->background;
+            $newModpack->background_md5 = $modpack->background_md5;
+            $newModpack->background_url = $modpack->background_url;
+            $newModpack->save();
+
+            foreach ($modpack->builds as $build) {
+                $newBuild = new Build;
+                $newBuild->modpack_id = $newModpack->id;
+                $newBuild->version = $build->version;
+                $newBuild->minecraft = $build->minecraft;
+                $newBuild->forge = $build->forge;
+                $newBuild->is_published = $build->is_published;
+                $newBuild->private = $build->private;
+                $newBuild->min_java = $build->min_java;
+                $newBuild->min_memory = $build->min_memory;
+                $newBuild->save();
+
+                $versionIds = $build->modversions->pluck('id')->toArray();
+                $newBuild->modversions()->sync($versionIds);
+            }
+
+            return $newModpack;
+        });
+
+        /* Gives creator modpack perms */
+        $user = Auth::user();
+        $perm = $user->permission;
+        $modpacks = $perm->modpacks;
+        if (! empty($modpacks)) {
+            Log::info($newModpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm not empty');
+            $newmodpacks = array_merge($modpacks, [$newModpack->id]);
+            $perm->modpacks = $newmodpacks;
+        } else {
+            Log::info($newModpack->name.': Attempting to add modpack perm to user - '.$user->username.' - Modpack perm empty');
+            $perm->modpacks = [$newModpack->id];
+        }
+        $perm->save();
+
+        Cache::forget('modpacks');
+        Cache::forget('allmodpacks');
+
+        return redirect('modpack/view/'.$newModpack->id);
+    }
+
     public function getEdit($modpack_id)
     {
         $modpack = Modpack::find($modpack_id);

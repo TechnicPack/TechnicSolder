@@ -41,6 +41,7 @@ Route::get('verify/{key}', [KeyController::class, 'verify'])->middleware('thrott
 // Write API
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('modpack', [ModpackController::class, 'store']);
+    Route::post('modpack/{slug}/clone', [ModpackController::class, 'clone']);
     Route::put('modpack/{slug}', [ModpackController::class, 'update']);
     Route::delete('modpack/{slug}', [ModpackController::class, 'destroy']);
 

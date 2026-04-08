@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
     Route::post('modpack/build/{build_id}/delete', [ModpackController::class, 'postDeleteBuild']);
     Route::get('modpack/add-build/{modpack_id}', [ModpackController::class, 'getAddBuild'])->name('modpack.addBuild');
     Route::post('modpack/add-build/{modpack_id}', [ModpackController::class, 'postAddBuild']);
+    Route::get('modpack/clone/{modpack_id}', [ModpackController::class, 'getClone'])->name('modpack.clone');
+    Route::post('modpack/clone/{modpack_id}', [ModpackController::class, 'postClone']);
     Route::get('modpack/create', [ModpackController::class, 'getCreate'])->name('modpack.create');
     Route::post('modpack/create', [ModpackController::class, 'postCreate']);
     Route::get('modpack/edit/{modpack_id}', [ModpackController::class, 'getEdit'])->name('modpack.edit');

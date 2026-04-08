@@ -15,6 +15,12 @@
                    class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                     Create New Build
                 </a>
+                @can('create', App\Models\Modpack::class)
+                    <a href="{{ url('modpack/clone/'.$modpack->id) }}"
+                       class="bg-purple-600 hover:bg-purple-700 text-white dark:bg-purple-500/15 dark:text-purple-400 dark:hover:bg-purple-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                        Clone Modpack
+                    </a>
+                @endcan
                 <a href="{{ url('modpack/edit/'.$modpack->id) }}"
                    class="bg-yellow-500 hover:bg-yellow-600 text-white dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
                     Edit Modpack
