@@ -231,6 +231,7 @@ document.addEventListener('alpine:init', () => {
 
     Alpine.data('modList', () => ({
         buildId: {{ $build->id }},
+        savingAll: false,
         mods: @js($build->modversions->sortBy(fn($v) => strtolower($v->mod->pretty_name ?: $v->mod->name))->values()->map(fn($v) => [
             'mod_id' => $v->mod->id,
             'mod_name' => $v->mod->name,
@@ -238,6 +239,44 @@ document.addEventListener('alpine:init', () => {
             'modversion_id' => $v->pivot->modversion_id,
             'versions' => $v->mod->versions->map(fn($ver) => ['id' => $ver->id, 'version' => $ver->version]),
         ])).map(m => ({ ...m, selected_version_id: String(m.modversion_id), just_added: false, changing: false })),
+
+        get pendingMods() {
+            return this.mods.filter(m => String(m.selected_version_id) !== String(m.modversion_id));
+        },
+
+        async saveAll() {
+            if (this.pendingMods.length === 0) return;
+            this.savingAll = true;
+            try {
+                const changes = this.pendingMods.map(m => ({
+                    old_modversion_id: m.modversion_id,
+                    new_modversion_id: m.selected_version_id,
+                }));
+                const res = await fetch('{{ url("modpack/modify/batch-version") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        _token: window.csrfToken,
+                        build_id: String(this.buildId),
+                        changes: changes,
+                    }),
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    this.pendingMods.forEach(m => m.modversion_id = m.selected_version_id);
+                    Alpine.store('toasts').add(data.updated + ' mod version(s) updated', 'success');
+                } else {
+                    Alpine.store('toasts').add('Unable to save all changes', 'warning');
+                }
+            } catch {
+                Alpine.store('toasts').add('Failed to save all changes', 'error');
+            }
+            this.savingAll = false;
+        },
 
         addMod(detail) {
             this.mods.unshift({

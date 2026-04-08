@@ -98,8 +98,17 @@
 <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800"
      x-data="modList()"
      @mod-added.window="addMod($event.detail)">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
         <span class="font-semibold text-gray-900 dark:text-white">Mod List</span>
+        <button type="button"
+                x-show="pendingMods.length > 0"
+                x-cloak
+                :disabled="savingAll"
+                @click="saveAll()"
+                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
+            <span x-show="!savingAll">Save All (<span x-text="pendingMods.length"></span>)</span>
+            <span x-show="savingAll">Saving...</span>
+        </button>
     </div>
     <div class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
         <template x-for="mod in mods" :key="mod.modversion_id">

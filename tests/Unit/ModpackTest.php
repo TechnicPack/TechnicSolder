@@ -307,6 +307,66 @@ final class ModpackTest extends TestCase
         $response->assertNotFound();
     }
 
+    public function test_modify_batch_version_updates_multiple_mods(): void
+    {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class);
+
+        $modpack = Modpack::firstOrFail();
+        $build = $modpack->builds()->firstOrFail();
+
+        $mod = Mod::where('name', 'testmod')->firstOrFail();
+        $oldVersion = $mod->versions()->where('version', '1.0')->firstOrFail();
+        $newVersion = Modversion::create([
+            'mod_id' => $mod->id,
+            'version' => '2.0',
+            'md5' => 'abc123',
+        ]);
+
+        $response = $this->post('/modpack/modify/batch-version', [
+            'build_id' => $build->id,
+            'changes' => [
+                [
+                    'old_modversion_id' => $oldVersion->id,
+                    'new_modversion_id' => $newVersion->id,
+                ],
+            ],
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'success',
+            'updated' => 1,
+        ]);
+
+        $this->assertDatabaseHas('build_modversion', [
+            'build_id' => $build->id,
+            'modversion_id' => $newVersion->id,
+        ]);
+        $this->assertDatabaseMissing('build_modversion', [
+            'build_id' => $build->id,
+            'modversion_id' => $oldVersion->id,
+        ]);
+    }
+
+    public function test_modify_batch_version_with_empty_changes(): void
+    {
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class);
+
+        $modpack = Modpack::firstOrFail();
+        $build = $modpack->builds()->firstOrFail();
+
+        $response = $this->post('/modpack/modify/batch-version', [
+            'build_id' => $build->id,
+            'changes' => [],
+        ], ['X-Requested-With' => 'XMLHttpRequest']);
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'success',
+            'updated' => 0,
+        ]);
+    }
+
     public function test_modify_add_rejects_duplicate_mod(): void
     {
         $build = Build::find(1);

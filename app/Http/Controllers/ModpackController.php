@@ -665,6 +665,52 @@ class ModpackController extends Controller
                 return response()->json([
                     'success' => 'Build '.$build->version.' is now '.$state,
                 ]);
+            case 'batch-version': // Batch change mod versions in a build
+                $build = Build::with('modpack')->find(Request::input('build_id'));
+                if (empty($build)) {
+                    abort(404);
+                }
+                $this->authorize('update', [Build::class, $build->modpack]);
+
+                $changes = Request::input('changes', []);
+
+                if (! is_array($changes)) {
+                    return response()->json(['status' => 'error', 'reason' => 'Invalid changes format'], 422);
+                }
+
+                $validated = [];
+                foreach ($changes as $change) {
+                    if (! is_array($change)
+                        || ! isset($change['old_modversion_id'], $change['new_modversion_id'])
+                        || ! is_numeric($change['old_modversion_id'])
+                        || ! is_numeric($change['new_modversion_id'])) {
+                        return response()->json(['status' => 'error', 'reason' => 'Invalid change entry'], 422);
+                    }
+                    $validated[] = [
+                        'old' => (int) $change['old_modversion_id'],
+                        'new' => (int) $change['new_modversion_id'],
+                    ];
+                }
+
+                $updated = DB::transaction(function () use ($build, $validated): int {
+                    $count = 0;
+                    foreach ($validated as $change) {
+                        $affected = DB::table('build_modversion')
+                            ->where('build_id', '=', $build->id)
+                            ->where('modversion_id', '=', $change['old'])
+                            ->update(['modversion_id' => $change['new']]);
+                        $count += $affected;
+                    }
+
+                    return $count;
+                });
+
+                Cache::forget('modpack:'.$build->modpack->slug.':build:'.$build->version);
+
+                return response()->json([
+                    'status' => 'success',
+                    'updated' => $updated,
+                ]);
             default:
                 abort(400);
         }
