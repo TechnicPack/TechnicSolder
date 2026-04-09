@@ -2,6 +2,19 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [1.1.1] - 2026-04-09
+
+### Added
+
+- Notes exposed in read API for authenticated users with `mods_manage` or `solder_full` permission
+- `PUT /api/mod/{slug}/{version}` endpoint for updating mod version fields
+- Notes editing UI in expanded version rows on the mod view page
+
+### Fixed
+
+- Sort persistence: `storageKey` computed as property instead of getter (getter wasn't available during Alpine `init()`)
+- Version notes save using correct JSON content type instead of form-encoded data
+
 ## [1.1.0] - 2026-04-09
 
 ### Added
@@ -127,6 +140,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.1.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.3...v1.1.0
 [1.0.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.1...v1.0.2
