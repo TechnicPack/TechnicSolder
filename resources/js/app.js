@@ -75,10 +75,7 @@ Alpine.data('dataTable', (config = {}) => ({
     types: config.types || {},
     searchKeys: config.searchKeys || null,
     tableName: config.tableName || null,
-
-    get storageKey() {
-        return 'dataTable:' + (this.tableName || window.location.pathname);
-    },
+    storageKey: 'dataTable:' + (config.tableName || window.location.pathname),
 
     init() {
         this.$watch('search', () => { this.page = 1; });
