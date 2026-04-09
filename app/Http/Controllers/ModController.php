@@ -319,6 +319,33 @@ class ModController extends Controller
         ]);
     }
 
+    public function anyUpdateVersion($ver_id = null): JsonResponse
+    {
+        if (! Request::ajax()) {
+            abort(404);
+        }
+
+        $this->authorize('create', Modversion::class);
+
+        $ver = Modversion::find($ver_id);
+        if (empty($ver)) {
+            return response()->json([
+                'status' => 'error',
+                'reason' => 'Could not find mod version',
+            ]);
+        }
+
+        $ver->notes = Request::input('notes');
+        $ver->save();
+
+        Cache::forget('mod:'.$ver->mod->name);
+
+        return response()->json([
+            'status' => 'success',
+            'version_id' => $ver->id,
+        ]);
+    }
+
     public function anyDeleteVersion($ver_id = null): JsonResponse
     {
         if (! Request::ajax()) {

@@ -184,6 +184,21 @@
                                                     </ul>
                                                 </div>
                                             </template>
+                                            <div class="mt-3">
+                                                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">Notes</label>
+                                                <div class="flex gap-2">
+                                                    <textarea x-model="row.notes"
+                                                              rows="2"
+                                                              placeholder="Private notes (not shown in API)"
+                                                              class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"></textarea>
+                                                    <button @click="saveVersionNotes(row)"
+                                                            :disabled="row.savingNotes"
+                                                            class="self-end bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                                                        <span x-show="!row.savingNotes">Save</span>
+                                                        <span x-show="row.savingNotes">...</span>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                             </tbody>
@@ -333,6 +348,8 @@
                         'md5' => $v->md5,
                         'filesize' => $v->humanFilesize(),
                         'url' => config('solder.mirror_url') . 'mods/' . $mod->name . '/' . $mod->name . '-' . $v->version . '.zip',
+                        'notes' => $v->notes ?? '',
+                        'savingNotes' => false,
                         'builds' => $builds->where('accessible', true)->values(),
                         'hiddenCount' => $builds->where('accessible', false)->count(),
                     ];
@@ -590,6 +607,24 @@
                     if (this.rehashAllAborted) parts.push('aborted');
                     const type = errorCount > 0 ? 'error' : (warningCount > 0 ? 'warning' : 'success');
                     Alpine.store('toasts').add('Rehash complete: ' + parts.join(', '), type);
+                },
+
+                async saveVersionNotes(row) {
+                    row.savingNotes = true;
+                    try {
+                        const data = await window.ajaxPost('{{ url("mod/update-version") }}/' + row.id, {
+                            notes: row.notes,
+                        });
+                        if (data.status === 'success') {
+                            Alpine.store('toasts').add('Notes saved', 'success');
+                        } else {
+                            Alpine.store('toasts').add(data.reason || 'Failed to save notes', 'error');
+                        }
+                    } catch (err) {
+                        Alpine.store('toasts').add('Failed to save notes', 'error');
+                    } finally {
+                        row.savingNotes = false;
+                    }
                 },
 
                 async deleteVersion(verId) {
