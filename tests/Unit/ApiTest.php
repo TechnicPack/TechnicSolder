@@ -8,6 +8,7 @@ use App\Models\Modpack;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 final class ApiTest extends TestCase
@@ -453,5 +454,66 @@ final class ApiTest extends TestCase
         ]);
         $response->assertOk();
         $response->assertJsonFragment(['builds' => []]);
+    }
+
+    public function test_mod_notes_visible_to_admin_with_token(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::first();
+        $mod->notes = 'Admin-only note';
+        $mod->save();
+        Cache::forget('mod:'.$mod->name);
+
+        $admin = User::find(1);
+        $token = $admin->createToken('test')->plainTextToken;
+
+        $response = $this->getJson('api/mod/'.$mod->name, [
+            'Authorization' => 'Bearer '.$token,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['notes' => 'Admin-only note']);
+    }
+
+    public function test_mod_notes_hidden_without_token(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::first();
+        $mod->notes = 'Secret note';
+        $mod->save();
+        Cache::forget('mod:'.$mod->name);
+
+        $response = $this->getJson('api/mod/'.$mod->name);
+
+        $response->assertOk();
+        $this->assertArrayNotHasKey('notes', $response->json());
+    }
+
+    public function test_mod_notes_hidden_from_unprivileged_user(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::first();
+        $mod->notes = 'Secret note';
+        $mod->save();
+        Cache::forget('mod:'.$mod->name);
+
+        $user = User::create([
+            'username' => 'viewer',
+            'email' => 'viewer@test.com',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+        ]);
+        $user->permission()->create(['solder_full' => false, 'mods_manage' => false]);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->getJson('api/mod/'.$mod->name, [
+            'Authorization' => 'Bearer '.$token,
+        ]);
+
+        $response->assertOk();
+        $this->assertArrayNotHasKey('notes', $response->json());
     }
 }

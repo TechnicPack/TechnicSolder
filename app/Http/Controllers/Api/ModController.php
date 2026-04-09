@@ -49,6 +49,11 @@ class ModController extends Controller
             'link',
         ]);
 
+        $perm = auth('sanctum')->user()?->permission;
+        if ($perm?->solder_full || $perm?->mods_manage) {
+            $response['notes'] = $mod->notes;
+        }
+
         $response['versions'] = $mod->versions->pluck('version');
 
         return response()->json($response);

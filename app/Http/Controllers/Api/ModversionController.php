@@ -39,6 +39,11 @@ class ModversionController extends Controller
             'url',
         ]);
 
+        $perm = auth('sanctum')->user()?->permission;
+        if ($perm?->solder_full || $perm?->mods_manage) {
+            $response['notes'] = $modVersion->notes;
+        }
+
         return response()->json($response);
     }
 
@@ -71,6 +76,29 @@ class ModversionController extends Controller
         Cache::forget('mods');
 
         return response()->json($modversion, 201);
+    }
+
+    public function update(Request $request, string $slug, string $version): JsonResponse
+    {
+        $this->authorize('create', Modversion::class);
+
+        $mod = Mod::where('name', $slug)->first();
+
+        if (! $mod) {
+            return response()->json(['error' => 'Mod not found.'], 404);
+        }
+
+        $modversion = $mod->versions()->where('version', $version)->first();
+
+        if (! $modversion) {
+            return response()->json(['error' => 'Mod version not found.'], 404);
+        }
+
+        $modversion->update($request->only(['md5', 'filesize', 'notes']));
+
+        Cache::forget('mod:'.$slug);
+
+        return response()->json($modversion);
     }
 
     public function destroy(string $slug, string $version): JsonResponse
