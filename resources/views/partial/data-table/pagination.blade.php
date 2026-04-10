@@ -18,7 +18,7 @@
                 class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
             Prev
         </button>
-        <template x-for="p in pageNumbers" :key="'page-'+p">
+        <template x-for="(p, index) in pageNumbers" :key="'page-'+index">
             <button x-text="p"
                     @click="typeof p === 'number' && goToPage(p)"
                     :disabled="p === '...'"
