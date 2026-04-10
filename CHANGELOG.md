@@ -2,6 +2,12 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [1.1.2] - 2026-04-10
+
+### Fixed
+
+- Pagination buttons corrupted on middle pages due to duplicate Alpine.js `x-for` key when two ellipsis entries existed
+
 ## [1.1.1] - 2026-04-09
 
 ### Added
@@ -140,6 +146,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.1.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.3...v1.1.0
 [1.0.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.2...v1.0.3
