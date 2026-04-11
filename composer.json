@@ -44,11 +44,11 @@
         "laravel/tinker": "^3.0"
     },
     "require-dev": {
-        "fruitcake/laravel-debugbar": "^4.2.5",
+        "fruitcake/laravel-debugbar": "^4.2.6",
         "barryvdh/laravel-ide-helper": "^3.7.0",
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.9.3",
-        "laravel/boost": "^2.4.2",
+        "larastan/larastan": "^3.9.4",
+        "laravel/boost": "^2.4.3",
         "laravel/pint": "^1.29.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^8.9.3",
