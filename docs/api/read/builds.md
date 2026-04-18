@@ -2,7 +2,7 @@
 
 ## GET /api/modpack/{slug}/{version}
 
-Show a specific build of a modpack. The same authentication rules as the modpack endpoints apply -- without auth only public modpack builds are accessible. Bearer tokens can also access private builds when the token's user has access to the modpack.
+Show a specific build of a modpack. Visibility follows the same rules as `GET /api/modpack/{slug}`: hidden modpacks' builds are accessible by slug without authentication; private modpacks' builds require authentication that grants access. Individual builds marked private additionally require modpack-level access. Unpublished builds return 404 regardless of authentication.
 
 ### Path Parameters
 

@@ -2,11 +2,11 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
-## [Unreleased]
+## [1.1.3] - 2026-04-18
 
 ### Fixed
 
-- Hidden modpacks (not marked private) were returning 404 on direct API access, causing the Technic launcher to show them as "Offline". Restored the documented behavior: hidden packs are omitted from `/api/modpack` listing but remain fetchable by slug via `/api/modpack/{slug}` and `/api/modpack/{slug}/{version}` without a `cid`. Regression introduced in the API refactor that consolidated access checks behind `Modpack::isAccessibleBy()`.
+- Hidden modpacks (not marked private) were returning 404 on direct API access, causing the Technic Launcher to show them as "Offline". Restored the documented behavior: hidden packs are omitted from `/api/modpack` listing but remain fetchable by slug via `/api/modpack/{slug}` and `/api/modpack/{slug}/{version}` without a `cid`. Regression introduced in the API refactor that consolidated access checks behind `Modpack::isAccessibleBy()`.
 
 ## [1.1.2] - 2026-04-10
 
@@ -152,6 +152,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.1.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.0.3...v1.1.0

@@ -9,6 +9,8 @@ List all modpacks. The modpacks returned depend on the authentication provided:
 - **`k` parameter** -- all modpacks, including private and hidden.
 - **Bearer token** -- modpacks the token's user has access to (users with `solder_full` see all modpacks).
 
+"Hidden" modpacks are unlisted here but remain reachable via `GET /api/modpack/{slug}`. "Private" modpacks are excluded from both endpoints and require explicit access.
+
 ### Query Parameters
 
 | Parameter | Type | Description |
@@ -70,7 +72,14 @@ When `include=full` is set, each modpack value becomes a full object:
 
 ## GET /api/modpack/{slug}
 
-Show a single modpack by its slug. The same authentication rules apply as the list endpoint.
+Show a single modpack by its slug. Hidden modpacks are omitted from `GET /api/modpack` but remain fetchable by slug without authentication; this is how the Technic Launcher accesses a pack whose slug it already knows. Private modpacks return 404 without authentication that grants access.
+
+Authentication determines access:
+
+- **No auth** -- public or hidden modpacks (private modpacks return 404).
+- **`cid` parameter** -- also grants access to private modpacks associated with the client.
+- **`k` parameter** -- any modpack.
+- **Bearer token** -- modpacks the token's user has access to (users with `solder_full` see any modpack).
 
 ### Path Parameters
 
