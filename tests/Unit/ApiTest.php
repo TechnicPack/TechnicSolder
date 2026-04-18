@@ -213,6 +213,36 @@ final class ApiTest extends TestCase
         ]);
     }
 
+    private function makeHiddenModpack(): Modpack
+    {
+        $modpack = Modpack::create([
+            'name' => 'HiddenPack',
+            'slug' => 'hiddenpack',
+            'hidden' => true,
+            'private' => false,
+            'icon' => false,
+            'icon_md5' => null,
+            'icon_url' => '',
+            'logo' => false,
+            'logo_md5' => null,
+            'logo_url' => '',
+            'background' => false,
+            'background_md5' => null,
+            'background_url' => '',
+        ]);
+
+        Build::create([
+            'modpack_id' => $modpack->id,
+            'version' => '1.0.0',
+            'minecraft' => '1.7.10',
+            'min_java' => '1.7',
+            'min_memory' => '1024',
+            'is_published' => true,
+        ]);
+
+        return $modpack;
+    }
+
     private function makeUserWithPermissions(array $perms): User
     {
         $user = User::create([
@@ -362,6 +392,40 @@ final class ApiTest extends TestCase
         $response = $this->getJson('api/modpack/privatepack');
         $response->assertNotFound();
         $response->assertJson(['error' => 'Modpack does not exist']);
+    }
+
+    // --- Hidden (but not private) modpack: unlisted, but URL-accessible ---
+    // Contract (per Modpack edit page UI): "Hidden modpacks will not show up
+    // in the API response for the modpack list. However, anyone with the
+    // modpack's slug can access all of its information."
+
+    public function test_hidden_modpack_is_excluded_from_listing_without_auth(): void
+    {
+        $this->makeHiddenModpack();
+
+        $response = $this->getJson('api/modpack');
+        $response->assertOk();
+        $response->assertJsonMissing(['hiddenpack' => 'HiddenPack']);
+    }
+
+    public function test_hidden_modpack_is_accessible_directly_by_slug_without_auth(): void
+    {
+        $this->makeHiddenModpack();
+
+        $response = $this->getJson('api/modpack/hiddenpack');
+        $response->assertOk();
+        $response->assertJsonPath('name', 'hiddenpack');
+        $response->assertJsonPath('display_name', 'HiddenPack');
+        $response->assertJsonFragment(['builds' => ['1.0.0']]);
+    }
+
+    public function test_hidden_modpack_build_is_accessible_directly_without_auth(): void
+    {
+        $this->makeHiddenModpack();
+
+        $response = $this->getJson('api/modpack/hiddenpack/1.0.0');
+        $response->assertOk();
+        $response->assertJsonStructure(['minecraft', 'forge', 'java', 'memory', 'mods']);
     }
 
     public function test_sanctum_user_with_full_access_sees_private_builds(): void

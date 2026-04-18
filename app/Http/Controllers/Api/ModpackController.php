@@ -240,7 +240,7 @@ class ModpackController extends Controller
             return null;
         }
 
-        if (($modpack->private || $modpack->hidden) && ! $modpack->isAccessibleBy($auth)) {
+        if ($modpack->private && ! $modpack->isAccessibleBy($auth)) {
             return null;
         }
 

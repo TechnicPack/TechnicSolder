@@ -26,7 +26,7 @@ class BuildController extends Controller
             return response()->json(['error' => 'Modpack does not exist'], 404);
         }
 
-        if (($modpack->private || $modpack->hidden) && ! $modpack->isAccessibleBy($auth)) {
+        if ($modpack->private && ! $modpack->isAccessibleBy($auth)) {
             return response()->json(['error' => 'Modpack does not exist'], 404);
         }
 
