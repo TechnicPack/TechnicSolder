@@ -1,0 +1,84 @@
+name: Bug report
+description: Report a bug in Technic Solder.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        **This tracker is for Technic Solder only.** For launcher crashes, modpack help, or Platform/website issues, use the links on the previous page.
+
+        **Running Solder on Windows is not supported and no help will be provided.**
+
+        Please research before reporting, and keep the report respectful — frustration makes bugs harder to fix.
+  - type: input
+    id: solder-version
+    attributes:
+      label: Solder version
+    validations:
+      required: true
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating system and version
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      description: "Run `php -v`"
+    validations:
+      required: true
+  - type: input
+    id: composer-version
+    attributes:
+      label: Composer version
+      description: "Run `composer -v`"
+    validations:
+      required: true
+  - type: input
+    id: web-server
+    attributes:
+      label: Web server
+      description: "Apache, nginx, Caddy, etc."
+    validations:
+      required: true
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      options:
+        - MySQL
+        - MariaDB
+        - PostgreSQL
+        - SQLite
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: hosting-type
+    attributes:
+      label: Hosting type
+      options:
+        - Shared
+        - VPS
+        - Dedicated
+        - Cloud
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: public-url
+    attributes:
+      label: Public URL of affected install
+      description: "The URL to your Solder's public folder, if you can share it."
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the issue
+      description: "Please include steps to reproduce, expected behavior, and actual behavior."
+    validations:
+      required: true

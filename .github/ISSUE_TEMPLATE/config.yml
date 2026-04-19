@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Technic Launcher crashes
+    url: https://github.com/TechnicPack/LauncherV3
+    about: "Report launcher crashes in the LauncherV3 repository."
+  - name: Modpack installation help
+    url: https://discord.gg/technic
+    about: "Ask in the #help channel of the Technic Discord server."
+  - name: Platform or website issues
+    url: https://www.technicpack.net/help
+    about: "Get help with the Technic Platform or website."
