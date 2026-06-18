@@ -10,6 +10,7 @@
   ],
   "configMigration": true,
   "rangeStrategy": "bump",
+  "minimumReleaseAge": "7 days",
   "packageRules": [
     {
       "matchManagers": ["composer"],
