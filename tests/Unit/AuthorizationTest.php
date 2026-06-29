@@ -2,7 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Models\Mod;
 use App\Models\Modpack;
+use App\Models\Modversion;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -301,5 +303,113 @@ final class AuthorizationTest extends TestCase
         $this->get('/key/list')->assertRedirect('/dashboard');
         $this->get('/client/list')->assertRedirect('/dashboard');
         $this->get('/user/list')->assertRedirect('/dashboard');
+    }
+
+    // --- Mod version write authorization ---
+    //
+    // These AJAX endpoints mutate modversions and must be gated by `mods_manage`
+    // (via ModversionPolicy), not merely by the `mods_create` capability. A user
+    // who can create mods but cannot manage them must be denied. The endpoints
+    // abort(404) on non-AJAX requests, so the AJAX header is required to reach
+    // the authorization gate (which then renders 403 for JSON requests).
+
+    private function seedModVersion(): Modversion
+    {
+        $mod = Mod::create(['name' => 'authztest', 'pretty_name' => 'AuthZ Test']);
+
+        return Modversion::create([
+            'mod_id' => $mod->id,
+            'version' => '1.0',
+            'md5' => str_repeat('a', 32),
+            'filesize' => 100,
+        ]);
+    }
+
+    public function test_add_version_denied_without_mods_manage(): void
+    {
+        $user = $this->createUserWithPermissions(['mods_create' => true]);
+        $version = $this->seedModVersion();
+
+        $this->actingAs($user)
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/add-version', [
+                'mod-id' => $version->mod_id,
+                'add-version' => '2.0',
+                'add-md5' => str_repeat('c', 32),
+            ])
+            ->assertRedirect('/dashboard');
+
+        $this->assertDatabaseMissing('modversions', [
+            'mod_id' => $version->mod_id,
+            'version' => '2.0',
+        ]);
+    }
+
+    public function test_rehash_denied_without_mods_manage(): void
+    {
+        $user = $this->createUserWithPermissions(['mods_create' => true]);
+        $version = $this->seedModVersion();
+
+        $this->actingAs($user)
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/rehash', [
+                'version-id' => $version->id,
+                'md5' => str_repeat('b', 32),
+            ])
+            ->assertRedirect('/dashboard');
+    }
+
+    public function test_update_version_denied_without_mods_manage(): void
+    {
+        $user = $this->createUserWithPermissions(['mods_create' => true]);
+        $version = $this->seedModVersion();
+
+        $this->actingAs($user)
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/update-version/'.$version->id, ['notes' => 'tampered'])
+            ->assertRedirect('/dashboard');
+    }
+
+    public function test_delete_version_denied_without_mods_manage(): void
+    {
+        $user = $this->createUserWithPermissions(['mods_create' => true]);
+        $version = $this->seedModVersion();
+
+        $this->actingAs($user)
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/delete-version/'.$version->id)
+            ->assertRedirect('/dashboard');
+
+        $this->assertModelExists($version);
+    }
+
+    public function test_add_version_allowed_with_mods_manage(): void
+    {
+        $user = $this->createUserWithPermissions(['mods_manage' => true]);
+        $version = $this->seedModVersion();
+
+        $this->actingAs($user)
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/add-version', [
+                'mod-id' => $version->mod_id,
+                'add-version' => '2.0',
+                'add-md5' => str_repeat('c', 32),
+            ])
+            ->assertOk()
+            ->assertJson(['status' => 'success']);
+    }
+
+    public function test_delete_version_allowed_with_mods_manage(): void
+    {
+        $user = $this->createUserWithPermissions(['mods_manage' => true]);
+        $version = $this->seedModVersion();
+
+        $this->actingAs($user)
+            ->withHeaders(['X-Requested-With' => 'XMLHttpRequest'])
+            ->post('/mod/delete-version/'.$version->id)
+            ->assertOk()
+            ->assertJson(['status' => 'success']);
+
+        $this->assertModelMissing($version);
     }
 }

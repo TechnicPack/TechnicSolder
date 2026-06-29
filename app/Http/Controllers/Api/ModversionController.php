@@ -80,7 +80,7 @@ class ModversionController extends Controller
 
     public function update(Request $request, string $slug, string $version): JsonResponse
     {
-        $this->authorize('create', Modversion::class);
+        $this->authorize('update', Modversion::class);
 
         $mod = Mod::where('name', $slug)->first();
 
