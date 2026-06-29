@@ -1,3 +1,8 @@
+# Standalone development stack. Run it on its own; do NOT merge with compose.yml:
+#   docker compose -f compose.dev.yml up -d
+# Combining the two files (-f compose.yml -f compose.dev.yml) pulls in the
+# production MariaDB service and its env-injection block, which breaks the
+# postgres dev database and test isolation.
 services:
   nginx:
     image: nginx
