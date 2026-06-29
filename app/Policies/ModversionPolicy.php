@@ -11,6 +11,11 @@ class ModversionPolicy
         return $user->permission->mods_manage;
     }
 
+    public function update(User $user): bool
+    {
+        return $user->permission->mods_manage;
+    }
+
     public function delete(User $user): bool
     {
         return $user->permission->mods_manage;

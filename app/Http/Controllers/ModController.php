@@ -175,7 +175,7 @@ class ModController extends Controller
             abort(404);
         }
 
-        $this->authorize('viewAny', Mod::class);
+        $this->authorize('update', Modversion::class);
 
         $md5 = Request::input('md5');
         $ver_id = Request::input('version-id');
@@ -242,7 +242,7 @@ class ModController extends Controller
             abort(404);
         }
 
-        $this->authorize('viewAny', Mod::class);
+        $this->authorize('create', Modversion::class);
 
         $mod_id = Request::input('mod-id');
         $md5 = Request::input('add-md5');
@@ -325,7 +325,7 @@ class ModController extends Controller
             abort(404);
         }
 
-        $this->authorize('create', Modversion::class);
+        $this->authorize('update', Modversion::class);
 
         $ver = Modversion::find($ver_id);
         if (empty($ver)) {
@@ -352,7 +352,7 @@ class ModController extends Controller
             abort(404);
         }
 
-        $this->authorize('viewAny', Mod::class);
+        $this->authorize('delete', Modversion::class);
 
         if (empty($ver_id)) {
             return response()->json([
