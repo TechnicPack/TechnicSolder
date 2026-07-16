@@ -132,6 +132,50 @@ final class AuthTest extends TestCase
         $response->assertStatus(429);
     }
 
+    public function test_rate_limiting_is_not_bypassed_by_email_casing(): void
+    {
+        // Fortify lowercases the username when authenticating, so every casing
+        // variant below targets the same account and must share one bucket.
+        $variants = [
+            'admin@example.com',
+            'Admin@example.com',
+            'ADMIN@EXAMPLE.COM',
+            'AdMiN@ExAmPlE.cOm',
+            'aDMIN@example.COM',
+        ];
+
+        foreach ($variants as $variant) {
+            $this->post('/login', ['email' => $variant, 'password' => 'wrong']);
+        }
+
+        $response = $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'wrong',
+        ]);
+
+        $response->assertStatus(429);
+    }
+
+    public function test_rate_limiting_is_not_bypassed_by_transliteration(): void
+    {
+        // Accented homoglyphs fold to plain ASCII in the throttle key, so they
+        // cannot be used to mint a fresh bucket for the same target address.
+        for ($i = 0; $i < 3; $i++) {
+            $this->post('/login', ['email' => 'admin@example.com', 'password' => 'wrong']);
+        }
+
+        foreach (['ádmin@example.com', 'admın@example.com'] as $homoglyph) {
+            $this->post('/login', ['email' => $homoglyph, 'password' => 'wrong']);
+        }
+
+        $response = $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'wrong',
+        ]);
+
+        $response->assertStatus(429);
+    }
+
     public function test_successful_login_after_failed_attempts(): void
     {
         for ($i = 0; $i < 3; $i++) {

@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
+use Laravel\Fortify\Fortify;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -82,9 +84,23 @@ class AppServiceProvider extends ServiceProvider
 
         $this->bootRoute();
 
-        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by($request->input('email').'|'.$request->ip()));
+        RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by($this->loginThrottleKey($request)));
         RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
         RateLimiter::for('key-verify', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+    }
+
+    /**
+     * Build the throttle key for a login attempt.
+     *
+     * Canonicalized the same way Fortify's own LoginRateLimiter does, because
+     * the `throttle:login` route middleware runs before Fortify's
+     * CanonicalizeUsername action lowercases the username. Without this, casing
+     * or homoglyph variants of one address each get their own bucket while all
+     * authenticating as the same account.
+     */
+    private function loginThrottleKey(Request $request): string
+    {
+        return Str::transliterate(Str::lower((string) $request->input(Fortify::username())).'|'.$request->ip());
     }
 
     public function bootRoute(): void
