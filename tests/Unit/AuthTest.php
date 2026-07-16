@@ -4,6 +4,10 @@ namespace Tests\Unit;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
 
 final class AuthTest extends TestCase
@@ -71,6 +75,100 @@ final class AuthTest extends TestCase
 
         $user = User::find(1);
         $this->assertNotNull($user->last_ip);
+    }
+
+    private function enableAndConfirm2FA(User $user): void
+    {
+        $this->actingAs($user);
+        session()->put('auth.password_confirmed_at', time());
+
+        $this->post('/user/two-factor-authentication');
+
+        $user->refresh();
+
+        $google2fa = new Google2FA;
+        $this->post('/user/confirmed-two-factor-authentication', [
+            'code' => $google2fa->getCurrentOtp(decrypt($user->two_factor_secret)),
+        ]);
+
+        $user->refresh();
+        auth()->logout();
+    }
+
+    public function test_login_side_effects_do_not_run_before_two_factor_challenge(): void
+    {
+        $user = User::find(1);
+        $this->enableAndConfirm2FA($user);
+
+        $user->last_ip = '10.0.0.1';
+        $user->save();
+
+        // Correct password, but the second factor has not been supplied yet.
+        $response = $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'admin',
+        ]);
+
+        $response->assertRedirect('/two-factor-challenge');
+        $this->assertGuest();
+
+        $user->refresh();
+        $this->assertSame('10.0.0.1', $user->last_ip, 'last_ip must not be recorded until the 2FA challenge passes.');
+    }
+
+    public function test_last_ip_is_updated_after_two_factor_challenge_completes(): void
+    {
+        $user = User::find(1);
+        $this->enableAndConfirm2FA($user);
+
+        $user->last_ip = '10.0.0.1';
+        $user->save();
+
+        $secret = decrypt($user->two_factor_secret);
+
+        // Confirming 2FA above consumed the current OTP window; clear the
+        // replay cache so the same code is accepted for the challenge.
+        Cache::flush();
+
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'admin',
+        ]);
+
+        $google2fa = new Google2FA;
+        $response = $this->post('/two-factor-challenge', [
+            'code' => $google2fa->getCurrentOtp($secret),
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated();
+
+        $user->refresh();
+        $this->assertSame('127.0.0.1', $user->last_ip);
+    }
+
+    public function test_password_is_rehashed_on_login(): void
+    {
+        $user = User::find(1);
+
+        // Plant the same password at a work factor that differs from the
+        // configured one (phpunit.xml pins BCRYPT_ROUNDS to 4) so the guard has
+        // a reason to rehash it. Written straight to the column because the
+        // `hashed` cast refuses to store a hash the current config wouldn't
+        // produce, which is precisely the situation being simulated.
+        $staleHash = password_hash('admin', PASSWORD_BCRYPT, ['cost' => 6]);
+        DB::table('users')->where('id', $user->id)->update(['password' => $staleHash]);
+
+        $this->post('/login', [
+            'email' => 'admin@example.com',
+            'password' => 'admin',
+        ]);
+
+        $this->assertAuthenticated();
+
+        $user->refresh();
+        $this->assertNotSame($staleHash, $user->password, 'The outdated hash must be upgraded on login.');
+        $this->assertTrue(Hash::check('admin', $user->password));
     }
 
     public function test_login_with_remember_sets_token(): void
