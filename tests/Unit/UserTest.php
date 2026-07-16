@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 final class UserTest extends TestCase
@@ -118,9 +119,9 @@ final class UserTest extends TestCase
             'Both edit form password fields must hint new-password so password managers offer to generate one.'
         );
         $this->assertSame(
-            1,
+            2,
             substr_count($content, 'autocomplete="current-password"'),
-            'The confirm password modal must hint current-password so password managers offer the existing one.'
+            'The confirm password modal and the current password field must both hint current-password so password managers offer the existing one.'
         );
     }
 
@@ -182,6 +183,122 @@ final class UserTest extends TestCase
         $response = $this->post('/user/edit/'.$user->id, $data);
         $response->assertRedirect('/user/edit/'.$user->id);
         $response->assertSessionHas('success');
+    }
+
+    public function test_password_change_requires_current_password(): void
+    {
+        $user = User::firstOrFail();
+
+        $response = $this->post('/user/edit/'.$user->id, [
+            'email' => $user->email,
+            'username' => $user->username,
+            'password1' => 'N3wP@ssw0rd!',
+            'password2' => 'N3wP@ssw0rd!',
+        ]);
+
+        $response->assertRedirect('/user/edit/'.$user->id);
+        $response->assertSessionHasErrors('current_password');
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('admin', $user->password), 'The password must be unchanged.');
+    }
+
+    public function test_password_change_rejects_wrong_current_password(): void
+    {
+        $user = User::firstOrFail();
+
+        $response = $this->post('/user/edit/'.$user->id, [
+            'email' => $user->email,
+            'username' => $user->username,
+            'current_password' => 'not-my-password',
+            'password1' => 'N3wP@ssw0rd!',
+            'password2' => 'N3wP@ssw0rd!',
+        ]);
+
+        $response->assertRedirect('/user/edit/'.$user->id);
+        $response->assertSessionHasErrors('current_password');
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('admin', $user->password), 'The password must be unchanged.');
+    }
+
+    public function test_password_change_succeeds_with_correct_current_password(): void
+    {
+        $user = User::firstOrFail();
+
+        $response = $this->post('/user/edit/'.$user->id, [
+            'email' => $user->email,
+            'username' => $user->username,
+            'current_password' => 'admin',
+            'password1' => 'N3wP@ssw0rd!',
+            'password2' => 'N3wP@ssw0rd!',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect('/user/edit/'.$user->id);
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('N3wP@ssw0rd!', $user->password));
+    }
+
+    public function test_admin_changing_another_users_password_supplies_own_current_password(): void
+    {
+        $target = User::unguarded(fn () => User::create([
+            'email' => 'target@example.com',
+            'username' => 'target',
+            'password' => 'targetpassword',
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1,
+        ]));
+
+        $perm = new UserPermission;
+        $perm->user_id = $target->id;
+        $perm->save();
+
+        // `current_password` is the acting admin's own password, never the
+        // target's — an admin cannot be expected to know the latter.
+        $response = $this->post('/user/edit/'.$target->id, [
+            'email' => $target->email,
+            'username' => $target->username,
+            'current_password' => 'admin',
+            'password1' => 'N3wP@ssw0rd!',
+            'password2' => 'N3wP@ssw0rd!',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+
+        $target->refresh();
+        $this->assertTrue(Hash::check('N3wP@ssw0rd!', $target->password));
+    }
+
+    public function test_admin_changing_another_users_password_rejects_targets_password(): void
+    {
+        $target = User::unguarded(fn () => User::create([
+            'email' => 'target2@example.com',
+            'username' => 'target2',
+            'password' => 'targetpassword',
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1,
+        ]));
+
+        $perm = new UserPermission;
+        $perm->user_id = $target->id;
+        $perm->save();
+
+        $response = $this->post('/user/edit/'.$target->id, [
+            'email' => $target->email,
+            'username' => $target->username,
+            'current_password' => 'targetpassword',
+            'password1' => 'N3wP@ssw0rd!',
+            'password2' => 'N3wP@ssw0rd!',
+        ]);
+
+        $response->assertSessionHasErrors('current_password');
+
+        $target->refresh();
+        $this->assertTrue(Hash::check('targetpassword', $target->password), 'The password must be unchanged.');
     }
 
     public function test_user_delete_get(): void

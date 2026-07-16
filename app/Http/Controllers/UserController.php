@@ -112,6 +112,10 @@ class UserController extends Controller
         ];
 
         if (Request::input('password1')) {
+            // Proof of identity for a session takeover, not proof of the target's
+            // password: `current_password:web` checks the *actor*, so a manager
+            // resetting someone else's password confirms their own.
+            $rules['current_password'] = ['required', 'current_password:web'];
             $rules['password1'] = [Password::defaults(), 'same:password2'];
         }
 
