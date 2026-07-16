@@ -58,26 +58,34 @@
                         <div class="mb-5">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Solderwide</label>
                             <div class="space-y-2">
+                                @can('grant-permission', 'solder_full')
                                 <label for="solder-full" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="solder-full" id="solder-full"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Full Solder Access (Blanket permission)
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'solder_users')
                                 <label for="manage-users" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="manage-users" id="manage-users"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Manage Users
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'solder_keys')
                                 <label for="manage-keys" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="manage-keys" id="manage-keys"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Manage Platform Keys
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'solder_clients')
                                 <label for="manage-clients" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="manage-clients" id="manage-clients"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Manage Clients
                                 </label>
+                                @endcan
                             </div>
                         </div>
 
@@ -85,21 +93,27 @@
                         <div class="mb-5">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mod Library</label>
                             <div class="space-y-2">
+                                @can('grant-permission', 'mods_create')
                                 <label for="mod-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="mod-create" id="mod-create"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Create Mods
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'mods_manage')
                                 <label for="mod-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="mod-manage" id="mod-manage"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Manage Mods
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'mods_delete')
                                 <label for="mod-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="mod-delete" id="mod-delete"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Delete Mods
                                 </label>
+                                @endcan
                             </div>
                         </div>
 
@@ -112,21 +126,27 @@
                                 if the specific modpack is selected.
                             </p>
                             <div class="space-y-2">
+                                @can('grant-permission', 'modpacks_create')
                                 <label for="modpack-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="modpack-create" id="modpack-create"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Create Modpacks
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'modpacks_manage')
                                 <label for="modpack-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="modpack-manage" id="modpack-manage"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Manage Modpacks
                                 </label>
+                                @endcan
+                                @can('grant-permission', 'modpacks_delete')
                                 <label for="modpack-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="modpack-delete" id="modpack-delete"
                                            class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                     Delete Modpacks
                                 </label>
+                                @endcan
                             </div>
                         </div>
 
@@ -135,7 +155,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Specific Modpacks</label>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Select which modpacks this user can access. Changes take effect when you save.</p>
                             @if ($allModpacks->isEmpty())
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No modpacks exist.</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No modpacks available to assign.</p>
                             @else
                                 <div x-data="{
                                     options: @js($allModpacks->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->map(fn($m) => ['id' => $m->id, 'name' => $m->name])->values()),

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Modpack;
 use App\Models\User;
+use App\Models\UserPermission;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -49,6 +50,17 @@ class AppServiceProvider extends ServiceProvider
         Model::preventSilentlyDiscardingAttributes(! app()->isProduction());
 
         Gate::before(fn (User $user) => $user->permission->solder_full ?: null);
+
+        // A non-superadmin may only delegate permissions they hold themselves;
+        // solder_full is handled by the Gate::before above. The permission is
+        // whitelisted so an unexpected column name can never authorize a grant.
+        Gate::define('grant-permission', function (User $user, string $permission) {
+            if (! array_key_exists($permission, UserPermission::GRANTABLE_FIELDS)) {
+                return false;
+            }
+
+            return (bool) $user->permission->{$permission};
+        });
 
         View::composer('layouts.master', function ($view) {
             $modpacks = Cache::remember('allmodpacks', now()->addMinute(), function () {

@@ -203,7 +203,7 @@ final class UserTest extends TestCase
         $response->assertSessionHas('success');
     }
 
-    public function test_user_cannot_delete_last_admin_post(): void
+    public function test_non_superadmin_cannot_delete_superadmin(): void
     {
         // Create second user
         $user = User::unguarded(fn () => User::create([
@@ -224,14 +224,51 @@ final class UserTest extends TestCase
         // Auth as the new user
         $this->be($user);
 
+        // A non-superadmin may not act on a solder_full account at all, so the
+        // delete is denied outright rather than reaching the last-admin guard
+        // (which is exercised by test_user_cannot_delete_self for a superadmin).
         $response = $this->post('/user/delete/1');
-        $response->assertRedirect('/user/list');
-        $response->assertSessionHasErrors();
+        $response->assertRedirect('/dashboard');
+        $this->assertDatabaseHas('users', ['id' => 1]);
     }
 
     public function test_user_cannot_delete_self(): void
     {
         $response = $this->post('/user/delete/'.auth()->user()->id);
+        $response->assertRedirect('/user/list');
+        $response->assertSessionHasErrors();
+        $this->assertDatabaseHas('users', ['id' => auth()->user()->id]);
+    }
+
+    public function test_non_superadmin_cannot_delete_self(): void
+    {
+        $user = User::unguarded(fn () => User::create([
+            'email' => 'selfdelete@example.com',
+            'username' => 'selfdelete',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1,
+        ]));
+
+        // Enough permission to reach the delete handler, but self-deletion is
+        // refused for everyone regardless of privilege level.
+        $perm = new UserPermission;
+        $perm->user_id = $user->id;
+        $perm->solder_users = 1;
+        $perm->save();
+
+        $this->be($user);
+
+        $response = $this->post('/user/delete/'.$user->id);
+        $response->assertRedirect('/user/list');
+        $response->assertSessionHasErrors();
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+    }
+
+    public function test_user_cannot_reach_self_delete_confirmation(): void
+    {
+        $response = $this->get('/user/delete/'.auth()->user()->id);
         $response->assertRedirect('/user/list');
         $response->assertSessionHasErrors();
     }

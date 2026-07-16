@@ -23,9 +23,10 @@ final class AuthorizationTest extends TestCase
 
     private function createUserWithPermissions(array $perms = []): User
     {
+        $unique = uniqid();
         $user = new User;
-        $user->username = 'testuser';
-        $user->email = 'test@example.com';
+        $user->username = 'testuser-'.$unique;
+        $user->email = 'test-'.$unique.'@example.com';
         $user->password = 'password';
         $user->created_ip = '127.0.0.1';
         $user->created_by_user_id = 1;
@@ -199,6 +200,24 @@ final class AuthorizationTest extends TestCase
     {
         $user = $this->createUserWithPermissions();
         $this->actingAs($user)->get('/user/edit/1')
+            ->assertRedirect('/dashboard');
+    }
+
+    public function test_edit_denial_does_not_reveal_whether_user_exists(): void
+    {
+        $user = $this->createUserWithPermissions();
+        $target = $this->createUserWithPermissions();
+
+        // A non-manager must get the same denial for a real id as for an absent
+        // one; a "User not found" error would enumerate the user table.
+        $this->actingAs($user)->get('/user/edit/'.$target->id)
+            ->assertRedirect('/dashboard');
+        $this->actingAs($user)->get('/user/edit/999999')
+            ->assertRedirect('/dashboard');
+
+        $this->actingAs($user)->post('/user/edit/'.$target->id)
+            ->assertRedirect('/dashboard');
+        $this->actingAs($user)->post('/user/edit/999999')
             ->assertRedirect('/dashboard');
     }
 
@@ -411,5 +430,209 @@ final class AuthorizationTest extends TestCase
             ->assertJson(['status' => 'success']);
 
         $this->assertModelMissing($version);
+    }
+
+    // --- User permission delegation (clamp) ---
+    //
+    // A solder_users delegate may only grant permissions it holds itself; only
+    // solder_full may grant arbitrarily. A delegate also cannot act on a
+    // more-privileged account (UserPolicy subset check).
+
+    public function test_manager_cannot_grant_permissions_it_lacks_on_create(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true, 'mods_manage' => true]);
+
+        $this->actingAs($actor)->post('/user/create', [
+            'username' => 'delegated',
+            'email' => 'delegated@example.com',
+            'password' => 'B3sTp@ss',
+            'manage-users' => 'on', // actor holds solder_users -> granted
+            'mod-manage' => 'on',   // actor holds mods_manage -> granted
+            'mod-delete' => 'on',   // actor lacks mods_delete -> clamped
+            'manage-keys' => 'on',  // actor lacks solder_keys -> clamped
+            'solder-full' => 'on',  // never grantable by a non-superadmin
+        ]);
+
+        $perm = User::where('email', 'delegated@example.com')->firstOrFail()->permission;
+        $this->assertTrue((bool) $perm->solder_users);
+        $this->assertTrue((bool) $perm->mods_manage);
+        $this->assertFalse((bool) $perm->mods_delete);
+        $this->assertFalse((bool) $perm->solder_keys);
+        $this->assertFalse((bool) $perm->solder_full);
+    }
+
+    public function test_manager_cannot_grant_permissions_it_lacks_on_edit(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true, 'mods_manage' => true]);
+        $target = $this->createUserWithPermissions(['mods_manage' => true]);
+
+        $this->actingAs($actor)->post('/user/edit/'.$target->id, [
+            'username' => $target->username,
+            'email' => $target->email,
+            'mod-manage' => 'on',
+            'mod-delete' => 'on',  // actor lacks -> must not be granted
+            'manage-keys' => 'on', // actor lacks -> must not be granted
+        ]);
+
+        $perm = $target->fresh()->permission;
+        $this->assertTrue((bool) $perm->mods_manage);
+        $this->assertFalse((bool) $perm->mods_delete);
+        $this->assertFalse((bool) $perm->solder_keys);
+    }
+
+    public function test_manager_cannot_escalate_own_permissions_on_self_edit(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true, 'mods_manage' => true]);
+
+        $this->actingAs($actor)->post('/user/edit/'.$actor->id, [
+            'username' => $actor->username,
+            'email' => $actor->email,
+            'manage-users' => 'on',
+            'mod-manage' => 'on',
+            'mod-delete' => 'on',  // self-grant must be clamped
+            'solder-full' => 'on', // self-promotion must be clamped
+        ]);
+
+        $perm = $actor->fresh()->permission;
+        $this->assertTrue((bool) $perm->solder_users);
+        $this->assertTrue((bool) $perm->mods_manage);
+        $this->assertFalse((bool) $perm->mods_delete);
+        $this->assertFalse((bool) $perm->solder_full);
+    }
+
+    public function test_manager_cannot_grant_modpacks_outside_own_scope(): void
+    {
+        $packA = Modpack::create(['name' => 'Clamp Pack A', 'slug' => 'clamp-pack-a']);
+        $packB = Modpack::create(['name' => 'Clamp Pack B', 'slug' => 'clamp-pack-b']);
+
+        $actor = $this->createUserWithPermissions(['solder_users' => true, 'modpacks_manage' => true]);
+        $actor->permission->modpacks = [$packA->id];
+        $actor->permission->save();
+        $actor->load('permission');
+
+        $this->actingAs($actor)->post('/user/create', [
+            'username' => 'scoped',
+            'email' => 'scoped@example.com',
+            'password' => 'B3sTp@ss',
+            'modpack-manage' => 'on',
+            'modpack' => [$packA->id, $packB->id],
+        ]);
+
+        $packs = array_map('intval', User::where('email', 'scoped@example.com')->firstOrFail()->permission->modpacks);
+        $this->assertContains((int) $packA->id, $packs);
+        $this->assertNotContains((int) $packB->id, $packs);
+    }
+
+    public function test_manager_cannot_edit_more_privileged_user(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+
+        // User 1 is the seeded solder_full superadmin.
+        $this->actingAs($actor)->get('/user/edit/1')->assertRedirect('/dashboard');
+        $this->actingAs($actor)->post('/user/edit/1', [
+            'username' => 'admin',
+            'email' => 'admin@example.com',
+        ])->assertRedirect('/dashboard');
+    }
+
+    public function test_manager_cannot_edit_user_with_extra_permissions(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+        $target = $this->createUserWithPermissions(['solder_users' => true, 'mods_delete' => true]);
+
+        $this->actingAs($actor)->post('/user/edit/'.$target->id, [
+            'username' => $target->username,
+            'email' => $target->email,
+        ])->assertRedirect('/dashboard');
+    }
+
+    public function test_solder_full_can_grant_any_permission(): void
+    {
+        $admin = User::find(1); // solder_full
+
+        $this->actingAs($admin)->post('/user/create', [
+            'username' => 'fullgrant',
+            'email' => 'fullgrant@example.com',
+            'password' => 'B3sTp@ss',
+            'mod-delete' => 'on',
+            'modpack-delete' => 'on',
+            'manage-keys' => 'on',
+        ]);
+
+        $perm = User::where('email', 'fullgrant@example.com')->firstOrFail()->permission;
+        $this->assertTrue((bool) $perm->mods_delete);
+        $this->assertTrue((bool) $perm->modpacks_delete);
+        $this->assertTrue((bool) $perm->solder_keys);
+    }
+
+    public function test_manager_cannot_reset_2fa_of_more_privileged_user(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+
+        $this->actingAs($actor)->post('/user/1/reset-2fa')->assertRedirect('/dashboard');
+    }
+
+    public function test_manager_can_reset_2fa_of_managed_user(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+        $target = $this->createUserWithPermissions();
+        $target->forceFill([
+            'two_factor_secret' => 'enrolled-secret',
+            'two_factor_confirmed_at' => now(),
+        ])->save();
+
+        $this->actingAs($actor)->post('/user/'.$target->id.'/reset-2fa')
+            ->assertRedirect('/user/edit/'.$target->id);
+
+        $target->refresh();
+        $this->assertNull($target->two_factor_secret);
+        $this->assertNull($target->two_factor_confirmed_at);
+    }
+
+    public function test_regular_user_cannot_reset_own_2fa(): void
+    {
+        $user = $this->createUserWithPermissions();
+
+        $this->actingAs($user)->post('/user/'.$user->id.'/reset-2fa')
+            ->assertRedirect('/dashboard');
+    }
+
+    public function test_regular_user_cannot_delete_users(): void
+    {
+        $user = $this->createUserWithPermissions();
+        $target = $this->createUserWithPermissions();
+
+        $this->actingAs($user)->post('/user/delete/'.$target->id)
+            ->assertRedirect('/dashboard');
+        $this->assertModelExists($target);
+    }
+
+    public function test_manager_cannot_delete_more_privileged_user(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+
+        // User 1 is the seeded solder_full superadmin.
+        $this->actingAs($actor)->post('/user/delete/1')->assertRedirect('/dashboard');
+        $this->assertDatabaseHas('users', ['id' => 1]);
+    }
+
+    public function test_manager_cannot_delete_user_with_extra_permissions(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+        $target = $this->createUserWithPermissions(['solder_users' => true, 'mods_delete' => true]);
+
+        $this->actingAs($actor)->post('/user/delete/'.$target->id)
+            ->assertRedirect('/dashboard');
+        $this->assertModelExists($target);
+    }
+
+    public function test_manager_can_delete_managed_user(): void
+    {
+        $actor = $this->createUserWithPermissions(['solder_users' => true]);
+        $target = $this->createUserWithPermissions();
+
+        $this->actingAs($actor)->post('/user/delete/'.$target->id)
+            ->assertRedirect('/user/list');
+        $this->assertModelMissing($target);
     }
 }

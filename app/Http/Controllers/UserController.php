@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Modpack;
 use App\Models\User;
 use App\Models\UserPermission;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +38,12 @@ class UserController extends Controller
                 ->withErrors(['User ID not provided']);
         }
 
+        // Gate non-managers out before the lookup so the response can't be used
+        // to tell which user ids exist. Editing yourself needs no permission.
+        if ((int) $user_id !== Auth::id()) {
+            $this->authorize('viewAny', User::class);
+        }
+
         $user = User::find($user_id);
 
         if (empty($user)) {
@@ -46,7 +53,7 @@ class UserController extends Controller
 
         $this->authorize('update', $user);
 
-        $allModpacks = Modpack::all();
+        $allModpacks = $this->grantableModpackList();
 
         $userUpdatedBy = User::find($user->updated_by_user_id);
 
@@ -84,6 +91,12 @@ class UserController extends Controller
                 ->withErrors(['User ID not provided']);
         }
 
+        // Gate non-managers out before the lookup so the response can't be used
+        // to tell which user ids exist. Editing yourself needs no permission.
+        if ((int) $user_id !== Auth::id()) {
+            $this->authorize('viewAny', User::class);
+        }
+
         $user = User::find($user_id);
 
         if (empty($user)) {
@@ -118,33 +131,7 @@ class UserController extends Controller
         if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users) {
             $perm = $user->permission;
 
-            /* If user is original admin, always give full access. */
-            if ($user->id == 1) {
-                $perm->solder_full = true;
-            } elseif (Auth::user()->permission->solder_full) {
-                $perm->solder_full = \request()->boolean('solder-full');
-            }
-            $perm->solder_users = \request()->boolean('manage-users');
-            $perm->solder_keys = \request()->boolean('manage-keys');
-            $perm->solder_clients = \request()->boolean('manage-clients');
-
-            /* Mod Perms */
-            $perm->mods_create = \request()->boolean('mod-create');
-            $perm->mods_manage = \request()->boolean('mod-manage');
-            $perm->mods_delete = \request()->boolean('mod-delete');
-
-            /* Modpack Perms */
-            $perm->modpacks_create = \request()->boolean('modpack-create');
-            $perm->modpacks_manage = \request()->boolean('modpack-manage');
-            $perm->modpacks_delete = \request()->boolean('modpack-delete');
-            $modpack = Request::input('modpack');
-
-            if (! empty($modpack)) {
-                $modpack = array_filter(array_map('intval', (array) $modpack));
-                $perm->modpacks = Modpack::whereIn('id', $modpack)->pluck('id')->all() ?: null;
-            } else {
-                $perm->modpacks = null;
-            }
+            $this->applyGrantablePermissions($perm, Auth::user(), (int) $user->id === 1);
 
             $perm->save();
         }
@@ -164,7 +151,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $allModpacks = Modpack::all();
+        $allModpacks = $this->grantableModpackList();
 
         return view('user.create')
             ->with('allModpacks', $allModpacks);
@@ -188,56 +175,47 @@ class UserController extends Controller
         $creator = Auth::user()->id;
         $creatorIP = Request::ip();
 
-        $user = new User;
-        $user->email = Request::input('email');
-        $user->username = Request::input('username');
-        $user->password = Request::input('password');
-        $user->created_ip = $creatorIP;
-        $user->created_by_user_id = $creator;
-        $user->updated_by_ip = $creatorIP;
-        $user->updated_by_user_id = $creator;
-        $user->save();
+        // The user and its permission row are written together: a failure between
+        // the two would otherwise leave a user with no permissions at all, which
+        // no manager can then act on.
+        $user = DB::transaction(function () use ($creator, $creatorIP) {
+            $user = new User;
+            $user->email = Request::input('email');
+            $user->username = Request::input('username');
+            $user->password = Request::input('password');
+            $user->created_ip = $creatorIP;
+            $user->created_by_user_id = $creator;
+            $user->updated_by_ip = $creatorIP;
+            $user->updated_by_user_id = $creator;
+            $user->save();
 
-        $perm = new UserPermission;
-        $perm->user_id = $user->id;
+            $perm = new UserPermission;
+            $perm->user_id = $user->id;
 
-        $perm->solder_full = Auth::user()->permission->solder_full && \request()->boolean('solder-full');
-        $perm->solder_users = \request()->boolean('manage-users');
-        $perm->solder_keys = \request()->boolean('manage-keys');
-        $perm->solder_clients = \request()->boolean('manage-clients');
+            $this->applyGrantablePermissions($perm, Auth::user(), false);
 
-        /* Mod Perms */
-        $perm->mods_create = \request()->boolean('mod-create');
-        $perm->mods_manage = \request()->boolean('mod-manage');
-        $perm->mods_delete = \request()->boolean('mod-delete');
+            $perm->save();
 
-        /* Modpack Perms */
-        $perm->modpacks_create = \request()->boolean('modpack-create');
-        $perm->modpacks_manage = \request()->boolean('modpack-manage');
-        $perm->modpacks_delete = \request()->boolean('modpack-delete');
-        $modpack = Request::input('modpack');
-
-        if (! empty($modpack)) {
-            $modpack = array_filter(array_map('intval', (array) $modpack));
-            $perm->modpacks = Modpack::whereIn('id', $modpack)->pluck('id')->all() ?: null;
-        } else {
-            $perm->modpacks = null;
-        }
-
-        $perm->save();
+            return $user;
+        });
 
         return redirect('user/edit/'.$user->id)->with('success', 'User created!');
     }
 
     public function postResetTwoFactor($user_id): RedirectResponse
     {
-        $this->authorize('delete', User::class);
+        // Admin-only recovery action: gate non-managers out before the lookup
+        // (avoids leaking which user ids exist), then confirm this manager may
+        // act on the target. Deliberately not the self-passing `update` ability.
+        $this->authorize('viewAny', User::class);
 
         $user = User::find($user_id);
 
         if (empty($user)) {
             return redirect('user/list')->withErrors(['User not found']);
         }
+
+        $this->authorize('delete', $user);
 
         $user->forceFill([
             'two_factor_secret' => null,
@@ -250,7 +228,7 @@ class UserController extends Controller
 
     public function getDelete($user_id = null)
     {
-        $this->authorize('delete', User::class);
+        $this->authorize('viewAny', User::class);
 
         if (empty($user_id)) {
             return redirect('user/list')
@@ -261,6 +239,13 @@ class UserController extends Controller
         if (empty($user)) {
             return redirect('user/list')
                 ->withErrors(['User not found']);
+        }
+
+        $this->authorize('delete', $user);
+
+        if ((int) $user_id === Auth::id()) {
+            return redirect('user/list')
+                ->withErrors(['You cannot delete your own account.']);
         }
 
         if ($user->permission->solder_full) {
@@ -280,7 +265,7 @@ class UserController extends Controller
 
     public function postDelete($user_id = null): RedirectResponse
     {
-        $this->authorize('delete', User::class);
+        $this->authorize('viewAny', User::class);
 
         if (empty($user_id)) {
             return redirect('user/list')
@@ -291,6 +276,13 @@ class UserController extends Controller
         if (empty($user)) {
             return redirect('user/list')
                 ->withErrors(['User not found']);
+        }
+
+        $this->authorize('delete', $user);
+
+        if ((int) $user_id === Auth::id()) {
+            return redirect('user/list')
+                ->withErrors(['You cannot delete your own account.']);
         }
 
         if ($user->permission->solder_full) {
@@ -342,5 +334,61 @@ class UserController extends Controller
         $token->delete();
 
         return redirect('user/edit/'.$user->id)->with('success', 'API token revoked.');
+    }
+
+    /**
+     * Assign permissions to $perm from the request, clamped to what the acting
+     * user is allowed to grant. A non-superadmin may only grant (or revoke)
+     * permissions they hold themselves; permissions they lack are left at the
+     * target's existing value. Only a solder_full user may grant anything.
+     */
+    private function applyGrantablePermissions(UserPermission $perm, User $actor, bool $isOriginalAdmin): void
+    {
+        foreach (UserPermission::GRANTABLE_FIELDS as $column => $field) {
+            if ($actor->can('grant-permission', $column)) {
+                $perm->{$column} = \request()->boolean($field);
+            }
+        }
+
+        // The original admin (user 1) is always a superadmin.
+        if ($isOriginalAdmin) {
+            $perm->solder_full = true;
+        }
+
+        $perm->modpacks = $this->grantableModpacks($actor);
+    }
+
+    /**
+     * The per-modpack scope to assign, clamped to what the actor may grant: the
+     * requested ids intersected with the actor's own scope (the full requested
+     * set for a solder_full actor), validated against existing modpacks.
+     *
+     * @return list<int>|null
+     */
+    private function grantableModpacks(User $actor): ?array
+    {
+        $requested = array_filter(array_map('intval', (array) Request::input('modpack')));
+
+        if (! $actor->permission->solder_full) {
+            $actorPacks = array_map('intval', $actor->permission->modpacks);
+            $requested = array_intersect($requested, $actorPacks);
+        }
+
+        return Modpack::whereIn('id', $requested)->pluck('id')->all() ?: null;
+    }
+
+    /**
+     * The modpacks the acting user may assign in the create/edit forms: all
+     * modpacks for a solder_full user, otherwise only those in their own scope.
+     *
+     * @return Collection<int, Modpack>
+     */
+    private function grantableModpackList(): Collection
+    {
+        $actorPerm = Auth::user()->permission;
+
+        return $actorPerm->solder_full
+            ? Modpack::all()
+            : Modpack::whereIn('id', $actorPerm->modpacks)->get();
     }
 }
