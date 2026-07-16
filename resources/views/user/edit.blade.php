@@ -60,6 +60,7 @@
                             <input type="password"
                                    name="password1"
                                    id="password1"
+                                   autocomplete="new-password"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
 
@@ -68,6 +69,7 @@
                             <input type="password"
                                    name="password2"
                                    id="password2"
+                                   autocomplete="new-password"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
 
@@ -445,6 +447,7 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Please confirm your password to continue.</p>
                             <div class="mb-4">
                                 <input type="password" x-model="password" x-ref="passwordInput" @keydown.enter="submit()"
+                                       autocomplete="current-password"
                                        placeholder="Password"
                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                                 <p x-show="error" x-text="error" class="mt-1 text-sm text-red-600 dark:text-red-400"></p>

@@ -42,6 +42,18 @@ final class UserTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_user_create_get_password_field_hints_new_password(): void
+    {
+        $response = $this->get('/user/create');
+
+        $response->assertOk();
+        $this->assertSame(
+            1,
+            substr_count((string) $response->getContent(), 'autocomplete="new-password"'),
+            'The create form password field must hint new-password so password managers offer to generate one.'
+        );
+    }
+
     public function test_user_create_post_duplicate_email(): void
     {
         $data = [
@@ -88,6 +100,28 @@ final class UserTest extends TestCase
         $response = $this->get('/user/edit/'.$user->id);
 
         $response->assertOk();
+    }
+
+    public function test_user_edit_get_password_fields_hint_new_password(): void
+    {
+        $user = User::firstOrFail();
+
+        $response = $this->get('/user/edit/'.$user->id);
+
+        $response->assertOk();
+
+        $content = (string) $response->getContent();
+
+        $this->assertSame(
+            2,
+            substr_count($content, 'autocomplete="new-password"'),
+            'Both edit form password fields must hint new-password so password managers offer to generate one.'
+        );
+        $this->assertSame(
+            1,
+            substr_count($content, 'autocomplete="current-password"'),
+            'The confirm password modal must hint current-password so password managers offer the existing one.'
+        );
     }
 
     public function test_user_edit_post_duplicate_email(): void
