@@ -232,6 +232,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('modList', () => ({
         buildId: {{ $build->id }},
         savingAll: false,
+        filter: '',
         mods: @js($build->modversions->sortBy(fn($v) => strtolower($v->mod->pretty_name ?: $v->mod->name))->values()->map(fn($v) => [
             'mod_id' => $v->mod->id,
             'mod_name' => $v->mod->name,
@@ -239,6 +240,24 @@ document.addEventListener('alpine:init', () => {
             'modversion_id' => $v->pivot->modversion_id,
             'versions' => $v->mod->versions->map(fn($ver) => ['id' => $ver->id, 'version' => $ver->version]),
         ])).map(m => ({ ...m, selected_version_id: String(m.modversion_id), just_added: false, changing: false })),
+
+        get filteredMods() {
+            const query = this.filter.trim().toLowerCase();
+
+            if (query === '') {
+                return this.mods;
+            }
+
+            return this.mods.filter(mod => {
+                const selectedVersion = mod.versions.find(version =>
+                    String(version.id) === String(mod.selected_version_id)
+                )?.version ?? '';
+
+                return mod.pretty_name.toLowerCase().includes(query)
+                    || mod.mod_name.toLowerCase().includes(query)
+                    || selectedVersion.toLowerCase().includes(query);
+            });
+        },
 
         get pendingMods() {
             return this.mods.filter(m => String(m.selected_version_id) !== String(m.modversion_id));

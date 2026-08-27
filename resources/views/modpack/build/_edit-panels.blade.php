@@ -98,20 +98,28 @@
 <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800"
      x-data="modList()"
      @mod-added.window="addMod($event.detail)">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <span class="font-semibold text-gray-900 dark:text-white">Mod List</span>
-        <button type="button"
-                x-show="pendingMods.length > 0"
-                x-cloak
-                :disabled="savingAll"
-                @click="saveAll()"
-                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
-            <span x-show="!savingAll">Save All (<span x-text="pendingMods.length"></span>)</span>
-            <span x-show="savingAll">Saving...</span>
-        </button>
+        <div class="flex w-full items-center gap-2 sm:w-auto">
+            <label for="mod-list-filter" class="sr-only">Filter mods</label>
+            <input type="search"
+                   id="mod-list-filter"
+                   x-model.debounce.200ms="filter"
+                   placeholder="Filter mods..."
+                   class="min-w-0 flex-1 sm:w-64 sm:flex-none px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+            <button type="button"
+                    x-show="pendingMods.length > 0"
+                    x-cloak
+                    :disabled="savingAll"
+                    @click="saveAll()"
+                    class="shrink-0 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
+                <span x-show="!savingAll">Save All (<span x-text="pendingMods.length"></span>)</span>
+                <span x-show="savingAll">Saving...</span>
+            </button>
+        </div>
     </div>
     <div class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
-        <template x-for="mod in mods" :key="mod.modversion_id">
+        <template x-for="mod in filteredMods" :key="mod.modversion_id">
             <div :class="mod.just_added ? 'bg-green-50/50 dark:bg-green-900/10' : ''"
                  class="flex flex-col sm:flex-row sm:items-center gap-2 px-5 py-3">
                 <div class="sm:w-1/3 shrink-0">
@@ -146,8 +154,11 @@
             </div>
         </template>
 
-        <div x-show="mods.length === 0" class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+        <div x-show="mods.length === 0" x-cloak class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
             No mods have been added to this build yet.
+        </div>
+        <div x-show="mods.length > 0 && filteredMods.length === 0" x-cloak class="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+            No mods match your filter.
         </div>
     </div>
 </div>
