@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\ApiAuthContext;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,6 +65,17 @@ class Build extends Model
     public function modversions(): BelongsToMany
     {
         return $this->belongsToMany(Modversion::class)->withTimestamps();
+    }
+
+    public function isAccessibleBy(ApiAuthContext $auth): bool
+    {
+        $modpack = $this->modpack;
+
+        if (! $modpack || ! $this->is_published) {
+            return false;
+        }
+
+        return (! $modpack->private && ! $this->private) || $modpack->isAccessibleBy($auth);
     }
 
     public function isLive(): bool

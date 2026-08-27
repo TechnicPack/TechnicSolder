@@ -49,7 +49,7 @@ class Mod extends Model
 
     public function versions(): HasMany
     {
-        return $this->hasMany(Modversion::class);
+        return $this->hasMany(Modversion::class)->chaperone();
     }
 
     public function latestVersion(): HasOne

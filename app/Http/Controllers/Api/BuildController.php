@@ -50,7 +50,7 @@ class BuildController extends Controller
             return response()->json(['error' => 'Build does not exist'], 404);
         }
 
-        if (! $build->is_published || ($build->private && ! $modpack->isAccessibleBy($auth))) {
+        if (! $build->isAccessibleBy($auth)) {
             return response()->json(['error' => 'Build does not exist'], 404);
         }
 

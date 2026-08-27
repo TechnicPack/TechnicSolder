@@ -85,7 +85,7 @@ class Modpack extends Model
 
     public function builds(): HasMany
     {
-        return $this->hasMany(Build::class);
+        return $this->hasMany(Build::class)->chaperone();
     }
 
     public function clients(): BelongsToMany
@@ -130,19 +130,9 @@ class Modpack extends Model
             'latest' => $this->latest,
         ];
 
-        $canViewPrivate = $this->isAccessibleBy($auth);
-
-        $response['builds'] = $this->builds->filter(function ($build) use ($canViewPrivate) {
-            if (! $build->is_published) {
-                return false;
-            }
-
-            if (! $build->private) {
-                return true;
-            }
-
-            return $canViewPrivate;
-        })->pluck('version');
+        $response['builds'] = $this->builds
+            ->filter(fn (Build $build) => $build->isAccessibleBy($auth))
+            ->pluck('version');
 
         return $response;
     }

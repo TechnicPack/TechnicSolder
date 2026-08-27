@@ -3,8 +3,11 @@
 namespace Tests\Unit;
 
 use App\Models\Build;
+use App\Models\Client;
+use App\Models\Key;
 use App\Models\Mod;
 use App\Models\Modpack;
+use App\Models\Modversion;
 use App\Models\User;
 use App\Models\UserPermission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -256,6 +259,269 @@ final class ApiTest extends TestCase
         UserPermission::create(array_merge(['user_id' => $user->id], $perms));
 
         return $user->fresh();
+    }
+
+    private function createBuildForModversion(
+        Modversion $modversion,
+        Modpack $modpack,
+        string $version,
+        array $attributes = [],
+    ): Build {
+        $build = $modpack->builds()->create(array_merge([
+            'version' => $version,
+            'is_published' => true,
+            'private' => false,
+        ], $attributes));
+
+        $build->modversions()->attach($modversion);
+
+        return $build;
+    }
+
+    public function test_mod_version_lists_accessible_builds_with_modpack_information(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::find(1);
+        $modversion = $mod->versions->first();
+        $modpack = Modpack::find(1);
+        $seededBuild = Build::find(1);
+        $secondBuild = $this->createBuildForModversion($modversion, $modpack, '2.0.0');
+
+        $response = $this->getJson('api/mod/'.$mod->name.'/'.$modversion->version);
+
+        $response->assertOk();
+
+        $builds = $response->json('builds');
+
+        $this->assertSame([0, 1], array_keys($builds));
+        $this->assertSame([$seededBuild->id, $secondBuild->id], array_column($builds, 'id'));
+        $this->assertSame([
+            [
+                'id' => $seededBuild->id,
+                'version' => $seededBuild->version,
+                'modpack' => [
+                    'id' => $modpack->id,
+                    'name' => $modpack->slug,
+                    'display_name' => $modpack->name,
+                ],
+            ],
+            [
+                'id' => $secondBuild->id,
+                'version' => $secondBuild->version,
+                'modpack' => [
+                    'id' => $modpack->id,
+                    'name' => $modpack->slug,
+                    'display_name' => $modpack->name,
+                ],
+            ],
+        ], $builds);
+    }
+
+    public function test_mod_version_hides_unpublished_and_unauthorized_builds(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::find(1);
+        $modversion = $mod->versions->first();
+        $publicModpack = Modpack::find(1);
+        $seededBuild = Build::find(1);
+
+        $hiddenModpack = $this->makeHiddenModpack();
+        $hiddenBuild = $this->createBuildForModversion(
+            $modversion,
+            $hiddenModpack,
+            'hidden-membership',
+        );
+        $this->createBuildForModversion(
+            $modversion,
+            $publicModpack,
+            'private-membership',
+            ['private' => true],
+        );
+
+        $privateModpack = $this->makePrivateModpack();
+        $this->createBuildForModversion(
+            $modversion,
+            $privateModpack,
+            'private-pack-membership',
+        );
+        $this->createBuildForModversion(
+            $modversion,
+            $publicModpack,
+            'unpublished-membership',
+            ['is_published' => false],
+        );
+
+        $response = $this->getJson('api/mod/'.$mod->name.'/'.$modversion->version);
+
+        $response->assertOk();
+        $this->assertSame([
+            [
+                'id' => $seededBuild->id,
+                'version' => $seededBuild->version,
+                'modpack' => [
+                    'id' => $publicModpack->id,
+                    'name' => $publicModpack->slug,
+                    'display_name' => $publicModpack->name,
+                ],
+            ],
+            [
+                'id' => $hiddenBuild->id,
+                'version' => $hiddenBuild->version,
+                'modpack' => [
+                    'id' => $hiddenModpack->id,
+                    'name' => $hiddenModpack->slug,
+                    'display_name' => $hiddenModpack->name,
+                ],
+            ],
+        ], $response->json('builds'));
+    }
+
+    public function test_mod_version_respects_sanctum_user_modpack_scope(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::find(1);
+        $modversion = $mod->versions->first();
+        $seededBuild = Build::find(1);
+        $privateModpack = $this->makePrivateModpack();
+        $privateBuild = $this->createBuildForModversion(
+            $modversion,
+            $privateModpack,
+            'private-pack-membership',
+        );
+
+        $scopedUser = $this->makeUserWithPermissions([
+            'modpacks_manage' => true,
+            'modpacks' => [$privateModpack->id],
+        ]);
+        $scopedToken = $scopedUser->createToken('test')->plainTextToken;
+
+        $response = $this->getJson('api/mod/'.$mod->name.'/'.$modversion->version, [
+            'Authorization' => 'Bearer '.$scopedToken,
+        ]);
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id, $privateBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
+
+        auth('sanctum')->forgetUser();
+
+        $unscopedUser = $this->makeUserWithPermissions([
+            'modpacks_manage' => true,
+            'modpacks' => [],
+        ]);
+        $unscopedToken = $unscopedUser->createToken('test')->plainTextToken;
+
+        $response = $this->getJson('api/mod/'.$mod->name.'/'.$modversion->version, [
+            'Authorization' => 'Bearer '.$unscopedToken,
+        ]);
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
+
+        auth('sanctum')->forgetUser();
+
+        $admin = User::find(1);
+        $adminToken = $admin->createToken('test')->plainTextToken;
+
+        $response = $this->getJson('api/mod/'.$mod->name.'/'.$modversion->version, [
+            'Authorization' => 'Bearer '.$adminToken,
+        ]);
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id, $privateBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
+    }
+
+    public function test_mod_version_respects_client_and_api_key_access(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::find(1);
+        $modversion = $mod->versions->first();
+        $seededBuild = Build::find(1);
+
+        $associatedModpack = $this->makePrivateModpack();
+        $unassociatedModpack = $this->makeHiddenModpack();
+        $unassociatedModpack->update(['private' => true]);
+
+        $associatedBuild = $this->createBuildForModversion(
+            $modversion,
+            $associatedModpack,
+            'associated-private-membership',
+        );
+        $unassociatedBuild = $this->createBuildForModversion(
+            $modversion,
+            $unassociatedModpack,
+            'unassociated-private-membership',
+        );
+
+        $client = Client::first();
+        $client->modpacks()->sync([$associatedModpack->id]);
+
+        $response = $this->getJson(
+            'api/mod/'.$mod->name.'/'.$modversion->version.'?cid='.$client->uuid,
+        );
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id, $associatedBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
+
+        $key = Key::first();
+        $response = $this->getJson(
+            'api/mod/'.$mod->name.'/'.$modversion->version.'?k='.$key->api_key,
+        );
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id, $associatedBuild->id, $unassociatedBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
+    }
+
+    public function test_mod_version_rechecks_visibility_after_cached_authorized_request(): void
+    {
+        config()->set('solder.disable_mod_api', false);
+
+        $mod = Mod::find(1);
+        $modversion = $mod->versions->first();
+        $seededBuild = Build::find(1);
+        $privateModpack = $this->makePrivateModpack();
+        $privateBuild = $this->createBuildForModversion(
+            $modversion,
+            $privateModpack,
+            'private-cached-membership',
+        );
+        $key = Key::first();
+
+        $response = $this->getJson(
+            'api/mod/'.$mod->name.'/'.$modversion->version.'?k='.$key->api_key,
+        );
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id, $privateBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
+
+        $response = $this->getJson('api/mod/'.$mod->name.'/'.$modversion->version);
+
+        $response->assertOk();
+        $this->assertSame(
+            [$seededBuild->id],
+            array_column($response->json('builds'), 'id'),
+        );
     }
 
     public function test_sanctum_user_with_full_access_sees_private_modpacks(): void
