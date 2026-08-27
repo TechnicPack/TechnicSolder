@@ -2,6 +2,31 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [Unreleased]
+
+### Added
+
+- Bearer-token users with `mods_manage` or `solder_full` permission can read `/api/mod` endpoints when public mod API access is disabled with `SOLDER_DISABLE_MOD_API=true`
+- `GET /api/mod/{slug}/{version}` responses now include accessible build memberships and their owning modpack metadata
+- Build mod list filtering by mod name, slug, and selected version
+
+### Changed
+
+- Development Compose stack now uses the isolated `technicsolder-dev` project instead of sharing production containers and volumes
+- Password fields now identify current and new credentials correctly to password managers
+- Distributed environment example now enables persistent Redis connections to prevent ephemeral-port exhaustion under sustained high concurrency
+- npm dependency lifecycle scripts are disabled and dependency updates are delayed for seven days to reduce supply-chain exposure; Renovate security updates remain exempt from the delay
+
+### Fixed
+
+- Delegated user managers can no longer grant permissions they do not hold or manage users with greater permissions or broader modpack access
+- The final `solder_full` user can no longer demote themselves, regardless of their database ID
+- Profile-only and password-only user updates no longer revoke permissions omitted from the request
+- Password changes now require the acting user's current password, including when a manager resets another user's password; malformed password values return a validation error
+- Login throttling now canonicalizes email casing and Unicode variants, preventing equivalent addresses from receiving separate rate-limit buckets
+- Login details, update checks, and password rehashing now occur only after authentication and two-factor challenges complete successfully
+- Users can no longer delete their own accounts
+
 ## [1.1.3] - 2026-04-18
 
 ### Fixed
