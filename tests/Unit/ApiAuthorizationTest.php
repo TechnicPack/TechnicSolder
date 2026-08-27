@@ -162,8 +162,57 @@ final class ApiAuthorizationTest extends TestCase
 
     // --- Mod authorization ---
 
-    public function test_create_mod_with_permission(): void
+    public function test_mod_manager_can_access_disabled_mod_read_api(): void
     {
+        config()->set('solder.disable_mod_api', true);
+
+        $mod = Mod::first();
+        $modVersion = $mod->versions->first();
+        $token = $this->createUserWithToken(['mods_manage' => true]);
+
+        $this->getJson('api/mod', $this->headers($token))
+            ->assertOk()
+            ->assertJsonPath('mods.'.$mod->name, $mod->pretty_name);
+
+        $this->getJson('api/mod/'.$mod->name, $this->headers($token))
+            ->assertOk()
+            ->assertJsonPath('id', $mod->id)
+            ->assertJsonPath('name', $mod->name)
+            ->assertJsonStructure(['versions']);
+
+        $this->getJson('api/mod/'.$mod->name.'/'.$modVersion->version, $this->headers($token))
+            ->assertOk()
+            ->assertJsonPath('id', $modVersion->id)
+            ->assertJsonPath('md5', $modVersion->md5)
+            ->assertJsonStructure(['builds']);
+    }
+
+    public function test_solder_full_can_access_disabled_mod_read_api(): void
+    {
+        config()->set('solder.disable_mod_api', true);
+
+        $token = $this->createUserWithToken(['solder_full' => true]);
+
+        $this->getJson('api/mod', $this->headers($token))
+            ->assertOk()
+            ->assertJsonStructure(['mods']);
+    }
+
+    public function test_user_without_mod_manage_cannot_access_disabled_mod_read_api(): void
+    {
+        config()->set('solder.disable_mod_api', true);
+
+        $token = $this->createUserWithToken();
+
+        $this->getJson('api/mod', $this->headers($token))
+            ->assertNotFound()
+            ->assertExactJson(['error' => 'Mod API has been disabled']);
+    }
+
+    public function test_create_mod_with_permission_when_mod_api_is_disabled(): void
+    {
+        config()->set('solder.disable_mod_api', true);
+
         $token = $this->createUserWithToken(['mods_create' => true]);
 
         $this->postJson('api/mod', [

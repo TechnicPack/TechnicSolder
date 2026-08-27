@@ -13,10 +13,6 @@ class ModController extends Controller
 {
     public function index(): JsonResponse
     {
-        if (config('solder.disable_mod_api')) {
-            return response()->json(['error' => 'Mod API has been disabled'], 404);
-        }
-
         $mods = Cache::remember('mods', now()->addMinutes(5), function () {
             return Mod::pluck('pretty_name', 'name');
         });
@@ -28,10 +24,6 @@ class ModController extends Controller
 
     public function show(string $slug): JsonResponse
     {
-        if (config('solder.disable_mod_api')) {
-            return response()->json(['error' => 'Mod API has been disabled'], 404);
-        }
-
         $mod = Cache::remember('mod:'.$slug, now()->addMinutes(5), function () use ($slug) {
             return Mod::with('versions')->where('name', $slug)->first();
         });

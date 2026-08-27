@@ -16,10 +16,6 @@ class ModversionController extends Controller
 {
     public function show(string $slug, string $version): JsonResponse
     {
-        if (config('solder.disable_mod_api')) {
-            return response()->json(['error' => 'Mod API has been disabled'], 404);
-        }
-
         $auth = ApiAuthContext::fromRequest();
 
         $mod = Cache::remember('mod:'.$slug, now()->addMinutes(5), function () use ($slug) {

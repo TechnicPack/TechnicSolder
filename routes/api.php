@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ModController;
 use App\Http\Controllers\Api\ModpackController;
 use App\Http\Controllers\Api\ModversionController;
 use App\Http\Controllers\Api\TokenController;
+use App\Http\Middleware\RequireModApi;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,9 +33,11 @@ Route::get('modpack', [ModpackController::class, 'index']);
 Route::get('modpack/{slug}', [ModpackController::class, 'show']);
 Route::get('modpack/{slug}/{version}', [BuildController::class, 'show']);
 
-Route::get('mod', [ModController::class, 'index']);
-Route::get('mod/{slug}', [ModController::class, 'show']);
-Route::get('mod/{slug}/{version}', [ModversionController::class, 'show']);
+Route::middleware(RequireModApi::class)->group(function () {
+    Route::get('mod', [ModController::class, 'index']);
+    Route::get('mod/{slug}', [ModController::class, 'show']);
+    Route::get('mod/{slug}/{version}', [ModversionController::class, 'show']);
+});
 
 Route::get('verify/{key}', [KeyController::class, 'verify'])->middleware('throttle:key-verify');
 
