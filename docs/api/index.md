@@ -59,4 +59,4 @@ The `GET /api/verify/{key}` endpoint is rate-limited. All other endpoints use de
 
 ## Disabling the Mod API
 
-Set `SOLDER_DISABLE_MOD_API=true` in your `.env` to disable the `/api/mod` endpoints. This returns a 404 for all mod-related read requests. Write endpoints are unaffected.
+Set `SOLDER_DISABLE_MOD_API=true` in your `.env` to disable public reads from the `/api/mod` endpoints. Anonymous requests and `cid` or `k` query credentials then receive a 404 response. Sanctum bearer-token users with `mods_manage` or `solder_full` permission can still read these endpoints. Write endpoints remain governed by their existing authorization policies.

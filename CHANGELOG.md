@@ -2,7 +2,7 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
-## [Unreleased]
+## [1.2.0] - 2026-08-27
 
 ### Added
 
@@ -16,9 +16,11 @@ All notable changes to Technic Solder will be documented in this file.
 - Password fields now identify current and new credentials correctly to password managers
 - Distributed environment example now enables persistent Redis connections to prevent ephemeral-port exhaustion under sustained high concurrency
 - npm dependency lifecycle scripts are disabled and dependency updates are delayed for seven days to reduce supply-chain exposure; Renovate security updates remain exempt from the delay
+- Updated PHP, frontend, build, and CI dependencies, including Laravel 13.26, Guzzle 7.15, Alpine.js 3.16, Tailwind CSS 4.3, Vite 8.2, Node.js 24.18, `actions/checkout` 7, and `actions/setup-python` 7
 
 ### Fixed
 
+- PostCSS and nanoid updated to fix source map path traversal and unbounded generator loop vulnerabilities
 - Delegated user managers can no longer grant permissions they do not hold or manage users with greater permissions or broader modpack access
 - The final `solder_full` user can no longer demote themselves, regardless of their database ID
 - Profile-only and password-only user updates no longer revoke permissions omitted from the request
@@ -177,6 +179,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.2.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.3...v1.2.0
 [1.1.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.0...v1.1.1

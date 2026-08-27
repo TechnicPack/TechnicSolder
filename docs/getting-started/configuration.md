@@ -60,7 +60,7 @@
 | `SOLDER_MIRROR_URL` | `http://mods.example.com/` | Public URL the launcher uses to download mod files. Trailing slash added automatically if omitted. |
 | `SOLDER_MD5_CONNECT_TIMEOUT` | `5` | Seconds to wait when connecting for MD5 checksums |
 | `SOLDER_MD5_FILE_TIMEOUT` | `30` | Seconds to wait when computing MD5 checksums |
-| `SOLDER_DISABLE_MOD_API` | `false` | Set to `true` to disable `/api/mod` endpoints |
+| `SOLDER_DISABLE_MOD_API` | `false` | Set to `true` to disable public `/api/mod` reads; authorized manager bearer tokens retain access |
 | `SOLDER_CORS_ORIGINS` | `*` | Allowed CORS origins (comma-separated or `*` for all) |
 
 ??? note "Advanced Configuration"

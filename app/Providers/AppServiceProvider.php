@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             define('SOLDER_STREAM', 'rolling');
         }
         if (! defined('SOLDER_VERSION')) {
-            define('SOLDER_VERSION', '1.1.3');
+            define('SOLDER_VERSION', '1.2.0');
         }
 
         Model::preventSilentlyDiscardingAttributes(! app()->isProduction());
