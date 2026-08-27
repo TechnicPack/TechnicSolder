@@ -14,7 +14,6 @@
 
             <form action="{{ url()->current() }}" method="post" accept-charset="UTF-8">
                 @csrf
-                <input type="hidden" name="edit-user" value="1">
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {{-- Left column: Account details --}}
@@ -48,6 +47,7 @@
 
                     {{-- Right column: Permissions --}}
                     <div>
+                        <input type="hidden" name="permissions-present" value="1">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Permissions</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                             Please select the level of access this user will be given. The "Solderwide" permission is

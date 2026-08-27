@@ -174,6 +174,9 @@ final class UserTest extends TestCase
     public function test_user_edit_post(): void
     {
         $user = User::firstOrFail();
+        $user->permission->solder_users = true;
+        $user->permission->mods_manage = true;
+        $user->permission->save();
 
         $data = [
             'email' => 'admin2@example.com',
@@ -183,6 +186,112 @@ final class UserTest extends TestCase
         $response = $this->post('/user/edit/'.$user->id, $data);
         $response->assertRedirect('/user/edit/'.$user->id);
         $response->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertTrue((bool) $user->permission->solder_full);
+        $this->assertTrue((bool) $user->permission->solder_users);
+        $this->assertTrue((bool) $user->permission->mods_manage);
+    }
+
+    public function test_non_original_last_superadmin_cannot_demote_self(): void
+    {
+        $user = User::unguarded(fn () => User::create([
+            'email' => 'remaining-admin@example.com',
+            'username' => 'remaining-admin',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1,
+        ]));
+
+        $permission = new UserPermission;
+        $permission->user_id = $user->id;
+        $permission->solder_full = true;
+        $permission->save();
+
+        $this->be($user);
+        $this->post('/user/delete/1')->assertSessionHas('success');
+
+        $response = $this->post('/user/edit/'.$user->id, [
+            'permissions-present' => '1',
+            'email' => 'changed@example.com',
+            'username' => $user->username,
+        ]);
+
+        $response->assertRedirect('/user/edit/'.$user->id);
+        $response->assertSessionHasErrors('solder-full');
+
+        $user->refresh();
+        $this->assertSame('remaining-admin@example.com', $user->email);
+        $this->assertTrue((bool) $user->permission->solder_full);
+    }
+
+    public function test_user_one_can_be_demoted_when_another_superadmin_exists(): void
+    {
+        $admin = User::findOrFail(1);
+        $otherAdmin = User::unguarded(fn () => User::create([
+            'email' => 'other-admin@example.com',
+            'username' => 'other-admin',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1,
+        ]));
+
+        $permission = new UserPermission;
+        $permission->user_id = $otherAdmin->id;
+        $permission->solder_full = true;
+        $permission->save();
+
+        $response = $this->post('/user/edit/'.$admin->id, [
+            'permissions-present' => '1',
+            'email' => $admin->email,
+            'username' => $admin->username,
+        ]);
+
+        $response->assertRedirect('/user/edit/'.$admin->id);
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('success');
+
+        $admin->refresh();
+        $this->assertFalse((bool) $admin->permission->solder_full);
+        $this->assertTrue((bool) $otherAdmin->permission->solder_full);
+    }
+
+    public function test_editing_non_admin_user_one_does_not_promote_them(): void
+    {
+        $target = User::findOrFail(1);
+        $target->permission->solder_full = false;
+        $target->permission->save();
+
+        $manager = User::unguarded(fn () => User::create([
+            'email' => 'manager@example.com',
+            'username' => 'manager',
+            'password' => 'password',
+            'created_ip' => '127.0.0.1',
+            'last_ip' => '127.0.0.1',
+            'created_by_user_id' => 1,
+        ]));
+
+        $permission = new UserPermission;
+        $permission->user_id = $manager->id;
+        $permission->solder_users = true;
+        $permission->save();
+
+        $this->be($manager);
+
+        $response = $this->post('/user/edit/'.$target->id, [
+            'permissions-present' => '1',
+            'email' => $target->email,
+            'username' => $target->username,
+        ]);
+
+        $response->assertRedirect('/user/list');
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('success');
+
+        $target->refresh();
+        $this->assertFalse((bool) $target->permission->solder_full);
     }
 
     public function test_password_change_requires_current_password(): void
@@ -449,6 +558,7 @@ final class UserTest extends TestCase
             'email' => 'test-sadmin@example.com',
             'username' => 'sadmin',
             'password' => 'B3sT3Re4p@ss',
+            'permissions-present' => '1',
             'solder-full' => '1',
         ];
 

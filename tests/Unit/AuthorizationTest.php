@@ -287,6 +287,7 @@ final class AuthorizationTest extends TestCase
     {
         $user = $this->createUserWithPermissions();
         $this->actingAs($user)->post('/user/edit/'.$user->id, [
+            'permissions-present' => '1',
             'email' => $user->email,
             'username' => $user->username,
             'solder-full' => 'on',
@@ -443,6 +444,7 @@ final class AuthorizationTest extends TestCase
         $actor = $this->createUserWithPermissions(['solder_users' => true, 'mods_manage' => true]);
 
         $this->actingAs($actor)->post('/user/create', [
+            'permissions-present' => '1',
             'username' => 'delegated',
             'email' => 'delegated@example.com',
             'password' => 'B3sTp@ss',
@@ -467,6 +469,7 @@ final class AuthorizationTest extends TestCase
         $target = $this->createUserWithPermissions(['mods_manage' => true]);
 
         $this->actingAs($actor)->post('/user/edit/'.$target->id, [
+            'permissions-present' => '1',
             'username' => $target->username,
             'email' => $target->email,
             'mod-manage' => 'on',
@@ -485,6 +488,7 @@ final class AuthorizationTest extends TestCase
         $actor = $this->createUserWithPermissions(['solder_users' => true, 'mods_manage' => true]);
 
         $this->actingAs($actor)->post('/user/edit/'.$actor->id, [
+            'permissions-present' => '1',
             'username' => $actor->username,
             'email' => $actor->email,
             'manage-users' => 'on',
@@ -511,6 +515,7 @@ final class AuthorizationTest extends TestCase
         $actor->load('permission');
 
         $this->actingAs($actor)->post('/user/create', [
+            'permissions-present' => '1',
             'username' => 'scoped',
             'email' => 'scoped@example.com',
             'password' => 'B3sTp@ss',
@@ -551,6 +556,7 @@ final class AuthorizationTest extends TestCase
         $admin = User::find(1); // solder_full
 
         $this->actingAs($admin)->post('/user/create', [
+            'permissions-present' => '1',
             'username' => 'fullgrant',
             'email' => 'fullgrant@example.com',
             'password' => 'B3sTp@ss',
