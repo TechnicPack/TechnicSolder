@@ -9,8 +9,7 @@ This project ships two separate Compose stacks. They are NOT layered; each runs 
 
 - Start: `docker compose -f compose.dev.yml up -d`
 - Stop: `docker compose -f compose.dev.yml down`
-- Run commands: `docker compose exec -T solder <cmd>` works once the stack is up (this is the
-  running container the bare `docker compose exec` lines in laravel.md and testing.md target).
+- Run commands: `docker compose -f compose.dev.yml exec -T solder <cmd>` works once the stack is up.
 
 ## Never do this
 

@@ -222,6 +222,25 @@ final class UserTest extends TestCase
         $this->assertTrue(Hash::check('admin', $user->password), 'The password must be unchanged.');
     }
 
+    public function test_password_change_rejects_array_current_password(): void
+    {
+        $user = User::firstOrFail();
+
+        $response = $this->post('/user/edit/'.$user->id, [
+            'email' => $user->email,
+            'username' => $user->username,
+            'current_password' => ['x'],
+            'password1' => 'N3wP@ssw0rd!',
+            'password2' => 'N3wP@ssw0rd!',
+        ]);
+
+        $response->assertRedirect('/user/edit/'.$user->id);
+        $response->assertSessionHasErrors('current_password');
+
+        $user->refresh();
+        $this->assertTrue(Hash::check('admin', $user->password), 'The password must be unchanged.');
+    }
+
     public function test_password_change_succeeds_with_correct_current_password(): void
     {
         $user = User::firstOrFail();
