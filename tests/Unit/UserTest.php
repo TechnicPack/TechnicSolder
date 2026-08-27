@@ -174,6 +174,9 @@ final class UserTest extends TestCase
     public function test_user_edit_post(): void
     {
         $user = User::firstOrFail();
+        $user->permission->solder_users = true;
+        $user->permission->mods_manage = true;
+        $user->permission->save();
 
         $data = [
             'email' => 'admin2@example.com',
@@ -183,6 +186,11 @@ final class UserTest extends TestCase
         $response = $this->post('/user/edit/'.$user->id, $data);
         $response->assertRedirect('/user/edit/'.$user->id);
         $response->assertSessionHas('success');
+
+        $user->refresh();
+        $this->assertTrue((bool) $user->permission->solder_full);
+        $this->assertTrue((bool) $user->permission->solder_users);
+        $this->assertTrue((bool) $user->permission->mods_manage);
     }
 
     public function test_non_original_last_superadmin_cannot_demote_self(): void
@@ -205,7 +213,7 @@ final class UserTest extends TestCase
         $this->post('/user/delete/1')->assertSessionHas('success');
 
         $response = $this->post('/user/edit/'.$user->id, [
-            'edit-user' => '1',
+            'permissions-present' => '1',
             'email' => 'changed@example.com',
             'username' => $user->username,
         ]);
@@ -236,7 +244,7 @@ final class UserTest extends TestCase
         $permission->save();
 
         $response = $this->post('/user/edit/'.$admin->id, [
-            'edit-user' => '1',
+            'permissions-present' => '1',
             'email' => $admin->email,
             'username' => $admin->username,
         ]);
@@ -273,7 +281,7 @@ final class UserTest extends TestCase
         $this->be($manager);
 
         $response = $this->post('/user/edit/'.$target->id, [
-            'edit-user' => '1',
+            'permissions-present' => '1',
             'email' => $target->email,
             'username' => $target->username,
         ]);
@@ -550,6 +558,7 @@ final class UserTest extends TestCase
             'email' => 'test-sadmin@example.com',
             'username' => 'sadmin',
             'password' => 'B3sT3Re4p@ss',
+            'permissions-present' => '1',
             'solder-full' => '1',
         ];
 

@@ -129,11 +129,10 @@ class UserController extends Controller
 
         return DB::transaction(function () use ($actor, $user) {
             /* Update User Permissions */
-            if ($actor->permission->solder_full || $actor->permission->solder_users) {
+            if (Request::boolean('permissions-present')
+                && ($actor->permission->solder_full || $actor->permission->solder_users)) {
                 $perm = $user->permission;
-                $updatesFullAccess = Request::has('solder-full') || Request::boolean('edit-user');
-                $removesFullAccess = $updatesFullAccess
-                    && $perm->solder_full
+                $removesFullAccess = $perm->solder_full
                     && $actor->can('grant-permission', 'solder_full')
                     && ! \request()->boolean('solder-full');
 
@@ -223,7 +222,9 @@ class UserController extends Controller
             $perm = new UserPermission;
             $perm->user_id = $user->id;
 
-            $this->applyGrantablePermissions($perm, Auth::user());
+            if (Request::boolean('permissions-present')) {
+                $this->applyGrantablePermissions($perm, Auth::user());
+            }
 
             $perm->save();
 
@@ -376,12 +377,6 @@ class UserController extends Controller
     private function applyGrantablePermissions(UserPermission $perm, User $actor): void
     {
         foreach (UserPermission::GRANTABLE_FIELDS as $column => $field) {
-            if ($column === 'solder_full'
-                && ! Request::has($field)
-                && ! Request::boolean('edit-user')) {
-                continue;
-            }
-
             if ($actor->can('grant-permission', $column)) {
                 $perm->{$column} = \request()->boolean($field);
             }
