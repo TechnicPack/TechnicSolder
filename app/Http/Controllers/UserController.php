@@ -125,30 +125,57 @@ class UserController extends Controller
             return redirect('user/edit/'.$user_id)->withErrors($validation->messages());
         }
 
-        $user->email = Request::input('email');
-        $user->username = Request::input('username');
-        if (Request::input('password1')) {
-            $user->password = Request::input('password1');
-        }
+        $actor = Auth::user();
 
-        /* Update User Permissions */
-        if (Auth::user()->permission->solder_full || Auth::user()->permission->solder_users) {
-            $perm = $user->permission;
+        return DB::transaction(function () use ($actor, $user) {
+            /* Update User Permissions */
+            if ($actor->permission->solder_full || $actor->permission->solder_users) {
+                $perm = $user->permission;
+                $updatesFullAccess = Request::has('solder-full') || Request::boolean('edit-user');
+                $removesFullAccess = $updatesFullAccess
+                    && $perm->solder_full
+                    && $actor->can('grant-permission', 'solder_full')
+                    && ! \request()->boolean('solder-full');
 
-            $this->applyGrantablePermissions($perm, Auth::user(), (int) $user->id === 1);
+                if ($removesFullAccess) {
+                    $superadmins = UserPermission::query()
+                        ->where('solder_full', true)
+                        ->orderBy('id')
+                        ->lockForUpdate()
+                        ->get(['id', 'user_id']);
 
-            $perm->save();
-        }
+                    $hasOtherSuperadmin = $superadmins->contains(
+                        fn (UserPermission $permission): bool => (int) $permission->user_id !== (int) $user->id
+                    );
 
-        // Security logging
-        $user->updated_by_user_id = Auth::user()->id;
-        $user->updated_by_ip = Request::ip();
+                    if (! $hasOtherSuperadmin) {
+                        return redirect('user/edit/'.$user->id)->withErrors([
+                            'solder-full' => 'At least one user must retain full Solder access.',
+                        ]);
+                    }
+                }
 
-        $user->save();
+                $this->applyGrantablePermissions($perm, $actor);
 
-        $redirect = Auth::id() === $user->id ? 'user/edit/'.$user->id : 'user/list';
+                $perm->save();
+            }
 
-        return redirect($redirect)->with('success', 'User edited successfully!');
+            $user->email = Request::input('email');
+            $user->username = Request::input('username');
+            if (Request::input('password1')) {
+                $user->password = Request::input('password1');
+            }
+
+            // Security logging
+            $user->updated_by_user_id = $actor->id;
+            $user->updated_by_ip = Request::ip();
+
+            $user->save();
+
+            $redirect = $actor->id === $user->id ? 'user/edit/'.$user->id : 'user/list';
+
+            return redirect($redirect)->with('success', 'User edited successfully!');
+        });
     }
 
     public function getCreate()
@@ -196,7 +223,7 @@ class UserController extends Controller
             $perm = new UserPermission;
             $perm->user_id = $user->id;
 
-            $this->applyGrantablePermissions($perm, Auth::user(), false);
+            $this->applyGrantablePermissions($perm, Auth::user());
 
             $perm->save();
 
@@ -346,17 +373,18 @@ class UserController extends Controller
      * permissions they hold themselves; permissions they lack are left at the
      * target's existing value. Only a solder_full user may grant anything.
      */
-    private function applyGrantablePermissions(UserPermission $perm, User $actor, bool $isOriginalAdmin): void
+    private function applyGrantablePermissions(UserPermission $perm, User $actor): void
     {
         foreach (UserPermission::GRANTABLE_FIELDS as $column => $field) {
+            if ($column === 'solder_full'
+                && ! Request::has($field)
+                && ! Request::boolean('edit-user')) {
+                continue;
+            }
+
             if ($actor->can('grant-permission', $column)) {
                 $perm->{$column} = \request()->boolean($field);
             }
-        }
-
-        // The original admin (user 1) is always a superadmin.
-        if ($isOriginalAdmin) {
-            $perm->solder_full = true;
         }
 
         $perm->modpacks = $this->grantableModpacks($actor);
