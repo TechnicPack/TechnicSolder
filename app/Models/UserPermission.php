@@ -47,6 +47,41 @@ use Illuminate\Support\Carbon;
  */
 class UserPermission extends Model
 {
+    /**
+     * The grantable boolean permission columns, mapped to the form field that
+     * sets them. Single source of truth for the grant clamp (`grant-permission`
+     * gate), the create/edit forms, and the user-management subset check —
+     * adding a permission means adding one entry here.
+     *
+     * Excludes the per-modpack `modpacks` scope, which is not a boolean flag.
+     *
+     * @var array<string, string>
+     */
+    public const GRANTABLE_FIELDS = [
+        'solder_full' => 'solder-full',
+        'solder_users' => 'manage-users',
+        'solder_keys' => 'manage-keys',
+        'solder_clients' => 'manage-clients',
+        'mods_create' => 'mod-create',
+        'mods_manage' => 'mod-manage',
+        'mods_delete' => 'mod-delete',
+        'modpacks_create' => 'modpack-create',
+        'modpacks_manage' => 'modpack-manage',
+        'modpacks_delete' => 'modpack-delete',
+    ];
+
+    /**
+     * The permission columns compared when deciding whether one user's
+     * permissions are a subset of another's. Excludes solder_full, which is
+     * handled separately by the Gate::before superadmin bypass.
+     *
+     * @return list<string>
+     */
+    public static function permissionFlags(): array
+    {
+        return array_values(array_diff(array_keys(self::GRANTABLE_FIELDS), ['solder_full']));
+    }
+
     protected $fillable = [
         'user_id',
         'solder_full',

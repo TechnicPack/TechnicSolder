@@ -60,6 +60,7 @@
                             <input type="password"
                                    name="password1"
                                    id="password1"
+                                   autocomplete="new-password"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                         </div>
 
@@ -68,7 +69,24 @@
                             <input type="password"
                                    name="password2"
                                    id="password2"
+                                   autocomplete="new-password"
                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Current Password</label>
+                            <input type="password"
+                                   name="current_password"
+                                   id="current_password"
+                                   autocomplete="current-password"
+                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                @if (Auth::id() === $user->id)
+                                    Required only when setting a new password above.
+                                @else
+                                    Required only when setting a new password above &mdash; enter your own password, not {{ $user->username }}'s.
+                                @endif
+                            </p>
                         </div>
 
                     </div>
@@ -87,30 +105,38 @@
                             <div class="mb-5">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Solderwide</label>
                                 <div class="space-y-2">
+                                    @can('grant-permission', 'solder_full')
                                     <label for="solder-full" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="solder-full" id="solder-full"
                                                @checked($user->permission->solder_full)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Full Solder Access (Blanket permission)
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'solder_users')
                                     <label for="manage-users" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="manage-users" id="manage-users"
                                                @checked($user->permission->solder_users)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Manage Users
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'solder_keys')
                                     <label for="manage-keys" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="manage-keys" id="manage-keys"
                                                @checked($user->permission->solder_keys)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Manage Platform Keys
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'solder_clients')
                                     <label for="manage-clients" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="manage-clients" id="manage-clients"
                                                @checked($user->permission->solder_clients)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Manage Clients
                                     </label>
+                                    @endcan
                                 </div>
                             </div>
 
@@ -118,24 +144,30 @@
                             <div class="mb-5">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mod Library</label>
                                 <div class="space-y-2">
+                                    @can('grant-permission', 'mods_create')
                                     <label for="mod-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="mod-create" id="mod-create"
                                                @checked($user->permission->mods_create)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Create Mods
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'mods_manage')
                                     <label for="mod-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="mod-manage" id="mod-manage"
                                                @checked($user->permission->mods_manage)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Manage Mods
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'mods_delete')
                                     <label for="mod-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="mod-delete" id="mod-delete"
                                                @checked($user->permission->mods_delete)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Delete Mods
                                     </label>
+                                    @endcan
                                 </div>
                             </div>
 
@@ -148,24 +180,30 @@
                                     even if the specific modpack is selected.
                                 </p>
                                 <div class="space-y-2">
+                                    @can('grant-permission', 'modpacks_create')
                                     <label for="modpack-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="modpack-create" id="modpack-create"
                                                @checked($user->permission->modpacks_create)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Create Modpacks
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'modpacks_manage')
                                     <label for="modpack-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="modpack-manage" id="modpack-manage"
                                                @checked($user->permission->modpacks_manage)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Manage Modpacks
                                     </label>
+                                    @endcan
+                                    @can('grant-permission', 'modpacks_delete')
                                     <label for="modpack-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="modpack-delete" id="modpack-delete"
                                                @checked($user->permission->modpacks_delete)
                                                class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
                                         Delete Modpacks
                                     </label>
+                                    @endcan
                                 </div>
                             </div>
 
@@ -174,7 +212,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Specific Modpacks</label>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Select which modpacks this user can access. Changes take effect when you save.</p>
                                 @if ($allModpacks->isEmpty())
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">No modpacks exist.</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">No modpacks available to assign.</p>
                                 @else
                                     <div x-data="{
                                         options: @js($allModpacks->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->map(fn($m) => ['id' => $m->id, 'name' => $m->name])->values()),
@@ -425,6 +463,7 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Please confirm your password to continue.</p>
                             <div class="mb-4">
                                 <input type="password" x-model="password" x-ref="passwordInput" @keydown.enter="submit()"
+                                       autocomplete="current-password"
                                        placeholder="Password"
                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
                                 <p x-show="error" x-text="error" class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
