@@ -35,11 +35,11 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
-        "guzzlehttp/guzzle": "^7.15.3",
+        "guzzlehttp/guzzle": "^7.15.5",
         "http-interop/http-factory-guzzle": "^1.2.1",
         "knplabs/github-api": "^3.16.1",
-        "laravel/fortify": "^1.38.0",
-        "laravel/framework": "^13.26.1",
+        "laravel/fortify": "^1.39.0",
+        "laravel/framework": "^13.29.0",
         "laravel/sanctum": "^4.3.3",
         "laravel/tinker": "^3.0.2"
     },
@@ -48,11 +48,11 @@
         "barryvdh/laravel-ide-helper": "^3.7.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3.10.0",
-        "laravel/boost": "^2.5.5",
+        "laravel/boost": "^2.7.0",
         "laravel/pint": "^1.30.5",
         "mockery/mockery": "^1.6.15",
         "nunomaduro/collision": "^8.9.5",
-        "phpunit/phpunit": "^12.5.33"
+        "phpunit/phpunit": "^12.5.34"
     },
     "config": {
         "optimize-autoloader": true,
