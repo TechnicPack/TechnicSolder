@@ -4,6 +4,8 @@
 
 Show a specific build of a modpack. Visibility follows the same rules as `GET /api/modpack/{slug}`: hidden modpacks' builds are accessible by slug without authentication; private modpacks' builds require authentication that grants access. Individual builds marked private additionally require modpack-level access. Unpublished builds return 404 regardless of authentication.
 
+The `mods` array uses natural, case-insensitive mod-name ordering, with ascending mod-version IDs breaking ties. This also applies with `include=mods`.
+
 ### Path Parameters
 
 | Parameter | Type | Description |

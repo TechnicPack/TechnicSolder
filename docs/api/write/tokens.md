@@ -2,7 +2,7 @@
 
 ## GET /api/token
 
-List all tokens belonging to the authenticated user.
+List all tokens belonging to the authenticated user, ordered by ascending token ID.
 
 ### Example Request
 

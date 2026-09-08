@@ -15,7 +15,7 @@ Create a new modpack.
 | `url` | string | No | Website URL for this modpack. Must be a valid URL or null. |
 | `hidden` | boolean | No | Hide the modpack from the public API listing. Defaults to `true` if not provided. |
 | `private` | boolean | No | Restrict access to authorized clients only. Defaults to `false`. |
-| `order` | integer | No | Sort order for display. |
+| `order` | integer | No | Legacy stored field; does not affect API ordering. |
 
 ### Example Request
 
@@ -94,7 +94,7 @@ All fields are optional. Only included fields are updated.
 | `url` | string | Website URL. Must be a valid URL or null. |
 | `hidden` | boolean | Hide from public listing. |
 | `private` | boolean | Restrict to authorized clients. |
-| `order` | integer | Sort order. |
+| `order` | integer | Legacy stored field; does not affect API ordering. |
 | `recommended` | string | Recommended build version string. |
 | `latest` | string | Latest build version string. |
 

@@ -1,5 +1,7 @@
 # Modpacks
 
+Modpack listings (including `include=full`) are emitted in ascending modpack ID order. Build-version arrays are ordered by ascending build ID, not by version string. The legacy `order` field does not affect API ordering.
+
 ## GET /api/modpack
 
 List all modpacks. The modpacks returned depend on the authentication provided:

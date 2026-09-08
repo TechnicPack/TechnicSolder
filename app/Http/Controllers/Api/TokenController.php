@@ -11,7 +11,7 @@ class TokenController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $tokens = $request->user()->tokens()->select(['id', 'name', 'last_used_at', 'created_at'])->get();
+        $tokens = $request->user()->tokens()->select(['id', 'name', 'last_used_at', 'created_at'])->orderBy('id')->get();
 
         return response()->json(['tokens' => $tokens]);
     }

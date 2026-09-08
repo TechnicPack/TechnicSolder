@@ -14,7 +14,7 @@ class ModController extends Controller
     public function index(): JsonResponse
     {
         $mods = Cache::remember('mods', now()->addMinutes(5), function () {
-            return Mod::pluck('pretty_name', 'name');
+            return Mod::orderBy('id')->pluck('pretty_name', 'name');
         });
 
         return response()->json([
@@ -46,7 +46,7 @@ class ModController extends Controller
             $response['notes'] = $mod->notes;
         }
 
-        $response['versions'] = $mod->versions->pluck('version');
+        $response['versions'] = $mod->versions->sortBy('id')->pluck('version')->values();
 
         return response()->json($response);
     }

@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request as RequestFacade;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -216,7 +215,7 @@ class ModpackController extends Controller
     private function fetchModpacks(ApiAuthContext $auth)
     {
         $modpacks = Cache::remember('modpacks', now()->addMinutes(5), function () {
-            return Modpack::all();
+            return Modpack::orderBy('id')->get();
         });
 
         return $modpacks->filter(function ($modpack) use ($auth) {

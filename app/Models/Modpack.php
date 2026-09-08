@@ -132,7 +132,8 @@ class Modpack extends Model
 
         $response['builds'] = $this->builds
             ->filter(fn (Build $build) => $build->isAccessibleBy($auth))
-            ->pluck('version');
+            ->sortBy('id')
+            ->pluck('version')->values();
 
         return $response;
     }

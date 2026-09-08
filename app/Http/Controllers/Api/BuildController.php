@@ -64,7 +64,8 @@ class BuildController extends Controller
 
         $includeFullMods = RequestFacade::input('include') === 'mods';
 
-        $mods = $build->modversions->map(function ($modversion) use ($includeFullMods) {
+        // The stable name sort preserves ascending IDs when names compare equal.
+        $mods = $build->modversions->sortBy('id')->map(function ($modversion) use ($includeFullMods) {
             return $modversion->toApiResponse($includeFullMods);
         })->sortBy('name', SORT_NATURAL | SORT_FLAG_CASE)->values();
 

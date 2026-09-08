@@ -2,6 +2,12 @@
 
 All notable changes to Technic Solder will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- API modpack, mod, build-version, mod-version, and token listings now use ascending record IDs for deterministic ordering. Build mods retain natural, case-insensitive name ordering with mod-version IDs breaking ties.
+
 ## [1.2.0] - 2026-08-27
 
 ### Added

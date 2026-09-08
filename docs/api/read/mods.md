@@ -1,5 +1,7 @@
 # Mods
 
+Mod listings are emitted in ascending mod ID order. Version arrays use ascending mod-version IDs, not version-string order. Build memberships in a mod-version response use ascending build IDs.
+
 !!! note
     The mod API can be disabled by setting `SOLDER_DISABLE_MOD_API=true` in your `.env` file. When disabled, anonymous requests and `cid` or `k` query credentials receive a 404 response. Sanctum bearer-token users with `mods_manage` or `solder_full` permission can still read these endpoints.
 
