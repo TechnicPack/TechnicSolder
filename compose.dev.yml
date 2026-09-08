@@ -33,6 +33,10 @@ services:
 
   postgres:
     image: postgres
+    # Let host-run SolderJS share this database without exposing it to the LAN.
+    # Port 5434 avoids SolderJS's isolated integration-test PostgreSQL on 5433.
+    ports:
+      - "127.0.0.1:5434:5432"
     environment:
       - POSTGRES_DB=${DB_DATABASE:-solder}
       - POSTGRES_USER=${DB_USERNAME:-solder}
@@ -47,6 +51,10 @@ services:
 
   redis:
     image: redis
+    # Let host-run SolderJS use Redis without exposing it to the LAN.
+    # Port 6381 avoids SolderJS's isolated integration-test Redis on 6380.
+    ports:
+      - "127.0.0.1:6381:6379"
 
 volumes:
   postgres_data:
