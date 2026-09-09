@@ -52,7 +52,7 @@ services:
       - MAIL_PORT=${MAIL_PORT:-587}
       - MAIL_USERNAME=${MAIL_USERNAME:-}
       - MAIL_PASSWORD=${MAIL_PASSWORD:-}
-      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-tls}
+      - MAIL_SCHEME=${MAIL_SCHEME:-}
       - MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS:-}
       - MAIL_FROM_NAME=${MAIL_FROM_NAME:-Technic Solder}
       - SOLDER_REPO_LOCATION=${SOLDER_REPO_LOCATION:-/var/www/mods.example.com/}

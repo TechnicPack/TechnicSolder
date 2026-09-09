@@ -48,9 +48,11 @@
 | `MAIL_PORT` | `2525` | SMTP server port (Docker default: `587`) |
 | `MAIL_USERNAME` | (null) | SMTP username |
 | `MAIL_PASSWORD` | (null) | SMTP password |
-| `MAIL_ENCRYPTION` | (null) | SMTP encryption (`tls`, `ssl`, or null) |
+| `MAIL_SCHEME` | (unset) | Optional SMTP scheme override: `smtp` for SMTP with automatic STARTTLS when supported, or `smtps` for implicit TLS. When unset, empty, or null, Laravel selects `smtps` on port 465 and `smtp` otherwise, including in Docker. |
 | `MAIL_FROM_ADDRESS` | (null) | Sender email address |
 | `MAIL_FROM_NAME` | `${APP_NAME}` | Sender name |
+
+No `.env` migration is required for an existing working mail configuration. `MAIL_ENCRYPTION` was already unused by Laravel and may be removed as optional cleanup. Set `MAIL_SCHEME` only to override automatic selection; its accepted values are `smtp` and `smtps`, not `tls` or `ssl`.
 
 ## Solder
 

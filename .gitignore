@@ -1,14 +1,24 @@
-!.env.example
-!.env.testing
+*.log
+.DS_Store
 .env
 .env.*
+!.env.example
+!.env.testing
+.phpactor.json
 .phpstorm.meta.php
 .phpunit.result.cache
+/.codex
+/.cursor/
 /.idea
+/.nova
 /.phpunit.cache
+/.vscode
+/.zed
+/auth.json
 /docker/mysql
 /node_modules
 /public/build
+/public/fonts-manifest.dev.json
 /public/hot
 /public/storage
 /storage/*.key
@@ -18,8 +28,7 @@ Homestead.yaml
 _ide_helper.php
 _ide_helper_models.php
 composer.lock
-npm-debug.log
-yarn-error.log
+Thumbs.db
 
 # MkDocs build output
 site/

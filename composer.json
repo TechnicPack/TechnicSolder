@@ -1,4 +1,5 @@
 {
+    "$schema": "https://getcomposer.org/schema.json",
     "name": "technicpack/solder",
     "type": "project",
     "description": "Technic Solder API using Laravel Framework",
@@ -82,6 +83,10 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "scripts": {
+        "test": [
+            "@php artisan config:clear --ansi @no_additional_args",
+            "@php artisan test"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -94,6 +99,9 @@
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ],
         "ide": [
             "@php artisan ide-helper:generate",
