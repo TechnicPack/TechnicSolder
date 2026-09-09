@@ -4,6 +4,8 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-09-09
+
 ### Changed
 
 - Inter fonts are now bundled and self-hosted through Vite instead of loaded from Bunny by visitors' browsers, with Fontaine-adjusted fallback metrics to reduce layout shifts. Font updates require rebuilding and deploying the frontend assets.
@@ -200,6 +202,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.3.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.3...v1.2.0
 [1.1.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.2...v1.1.3
