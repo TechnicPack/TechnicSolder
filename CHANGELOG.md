@@ -4,9 +4,20 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-09
+
+### Changed
+
+- Updated PHP and frontend dependencies, including Laravel 13.30.1, Debugbar 4.4.3, Larastan 3.11, Alpine.js 3.17.1, and the Node.js 24.20 build image; Guzzle remains on 7.15 pending the production PHP 8.5 upgrade.
+- Synchronized the application scaffold with `laravel/laravel` v13.10.1, including Composer lifecycle hooks, PHPUnit configuration, entrypoints, Apache XSRF header forwarding, and Vite/Tailwind defaults while retaining Solder's Docker workflow and cache/session formats.
+- Mail examples now document the optional `MAIL_SCHEME` override while preserving automatic SMTP scheme selection, including in Docker. Existing working mail configurations require no `.env` migration; the already-unused `MAIL_ENCRYPTION` variable may be removed.
+- Development PostgreSQL and Redis ports are exposed on loopback for host-run SolderJS.
+
 ### Fixed
 
 - API modpack, mod, build-version, mod-version, and token listings now use ascending record IDs for deterministic ordering. Build mods retain natural, case-insensitive name ordering with mod-version IDs breaking ties.
+- API routing errors now return JSON even when a client requests HTML; web routing errors retain HTML responses.
+- The documented `APP_TIMEZONE` setting now takes effect instead of always using UTC. UTC remains the default; existing non-UTC values now affect application date handling.
 
 ## [1.2.0] - 2026-08-27
 
@@ -185,6 +196,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.3.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.3...v1.2.0
 [1.1.3]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.1...v1.1.2
