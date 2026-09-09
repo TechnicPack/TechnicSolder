@@ -4,6 +4,10 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Inter fonts are now bundled and self-hosted through Vite instead of loaded from Bunny by visitors' browsers, with Fontaine-adjusted fallback metrics to reduce layout shifts. Font updates require rebuilding and deploying the frontend assets.
+
 ## [1.3.0] - 2026-09-09
 
 ### Changed
