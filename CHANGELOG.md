@@ -4,6 +4,10 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Private modpacks now display a lock icon in the sidebar, alongside the hidden indicator when both apply. Hover, keyboard focus, or tap the status icons to show “Hidden”, “Private”, or “Hidden and private” without opening the modpack.
+
 ## [1.4.0] - 2026-09-14
 
 ### Added
