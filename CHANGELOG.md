@@ -4,6 +4,8 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-09-14
+
 ### Added
 
 - Per-build Mojang Java runtime overrides in build creation, editing, details, and the read/write API (`java_runtime`). Overrides are independent of minimum Java requirements, default to normal runtime selection, and are preserved when cloning entire modpacks. Requires a database migration and LauncherV3 support before affecting launches.
@@ -207,6 +209,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.4.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.1.3...v1.2.0
