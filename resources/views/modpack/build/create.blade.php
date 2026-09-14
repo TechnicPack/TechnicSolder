@@ -79,6 +79,24 @@
                                 <option value="" @selected(!old('java-version'))>No Requirement</option>
                             </select>
                         </div>
+                        @if (config('solder.advanced_mode'))
+                        <div>
+                            <label for="java-runtime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mojang Java Runtime Override</label>
+                            <select name="java-runtime"
+                                    id="java-runtime"
+                                    aria-describedby="java-runtime-help java-runtime-support"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                <option value="" @selected(!old('java-runtime'))>Default (no override)</option>
+                                @foreach(\App\JavaRuntimesEnum::cases() as $runtime)
+                                    <option value="{{ $runtime->value }}"
+                                            @selected(old('java-runtime') === $runtime->value)
+                                    >{{ $runtime->label() }}</option>
+                                @endforeach
+                            </select>
+                            <p id="java-runtime-help" class="mt-1 text-sm text-gray-500 dark:text-gray-400">Selects the Mojang Java runtime for this build instead of the launcher's automatic selection. Applies when “Use Mojang Java runtimes” is enabled in the launcher. Leave as Default to keep automatic selection.</p>
+                            <p id="java-runtime-support" class="mt-1 text-sm text-gray-500 dark:text-gray-400">Requires launcher support.</p>
+                        </div>
+                        @endif
                         <div>
                             <label for="memory" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Minimum Memory <span class="text-gray-400 font-normal">(in MB)</span></label>
                             <div class="flex items-center gap-3">

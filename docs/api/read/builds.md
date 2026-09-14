@@ -34,6 +34,7 @@ curl https://solder.example.com/api/modpack/hexxit/1.0.0
   "id": 1,
   "minecraft": "1.12.2",
   "java": "1.8",
+  "java_runtime": null,
   "memory": 2048,
   "forge": "14.23.5.2847",
   "mods": [
@@ -62,6 +63,7 @@ When `include=mods` is set, each mod object includes additional metadata fields:
   "id": 1,
   "minecraft": "1.12.2",
   "java": "1.8",
+  "java_runtime": null,
   "memory": 2048,
   "forge": "14.23.5.2847",
   "mods": [
@@ -80,6 +82,39 @@ When `include=mods` is set, each mod object includes additional metadata fields:
   ]
 }
 ```
+
+### Mojang Java Runtime Override
+
+`java_runtime` is a nullable Mojang runtime component name, separate from the
+minimum Java requirement in `java`. For example, `"java_runtime": "java-runtime-delta"`
+selects Mojang's Java 21 runtime for this build.
+
+The build UI shows this setting only when `SOLDER_ADVANCED_MODE=true` (default:
+`false`). The flag does not affect API reads, API writes, or saved overrides.
+Editing a build without submitting the runtime field preserves its current value.
+
+| Component | Java version |
+|-----------|--------------|
+| `jre-legacy` | 8 |
+| `java-runtime-alpha` | 16 |
+| `java-runtime-beta` | 17 |
+| `java-runtime-gamma` | 17 |
+| `java-runtime-delta` | 21 |
+| `java-runtime-epsilon` | 25 |
+
+These are the supported release components from [Mojang's runtime catalog](https://launchermeta.mojang.com/v1/products/java-runtime/2ec0cc96c44e5a76b9c8b7c39df7210883d12871/all.json).
+The value selects a component, not a pinned patch release, executable path, or custom download URL.
+Availability depends on the player's OS and architecture.
+
+**Launcher integration contract:** when Mojang Java is enabled, a non-null
+override takes precedence over the runtime selected by Minecraft metadata or
+loader/version patches. `null` (or an absent field from older Solder servers)
+leaves normal runtime selection unchanged. This does not enable Mojang Java or
+replace a player's custom Java selection. The existing `java` and `memory`
+requirements retain their meaning.
+
+Requires a launcher version with `java_runtime` support. LauncherV3 applies the
+contract above; older launcher versions ignore the field.
 
 ### Error Responses
 

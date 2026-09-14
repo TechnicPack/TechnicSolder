@@ -50,6 +50,10 @@ final class ModpackCloneTest extends TestCase
     public function test_clone_modpack_copies_builds(): void
     {
         $modpack = Modpack::with('builds.modversions')->first();
+        $modpack->builds->first()->update([
+            'min_java' => '1.8',
+            'java_runtime' => 'java-runtime-delta',
+        ]);
         $originalBuildCount = $modpack->builds->count();
 
         $data = [
@@ -73,7 +77,37 @@ final class ModpackCloneTest extends TestCase
                 $originalBuild->modversions()->count(),
                 $clonedBuild->modversions()->count()
             );
+            $this->getJson('api/modpack/'.$newModpack->slug.'/'.$clonedBuild->version)
+                ->assertOk()
+                ->assertJson([
+                    'java' => $originalBuild->min_java,
+                    'java_runtime' => $originalBuild->java_runtime,
+                ]);
         }
+    }
+
+    public function test_api_clone_modpack_preserves_launcher_runtime_and_mods(): void
+    {
+        $modpack = Modpack::with('builds')->first();
+        $build = $modpack->builds->first();
+        $build->update([
+            'min_java' => '1.8',
+            'java_runtime' => 'java-runtime-delta',
+        ]);
+        $source = $this->getJson('api/modpack/'.$modpack->slug.'/'.$build->version)
+            ->assertOk();
+        $token = User::find(1)->createToken('clone-test')->plainTextToken;
+
+        $this->postJson('api/modpack/'.$modpack->slug.'/clone', [
+            'name' => 'API Cloned Pack',
+            'slug' => 'api-cloned-pack',
+        ], ['Authorization' => 'Bearer '.$token])->assertStatus(201);
+
+        $this->getJson('api/modpack/api-cloned-pack/'.$build->version)
+            ->assertOk()
+            ->assertJsonPath('java', '1.8')
+            ->assertJsonPath('java_runtime', 'java-runtime-delta')
+            ->assertJsonPath('mods', $source->json('mods'));
     }
 
     public function test_clone_modpack_duplicate_slug_fails(): void

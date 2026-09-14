@@ -4,6 +4,11 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Per-build Mojang Java runtime overrides in build creation, editing, details, and the read/write API (`java_runtime`). Overrides are independent of minimum Java requirements, default to normal runtime selection, and are preserved when cloning entire modpacks. Requires a database migration and LauncherV3 support before affecting launches.
+- `SOLDER_ADVANCED_MODE` (default `false`) controls visibility of Mojang Java runtime overrides in the build UI only. API behavior is unchanged, and saving a build while the control is hidden preserves its existing override.
+
 ## [1.3.1] - 2026-09-09
 
 ### Changed

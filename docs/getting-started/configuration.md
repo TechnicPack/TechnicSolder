@@ -64,6 +64,7 @@ No `.env` migration is required for an existing working mail configuration. `MAI
 | `SOLDER_MD5_FILE_TIMEOUT` | `30` | Seconds to wait when computing MD5 checksums |
 | `SOLDER_DISABLE_MOD_API` | `false` | Set to `true` to disable public `/api/mod` reads; authorized manager bearer tokens retain access |
 | `SOLDER_CORS_ORIGINS` | `*` | Allowed CORS origins (comma-separated or `*` for all) |
+| `SOLDER_ADVANCED_MODE` | `false` | Set to `true` to show Mojang Java runtime overrides in build creation, editing, and details. UI only: API access and saved overrides are unaffected. |
 
 ??? note "Advanced Configuration"
 

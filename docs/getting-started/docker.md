@@ -71,6 +71,7 @@ The `.env` file is loaded automatically by Docker Compose. Any variables you set
 | `SOLDER_REPO_LOCATION` | `/var/www/mods.example.com/` | Path or URL to your mod repository |
 | `SOLDER_MIRROR_URL` | `http://mods.example.com/` | Public URL for mod downloads |
 | `SOLDER_CORS_ORIGINS` | `*` | Allowed CORS origins |
+| `SOLDER_ADVANCED_MODE` | `false` | Show advanced build UI settings; does not gate the API or saved overrides |
 | `MAIL_ENABLED` | `false` | Enable email functionality |
 
 !!! note

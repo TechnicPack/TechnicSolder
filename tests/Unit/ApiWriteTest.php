@@ -124,10 +124,17 @@ final class ApiWriteTest extends TestCase
         $response = $this->postJson('api/modpack/'.$modpack->slug.'/build', [
             'version' => '2.0.0',
             'minecraft' => '1.20.1',
+            'min_java' => '1.8',
+            'java_runtime' => 'java-runtime-delta',
+            'is_published' => true,
         ], $this->writeHeaders());
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('builds', ['modpack_id' => $modpack->id, 'version' => '2.0.0']);
+        $this->getJson('api/modpack/'.$modpack->slug.'/2.0.0')
+            ->assertOk()
+            ->assertJsonPath('java', '1.8')
+            ->assertJsonPath('java_runtime', 'java-runtime-delta');
     }
 
     public function test_create_duplicate_build(): void
@@ -143,16 +150,68 @@ final class ApiWriteTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_update_build(): void
+    public function test_update_build_preserves_omitted_runtime_and_clears_explicit_null_in_cached_read(): void
     {
         $modpack = Modpack::first();
         $build = $modpack->builds->first();
+        $build->update(['java_runtime' => 'jre-legacy']);
+        $url = 'api/modpack/'.$modpack->slug.'/'.$build->version;
 
-        $response = $this->putJson('api/modpack/'.$modpack->slug.'/'.$build->version, [
-            'minecraft' => '1.21.0',
-        ], $this->writeHeaders());
+        $this->getJson($url)->assertOk()->assertJsonPath('java_runtime', 'jre-legacy');
 
-        $response->assertOk();
+        $this->putJson($url, ['minecraft' => '1.21.0'], $this->writeHeaders())->assertOk();
+        $this->getJson($url)
+            ->assertOk()
+            ->assertJsonPath('minecraft', '1.21.0')
+            ->assertJsonPath('java_runtime', 'jre-legacy');
+
+        $this->putJson($url, ['java_runtime' => 'java-runtime-delta'], $this->writeHeaders())->assertOk();
+        $this->getJson($url)
+            ->assertOk()
+            ->assertJsonPath('java', $build->min_java)
+            ->assertJsonPath('java_runtime', 'java-runtime-delta');
+
+        $this->putJson($url, ['java_runtime' => null], $this->writeHeaders())->assertOk();
+        $this->getJson($url)
+            ->assertOk()
+            ->assertJsonPath('java', $build->min_java)
+            ->assertJson(['java_runtime' => null]);
+    }
+
+    public function test_invalid_runtime_is_rejected_without_creating_or_updating_builds(): void
+    {
+        $modpack = Modpack::first();
+        $build = $modpack->builds->first();
+        $build->update(['java_runtime' => 'java-runtime-gamma']);
+        $url = 'api/modpack/'.$modpack->slug.'/'.$build->version;
+
+        foreach (['java-runtime-unknown', ['java-runtime-delta'], '../../bin/java'] as $runtime) {
+            $this->postJson('api/modpack/'.$modpack->slug.'/build', [
+                'version' => 'invalid-runtime',
+                'minecraft' => '1.20.1',
+                'java_runtime' => $runtime,
+            ], $this->writeHeaders())
+                ->assertStatus(422)
+                ->assertJsonStructure(['error' => ['java_runtime']]);
+            $this->assertDatabaseMissing('builds', [
+                'modpack_id' => $modpack->id,
+                'version' => 'invalid-runtime',
+            ]);
+
+            $this->putJson($url, [
+                'minecraft' => '1.21.0',
+                'java_runtime' => $runtime,
+            ], $this->writeHeaders())
+                ->assertStatus(422)
+                ->assertJsonStructure(['error' => ['java_runtime']]);
+            $this->assertSame($build->minecraft, $build->fresh()->minecraft);
+            $this->assertSame('java-runtime-gamma', $build->fresh()->java_runtime);
+            $this->getJson($url)
+                ->assertOk()
+                ->assertJsonPath('minecraft', $build->minecraft)
+                ->assertJsonPath('java', $build->min_java)
+                ->assertJsonPath('java_runtime', 'java-runtime-gamma');
+        }
     }
 
     public function test_delete_build(): void
@@ -171,17 +230,22 @@ final class ApiWriteTest extends TestCase
     {
         $modpack = Modpack::first();
         $build = $modpack->builds->first();
+        $build->update(['java_runtime' => 'java-runtime-delta']);
 
         $response = $this->postJson('api/modpack/'.$modpack->slug.'/build', [
             'version' => '2.0.0',
             'minecraft' => '1.20.1',
             'clone_from' => $build->version,
+            'is_published' => true,
         ], $this->writeHeaders());
 
         $response->assertStatus(201);
 
         $newBuild = Build::where('version', '2.0.0')->where('modpack_id', $modpack->id)->first();
         $this->assertEquals($build->modversions->count(), $newBuild->modversions->count());
+        $this->getJson('api/modpack/'.$modpack->slug.'/2.0.0')
+            ->assertOk()
+            ->assertJson(['java_runtime' => null]);
     }
 
     public function test_create_build_with_clone_from_different_modpack(): void

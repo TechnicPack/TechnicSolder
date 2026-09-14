@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\JavaRuntimesEnum;
 use App\JavaVersionsEnum;
 use App\Libraries\MinecraftUtils;
 use App\Models\Build;
@@ -152,6 +153,11 @@ class ModpackController extends Controller
                 'nullable',
                 Rule::enum(JavaVersionsEnum::class),
             ],
+            'java-runtime' => [
+                'nullable',
+                'string',
+                Rule::enum(JavaRuntimesEnum::class),
+            ],
         ];
 
         $messages = [
@@ -161,6 +167,7 @@ class ModpackController extends Controller
         $attributes = [
             'version' => 'modpack version',
             'java-version' => 'Java version',
+            'java-runtime' => 'Mojang Java runtime',
         ];
 
         $validation = Validator::make(Request::all(), $rules, $messages, $attributes);
@@ -180,6 +187,9 @@ class ModpackController extends Controller
 
             $build->minecraft = $minecraft;
             $build->min_java = Request::input('java-version');
+            if (Request::has('java-runtime')) {
+                $build->java_runtime = Request::input('java-runtime');
+            }
             $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
             $build->save();
 
@@ -307,6 +317,11 @@ class ModpackController extends Controller
                 'nullable',
                 Rule::enum(JavaVersionsEnum::class),
             ],
+            'java-runtime' => [
+                'nullable',
+                'string',
+                Rule::enum(JavaRuntimesEnum::class),
+            ],
         ];
 
         $messages = [
@@ -315,6 +330,7 @@ class ModpackController extends Controller
         $attributes = [
             'version' => 'modpack version',
             'java-version' => 'Java version',
+            'java-runtime' => 'Mojang Java runtime',
         ];
 
         $validation = Validator::make(Request::all(), $rules, $messages, $attributes);
@@ -331,6 +347,7 @@ class ModpackController extends Controller
 
         $build->minecraft = $minecraft;
         $build->min_java = Request::input('java-version');
+        $build->java_runtime = Request::input('java-runtime');
         $build->min_memory = Request::input('memory-enabled') ? Request::input('memory') : 0;
         $build->save();
         Cache::forget('modpack:'.$modpack->slug);
@@ -472,6 +489,7 @@ class ModpackController extends Controller
                 $newBuild->is_published = $build->is_published;
                 $newBuild->private = $build->private;
                 $newBuild->min_java = $build->min_java;
+                $newBuild->java_runtime = $build->java_runtime;
                 $newBuild->min_memory = $build->min_memory;
                 $newBuild->save();
 

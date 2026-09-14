@@ -131,6 +131,7 @@ class ModpackController extends Controller
                 $newBuild->is_published = $build->is_published;
                 $newBuild->private = $build->private;
                 $newBuild->min_java = $build->min_java;
+                $newBuild->java_runtime = $build->java_runtime;
                 $newBuild->min_memory = $build->min_memory;
                 $newBuild->save();
 

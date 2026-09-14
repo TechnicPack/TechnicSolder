@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_published
  * @property bool $private
  * @property string|null $min_java
+ * @property string|null $java_runtime
  * @property int|null $min_memory
  * @property-read Modpack|null $modpack
  * @property-read Collection<int, Modversion> $modversions
@@ -54,6 +55,7 @@ class Build extends Model
         'is_published',
         'private',
         'min_java',
+        'java_runtime',
         'min_memory',
     ];
 

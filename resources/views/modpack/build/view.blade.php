@@ -48,6 +48,12 @@
                     <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Required RAM/memory</span>
                     <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">{{ $build->min_memory ? $build->min_memory . ' MB' : 'Not set' }}</p>
                 </div>
+                @if (config('solder.advanced_mode'))
+                <div class="sm:col-span-2 lg:col-span-4">
+                    <span class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mojang Java Runtime Override</span>
+                    <p class="mt-1 text-sm font-medium text-gray-900 dark:text-white">{{ $build->java_runtime ? \App\JavaRuntimesEnum::from($build->java_runtime)->label() : 'Default (no override)' }}</p>
+                </div>
+                @endif
             </div>
         </div>
     </div>

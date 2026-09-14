@@ -50,6 +50,13 @@ return [
     'disable_mod_api' => filter_var(env('SOLDER_DISABLE_MOD_API', 'false'), FILTER_VALIDATE_BOOLEAN),
 
     /**
+     * Show advanced UI settings, including Mojang Java runtime overrides.
+     *
+     * This does not restrict API access or disable saved overrides.
+     */
+    'advanced_mode' => filter_var(env('SOLDER_ADVANCED_MODE', 'false'), FILTER_VALIDATE_BOOLEAN),
+
+    /**
      * Enable email functionality?
      *
      * Setting this to true enables password reset via email.

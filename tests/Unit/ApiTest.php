@@ -130,9 +130,11 @@ final class ApiTest extends TestCase
             'minecraft',
             'forge',
             'java',
+            'java_runtime',
             'memory',
             'mods',
         ]);
+        $response->assertJson(['java' => $build->min_java, 'java_runtime' => null]);
     }
 
     public function test_private_build_unauthorized(): void

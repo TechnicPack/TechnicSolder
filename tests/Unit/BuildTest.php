@@ -43,6 +43,7 @@ final class BuildTest extends TestCase
             'version' => '1.1.0',
             'minecraft' => '1.7.10',
             'java-version' => '1.7',
+            'java-runtime' => 'java-runtime-delta',
             'memory' => '1536',
             'memory-enabled' => 1,
         ];
@@ -56,6 +57,11 @@ final class BuildTest extends TestCase
         $this->assertEquals($build->minecraft, '1.7.10');
         $this->assertEquals($build->min_memory, '1536');
         $this->assertEquals($build->min_java, '1.7');
+        $build->update(['is_published' => true]);
+        $this->getJson('api/modpack/'.$build->modpack->slug.'/'.$build->version)
+            ->assertOk()
+            ->assertJsonPath('java', '1.7')
+            ->assertJsonPath('java_runtime', 'java-runtime-delta');
     }
 
     public function test_build_add_post_empty_version(): void
@@ -64,6 +70,7 @@ final class BuildTest extends TestCase
             'version' => '',
             'minecraft' => '1.7.10',
             'java-version' => '1.7',
+            'java-runtime' => 'java-runtime-gamma',
             'memory' => '1536',
             'memory-enabled' => 1,
         ];
@@ -71,6 +78,7 @@ final class BuildTest extends TestCase
         $response = $this->post('/modpack/add-build/1', $data);
         $response->assertRedirect('/modpack/add-build/1');
         $response->assertSessionHasErrors('version');
+        $response->assertSessionHasInput('java-runtime', 'java-runtime-gamma');
     }
 
     public function test_build_add_post_empty_minecraft(): void
@@ -94,6 +102,7 @@ final class BuildTest extends TestCase
             'version' => '1.1.0',
             'minecraft' => '1.7.10',
             'java-version' => '',
+            'java-runtime' => 'jre-legacy',
             'memory' => '1536',
             'memory-enabled' => 1,
         ];
@@ -107,6 +116,10 @@ final class BuildTest extends TestCase
         $this->assertEquals($build->minecraft, '1.7.10');
         $this->assertEquals($build->min_memory, '1536');
         $this->assertEquals($build->min_java, '');
+        $build->update(['is_published' => true]);
+        $this->getJson('api/modpack/'.$build->modpack->slug.'/'.$build->version)
+            ->assertOk()
+            ->assertJsonPath('java_runtime', 'jre-legacy');
     }
 
     public function test_build_add_post_no_memory(): void
@@ -141,11 +154,16 @@ final class BuildTest extends TestCase
     public function test_build_edit_post(): void
     {
         $build = Build::find(1);
+        $build->update(['java_runtime' => 'java-runtime-gamma']);
+        $this->getJson('api/modpack/'.$build->modpack->slug.'/'.$build->version)
+            ->assertOk()
+            ->assertJsonPath('java_runtime', 'java-runtime-gamma');
 
         $data = [
-            'version' => '1.1.0',
+            'version' => $build->version,
             'minecraft' => '1.7.10',
             'java-version' => '1.8',
+            'java-runtime' => '',
             'memory' => '1024',
             'memory-enabled' => '1',
         ];
@@ -157,6 +175,60 @@ final class BuildTest extends TestCase
 
         $this->assertEquals($build->min_memory, '1024');
         $this->assertEquals($build->min_java, '1.8');
+        $this->getJson('api/modpack/'.$build->modpack->slug.'/'.$build->version)
+            ->assertOk()
+            ->assertJsonPath('java', '1.8')
+            ->assertJson(['java_runtime' => null]);
+    }
+
+    public function test_editing_without_advanced_controls_preserves_runtime_override(): void
+    {
+        config(['solder.advanced_mode' => false]);
+        $build = Build::find(1);
+        $build->update(['java_runtime' => 'java-runtime-delta']);
+        $url = 'api/modpack/'.$build->modpack->slug.'/'.$build->version;
+        $this->getJson($url)->assertOk()->assertJsonPath('java_runtime', 'java-runtime-delta');
+
+        $this->post('/modpack/build/'.$build->id.'/edit', [
+            'version' => $build->version,
+            'minecraft' => $build->minecraft,
+            'java-version' => '1.8',
+        ])->assertRedirect('/modpack/build/'.$build->id);
+
+        $this->getJson($url)
+            ->assertOk()
+            ->assertJsonPath('java', '1.8')
+            ->assertJsonPath('java_runtime', 'java-runtime-delta');
+    }
+
+    public function test_invalid_java_runtime_does_not_create_or_edit_a_build(): void
+    {
+        $modpack = Modpack::first();
+        $build = $modpack->builds->first();
+        $build->update(['java_runtime' => 'java-runtime-gamma']);
+        $data = [
+            'version' => 'invalid-runtime',
+            'minecraft' => '1.20.1',
+            'java-runtime' => ['java-runtime-delta'],
+        ];
+
+        $this->post('/modpack/add-build/'.$modpack->id, $data)
+            ->assertRedirect('/modpack/add-build/'.$modpack->id)
+            ->assertSessionHasErrors('java-runtime');
+        $this->assertDatabaseMissing('builds', [
+            'modpack_id' => $modpack->id,
+            'version' => 'invalid-runtime',
+        ]);
+
+        $data['java-runtime'] = '../../bin/java';
+        $this->post('/modpack/build/'.$build->id.'/edit', $data)
+            ->assertRedirect('/modpack/build/'.$build->id.'/edit')
+            ->assertSessionHasErrors('java-runtime');
+        $this->getJson('api/modpack/'.$modpack->slug.'/'.$build->version)
+            ->assertOk()
+            ->assertJsonPath('minecraft', $build->minecraft)
+            ->assertJsonPath('java', $build->min_java)
+            ->assertJsonPath('java_runtime', 'java-runtime-gamma');
     }
 
     public function test_build_delete_get(): void
@@ -274,6 +346,7 @@ final class BuildTest extends TestCase
     {
         $modpack = Modpack::first();
         $sourceBuild = $modpack->builds()->first();
+        $sourceBuild->update(['java_runtime' => 'java-runtime-delta']);
 
         $data = [
             'version' => '1.1.0',
@@ -288,6 +361,10 @@ final class BuildTest extends TestCase
 
         $response->assertRedirect('/modpack/build/'.$newBuild->id);
         $this->assertEquals($sourceBuild->modversions->count(), $newBuild->modversions->count());
+        $newBuild->update(['is_published' => true]);
+        $this->getJson('api/modpack/'.$modpack->slug.'/'.$newBuild->version)
+            ->assertOk()
+            ->assertJson(['java_runtime' => null]);
     }
 
     public function test_build_create_clone_from_different_modpack(): void

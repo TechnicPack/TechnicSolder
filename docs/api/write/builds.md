@@ -22,6 +22,7 @@ Create a new build for a modpack.
 | `is_published` | boolean | No | Whether the build is visible in the API. Defaults to `false`. |
 | `private` | boolean | No | Restrict to authorized clients. Defaults to `false`. |
 | `min_java` | string | No | Minimum Java version (e.g. `17`). |
+| `java_runtime` | string or null | No | Mojang runtime component override (e.g. `java-runtime-delta`). Defaults to no override. See [supported components and launcher behavior](../read/builds.md#mojang-java-runtime-override). |
 | `min_memory` | integer | No | Minimum memory in MB (e.g. `2048`). |
 | `clone_from` | string | No | Version string of an existing build. All mod assignments from the source build will be copied to the new build. Defaults to searching the current modpack unless `clone_from_modpack` is specified. |
 | `clone_from_modpack` | string | No | Slug of the modpack containing the source build. Use with `clone_from` to clone from a different modpack. |
@@ -38,6 +39,7 @@ curl -X POST https://solder.example.com/api/modpack/hexxit/build \
     "forge": "47.2.0",
     "is_published": true,
     "min_java": "17",
+    "java_runtime": "java-runtime-gamma",
     "min_memory": 2048
   }'
 ```
@@ -54,6 +56,7 @@ curl -X POST https://solder.example.com/api/modpack/hexxit/build \
   "is_published": true,
   "private": false,
   "min_java": "17",
+  "java_runtime": "java-runtime-gamma",
   "min_memory": 2048,
   "created_at": "2026-03-31T12:00:00.000000Z",
   "updated_at": "2026-03-31T12:00:00.000000Z"
@@ -63,6 +66,10 @@ curl -X POST https://solder.example.com/api/modpack/hexxit/build \
 ### Cloning Mods from Another Build
 
 Use the `clone_from` parameter to copy all mod assignments from an existing build. This is useful when creating a new version that starts with the same mod list.
+
+Only mod assignments are copied: the new build uses its own `java_runtime`
+input, or no override if omitted. Cloning an entire modpack instead preserves
+each build's runtime override.
 
 ```bash
 curl -X POST https://solder.example.com/api/modpack/hexxit/build \
@@ -147,6 +154,7 @@ All fields are optional. Only included fields are updated.
 | `is_published` | boolean | Whether the build is visible in the API. |
 | `private` | boolean | Restrict to authorized clients. |
 | `min_java` | string | Minimum Java version. |
+| `java_runtime` | string or null | Mojang runtime component override. Omit to preserve the current value; send `null` or an empty string to clear it. Unsupported components and non-string values return `422` without updating the build. |
 | `min_memory` | integer | Minimum memory in MB. |
 
 ### Example Request
@@ -173,6 +181,7 @@ curl -X PUT https://solder.example.com/api/modpack/hexxit/1.0.0 \
   "is_published": true,
   "private": false,
   "min_java": "17",
+  "java_runtime": "java-runtime-gamma",
   "min_memory": 2048,
   "created_at": "2026-03-31T12:00:00.000000Z",
   "updated_at": "2026-03-31T12:10:00.000000Z"
