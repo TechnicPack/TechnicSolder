@@ -105,6 +105,24 @@ docker compose -f compose.dev.yml exec solder ./vendor/bin/pint
 docker compose -f compose.dev.yml exec solder ./vendor/bin/phpstan
 ```
 
+## Releases
+
+1. Update `SOLDER_VERSION` in `app/Providers/AppServiceProvider.php` and the version example in `docs/api/read/root.md`.
+2. Move the pending `CHANGELOG.md` entries under a dated `[X.Y.Z]` heading, leave an empty `[Unreleased]` section, and add the release comparison link.
+3. Verify the changes and commit them as `chore: release vX.Y.Z`.
+4. Create an **annotated tag** named `vX.Y.Z` with the exact annotation message **`Version X.Y.Z`**. The message is not the tag name or the release notes:
+
+    ```bash
+    git tag -a vX.Y.Z -m "Version X.Y.Z"
+    ```
+
+    Replace `X.Y.Z` with the release version.
+
+5. Push the release commit and tag. The Release workflow creates the GitHub release using the matching `CHANGELOG.md` section as its release notes.
+6. Confirm that the Release workflow succeeds and the published release targets the intended commit.
+
+Do not rewrite or force-update published tags to correct their annotations. Apply corrections to future releases instead.
+
 ## Pull Requests
 
 1. Fork the repository
