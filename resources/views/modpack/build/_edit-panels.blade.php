@@ -1,13 +1,13 @@
 {{-- Add a mod card --}}
-<div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-6">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+<div class="ui-card mb-6">
+    <div class="ui-card-header">
         <span class="font-semibold text-gray-900 dark:text-white">Add a mod</span>
     </div>
     <div class="p-5" x-data="modSearch()" @mod-removed.window="modsInBuild.delete($event.detail.mod_name)">
         <div class="flex flex-col sm:flex-row gap-3 items-end">
             {{-- Mod name searchable select --}}
             <div class="flex-1 w-full sm:w-auto relative">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mod name</label>
+                <label class="ui-label">Mod name</label>
                 <input type="text"
                        x-ref="modInput"
                        x-model="query"
@@ -20,7 +20,7 @@
                        @keydown.enter.prevent="if (modHighlight >= 0 && filteredMods[modHighlight]) selectMod(filteredMods[modHighlight])"
                        placeholder="Search for a mod..."
                        autocomplete="off"
-                       class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                       class="ui-control">
                 {{-- Dropdown --}}
                 <div x-show="showDropdown && filteredMods.length > 0"
                      x-ref="modDropdown"
@@ -45,7 +45,7 @@
 
             {{-- Mod version searchable select --}}
             <div class="flex-1 w-full sm:w-auto relative" @click.outside="showVersionDropdown = false; versionHighlight = -1; versionQuery = selectedVersion">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mod version</label>
+                <label class="ui-label">Mod version</label>
                 <input type="text"
                        x-ref="versionInput"
                        x-model="versionQuery"
@@ -59,7 +59,7 @@
                        :placeholder="versions.length === 0 ? 'Select a mod first...' : 'Search versions...'"
                        :disabled="versions.length === 0"
                        autocomplete="off"
-                       class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                       class="ui-control disabled:opacity-50 disabled:cursor-not-allowed">
                 {{-- Dropdown --}}
                 <div x-show="showVersionDropdown && filteredVersions.length > 0"
                      x-ref="versionDropdown"
@@ -85,7 +85,7 @@
                 <button type="button"
                         @click="addToBuild()"
                         :disabled="!selectedVersion || loadingVersions"
-                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                        class="ui-btn ui-btn-primary disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
                     <span x-show="!loadingVersions">Add to build</span>
                     <span x-show="loadingVersions">Loading...</span>
                 </button>
@@ -95,10 +95,10 @@
 </div>
 
 {{-- Mod list card --}}
-<div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800"
+<div class="ui-card"
      x-data="modList()"
      @mod-added.window="addMod($event.detail)">
-    <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="ui-card-header flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <span class="font-semibold text-gray-900 dark:text-white">Mod List</span>
         <div class="flex w-full items-center gap-2 sm:w-auto">
             <label for="mod-list-filter" class="sr-only">Filter mods</label>
@@ -106,13 +106,13 @@
                    id="mod-list-filter"
                    x-model.debounce.200ms="filter"
                    placeholder="Filter mods..."
-                   class="min-w-0 flex-1 sm:w-64 sm:flex-none px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                   class="ui-control w-auto min-w-0 flex-1 sm:w-64 sm:flex-none">
             <button type="button"
                     x-show="pendingMods.length > 0"
                     x-cloak
                     :disabled="savingAll"
                     @click="saveAll()"
-                    class="shrink-0 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
+                    class="ui-btn ui-btn-sm ui-btn-primary shrink-0 whitespace-nowrap disabled:opacity-50">
                 <span x-show="!savingAll">Save All (<span x-text="pendingMods.length"></span>)</span>
                 <span x-show="savingAll">Saving...</span>
             </button>
@@ -132,7 +132,7 @@
                 </div>
                 <div class="flex-1 min-w-0 space-y-2 sm:space-y-0 sm:flex sm:items-center sm:gap-2">
                     <select x-model="mod.selected_version_id"
-                            class="w-full sm:w-auto sm:min-w-0 sm:flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                            class="ui-control sm:w-auto sm:min-w-0 sm:flex-1">
                         <template x-for="v in mod.versions" :key="v.id">
                             <option :value="String(v.id)" :selected="String(v.id) === mod.selected_version_id" x-text="v.version"></option>
                         </template>
@@ -141,12 +141,12 @@
                         <button type="button"
                                 :disabled="mod.changing"
                                 @click="changeVersion(mod)"
-                                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors whitespace-nowrap disabled:opacity-50">
+                                class="ui-btn ui-btn-sm ui-btn-primary whitespace-nowrap disabled:opacity-50">
                             Change
                         </button>
                         <button type="button"
                                 @click="removeMod(mod)"
-                                class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors whitespace-nowrap">
+                                class="ui-btn ui-btn-sm ui-btn-danger whitespace-nowrap">
                             Remove
                         </button>
                     </div>

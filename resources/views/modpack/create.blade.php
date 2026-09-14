@@ -8,8 +8,8 @@
         <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Create a new modpack</p>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+    <div class="ui-card">
+        <div class="ui-card-header">
             <span class="font-semibold text-gray-900 dark:text-white">Create Modpack</span>
         </div>
         <div class="p-5">
@@ -22,26 +22,26 @@
                 </p>
                 <div class="space-y-5">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modpack Name</label>
+                        <label for="name" class="ui-label">Modpack Name</label>
                         <input type="text"
                                name="name"
                                id="name"
                                x-model="name"
                                @input="slug = window.slugify(name)"
-                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                               class="ui-control">
                     </div>
                     <div>
-                        <label for="slug" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modpack Slug</label>
+                        <label for="slug" class="ui-label">Modpack Slug</label>
                         <input type="text"
                                name="slug"
                                id="slug"
                                x-model="slug"
-                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                               class="ui-control">
                     </div>
                     <div>
                         <label class="inline-flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" name="hidden" id="hidden" checked
-                                   class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
+                                   class="ui-checkbox dark:bg-gray-800">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Hide modpack</span>
                         </label>
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -51,11 +51,11 @@
                 </div>
                 <div class="mt-6 flex items-center gap-3">
                     <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white dark:bg-green-500/15 dark:text-green-400 dark:hover:bg-green-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                            class="ui-btn ui-btn-success">
                         Add Modpack
                     </button>
                     <a href="{{ url('/modpack/list') }}"
-                       class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                       class="ui-btn ui-btn-primary">
                         Go Back
                     </a>
                 </div>

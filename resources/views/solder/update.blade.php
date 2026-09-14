@@ -9,8 +9,8 @@
         {{-- Left column --}}
         <div class="space-y-6">
             {{-- Solder Versioning --}}
-            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-                <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+            <div class="ui-card">
+                <div class="ui-card-header">
                     <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Solder Versioning</h2>
                 </div>
                 <div class="px-5 py-4 space-y-2">
@@ -38,7 +38,7 @@
             </div>
 
             {{-- Update Check --}}
-            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800"
+            <div class="ui-card"
                  x-data="{
                      loading: false,
                      status: '{{ Cache::get('update') ? 'outdated' : 'up-to-date' }}',
@@ -60,35 +60,35 @@
                      },
                      errorMessage: ''
                  }">
-                <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="ui-card-header">
                     <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Update Check</h2>
                 </div>
                 <div class="px-5 py-4">
                     <div x-show="status === 'outdated'"
-                         class="mb-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                         class="ui-alert ui-alert-danger mb-4 p-4">
                         Solder is out of date. Please refer to the wiki on how to update.
                     </div>
 
                     <div x-show="status === 'up-to-date'"
-                         class="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
+                         class="ui-alert ui-alert-success mb-4 p-4">
                         Solder is up to date.
                     </div>
 
                     <div x-show="status === 'error'"
                          style="display: none"
-                         class="mb-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                         class="ui-alert ui-alert-danger mb-4 p-4">
                         Error checking for update: <span x-text="errorMessage"></span>
                     </div>
 
                     <div class="flex items-center gap-3">
                         <a href="https://docs.solder.io/guides/updating/" target="_blank"
-                           class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                           class="ui-btn ui-btn-secondary">
                             Updating Solder
                         </a>
                         <button type="button"
                                 @click="checkUpdate()"
                                 :disabled="loading"
-                                class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                class="ui-btn ui-btn-secondary disabled:opacity-50 disabled:cursor-not-allowed">
                             <span x-show="!loading">Check for update</span>
                             <span x-show="loading" style="display: none" class="flex items-center gap-2">
                                 <svg class="size-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -101,8 +101,8 @@
         </div>
 
         {{-- Right column: Activity Panel --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-            <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+        <div class="ui-card">
+            <div class="ui-card-header">
                 <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                     <svg class="size-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
                     Activity Panel
@@ -110,7 +110,7 @@
             </div>
             <div class="px-5 py-4">
                 @if (array_key_exists('error', $changelog))
-                    <div class="mb-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-sm text-yellow-700 dark:text-yellow-400/80">
+                    <div class="ui-alert ui-alert-warning mb-4 p-4">
                         {{ $changelog['error'] }}
                     </div>
                 @else

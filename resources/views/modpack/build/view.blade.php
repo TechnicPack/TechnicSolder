@@ -8,24 +8,24 @@
     </div>
 
     {{-- Build info card --}}
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-6">
-        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="ui-card mb-6">
+        <div class="ui-card-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <span class="font-semibold text-gray-900 dark:text-white">{{ $build->modpack->name }} &mdash; build {{ $build->version }}</span>
             <div class="flex items-center gap-2">
                 <button onclick="window.location.reload()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                        class="ui-btn ui-btn-sm ui-btn-primary">
                     Refresh
                 </button>
                 <a href="{{ url('modpack/build/' . $build->id . '/export') }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                   class="ui-btn ui-btn-sm ui-btn-primary">
                     Export CSV
                 </a>
                 <a href="{{ url('modpack/build/' . $build->id . '/edit') }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                   class="ui-btn ui-btn-sm ui-btn-primary">
                     Edit
                 </a>
                 <a href="{{ url('modpack/view/' . $build->modpack->id) }}"
-                   class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors">
+                   class="ui-btn ui-btn-sm ui-btn-secondary">
                     Back to modpack
                 </a>
             </div>
@@ -61,7 +61,7 @@
     {{-- Live build warning --}}
     @if ($build->isLive())
         <div x-data="{ showPanels: false }" class="mb-6">
-            <div class="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-sm text-yellow-700 dark:text-yellow-400/80">
+            <div class="ui-alert ui-alert-warning p-4">
                 <p>This build is currently published and not marked as private. <strong>You are editing a live build</strong>.</p>
                 <p x-show="!showPanels" class="mt-2">Build management panels have been hidden.
                     <button @click="showPanels = true"

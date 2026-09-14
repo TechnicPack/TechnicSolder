@@ -9,14 +9,14 @@
     </div>
 
     @session('permission')
-        <div class="mb-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+        <div class="ui-alert ui-alert-danger mb-4 p-4">
             {{ $value }}
         </div>
     @endsession
 
     <div class="space-y-6">
         {{-- Recently Updated Modpacks --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800" x-data="{ open: true }">
+        <div class="ui-card" x-data="{ open: true }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 text-left">
                 <h2 class="font-semibold text-gray-900 dark:text-white">Recently Updated Modpacks</h2>
                 <svg class="size-5 text-gray-400 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
@@ -25,7 +25,7 @@
                 <div class="overflow-x-auto border-t border-gray-200 dark:border-gray-800">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr class="ui-table-head">
                                 <th class="px-5 py-3">#</th>
                                 <th class="px-5 py-3">Build</th>
                                 <th class="px-5 py-3">Modpack</th>
@@ -35,7 +35,7 @@
                                 <th class="px-5 py-3"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                        <tbody class="ui-table-body">
                             @forelse ($builds as $build)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30">
                                     <td class="px-5 py-3 text-gray-500 dark:text-gray-400">{{ $build->id }}</td>
@@ -60,7 +60,7 @@
         </div>
 
         {{-- Recently Added Mod Versions --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800" x-data="{ open: true }">
+        <div class="ui-card" x-data="{ open: true }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 text-left">
                 <h2 class="font-semibold text-gray-900 dark:text-white">Recently Added Mod Versions</h2>
                 <svg class="size-5 text-gray-400 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
@@ -69,7 +69,7 @@
                 <div class="overflow-x-auto border-t border-gray-200 dark:border-gray-800">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr class="ui-table-head">
                                 <th class="px-5 py-3">Version</th>
                                 <th class="px-5 py-3">Mod</th>
                                 <th class="px-5 py-3">Author</th>
@@ -78,7 +78,7 @@
                                 <th class="px-5 py-3"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                        <tbody class="ui-table-body">
                             @forelse ($modversions as $modversion)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30">
                                     <td class="px-5 py-3 font-mono text-sm">{{ $modversion->version }}</td>
@@ -112,7 +112,7 @@
         </div>
 
         {{-- Unused Mod Versions --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800" x-data="{ open: true }">
+        <div class="ui-card" x-data="{ open: true }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 text-left">
                 <h2 class="font-semibold text-gray-900 dark:text-white">
                     Unused Mod Versions
@@ -124,7 +124,7 @@
                 <div class="overflow-x-auto border-t border-gray-200 dark:border-gray-800">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr class="ui-table-head">
                                 <th class="px-5 py-3">Mod Name</th>
                                 <th class="px-5 py-3">Version</th>
                                 <th class="px-5 py-3">MD5</th>
@@ -132,7 +132,7 @@
                                 <th class="px-5 py-3">Created</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                        <tbody class="ui-table-body">
                             @forelse ($unusedModversions as $modversion)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30">
                                     <td class="px-5 py-3">
@@ -157,7 +157,7 @@
         </div>
 
         {{-- Changelog --}}
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800" x-data="{ open: true }">
+        <div class="ui-card" x-data="{ open: true }">
             <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-4 text-left">
                 <h2 class="font-semibold text-gray-900 dark:text-white">Changelog</h2>
                 <svg class="size-5 text-gray-400 transition-transform" :class="open && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
@@ -174,7 +174,7 @@
                         @endif
                     </p>
                     @if (array_key_exists('error', $changelog))
-                        <div class="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-sm text-yellow-700 dark:text-yellow-400/80">
+                        <div class="ui-alert ui-alert-warning p-3">
                             {{ $changelog['error'] }}
                         </div>
                     @else

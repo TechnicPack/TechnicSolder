@@ -5,8 +5,8 @@
 @section('content')
     <h1 class="text-2xl font-bold">User Management</h1>
 
-    <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+    <div class="ui-card mt-6">
+        <div class="ui-card-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                 Edit User: {{ $user->email }}
             </h2>
@@ -19,7 +19,7 @@
             @include('partial.form-errors')
 
             @session('success')
-                <div class="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
+                <div class="ui-alert ui-alert-success mb-4 p-4">
                     {{ $value }}
                 </div>
             @endsession
@@ -31,21 +31,21 @@
                     {{-- Left column: Account details --}}
                     <div>
                         <div class="mb-4">
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                            <label for="email" class="ui-label">Email Address</label>
                             <input type="text"
                                    name="email"
                                    id="email"
                                    value="{{ $user->email }}"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                         <div class="mb-4">
-                            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                            <label for="username" class="ui-label">Username</label>
                             <input type="text"
                                    name="username"
                                    id="username"
                                    value="{{ $user->username }}"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                         <hr class="my-4 border-gray-200 dark:border-gray-700">
@@ -55,30 +55,30 @@
                         </p>
 
                         <div class="mb-4">
-                            <label for="password1" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                            <label for="password1" class="ui-label">Password</label>
                             <input type="password"
                                    name="password1"
                                    id="password1"
                                    autocomplete="new-password"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                         <div class="mb-4">
-                            <label for="password2" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password Again</label>
+                            <label for="password2" class="ui-label">Password Again</label>
                             <input type="password"
                                    name="password2"
                                    id="password2"
                                    autocomplete="new-password"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                         <div class="mb-4">
-                            <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your Current Password</label>
+                            <label for="current_password" class="ui-label">Your Current Password</label>
                             <input type="password"
                                    name="current_password"
                                    id="current_password"
                                    autocomplete="current-password"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                                 @if (Auth::id() === $user->id)
                                     Required only when setting a new password above.
@@ -109,7 +109,7 @@
                                     <label for="solder-full" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="solder-full" id="solder-full"
                                                @checked($user->permission->solder_full)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Full Solder Access (Blanket permission)
                                     </label>
                                     @endcan
@@ -117,7 +117,7 @@
                                     <label for="manage-users" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="manage-users" id="manage-users"
                                                @checked($user->permission->solder_users)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Manage Users
                                     </label>
                                     @endcan
@@ -125,7 +125,7 @@
                                     <label for="manage-keys" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="manage-keys" id="manage-keys"
                                                @checked($user->permission->solder_keys)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Manage Platform Keys
                                     </label>
                                     @endcan
@@ -133,7 +133,7 @@
                                     <label for="manage-clients" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="manage-clients" id="manage-clients"
                                                @checked($user->permission->solder_clients)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Manage Clients
                                     </label>
                                     @endcan
@@ -148,7 +148,7 @@
                                     <label for="mod-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="mod-create" id="mod-create"
                                                @checked($user->permission->mods_create)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Create Mods
                                     </label>
                                     @endcan
@@ -156,7 +156,7 @@
                                     <label for="mod-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="mod-manage" id="mod-manage"
                                                @checked($user->permission->mods_manage)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Manage Mods
                                     </label>
                                     @endcan
@@ -164,7 +164,7 @@
                                     <label for="mod-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="mod-delete" id="mod-delete"
                                                @checked($user->permission->mods_delete)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Delete Mods
                                     </label>
                                     @endcan
@@ -173,7 +173,7 @@
 
                             {{-- General Modpack Access --}}
                             <div class="mb-5">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">General Modpack Access</label>
+                                <label class="ui-label">General Modpack Access</label>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     General Modpack Access permissions are required before granting access to a specific
                                     modpack. Users without these permission will not be able to perform stated actions
@@ -184,7 +184,7 @@
                                     <label for="modpack-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="modpack-create" id="modpack-create"
                                                @checked($user->permission->modpacks_create)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Create Modpacks
                                     </label>
                                     @endcan
@@ -192,7 +192,7 @@
                                     <label for="modpack-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="modpack-manage" id="modpack-manage"
                                                @checked($user->permission->modpacks_manage)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Manage Modpacks
                                     </label>
                                     @endcan
@@ -200,7 +200,7 @@
                                     <label for="modpack-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                         <input type="checkbox" name="modpack-delete" id="modpack-delete"
                                                @checked($user->permission->modpacks_delete)
-                                               class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                               class="ui-checkbox size-4">
                                         Delete Modpacks
                                     </label>
                                     @endcan
@@ -209,7 +209,7 @@
 
                             {{-- Specific Modpacks --}}
                             <div class="mb-5">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Specific Modpacks</label>
+                                <label class="ui-label">Specific Modpacks</label>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Select which modpacks this user can access. Changes take effect when you save.</p>
                                 @if ($allModpacks->isEmpty())
                                     <p class="text-sm text-gray-500 dark:text-gray-400">No modpacks available to assign.</p>
@@ -251,7 +251,7 @@
                                         {{-- Selected pills --}}
                                         <div class="flex flex-wrap gap-1.5 mb-3" x-show="selected.length > 0">
                                             <template x-for="mp in selectedNames" :key="mp.id">
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-200 border border-transparent dark:border-blue-500/30">
+                                                <span class="ui-badge ui-badge-primary">
                                                     <span x-text="mp.name"></span>
                                                     <button type="button" @click="remove(mp.id)" class="hover:text-blue-600 dark:hover:text-blue-100">&times;</button>
                                                 </span>
@@ -267,7 +267,7 @@
                                                    @keydown.escape="open = false"
                                                    placeholder="Search modpacks..."
                                                    autocomplete="off"
-                                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                                   class="ui-control">
 
                                             {{-- Dropdown --}}
                                             <div x-show="open"
@@ -308,11 +308,11 @@
 
                 <div class="flex items-center gap-3 mt-6">
                     <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                            class="ui-btn ui-btn-primary">
                         Save User
                     </button>
                     <a href="{{ Auth::id() === $user->id ? url('/dashboard') : url('/user/list') }}"
-                       class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                       class="ui-btn ui-btn-secondary">
                         Go Back
                     </a>
                 </div>
@@ -362,7 +362,7 @@
                         <form x-ref="enableForm" method="POST" action="{{ url('/user/two-factor-authentication') }}">
                             @csrf
                             <button type="button" @click="confirm($refs.enableForm)"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                    class="ui-btn ui-btn-primary">
                                 Enable 2FA
                             </button>
                         </form>
@@ -378,7 +378,7 @@
                             Secret: {{ decrypt($user->two_factor_secret) }}
                         </p>
                         @error('code', 'confirmTwoFactorAuthentication')
-                            <div class="mb-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                            <div class="ui-alert ui-alert-danger mb-3 p-3">
                                 {{ $message }}
                             </div>
                         @enderror
@@ -386,13 +386,13 @@
                             @csrf
                             <div class="flex items-end gap-2">
                                 <div class="flex-1">
-                                    <label for="confirm-code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Code</label>
+                                    <label for="confirm-code" class="ui-label">Confirm Code</label>
                                     <input type="text" name="code" id="confirm-code" inputmode="numeric" autocomplete="one-time-code"
-                                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                                           class="ui-control"
                                            placeholder="000000">
                                 </div>
                                 <button type="submit"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                        class="ui-btn ui-btn-primary">
                                     Confirm
                                 </button>
                             </div>
@@ -441,7 +441,7 @@
                             <form x-ref="regenForm" method="POST" action="{{ url('/user/two-factor-recovery-codes') }}">
                                 @csrf
                                 <button type="button" @click="confirm($refs.regenForm)"
-                                        class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                        class="ui-btn ui-btn-secondary">
                                     Regenerate Recovery Codes
                                 </button>
                             </form>
@@ -449,7 +449,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" @click="confirm($refs.disableForm)"
-                                        class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                        class="ui-btn ui-btn-danger">
                                     Disable 2FA
                                 </button>
                             </form>
@@ -465,16 +465,16 @@
                                 <input type="password" x-model="password" x-ref="passwordInput" @keydown.enter="submit()"
                                        autocomplete="current-password"
                                        placeholder="Password"
-                                       class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                       class="ui-control">
                                 <p x-show="error" x-text="error" class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
                             </div>
                             <div class="flex items-center gap-3 justify-end">
                                 <button type="button" @click="showModal = false"
-                                        class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                        class="ui-btn ui-btn-secondary">
                                     Cancel
                                 </button>
                                 <button type="button" @click="submit()"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                        class="ui-btn ui-btn-primary">
                                     Confirm
                                 </button>
                             </div>
@@ -494,7 +494,7 @@
                 <form method="POST" action="{{ route('user.reset2fa', $user->id) }}">
                     @csrf
                     <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors"
+                            class="ui-btn ui-btn-danger"
                             onclick="return confirm('Are you sure you want to reset this user\'s 2FA?')">
                         Reset 2FA
                     </button>
@@ -525,12 +525,12 @@
                     @csrf
                     <div class="flex items-end gap-2">
                         <div class="flex-1">
-                            <label for="token_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Token Name</label>
+                            <label for="token_name" class="ui-label">Token Name</label>
                             <input type="text" name="token_name" id="token_name" placeholder="e.g. CI/CD Pipeline"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
                         <button type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                class="ui-btn ui-btn-primary">
                             Create Token
                         </button>
                     </div>
@@ -540,7 +540,7 @@
                 @if ($tokens->isNotEmpty())
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
-                            <thead class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <thead class="ui-table-head">
                                 <tr>
                                     <th class="px-3 py-2">Name</th>
                                     <th class="px-3 py-2">Created</th>
@@ -548,7 +548,7 @@
                                     <th class="px-3 py-2"></th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                            <tbody class="ui-table-body">
                                 @foreach ($tokens as $token)
                                     <tr>
                                         <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ $token->name }}</td>
@@ -558,7 +558,7 @@
                                             <form method="POST" action="{{ route('user.token.delete', $token->id) }}">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1 px-2 rounded text-xs transition-colors"
+                                                        class="ui-btn ui-btn-danger py-1 px-2 rounded text-xs"
                                                         onclick="return confirm('Revoke this token?')">
                                                     Revoke
                                                 </button>

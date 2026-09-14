@@ -97,6 +97,37 @@ This project uses [Laravel Pint](https://laravel.com/docs/pint) for code formatt
 docker compose -f compose.dev.yml exec solder ./vendor/bin/pint
 ```
 
+### Frontend styles
+
+Shared visual recipes live in `resources/css/app.css` under `@layer components`,
+using the `ui-` prefix. Reuse these for controls, labels, checkboxes, buttons,
+cards, alerts, table headings/dividers, and the shared blue badge. Keep native
+HTML and Alpine bindings in the Blade views.
+
+```html
+<input class="ui-control sm:w-64">
+<button type="submit" class="ui-btn ui-btn-danger ui-btn-sm">Delete</button>
+<div class="ui-card mt-6">...</div>
+```
+
+Keep page-specific spacing, layout, responsive widths, and exceptional states
+as Tailwind utilities. Utilities override component-layer styles, including
+hover/focus/dark declarations affecting the same property: replace complete
+color recipes rather than leaving conflicting base colors behind. Preserve
+existing differences such as solid auth buttons, tinted dark-mode admin
+buttons, and alerts whose typography belongs to their children.
+
+Do not reuse the forms plugin's `form-*` class names or introduce a Blade
+component just to wrap a styled native element. Preserve the dark-mode hex
+background workaround for 1Password.
+
+After stylesheet or template changes, run `npm run build` and update
+`public/build` in every running preview/deployment that serves the changed
+templates. A container with a separate build volume does not see host-built
+assets. Verify both themes and relevant interactive states in the browser;
+PHP tests alone cannot detect missing styles.
+
+
 ## Static Analysis
 
 [Larastan](https://github.com/larastan/larastan) (PHPStan for Laravel) is used for static analysis:

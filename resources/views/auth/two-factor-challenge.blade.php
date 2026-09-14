@@ -16,14 +16,14 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Two-Factor Authentication</h1>
         </div>
 
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
+        <div class="ui-card p-6">
             @error('code')
-                <div class="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                <div class="ui-alert ui-alert-danger mb-4 p-3">
                     {{ $message }}
                 </div>
             @enderror
             @error('recovery_code')
-                <div class="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-300">
+                <div class="ui-alert ui-alert-danger mb-4 p-3">
                     {{ $message }}
                 </div>
             @enderror
@@ -39,18 +39,18 @@
                 @csrf
                 <div class="space-y-4">
                     <div x-show="!useRecovery">
-                        <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Authentication Code</label>
+                        <label for="code" class="ui-label">Authentication Code</label>
                         <input type="text" name="code" id="code" inputmode="numeric" autocomplete="one-time-code" autofocus
-                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                               class="ui-control"
                                placeholder="000000">
                     </div>
                     <div x-show="useRecovery" style="display: none">
-                        <label for="recovery_code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Recovery Code</label>
+                        <label for="recovery_code" class="ui-label">Recovery Code</label>
                         <input type="text" name="recovery_code" id="recovery_code"
-                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                               class="ui-control">
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm transition-colors">
+                            class="ui-btn ui-btn-primary-solid w-full py-2.5">
                         Verify
                     </button>
                     <button type="button" @click="useRecovery = !useRecovery"

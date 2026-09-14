@@ -7,29 +7,29 @@
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Build Management - {{ $modpack->name }}</h1>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-gray-200 dark:border-gray-800">
+    <div class="ui-card">
+        <div class="ui-card-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <span class="font-semibold text-gray-900 dark:text-white">Build Management: {{ $modpack->name }}</span>
             <div class="flex items-center gap-2">
                 <a href="{{ url('modpack/add-build/'.$modpack->id) }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                   class="ui-btn ui-btn-sm ui-btn-primary">
                     Create New Build
                 </a>
                 @can('create', App\Models\Modpack::class)
                     <a href="{{ url('modpack/clone/'.$modpack->id) }}"
-                       class="bg-purple-600 hover:bg-purple-700 text-white dark:bg-purple-500/15 dark:text-purple-400 dark:hover:bg-purple-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                       class="ui-btn ui-btn-sm ui-btn-purple">
                         Clone Modpack
                     </a>
                 @endcan
                 <a href="{{ url('modpack/edit/'.$modpack->id) }}"
-                   class="bg-yellow-500 hover:bg-yellow-600 text-white dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                   class="ui-btn ui-btn-sm ui-btn-warning">
                     Edit Modpack
                 </a>
             </div>
         </div>
         <div class="p-5">
             @session('success')
-                <div class="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
+                <div class="ui-alert ui-alert-success mb-4 p-4">
                     {{ $value }}
                 </div>
             @endsession
@@ -54,7 +54,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
-                                <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <tr class="ui-table-head">
                                     <th class="px-5 py-3 hidden sm:table-cell cursor-pointer" @click="sort('id')">
                                         <span class="inline-flex items-center gap-1"># <span x-show="sortKey === 'id'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
                                     </th>
@@ -75,7 +75,7 @@
                                     <th class="px-5 py-3">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                            <tbody class="ui-table-body">
                                 <template x-for="row in paged" :key="row.id">
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
                                         <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden sm:table-cell" x-text="row.id"></td>
@@ -105,28 +105,28 @@
                                                    type="checkbox"
                                                    :checked="row.is_published"
                                                    @change="togglePublished(row.id, $event.target.checked)"
-                                                   class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
+                                                   class="ui-checkbox dark:bg-gray-800">
                                         </td>
                                         <td class="px-5 py-3 hidden md:table-cell">
                                             <input autocomplete="off"
                                                    type="checkbox"
                                                    :checked="row.private"
                                                    @change="togglePrivate(row.id, $event.target.checked)"
-                                                   class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-800">
+                                                   class="ui-checkbox dark:bg-gray-800">
                                         </td>
                                         <td class="px-5 py-3 text-gray-600 dark:text-gray-400 hidden lg:table-cell" x-text="row.created_at_display"></td>
                                         <td class="px-5 py-3">
                                             <div class="flex items-center gap-2">
                                                 <a :href="'/modpack/build/' + row.id"
-                                                   class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                   class="ui-btn ui-btn-sm ui-btn-primary">
                                                     Manage
                                                 </a>
                                                 <a :href="'/modpack/build/' + row.id + '/edit'"
-                                                   class="bg-yellow-500 hover:bg-yellow-600 text-white dark:bg-yellow-500/15 dark:text-yellow-400 dark:hover:bg-yellow-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                   class="ui-btn ui-btn-sm ui-btn-warning">
                                                     Edit
                                                 </a>
                                                 <a :href="'/modpack/build/' + row.id + '/delete'"
-                                                   class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                                   class="ui-btn ui-btn-sm ui-btn-danger">
                                                     Delete
                                                 </a>
                                             </div>

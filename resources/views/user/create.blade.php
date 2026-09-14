@@ -5,8 +5,8 @@
 @section('content')
     <h1 class="text-2xl font-bold">User Management</h1>
 
-    <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+    <div class="ui-card mt-6">
+        <div class="ui-card-header">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Create User</h2>
         </div>
         <div class="px-5 py-4">
@@ -19,28 +19,28 @@
                     {{-- Left column: Account details --}}
                     <div>
                         <div class="mb-4">
-                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                            <label for="email" class="ui-label">Email Address</label>
                             <input type="text"
                                    name="email"
                                    id="email"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                         <div class="mb-4">
-                            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                            <label for="username" class="ui-label">Username</label>
                             <input type="text"
                                    name="username"
                                    id="username"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                         <div class="mb-4">
-                            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                            <label for="password" class="ui-label">Password</label>
                             <input type="password"
                                    name="password"
                                    id="password"
                                    autocomplete="new-password"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
 
                     </div>
@@ -62,28 +62,28 @@
                                 @can('grant-permission', 'solder_full')
                                 <label for="solder-full" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="solder-full" id="solder-full"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Full Solder Access (Blanket permission)
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'solder_users')
                                 <label for="manage-users" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="manage-users" id="manage-users"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Manage Users
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'solder_keys')
                                 <label for="manage-keys" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="manage-keys" id="manage-keys"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Manage Platform Keys
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'solder_clients')
                                 <label for="manage-clients" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="manage-clients" id="manage-clients"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Manage Clients
                                 </label>
                                 @endcan
@@ -97,21 +97,21 @@
                                 @can('grant-permission', 'mods_create')
                                 <label for="mod-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="mod-create" id="mod-create"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Create Mods
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'mods_manage')
                                 <label for="mod-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="mod-manage" id="mod-manage"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Manage Mods
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'mods_delete')
                                 <label for="mod-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="mod-delete" id="mod-delete"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Delete Mods
                                 </label>
                                 @endcan
@@ -120,7 +120,7 @@
 
                         {{-- General Modpack Access --}}
                         <div class="mb-5">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">General Modpack Access</label>
+                            <label class="ui-label">General Modpack Access</label>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                 General Modpack Access permissions are required before granting access to a specific
                                 modpack. Users without these permission will not be able to perform stated actions even
@@ -130,21 +130,21 @@
                                 @can('grant-permission', 'modpacks_create')
                                 <label for="modpack-create" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="modpack-create" id="modpack-create"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Create Modpacks
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'modpacks_manage')
                                 <label for="modpack-manage" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="modpack-manage" id="modpack-manage"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Manage Modpacks
                                 </label>
                                 @endcan
                                 @can('grant-permission', 'modpacks_delete')
                                 <label for="modpack-delete" class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                                     <input type="checkbox" name="modpack-delete" id="modpack-delete"
-                                           class="size-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                                           class="ui-checkbox size-4">
                                     Delete Modpacks
                                 </label>
                                 @endcan
@@ -153,7 +153,7 @@
 
                         {{-- Specific Modpacks --}}
                         <div class="mb-5">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Specific Modpacks</label>
+                            <label class="ui-label">Specific Modpacks</label>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Select which modpacks this user can access. Changes take effect when you save.</p>
                             @if ($allModpacks->isEmpty())
                                 <p class="text-sm text-gray-500 dark:text-gray-400">No modpacks available to assign.</p>
@@ -195,7 +195,7 @@
                                     {{-- Selected pills --}}
                                     <div class="flex flex-wrap gap-1.5 mb-3" x-show="selected.length > 0">
                                         <template x-for="mp in selectedNames" :key="mp.id">
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-200 border border-transparent dark:border-blue-500/30">
+                                            <span class="ui-badge ui-badge-primary">
                                                 <span x-text="mp.name"></span>
                                                 <button type="button" @click="remove(mp.id)" class="hover:text-blue-600 dark:hover:text-blue-100">&times;</button>
                                             </span>
@@ -211,7 +211,7 @@
                                                @keydown.escape="open = false"
                                                placeholder="Search modpacks..."
                                                autocomplete="off"
-                                               class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                               class="ui-control">
 
                                         {{-- Dropdown --}}
                                         <div x-show="open"
@@ -251,7 +251,7 @@
 
                 <div class="flex items-center gap-3 mt-6">
                     <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                            class="ui-btn ui-btn-primary">
                         Create User
                     </button>
                 </div>

@@ -5,11 +5,11 @@
 @section('content')
     <h1 class="text-2xl font-bold">User Management</h1>
 
-    <div class="mt-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+    <div class="ui-card mt-6">
+        <div class="ui-card-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">User List</h2>
             <a href="{{ URL::to('user/create') }}"
-               class="self-start bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+               class="ui-btn ui-btn-sm ui-btn-primary self-start">
                 Create User
             </a>
         </div>
@@ -33,7 +33,7 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <thead class="ui-table-head">
                             <tr>
                                 <th class="px-5 py-3 hidden sm:table-cell cursor-pointer" @click="sort('id')">
                                     <span class="inline-flex items-center gap-1">ID # <span x-show="sortKey === 'id'" x-text="sortDir === 'asc' ? '↑' : '↓'"></span></span>
@@ -52,7 +52,7 @@
                                 <th class="px-5 py-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                        <tbody class="ui-table-body">
                             <template x-for="row in paged" :key="row.id">
                                 <tr>
                                     <td class="px-5 py-3 text-gray-900 dark:text-gray-100 hidden sm:table-cell" x-text="row.id"></td>
@@ -70,11 +70,11 @@
                                     <td class="px-5 py-3">
                                         <div class="flex items-center gap-2">
                                             <a :href="'/user/edit/' + row.id"
-                                               class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                               class="ui-btn ui-btn-sm ui-btn-primary">
                                                 Edit
                                             </a>
                                             <a :href="'/user/delete/' + row.id"
-                                               class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 rounded-lg text-xs transition-colors">
+                                               class="ui-btn ui-btn-sm ui-btn-danger">
                                                 Delete
                                             </a>
                                         </div>

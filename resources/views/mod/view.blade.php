@@ -7,9 +7,9 @@
         <h1 class="text-2xl font-bold">Mod Library</h1>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800"
+    <div class="ui-card"
          x-data="modView()">
-        <div class="px-5 py-4 border-b border-gray-200 dark:border-gray-800">
+        <div class="ui-card-header">
             <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                 @if (!empty($mod->pretty_name))
                     {{ $mod->pretty_name }}
@@ -57,7 +57,7 @@
                     </div>
                     <button @click="rehashAllRunning ? rehashAllAborted = true : rehashAll()"
                             :disabled="rows.length === 0"
-                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                            class="ui-btn ui-btn-primary text-xs disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
                         <span x-show="!rehashAllRunning">Rehash All</span>
                         <span x-show="rehashAllRunning && !rehashAllAborted" x-text="'Rehashing ' + rehashAllCurrent + '/' + rehashAllTotal + '... (click to cancel)'"></span>
                         <span x-show="rehashAllAborted">Cancelling...</span>
@@ -67,7 +67,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-800/50 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            <tr class="ui-table-head">
                                 <th class="px-5 py-3 w-8"></th>
                                 @include('partial.data-table.sort-header', ['key' => 'version', 'label' => 'Version'])
                                 <th class="px-5 py-3" style="width: 25%">MD5</th>
@@ -76,7 +76,7 @@
                                 <th class="px-5 py-3" style="width: 15%"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                        <tbody class="ui-table-body">
                             {{-- Add version row (pinned) --}}
                             <tr class="bg-blue-50/50 dark:bg-blue-900/10">
                                 <td class="px-5 py-3"></td>
@@ -84,13 +84,13 @@
                                     <input type="text"
                                            x-model="addVersion"
                                            placeholder="Version"
-                                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                           class="ui-control">
                                 </td>
                                 <td class="px-5 py-3">
                                     <input type="text"
                                            x-model="addMd5"
                                            placeholder="MD5 (optional)"
-                                           class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                           class="ui-control">
                                 </td>
                                 <td class="px-5 py-3">
                                     <template x-if="addVersion">
@@ -104,7 +104,7 @@
                                 <td class="px-5 py-3">
                                     <button @click="submitAddVersion()"
                                             :disabled="addLoading || !addVersion"
-                                            class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                            class="ui-btn ui-btn-sm ui-btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
                                         <span x-show="!addLoading">Add Version</span>
                                         <span x-show="addLoading">Adding...</span>
                                     </button>
@@ -114,7 +114,7 @@
 
                         {{-- Data-driven version rows with inline expand --}}
                         <template x-for="row in paged" :key="row.id">
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                            <tbody class="ui-table-body">
                                     <tr>
                                         <td class="px-5 py-3">
                                             <button @click="toggleExpand(row.id)"
@@ -132,7 +132,7 @@
                                             <input type="text"
                                                    :id="'md5-' + row.id"
                                                    :placeholder="row.md5"
-                                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                                   class="ui-control">
                                         </td>
                                         <td class="px-5 py-3">
                                             <a :href="row.url" target="_blank"
@@ -143,13 +143,13 @@
                                             <div class="flex items-center gap-2">
                                                 <button @click="rehashVersion(row.id)"
                                                         :disabled="rehashingVersions.includes(row.id)"
-                                                        class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                        class="ui-btn ui-btn-sm ui-btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <span x-show="!rehashingVersions.includes(row.id)">Rehash</span>
                                                     <span x-show="rehashingVersions.includes(row.id)">...</span>
                                                 </button>
                                                 <button @click="deleteVersion(row.id)"
                                                         :disabled="deletingVersions.includes(row.id)"
-                                                        class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-1.5 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                                        class="ui-btn ui-btn-sm ui-btn-danger disabled:opacity-50 disabled:cursor-not-allowed">
                                                     Delete
                                                 </button>
                                             </div>
@@ -185,15 +185,15 @@
                                                 </div>
                                             </template>
                                             <div class="mt-3">
-                                                <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">Notes</label>
+                                                <label class="ui-label">Notes</label>
                                                 <div class="flex gap-2">
                                                     <textarea x-model="row.notes"
                                                               rows="2"
                                                               placeholder="Private notes (not shown in API)"
-                                                              class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"></textarea>
+                                                              class="ui-control w-auto flex-1"></textarea>
                                                     <button @click="saveVersionNotes(row)"
                                                             :disabled="row.savingNotes"
-                                                            class="self-end bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-3 text-xs rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                                                            class="ui-btn ui-btn-primary self-end px-3 text-xs disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
                                                         <span x-show="!row.savingNotes">Save</span>
                                                         <span x-show="row.savingNotes">...</span>
                                                     </button>
@@ -211,7 +211,7 @@
             <div x-show="tab === 'details'" x-cloak>
                 @include('partial.form-errors')
                 @session('success')
-                    <div class="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-700 dark:text-green-300">
+                    <div class="ui-alert ui-alert-success mb-4 p-4">
                         {{ $value }}
                     </div>
                 @endsession
@@ -244,53 +244,53 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="space-y-4">
                         <div>
-                            <label for="pretty_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pretty Name</label>
+                            <label for="pretty_name" class="ui-label">Pretty Name</label>
                             <input type="text"
                                    name="pretty_name"
                                    id="pretty_name"
                                    x-model="prettyName"
                                    @input="updateSlug()"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
+                            <label for="name" class="ui-label">Slug</label>
                             <input type="text"
                                    name="name"
                                    id="name"
                                    x-model="slug"
                                    @input="onSlugInput()"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
                         <div>
-                            <label for="author" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Author</label>
+                            <label for="author" class="ui-label">Author</label>
                             <input type="text"
                                    name="author"
                                    id="author"
                                    value="{{ $mod->author }}"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
                         <div>
-                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                            <label for="description" class="ui-label">Description</label>
                             <textarea name="description"
                                       id="description"
                                       rows="5"
-                                      class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">{{ $mod->description }}</textarea>
+                                      class="ui-control">{{ $mod->description }}</textarea>
                         </div>
                         <div>
-                            <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+                            <label for="notes" class="ui-label">Notes</label>
                             <textarea name="notes"
                                       id="notes"
                                       rows="3"
                                       placeholder="Private notes (not shown in API)"
-                                      class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">{{ $mod->notes }}</textarea>
+                                      class="ui-control">{{ $mod->notes }}</textarea>
                         </div>
                         <div>
-                            <label for="link" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Website</label>
+                            <label for="link" class="ui-label">Website</label>
                             <input type="text"
                                    name="link"
                                    id="link"
                                    value="{{ $mod->link }}"
-                                   class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors">
+                                   class="ui-control">
                         </div>
                     </div>
                     <div>
@@ -312,15 +312,15 @@
                     </div>
                     <div class="mt-6 flex items-center gap-3">
                         <button type="submit"
-                                class="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500/15 dark:text-blue-400 dark:hover:bg-blue-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                                class="ui-btn ui-btn-primary">
                             Save Changes
                         </button>
                         <a href="{{ url('/mod/delete/'.$mod->id) }}"
-                           class="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500/15 dark:text-red-400 dark:hover:bg-red-500/25 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                           class="ui-btn ui-btn-danger">
                             Delete Mod
                         </a>
                         <a href="{{ url('/mod/list') }}"
-                           class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2 px-4 rounded-lg text-sm transition-colors">
+                           class="ui-btn ui-btn-secondary">
                             Go Back
                         </a>
                     </div>
