@@ -51,13 +51,13 @@
                     </p>
                 </div>
 
-                <div class="flex items-center justify-between gap-3">
-                    <div class="flex-1">
-                        @include('partial.data-table.toolbar', ['placeholder' => 'Search versions...', 'showPageSize' => false])
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                    <div class="w-full sm:w-auto sm:flex-1">
+                        @include('partial.data-table.toolbar', ['placeholder' => 'Search versions...', 'showPageSize' => false, 'embedded' => true])
                     </div>
                     <button @click="rehashAllRunning ? rehashAllAborted = true : rehashAll()"
                             :disabled="rows.length === 0"
-                            class="ui-btn ui-btn-primary text-xs disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                            class="ui-btn ui-btn-primary text-xs disabled:opacity-50 disabled:cursor-not-allowed">
                         <span x-show="!rehashAllRunning">Rehash All</span>
                         <span x-show="rehashAllRunning && !rehashAllAborted" x-text="'Rehashing ' + rehashAllCurrent + '/' + rehashAllTotal + '... (click to cancel)'"></span>
                         <span x-show="rehashAllAborted">Cancelling...</span>

@@ -12,6 +12,11 @@ All notable changes to Technic Solder will be documented in this file.
 
 - Consolidated repeated Blade styling into shared `ui-*` CSS classes while preserving existing layouts, light/dark themes, native controls, and Alpine behavior. Rebuild and deploy frontend assets together with the updated templates.
 
+### Fixed
+
+- Aligned the mod-version search field with Rehash All and stacked the controls on narrow screens.
+- Restored dropdown-arrow spacing for shared select controls, including the Show entries selector.
+
 ## [1.4.0] - 2026-09-14
 
 ### Added
