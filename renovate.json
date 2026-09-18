@@ -6,7 +6,8 @@
     ":prHourlyLimitNone",
     ":prImmediately",
     ":semanticCommitTypeAll(chore)",
-    ":separateMajorReleases"
+    ":separateMajorReleases",
+    "docker:pinDigests"
   ],
   "configMigration": true,
   "rangeStrategy": "bump",

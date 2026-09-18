@@ -7,7 +7,7 @@ name: technicsolder-dev
 
 services:
   nginx:
-    image: nginx
+    image: nginx:1.31.6@sha256:f6ee2eff6bc131ec351c3c70e95c146fa12b2eb4426954e5279bbda36740667e
     depends_on:
       - solder
     ports:
@@ -32,7 +32,7 @@ services:
     command: ["/bin/bash", "/var/www/html/docker/dev-entrypoint.sh"]
 
   postgres:
-    image: postgres
+    image: postgres:18.6@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280
     # Let host-run SolderJS share this database without exposing it to the LAN.
     # Port 5434 avoids SolderJS's isolated integration-test PostgreSQL on 5433.
     ports:
@@ -50,7 +50,7 @@ services:
       retries: 10
 
   redis:
-    image: redis
+    image: redis:8.10.1@sha256:298e5b3bc566bade82f46ad5511777a4a07a294097ce16ada2f6a42be5239df5
     # Let host-run SolderJS use Redis without exposing it to the LAN.
     # Port 6381 avoids SolderJS's isolated integration-test Redis on 6380.
     ports:

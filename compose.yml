@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx
+    image: nginx:1.31.6@sha256:f6ee2eff6bc131ec351c3c70e95c146fa12b2eb4426954e5279bbda36740667e
     restart: always
     depends_on:
       - solder
@@ -68,7 +68,7 @@ services:
     command: ["/bin/bash", "/var/www/html/docker/entrypoint.sh"]
 
   mysql:
-    image: mariadb
+    image: mariadb:lts@sha256:805c8e104bd563d5bfa24fadd3f31cd419ea859cb5277f32b5dbf2db714f9ed1
     restart: always
     environment:
       - MYSQL_DATABASE=${DB_DATABASE:-solder}
@@ -84,5 +84,5 @@ services:
       retries: 10
 
   redis:
-    image: valkey/valkey
+    image: valkey/valkey:9.1.2@sha256:c123e3715db63d06d4ad6964884037aa0d5d4d703939b9929954112889708e1d
     restart: always
