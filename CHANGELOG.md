@@ -4,6 +4,8 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-09-20
+
 ### Added
 
 - Private modpacks now display a lock icon in the sidebar, alongside the hidden indicator when both apply. Hover, keyboard focus, or tap the status icons to show “Hidden”, “Private”, or “Hidden and private” without opening the modpack.
@@ -11,6 +13,8 @@ All notable changes to Technic Solder will be documented in this file.
 ### Changed
 
 - Consolidated repeated Blade styling into shared `ui-*` CSS classes while preserving existing layouts, light/dark themes, native controls, and Alpine behavior. Rebuild and deploy frontend assets together with the updated templates.
+- Updated PHP and frontend dependency requirements, including Laravel 13.31, Larastan 3.12.1, Laravel Boost 2.8.1, Pint 1.32.1, PHPUnit 12.5.35, Alpine.js 3.17.2, and Vite 8.3.
+- Pinned Docker images by digest and switched production MariaDB to the LTS channel. Review database-version compatibility before upgrading an existing database volume.
 
 ### Fixed
 
@@ -222,6 +226,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.5.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.2.0...v1.3.0
