@@ -7,7 +7,7 @@ COPY vite.config.js ./
 COPY resources/ resources/
 RUN npm run build
 
-FROM php:8.5-fpm@sha256:14e08327efdcb7bb53f249b7f7c9ab50791f9ae77bae3585303d48a5d5a7409a
+FROM php:8.5-fpm@sha256:584e584083bada479f0ee733a3025722a68e366eb721e618d1b6a252e4ff45c5
 
 RUN apt-get update && apt-get install -y \
         unzip \
