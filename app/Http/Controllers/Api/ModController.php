@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Mod;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -41,7 +42,9 @@ class ModController extends Controller
             'link',
         ]);
 
-        $perm = auth('sanctum')->user()?->permission;
+        /** @var User|null $user */
+        $user = auth('sanctum')->user();
+        $perm = $user?->permission;
         if ($perm?->solder_full || $perm?->mods_manage) {
             $response['notes'] = $mod->notes;
         }

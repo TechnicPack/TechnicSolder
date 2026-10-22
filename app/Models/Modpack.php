@@ -83,6 +83,7 @@ class Modpack extends Model
         'private',
     ];
 
+    /** @return HasMany<Build, $this> */
     public function builds(): HasMany
     {
         return $this->hasMany(Build::class)->chaperone();

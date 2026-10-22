@@ -7,6 +7,13 @@ All notable changes to Technic Solder will be documented in this file.
 ### Security
 
 - Updated the pinned PHP 8.5 FPM Docker image to PHP 8.5.12 to fix CVE-2026-109618 and CVE-2026-109619. Rebuild and recreate containers to apply the update. The pinned image does not currently include riscv64.
+- Updated Vite and source-map-js to resolve reported frontend dependency vulnerabilities.
+
+### Changed
+
+- Updated PHP dependency requirements, including Laravel 13.36, Fortify 1.41, Debugbar 4.4.4, Larastan 3.13, Boost 2.10.3, and PHPUnit 12.5.39; clarified model types for static analysis.
+- Updated Alpine.js to 3.17.4, Fontaine to 0.8.2, and Vite to 8.3.4, and refreshed the npm lockfile.
+- Updated the Node Docker image to 24.21.0, refreshed Composer, nginx, PostgreSQL, Redis, and Valkey image digests, and updated the documentation build to Python 3.15.0.
 
 ## [1.5.0] - 2026-09-20
 
