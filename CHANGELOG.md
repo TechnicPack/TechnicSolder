@@ -4,6 +4,10 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+### Security
+
+- Updated the pinned PHP 8.5 FPM Docker image to PHP 8.5.12 to fix CVE-2026-109618 and CVE-2026-109619. Rebuild and recreate containers to apply the update. The pinned image does not currently include riscv64.
+
 ## [1.5.0] - 2026-09-20
 
 ### Added
