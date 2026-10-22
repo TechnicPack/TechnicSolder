@@ -4,6 +4,8 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-10-22
+
 ### Security
 
 - Updated the pinned PHP 8.5 FPM Docker image to PHP 8.5.12 to fix CVE-2026-109618 and CVE-2026-109619. Rebuild and recreate containers to apply the update. The pinned image does not currently include riscv64.
@@ -237,6 +239,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.5.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.0...v1.3.1
