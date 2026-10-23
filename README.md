@@ -19,9 +19,9 @@ Solder also interfaces with the Technic Platform using an API key you can genera
 Requirements
 -------------
 
-* PHP 8.4 or higher
+* PHP 8.5 recommended (8.4 minimum)
 * [Composer](https://getcomposer.org/)
-* [Node.js](https://nodejs.org/) 20 or higher and npm
+* [Node.js](https://nodejs.org/) 24 LTS and npm
 * `unzip` package
 * Ctype PHP Extension
 * cURL PHP Extension

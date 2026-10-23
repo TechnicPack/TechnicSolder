@@ -14,9 +14,9 @@ This guide walks through installing Technic Solder directly on a Linux server.
 ## Requirements
 
 - **Git**
-- **PHP >= 8.4**
+- **PHP 8.5** recommended (8.4 minimum)
 - **Composer** ([getcomposer.org](https://getcomposer.org/))
-- **Node.js >= 20** and **npm** ([nodejs.org](https://nodejs.org/))
+- **Node.js 24 LTS** and **npm** ([nodejs.org](https://nodejs.org/))
 - **unzip**
 - **A MariaDB, MySQL, or PostgreSQL database**
 
@@ -24,16 +24,37 @@ This guide walks through installing Technic Solder directly on a Linux server.
 
 BCMath, cURL, ctype, fileinfo, JSON, mbstring, OpenSSL, PDO, Redis, Tokenizer, XML, ZIP
 
-### Example: Ubuntu 24.04
+### Example: Ubuntu LTS
+
+These commands target Ubuntu 26.04 LTS and use the [Sury PHP repository](https://packages.sury.org/php/README.txt).
 
 ```bash
-# Add the PHP PPA: https://launchpad.net/~ondrej/+archive/ubuntu/php
-LC_ALL=C.UTF-8 sudo add-apt-repository ppa:ondrej/php
+# Install prerequisites and the repository signing key
+sudo apt update
+sudo apt install lsb-release ca-certificates curl
+curl -fsSLo /tmp/debsuryorg-archive-keyring.deb \
+    https://packages.sury.org/debsuryorg-archive-keyring.deb
+sudo dpkg -i /tmp/debsuryorg-archive-keyring.deb
+
+# Add the PHP repository for your Ubuntu release
+echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" | \
+    sudo tee /etc/apt/sources.list.d/php.list
 sudo apt update
 
-# If you're using PostgreSQL, replace php8.4-mysql with php8.4-pgsql
-sudo apt install git unzip php8.4 php8.4-bcmath php8.4-cli php8.4-curl \
-    php8.4-fpm php8.4-mbstring php8.4-mysql php8.4-redis php8.4-xml php8.4-zip
+# If you're using PostgreSQL, replace php8.5-mysql with php8.5-pgsql
+sudo apt install git unzip php8.5 php8.5-bcmath php8.5-cli php8.5-curl \
+    php8.5-fpm php8.5-mbstring php8.5-mysql php8.5-redis php8.5-xml php8.5-zip
+```
+
+## Installing Node.js
+
+Install **Node.js 24 LTS** and its bundled npm using the [official Node.js installation guide](https://nodejs.org/en/download). Select the LTS release rather than Current.
+
+Verify the installed versions before building Solder:
+
+```bash
+node --version # Expected: v24.x.x
+npm --version
 ```
 
 ## Installing Composer

@@ -54,7 +54,7 @@ git remote set-head origin -a
 
 ### v1.0.0
 
-**Requires PHP 8.4+, Node.js 20+, and npm.**
+**Use PHP 8.5 (8.4 minimum), Node.js 24 LTS, and npm.**
 
 - Laravel upgraded from 12 to **13**
 - Frontend rebuilt with **Vite 8**, Tailwind CSS v4, and Alpine.js — `npm ci && npm run build` is now a required deployment step

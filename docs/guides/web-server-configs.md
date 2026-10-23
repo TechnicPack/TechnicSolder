@@ -28,7 +28,7 @@ The application server block points its document root at Solder's `public/` dire
         }
 
         location ~* \.php$ {
-            fastcgi_pass            unix:/run/php/php8.4-fpm.sock;
+            fastcgi_pass            unix:/run/php/php8.5-fpm.sock;
             fastcgi_index           index.php;
             fastcgi_split_path_info ^(.+\.php)(.*)$;
             include                 fastcgi_params;
@@ -76,7 +76,7 @@ The application server block points its document root at Solder's `public/` dire
         </Directory>
 
         <FilesMatch \.php$>
-            SetHandler "proxy:unix:/run/php/php8.4-fpm.sock|fcgi://localhost"
+            SetHandler "proxy:unix:/run/php/php8.5-fpm.sock|fcgi://localhost"
         </FilesMatch>
 
         # If behind a load balancer that terminates TLS:
@@ -92,7 +92,7 @@ The application server block points its document root at Solder's `public/` dire
     ```caddy
     solder.example.com {
         root * /var/www/solder/TechnicSolder/public
-        php_fastcgi unix//run/php/php8.4-fpm.sock
+        php_fastcgi unix//run/php/php8.5-fpm.sock
         file_server
 
         # Cache static assets
