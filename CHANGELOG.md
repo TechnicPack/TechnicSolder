@@ -4,6 +4,8 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-10-27
+
 ### Security
 
 - Updated the pinned Node.js, nginx, Redis, and Valkey images to security-fixed releases and the documentation build to Python 3.15.2. Rebuild and recreate containers to apply the image updates.
@@ -249,6 +251,7 @@ All notable changes to Technic Solder will be documented in this file.
 - Error message display for invalid 2FA recovery codes
 - Sidebar overflow when modpack list is long
 
+[1.5.2]: https://github.com/TechnicPack/TechnicSolder/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/TechnicPack/TechnicSolder/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/TechnicPack/TechnicSolder/compare/v1.3.1...v1.4.0
