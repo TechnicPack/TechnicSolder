@@ -7,7 +7,7 @@ name: technicsolder-dev
 
 services:
   nginx:
-    image: nginx:1.31.6@sha256:60f0d4e986561e08804f75c211dcaf7fc5455699eada29f42cbe8a0a7253dd86
+    image: nginx:1.31.7@sha256:8632b3314d74c61f0e27f59055bab13f7793b988c94c090154d867bc29e0f39b
     depends_on:
       - solder
     ports:
@@ -50,7 +50,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:8.10.1@sha256:8a1efc5f479551822b47424ccae982026b633f28818eab0387348120a61e10e2
+    image: redis:8.10.3@sha256:0c257ce8b2f31f9f7595f587edf8ac259a248ba3ced82badc8c7aa826a85224f
     # Let host-run SolderJS use Redis without exposing it to the LAN.
     # Port 6381 avoids SolderJS's isolated integration-test Redis on 6380.
     ports:

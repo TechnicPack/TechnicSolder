@@ -4,6 +4,16 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+### Security
+
+- Updated the pinned Node.js, nginx, Redis, and Valkey images to security-fixed releases and the documentation build to Python 3.15.2. Rebuild and recreate containers to apply the image updates.
+
+### Changed
+
+- Updated Laravel to 13.38.0, Guzzle to 7.16.0, PHPUnit to 12.5.40, and PostCSS to 8.5.31 while retaining PHP 8.4 compatibility and the seven-day cooldown for non-security updates.
+- Updated Docker images to Node.js 24.22.1, nginx 1.31.7, Redis 8.10.3, and Valkey 9.1.3.
+- Docker frontend builds now use the npm lockfile and repository npm settings with `npm ci`, preventing unreviewed dependency resolution and preserving disabled lifecycle scripts.
+
 ## [1.5.1] - 2026-10-22
 
 ### Security
