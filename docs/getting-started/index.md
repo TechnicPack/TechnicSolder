@@ -16,7 +16,7 @@ This guide walks through installing Technic Solder directly on a Linux server.
 - **Git**
 - **PHP 8.5** recommended (8.4 minimum)
 - **Composer** ([getcomposer.org](https://getcomposer.org/))
-- **Node.js 24 LTS** and **npm** ([nodejs.org](https://nodejs.org/))
+- **Node.js 26 LTS** and **npm** ([nodejs.org](https://nodejs.org/))
 - **unzip**
 - **A MariaDB, MySQL, or PostgreSQL database**
 
@@ -48,12 +48,12 @@ sudo apt install git unzip php8.5 php8.5-bcmath php8.5-cli php8.5-curl \
 
 ## Installing Node.js
 
-Install **Node.js 24 LTS** and its bundled npm using the [official Node.js installation guide](https://nodejs.org/en/download). Select the LTS release rather than Current.
+Install **Node.js 26 LTS** and its bundled npm using the [official Node.js installation guide](https://nodejs.org/en/download). Select the 26 LTS release rather than Current.
 
 Verify the installed versions before building Solder:
 
 ```bash
-node --version # Expected: v24.x.x
+node --version # Expected: v26.x.x
 npm --version
 ```
 

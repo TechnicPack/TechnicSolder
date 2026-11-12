@@ -4,6 +4,10 @@ All notable changes to Technic Solder will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Frontend development and asset builds now require Node.js 26 LTS, with a pinned Node.js 26.13.0 slim Docker build image.
+
 ## [1.5.2] - 2026-10-27
 
 ### Security
