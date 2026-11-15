@@ -50,7 +50,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:8.10.3@sha256:0c257ce8b2f31f9f7595f587edf8ac259a248ba3ced82badc8c7aa826a85224f
+    image: redis:8.10.3@sha256:1f88291b4c57bdf249f02eb085a8669889b2d2954e91d4de5118a5da6b78dd53
     # Let host-run SolderJS use Redis without exposing it to the LAN.
     # Port 6381 avoids SolderJS's isolated integration-test Redis on 6380.
     ports:
